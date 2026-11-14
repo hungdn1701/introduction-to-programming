@@ -1,0 +1,6 @@
+901 ; 00 INP     read the first number into ACC
+399 ; 01 STA 99  store ACC into mailbox 99
+901 ; 02 INP     read the second number into ACC
+199 ; 03 ADD 99  ACC = ACC + mailbox 99
+902 ; 04 OUT     output ACC
+000 ; 05 HLT     stop

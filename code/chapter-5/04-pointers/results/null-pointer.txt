@@ -1,0 +1,5 @@
+$ ./null_pointer
+before *p = 7
+[exit code 139: Segmentation fault]
+> & .\null_pointer.exe; $LASTEXITCODE        (PowerShell)
+-1073741819 = 0xC0000005

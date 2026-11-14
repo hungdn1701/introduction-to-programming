@@ -1,0 +1,2 @@
+pyramid.c: test 1: ok; test 2: ok; test 3: ok; => AC
+pyramid_trailing.c: test 1: ok; test 2: WA; test 3: WA; => WA on test 2

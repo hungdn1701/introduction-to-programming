@@ -1,0 +1,4 @@
+B: second 1,  543 million loops
+B: second 2,  572 million loops
+B: second 3,  578 million loops
+B: second 4,  545 million loops

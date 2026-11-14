@@ -1,0 +1,2 @@
+$ echo 8 -1 6 9 -5 7 | ./sum_valid
+4 valid entries, sum 30

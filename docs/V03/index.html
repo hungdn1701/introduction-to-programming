@@ -1,0 +1,455 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V03 — Phần cứng: CPU, lệnh máy và chu trình lệnh · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-1/02-instruction-cycle">Mã</a>
+<h1>V03 · Phần cứng: CPU, lệnh máy và chu trình lệnh</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 1</div><div class="ten">Phần cứng: CPU, lệnh máy và chu trình lệnh</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Trong bộ nhớ, chương trình chỉ là các con số</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Bộ nhớ chính chứa chương trình đang chạy — dưới dạng <b>các con số</b>, cùng chỗ với dữ liệu</li><li data-s="2">CPU không đọc được câu chữ như "cộng hai số rồi in kết quả"</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> CPU làm gì với các con số đó để một phép cộng đơn giản được thực hiện?</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Little Man Computer: mỗi lệnh là ba chữ số, mã lệnh và địa chỉ</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Bộ nhớ 100 ô của Little Man Computer: ô 00 đến 05 chứa sáu lệnh của chương trình cộng hai số (901 INP, 399 STA 99, 901 INP, 199 ADD 99, 902 OUT, 000 HLT); ô 99 chứa dữ liệu. Mỗi lệnh ba chữ số: chữ số đầu là mã lệnh, hai chữ số sau là địa chỉ. CPU có ba thanh ghi PC, IR, thanh ghi tích lũy.">
+  <defs>
+    <marker id="lm-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="lm-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="lm-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="lm-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="lm-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="lm-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- bộ nhớ chứa chương trình -->
+  <g data-s="1">
+    <text x="40" y="50" text-anchor="start" font-size="27" fill="#6B4E06" font-weight="500">Bộ nhớ (100 ô)</text>
+    <rect x="40" y="70" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="105.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">00</text>
+    <rect x="130" y="70" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="107.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">901</text>
+    <text x="285" y="107" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">INP</text>
+    <text x="440" y="107" text-anchor="start" font-size="22" fill="#5B6478">đọc một số vào thanh ghi tích lũy</text>
+    <rect x="40" y="126" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="161.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">01</text>
+    <rect x="130" y="126" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="163.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">399</text>
+    <text x="285" y="163" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">STA 99</text>
+    <text x="440" y="163" text-anchor="start" font-size="22" fill="#5B6478">ghi thanh ghi tích lũy vào ô 99</text>
+    <rect x="40" y="182" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="217.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">02</text>
+    <rect x="130" y="182" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="219.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">901</text>
+    <text x="285" y="219" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">INP</text>
+    <text x="440" y="219" text-anchor="start" font-size="22" fill="#5B6478">đọc số thứ hai</text>
+    <rect x="40" y="238" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="273.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">03</text>
+    <rect x="130" y="238" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="275.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">199</text>
+    <text x="285" y="275" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">ADD 99</text>
+    <text x="440" y="275" text-anchor="start" font-size="22" fill="#5B6478">cộng ô 99 vào thanh ghi tích lũy</text>
+    <rect x="40" y="294" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="329.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">04</text>
+    <rect x="130" y="294" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="331.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">902</text>
+    <text x="285" y="331" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">OUT</text>
+    <text x="440" y="331" text-anchor="start" font-size="22" fill="#5B6478">in thanh ghi tích lũy</text>
+    <rect x="40" y="350" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="385.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">05</text>
+    <rect x="130" y="350" width="130" height="56" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="195" y="387.36" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">000</text>
+    <text x="285" y="387" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">HLT</text>
+    <text x="440" y="387" text-anchor="start" font-size="22" fill="#5B6478">dừng</text>
+    <rect x="40" y="420" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="447.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">…</text>
+    <rect x="130" y="420" width="130" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="40" y="460" width="90" height="56" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="85" y="495.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">99</text>
+    <rect x="130" y="460" width="130" height="56" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="195" y="497.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">000</text>
+    <text x="285" y="497" text-anchor="start" font-size="22" fill="#6B4E06">ô dữ liệu</text>
+  </g>
+
+  <!-- định dạng một lệnh -->
+  <g data-s="2">
+    <rect x="1000" y="60" width="720" height="210" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1360" y="100" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500">Một lệnh: ba chữ số</text>
+    <rect x="1170" y="130" width="120" height="70" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="1230" y="177.24" text-anchor="middle" font-size="34" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <rect x="1290" y="130" width="240" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1410" y="177.24" text-anchor="middle" font-size="34" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">99</text>
+    <text x="1230" y="238" text-anchor="middle" font-size="22" fill="#051A53">mã lệnh: STA</text>
+    <text x="1410" y="238" text-anchor="middle" font-size="22" fill="#6B4E06">địa chỉ: ô 99</text>
+  </g>
+
+  <!-- ba thanh ghi -->
+  <g data-s="3">
+    <rect x="1000" y="310" width="720" height="220" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1360" y="350" text-anchor="middle" font-size="27" fill="#051A53" font-weight="500">CPU</text>
+    <rect x="1040" y="372" width="110" height="44" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1095" y="402.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">PC</text>
+    <text x="1175" y="402" text-anchor="start" font-size="22" fill="#373D4E">địa chỉ lệnh kế tiếp</text>
+    <rect x="1040" y="422" width="110" height="44" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1095" y="452.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">IR</text>
+    <text x="1175" y="452" text-anchor="start" font-size="22" fill="#373D4E">lệnh đang thực hiện</text>
+    <rect x="1040" y="472" width="110" height="44" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1095" y="502.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">ACC</text>
+    <text x="1175" y="502" text-anchor="start" font-size="22" fill="#373D4E">thanh ghi tích lũy</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p><b>Lệnh máy</b> = mã lệnh + địa chỉ; <b>tập lệnh</b> là mọi lệnh CPU hiểu được; <b>thanh ghi</b> là ô nhớ nằm trong CPU.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Chu trình lệnh: nạp, tăng PC, giải mã, thực hiện, rồi lặp lại</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Chu trình lệnh: nạp lệnh ở địa chỉ PC vào IR; tăng PC; giải mã thành mã lệnh và địa chỉ; thực hiện, ví dụ ALU cộng và ghi vào thanh ghi tích lũy; quay lại nạp lệnh kế tiếp. Lệnh HLT kết thúc vòng lặp.">
+  <defs>
+    <marker id="ct-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ct-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ct-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ct-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ct-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ct-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- nạp -->
+  <g data-s="1">
+    <rect x="40" y="80" width="390" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="235" y="171.5" text-anchor="middle" font-size="28" fill="#051A53" font-weight="500">1. Nạp</text>
+    <text x="235" y="224.5" text-anchor="middle" font-size="23" fill="#373D4E">IR ← bộ nhớ[PC]</text>
+  </g>
+
+  <!-- tăng PC -->
+  <g data-s="2">
+    <line x1="432" y1="180" x2="466" y2="180" stroke="#051A53" stroke-width="3" marker-end="url(#ct-navy)"/>
+    <rect x="470" y="80" width="390" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="665" y="171.5" text-anchor="middle" font-size="28" fill="#051A53" font-weight="500">2. Tăng PC</text>
+    <text x="665" y="224.5" text-anchor="middle" font-size="23" fill="#373D4E">PC ← PC + 1</text>
+  </g>
+
+  <!-- giải mã -->
+  <g data-s="3">
+    <line x1="862" y1="180" x2="896" y2="180" stroke="#051A53" stroke-width="3" marker-end="url(#ct-navy)"/>
+    <rect x="900" y="80" width="390" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1095" y="153" text-anchor="middle" font-size="28" fill="#051A53" font-weight="500">3. Giải mã</text>
+    <text x="1095" y="205" text-anchor="middle" font-size="22" fill="#373D4E">mã lệnh = IR / 100</text>
+    <text x="1095" y="243" text-anchor="middle" font-size="22" fill="#373D4E">địa chỉ = IR % 100</text>
+  </g>
+
+  <!-- thực hiện, quay lại -->
+  <g data-s="4">
+    <line x1="1292" y1="180" x2="1326" y2="180" stroke="#051A53" stroke-width="3" marker-end="url(#ct-navy)"/>
+    <rect x="1330" y="80" width="390" height="200" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1525" y="153" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500">4. Thực hiện</text>
+    <text x="1525" y="205" text-anchor="middle" font-size="22" fill="#373D4E">ALU cộng, ghi ô nhớ,</text>
+    <text x="1525" y="243" text-anchor="middle" font-size="22" fill="#373D4E">đọc, in…</text>
+    <path d="M1525,282 L1525,400 L235,400 L235,284" fill="none" stroke="#051A53" stroke-width="3" marker-end="url(#ct-navy)"/>
+    <text x="880" y="388" text-anchor="middle" font-size="23" fill="#051A53">lặp lại với lệnh kế tiếp</text>
+    <rect x="1330" y="430" width="390" height="70" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1525" y="472.5" text-anchor="middle" font-size="23" fill="#373D4E">HLT: dừng vòng lặp</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>CPU lặp mãi <b>chu trình lệnh</b> cho tới lệnh dừng; mỗi vòng thực hiện đúng một lệnh máy.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Lần theo từng lệnh: 25 cộng 17 ra 42 sau sáu vòng</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">LMC</span>901 ; 00 INP     read the first number into ACC
+399 ; 01 STA 99  store ACC into mailbox 99
+901 ; 02 INP     read the second number into ACC
+199 ; 03 ADD 99  ACC = ACC + mailbox 99
+902 ; 04 OUT     output ACC
+000 ; 05 HLT     stop
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>step  PC  IR   instruction  ACC  mailbox 99
+   1  01  901  INP           25    0
+   2  02  399  STA 99        25   25
+<span class="noi-bat">   3  03  901  INP           17   25</span>
+   4  04  199  ADD 99        42   25
+<span class="noi-bat">   5  05  902  OUT           42   25   -&gt; OUTPUT 42</span>
+   6  06  000  HLT           42   25</pre></div><ul class="y-nho"><li data-s="2">Sau mỗi lệnh, <b>PC đã trỏ tới lệnh kế tiếp</b>: lệnh ở ô 02 chạy xong thì PC bằng 03</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Lệnh nhảy ghi địa chỉ mới vào PC: đếm ngược 2, 1, 0 sau mười hai vòng</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">LMC</span>901 ; 00 INP     read the start value into ACC
+902 ; 01 OUT     output ACC
+705 ; 02 BRZ 05  if ACC = 0, jump to 05
+206 ; 03 SUB 06  ACC = ACC - mailbox 06 (holds 1)
+601 ; 04 BRA 01  jump back to 01
+000 ; 05 HLT     stop
+001 ; 06 DAT 1   the constant 1
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>step  PC  IR   instruction  ACC  mailbox 06
+   1  01  901  INP            2    1
+   2  02  902  OUT            2    1   -&gt; OUTPUT 2
+   3  03  705  BRZ 05         2    1
+   4  04  206  SUB 06         1    1
+<span class="noi-bat">   5  01  601  BRA 01         1    1</span>
+   6  02  902  OUT            1    1   -&gt; OUTPUT 1
+   7  03  705  BRZ 05         1    1
+   8  04  206  SUB 06         0    1
+   9  01  601  BRA 01         0    1
+  10  02  902  OUT            0    1   -&gt; OUTPUT 0
+<span class="noi-bat">  11  05  705  BRZ 05         0    1</span>
+  12  06  000  HLT            0    1</pre></div><ul class="y-nho"><li data-s="2">Bước thực hiện của <b>lệnh nhảy</b> ghi địa chỉ mới vào <b>PC</b>; chu trình lệnh không đổi</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Một dòng mã C trở thành nhiều lệnh máy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">CPU <b>không biết biến, biểu thức</b>: mỗi lệnh máy chỉ làm một việc nhỏ trên thanh ghi và ô nhớ</li><li data-s="2">Câu lệnh C <code>c = a + b;</code> cần ít nhất ba lệnh máy: nạp <code>a</code>, cộng <code>b</code>, ghi vào <code>c</code></li></ul><div class="khung" data-s="3">Ai dịch mã C thành lệnh máy? <b>Trình biên dịch</b> — nội dung của Chương 2.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong Little Man Computer, mã lệnh 3 là STA (ghi thanh ghi tích lũy vào bộ nhớ). Lệnh 350 làm gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Ghi giá trị của thanh ghi tích lũy vào ô 50.</div></div><div class=""><span>B</span><div>Cộng 350 vào thanh ghi tích lũy.</div></div><div class=""><span>C</span><div>Nạp giá trị của ô 50 vào thanh ghi tích lũy.</div></div><div class=""><span>D</span><div>Nhảy tới lệnh ở ô 50.</div></div></div><div class="giai-thich">Chữ số đầu là mã lệnh (3 = STA), hai chữ số sau là địa chỉ (50). Lệnh 350 ghi thanh ghi tích lũy vào ô 50. Phương án B đọc cả ba chữ số như một số; phương án C là lệnh LDA (mã 5).</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong Little Man Computer, mã lệnh 3 là STA (ghi thanh ghi tích lũy vào bộ nhớ). Lệnh 350 làm gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Ghi giá trị của thanh ghi tích lũy vào ô 50.</div></div><div class=""><span>B</span><div>Cộng 350 vào thanh ghi tích lũy.</div></div><div class=""><span>C</span><div>Nạp giá trị của ô 50 vào thanh ghi tích lũy.</div></div><div class=""><span>D</span><div>Nhảy tới lệnh ở ô 50.</div></div></div><div class="giai-thich">Chữ số đầu là mã lệnh (3 = STA), hai chữ số sau là địa chỉ (50). Lệnh 350 ghi thanh ghi tích lũy vào ô 50. Phương án B đọc cả ba chữ số như một số; phương án C là lệnh LDA (mã 5).</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Ngay sau khi CPU nạp lệnh ở ô 07 vào IR, thanh ghi PC chứa gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>07, địa chỉ của lệnh vừa nạp.</div></div><div class="dung"><span>B</span><div>08, địa chỉ của lệnh kế tiếp.</div></div><div class=""><span>C</span><div>Chính lệnh vừa nạp.</div></div><div class=""><span>D</span><div>Kết quả phép tính của lệnh đó.</div></div></div><div class="giai-thich">Bước tăng PC diễn ra ngay sau khi nạp, trước khi thực hiện lệnh, nên PC trỏ sẵn tới lệnh kế tiếp. Lệnh vừa nạp nằm trong IR; kết quả tính nằm trong thanh ghi tích lũy.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Ngay sau khi CPU nạp lệnh ở ô 07 vào IR, thanh ghi PC chứa gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>07, địa chỉ của lệnh vừa nạp.</div></div><div class="dung"><span>B</span><div>08, địa chỉ của lệnh kế tiếp.</div></div><div class=""><span>C</span><div>Chính lệnh vừa nạp.</div></div><div class=""><span>D</span><div>Kết quả phép tính của lệnh đó.</div></div></div><div class="giai-thich">Bước tăng PC diễn ra ngay sau khi nạp, trước khi thực hiện lệnh, nên PC trỏ sẵn tới lệnh kế tiếp. Lệnh vừa nạp nằm trong IR; kết quả tính nằm trong thanh ghi tích lũy.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Lệnh máy</b> = mã lệnh + địa chỉ; tập lệnh là mọi lệnh một loại CPU hiểu được</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Thanh ghi</b> trong CPU: PC giữ địa chỉ lệnh kế tiếp, IR giữ lệnh đang thực hiện</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Chu trình lệnh</b>: nạp, tăng PC, giải mã, thực hiện, lặp tới lệnh dừng</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>lệnh máy</span><span>tập lệnh</span><span>thanh ghi</span><span>chu trình lệnh</span><span>ALU</span></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Tập lệnh CPU thật: <span style="white-space:nowrap">x86-64</span> (nhiều lệnh, độ dài khác nhau) và ARM, <span style="white-space:nowrap">RISC-V</span> (lệnh đơn giản, cùng độ dài)</li><li>Đường ống lệnh (pipeline): CPU nạp lệnh sau khi lệnh trước chưa thực hiện xong</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết chương trình Little Man Computer đọc hai số và in số lớn hơn (dùng SUB và BRP); chạy trên bộ mô phỏng lmc.c và ghi bảng vết PC, thanh ghi tích lũy.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Phần cứng: phân cấp bộ nhớ và thiết bị vào ra</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Phần trước cho thấy chương trình nằm trong bộ nhớ chính. Phần này trả lời câu hỏi tiếp theo: CPU làm gì với chương trình đó?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:10</span>
+      <h3>Slide 1. Trong bộ nhớ, chương trình chỉ là các con số</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bộ nhớ chính chứa chương trình đang chạy — dưới dạng **các con số**, cùng chỗ với dữ liệu</li><li>CPU không đọc được câu chữ như &quot;cộng hai số rồi in kết quả&quot;</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** CPU làm gì với các con số đó để một phép cộng đơn giản được thực hiện?</div></div>
+    <div class="kb-thoai"><p>Ở phần về kiến trúc von Neumann, các bạn đã thấy chương trình nằm trong bộ nhớ chính, cùng chỗ với dữ liệu. Trong bộ nhớ, chương trình đó chỉ là các con số. Nhưng CPU không hiểu một câu như &quot;cộng hai số rồi in kết quả&quot;. CPU chỉ làm được những việc rất nhỏ, mỗi việc ứng với một con số. Vậy câu hỏi của phần này là: CPU làm gì với các con số đó để một phép cộng đơn giản được thực hiện?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Ở phần về kiến trúc von Neumann”; bước 2 khi đọc “Nhưng CPU không hiểu”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:37</span>
+      <h3>Slide 2. Little Man Computer: mỗi lệnh là ba chữ số, mã lệnh và địa chỉ</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Lệnh máy** = mã lệnh + địa chỉ; **tập lệnh** là mọi lệnh CPU hiểu được; **thanh ghi** là ô nhớ nằm trong CPU.</li></ul></div></div>
+    <div class="kb-thoai"><p>Để thấy rõ từng bước, mình dùng Little Man Computer, một mô hình máy tính dạy học do Stuart Madnick đưa ra ở MIT năm 1965. Máy này có một bộ nhớ một trăm ô, đánh số từ 00 đến 99. Ở đây, ô 00 đến ô 05 chứa một chương trình gồm sáu lệnh, đọc hai số, cộng lại rồi in kết quả; ô 99 dùng để chứa dữ liệu. Mỗi lệnh gồm ba chữ số. Chữ số đầu là mã lệnh, cho biết làm gì: 3 là ghi con số đang tính ra bộ nhớ, 1 là cộng. Hai chữ số sau là địa chỉ, cho biết làm với ô nào. Lệnh 399 nghĩa là ghi con số đang tính vào ô 99. Một thao tác cơ bản như vậy gọi là lệnh máy, hay machine instruction, và tập mọi lệnh máy một loại CPU hiểu được gọi là tập lệnh, hay instruction set. Bên trong CPU có ba thanh ghi, hay register, tức ba ô nhớ rất nhanh nằm ngay trong CPU. Thanh ghi PC giữ địa chỉ của lệnh kế tiếp, thanh ghi IR giữ lệnh đang thực hiện, còn thanh ghi tích lũy giữ con số đang tính. Như vậy, chương trình là dãy lệnh máy trong bộ nhớ, còn CPU làm việc trên các thanh ghi.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình lmc-bo-nho: bước 1 bộ nhớ với sáu lệnh và ô 99; bước 2 định dạng lệnh 3 | 99; bước 3 ba thanh ghi; bước 4 ô kết luận. Ghi nguồn: Madnick, Little Man Computer (MIT, 1965).
+Hiện dần: bước 1 khi đọc “mô hình máy tính dạy học”; bước 2 khi đọc “Mỗi lệnh gồm ba chữ số”; bước 3 khi đọc “Bên trong CPU có ba thanh ghi”; bước 4 khi đọc “Như vậy, chương trình”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:51</span>
+      <h3>Slide 3. Chu trình lệnh: nạp, tăng PC, giải mã, thực hiện, rồi lặp lại</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>CPU lặp mãi **chu trình lệnh** cho tới lệnh dừng; mỗi vòng thực hiện đúng một lệnh máy.</li></ul></div></div>
+    <div class="kb-thoai"><p>Với một chương trình như vậy, CPU làm đi làm lại cùng một việc gồm bốn bước. Bước thứ nhất là nạp: CPU lấy lệnh ở ô có địa chỉ nằm trong PC, chép vào IR. Bước thứ hai, CPU tăng PC thêm một, để PC trỏ sẵn tới lệnh kế tiếp. Bước thứ ba là giải mã: CPU tách lệnh thành mã lệnh và địa chỉ, chẳng hạn lệnh 199 tách thành mã 1, tức cộng, và địa chỉ 99. Bước thứ tư là thực hiện: với lệnh cộng, ALU cộng số trong ô 99 vào thanh ghi tích lũy. Bốn bước này lặp lại với lệnh kế tiếp cho tới khi gặp lệnh dừng, HLT. Vòng lặp đó gọi là chu trình lệnh, hay instruction cycle, và CPU thật trong máy của các bạn cũng làm đúng như vậy, chỉ nhanh hơn: hàng tỉ vòng mỗi giây.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình chu-trinh-lenh: bốn bước của hình theo bốn câu mốc đầu; mũi tên quay lại và ô HLT thuộc bước 4; bước 5 là ô kết luận. Ghi nguồn: Patt &amp; Patel, Introduction to Computing Systems, ch. 4.
+Hiện dần: bước 1 khi đọc “Bước thứ nhất là nạp”; bước 2 khi đọc “Bước thứ hai”; bước 3 khi đọc “Bước thứ ba là giải mã”; bước 4 khi đọc “Bước thứ tư là thực hiện”; bước 5 khi đọc “Bốn bước này lặp lại”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:41</span>
+      <h3>Slide 4. Lần theo từng lệnh: 25 cộng 17 ra 42 sau sáu vòng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Sau mỗi lệnh, **PC đã trỏ tới lệnh kế tiếp**: lệnh ở ô 02 chạy xong thì PC bằng 03</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">programs/add.lmc</span><pre><code>901 ; 00 INP     read the first number into ACC
+399 ; 01 STA 99  store ACC into mailbox 99
+901 ; 02 INP     read the second number into ACC
+199 ; 03 ADD 99  ACC = ACC + mailbox 99
+902 ; 04 OUT     output ACC
+000 ; 05 HLT     stop</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình chạy chương trình này trên một bộ mô phỏng Little Man Computer, viết sẵn bằng C, với hai số đầu vào là 25 và 17. Sau mỗi lệnh, bộ mô phỏng in một dòng: số thứ tự, giá trị PC, lệnh trong IR, giá trị thanh ghi tích lũy và nội dung ô 99. Trước khi xem kết quả, các bạn thử đoán: chạy xong lệnh thứ ba, PC bằng bao nhiêu? Kết quả cho thấy ở bước thứ ba, PC bằng 03, vì PC đã được tăng ngay khi nạp lệnh ở ô 02. Lần theo từng bước: lệnh INP đọc 25 vào thanh ghi tích lũy, lệnh STA ghi 25 vào ô 99, lệnh INP thứ hai đọc 17. Lệnh ADD cộng số ở ô 99 vào thanh ghi tích lũy, được 42, lệnh OUT in 42, và lệnh HLT dừng máy. Một phép cộng cần sáu lệnh máy và sáu vòng chu trình lệnh.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Chương trình LMC phía trên, kết quả chạy phía dưới. Sau câu &quot;PC bằng bao nhiêu?&quot;, dừng khoảng 2 giây rồi mới hiện khung kết quả; tô dòng 4 (bước 3, PC = 03) và dòng 6 (OUTPUT 42). Mã của bộ mô phỏng (src/lmc.c) không lên slide ở chương này.
+Hiện dần: bước 1 khi đọc “Mình chạy chương trình này”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:43</span>
+      <h3>Slide 5. Lệnh nhảy ghi địa chỉ mới vào PC: đếm ngược 2, 1, 0 sau mười hai vòng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bước thực hiện của **lệnh nhảy** ghi địa chỉ mới vào **PC**; chu trình lệnh không đổi</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">programs/countdown.lmc</span><pre><code>901 ; 00 INP     read the start value into ACC
+902 ; 01 OUT     output ACC
+705 ; 02 BRZ 05  if ACC = 0, jump to 05
+206 ; 03 SUB 06  ACC = ACC - mailbox 06 (holds 1)
+601 ; 04 BRA 01  jump back to 01
+000 ; 05 HLT     stop
+001 ; 06 DAT 1   the constant 1</code></pre></div></div>
+    <div class="kb-thoai"><p>Chương trình cộng chạy thẳng từ ô 00 tới ô 05, vì sau mỗi lệnh PC chỉ tăng thêm một. Muốn máy làm lại một việc nhiều lần, Little Man Computer có lệnh nhảy, hay branch. Chương trình thứ hai đếm ngược: đọc một số, in số đó, trừ đi 1 lấy ở ô 06, rồi lặp lại cho tới khi bằng 0. Lệnh BRA 01, mã 6, ghi thẳng địa chỉ 01 vào PC ở bước thực hiện, nên vòng sau nạp lại lệnh OUT. Lệnh BRZ 05, mã 7, chỉ ghi 05 vào PC khi thanh ghi tích lũy bằng 0. Mình chạy với số 2. Ở bước thứ năm, PC vừa tăng lên 05 thì lệnh BRA ghi đè thành 01. Ở bước thứ ba, BRZ không nhảy vì thanh ghi tích lũy bằng 2; tới bước thứ mười một, thanh ghi tích lũy bằng 0, BRZ đưa máy tới lệnh HLT. Bốn bước của chu trình lệnh không đổi: lệnh nhảy chỉ khác ở chỗ bước thực hiện ghi một giá trị mới vào PC.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Chương trình LMC phía trên, kết quả chạy phía dưới; tô dòng 6 (bước 5, PC = 01 sau BRA) và dòng 12 (bước 11, BRZ nhảy tới 05). Ô 06 giữ hằng 1 (DAT 1, chỉ là dữ liệu, không phải lệnh). Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Chương trình cộng chạy thẳng”; bước 2 khi đọc “Mình chạy với số 2”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:51</span>
+      <h3>Slide 6. Một dòng mã C trở thành nhiều lệnh máy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>CPU **không biết biến, biểu thức**: mỗi lệnh máy chỉ làm một việc nhỏ trên thanh ghi và ô nhớ</li><li>Câu lệnh C `c = a + b;` cần ít nhất ba lệnh máy: nạp `a`, cộng `b`, ghi vào `c`</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> Ai dịch mã C thành lệnh máy? **Trình biên dịch** — nội dung của Chương 2.</div></div>
+    <div class="kb-thoai"><p>Từ ví dụ này, các bạn cần nhớ một điều: CPU không biết biến hay biểu thức. Mỗi lệnh máy chỉ làm một việc nhỏ trên thanh ghi và ô nhớ. Chẳng hạn, câu lệnh C c bằng a cộng b, mà các bạn sẽ viết ở Chương 4, cần ít nhất ba lệnh máy: nạp a vào thanh ghi, cộng b, rồi ghi kết quả vào c. Việc dịch đó không do người lập trình làm bằng tay, mà do trình biên dịch, nội dung của Chương 2.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung hiện cuối. Ba lệnh máy có thể minh họa bằng ba dòng LDA, ADD, STA của Little Man Computer.
+Hiện dần: bước 1 khi đọc “Từ ví dụ này”; bước 2 khi đọc “Chẳng hạn”; bước 3 khi đọc “Việc dịch đó”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:16</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Hãy thử giải mã một lệnh Little Man Computer chưa có trong chương trình mẫu.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Trong Little Man Computer, mã lệnh 3 là STA (ghi thanh ghi tích lũy vào bộ nhớ). Lệnh 350 làm gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Ghi giá trị của thanh ghi tích lũy vào ô 50.</li>
+      <li><b>B.</b> Cộng 350 vào thanh ghi tích lũy.</li>
+      <li><b>C.</b> Nạp giá trị của ô 50 vào thanh ghi tích lũy.</li>
+      <li><b>D.</b> Nhảy tới lệnh ở ô 50.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: A</b> — <span>Chữ số đầu là mã lệnh (3 = STA), hai chữ số sau là địa chỉ (50). Lệnh 350 ghi thanh ghi tích lũy vào ô 50. Phương án B đọc cả ba chữ số như một số; phương án C là lệnh LDA (mã 5).</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là A: chữ số đầu là mã lệnh, hai chữ số sau là địa chỉ. Phương án B dễ được chọn nếu đọc cả ba chữ số như một con số, nhưng lệnh máy luôn tách thành mã lệnh và địa chỉ.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:40</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo dừng chu trình lệnh ngay sau bước nạp.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Ngay sau khi CPU nạp lệnh ở ô 07 vào IR, thanh ghi PC chứa gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 07, địa chỉ của lệnh vừa nạp.</li>
+      <li><b>B.</b> 08, địa chỉ của lệnh kế tiếp.</li>
+      <li><b>C.</b> Chính lệnh vừa nạp.</li>
+      <li><b>D.</b> Kết quả phép tính của lệnh đó.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Bước tăng PC diễn ra ngay sau khi nạp, trước khi thực hiện lệnh, nên PC trỏ sẵn tới lệnh kế tiếp. Lệnh vừa nạp nằm trong IR; kết quả tính nằm trong thanh ghi tích lũy.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án C nhầm vai trò của PC với IR: lệnh vừa nạp nằm trong IR, còn PC đã trỏ sẵn tới lệnh kế tiếp.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:59</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Lệnh máy** = mã lệnh + địa chỉ; tập lệnh là mọi lệnh một loại CPU hiểu được</li><li>**Thanh ghi** trong CPU: PC giữ địa chỉ lệnh kế tiếp, IR giữ lệnh đang thực hiện</li><li>**Chu trình lệnh**: nạp, tăng PC, giải mã, thực hiện, lặp tới lệnh dừng</li></ul></div>
+    <div class="kb-thoai"><p>Các con số trong bộ nhớ là lệnh máy: mỗi con số gồm mã lệnh và địa chỉ, thuộc tập lệnh của CPU. CPU làm việc trên các thanh ghi: PC giữ địa chỉ lệnh kế tiếp, IR giữ lệnh đang thực hiện. CPU lặp mãi chu trình lệnh: nạp, tăng PC, giải mã, thực hiện, cho tới lệnh dừng. Trên slide là các từ khóa cần nhớ: lệnh máy, tập lệnh, thanh ghi, chu trình lệnh và ALU.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Các con số trong bộ nhớ”; bước 2 khi đọc “CPU làm việc trên”; bước 3 khi đọc “CPU lặp mãi”; bước 4 khi đọc “các từ khóa cần nhớ”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:27</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Nếu muốn đi xa hơn, các bạn tìm hiểu tập lệnh của CPU thật: x86-64 trong máy tính để bàn có nhiều lệnh phức tạp với độ dài khác nhau, còn ARM và RISC-V dùng các lệnh đơn giản, cùng độ dài. Chủ đề thứ hai là đường ống lệnh, cách CPU thật bắt đầu nạp lệnh sau khi lệnh trước chưa xong. Bài tập mở rộng là viết chương trình Little Man Computer đọc hai số và in số lớn hơn, chạy trên bộ mô phỏng, rồi ghi bảng vết PC và thanh ghi tích lũy.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Nếu muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:55</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>CPU nhanh như vậy, nhưng mỗi lần nạp lệnh hay dữ liệu đều phải chờ bộ nhớ. Phần tiếp theo, về phân cấp bộ nhớ và thiết bị vào ra, cho thấy máy tính giảm thời gian chờ đó ra sao.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V03", "tieu_de": "Phần cứng: CPU, lệnh máy và chu trình lệnh", "giong": "vi-VN-NamMinhNeural", "tong": 427.74, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/4e621ea46fac9658.mp3", "dur": 10.1, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Phần", 1], [2.175, "trước", 1], [2.375, "cho", 1], [2.5, "thấy", 1], [2.7, "chương", 1], [2.975, "trình", 1], [3.263, "nằm", 1], [3.5, "trong", 1], [3.7, "bộ", 1], [3.888, "nhớ", 1], [4.1, "chính.", 1], [5.312, "Phần", 2], [5.562, "này", 2], [5.75, "trả", 2], [5.925, "lời", 2], [6.112, "câu", 2], [6.3, "hỏi", 2], [6.463, "tiếp", 2], [6.662, "theo:", 2], [7.293, "CPU", 2], [7.925, "làm", 2], [8.15, "gì", 2], [8.387, "với", 2], [8.5, "chương", 2], [8.725, "trình", 2], [8.925, "đó?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Trong bộ nhớ, chương trình chỉ là các con số", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Ở phần về kiến trúc von Neumann”; bước 2 khi đọc “Nhưng CPU không hiểu”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 10.7, "audio": "audio/df9b359c0b6abd60.mp3", "dur": 26.5, "words": [[0.1, "Ở", 0], [0.275, "phần", 0], [0.562, "về", 0], [0.7, "kiến", 0], [0.95, "trúc", 0], [1.137, "von", 0], [1.35, "Neumann,", 0], [1.975, "các", 0], [2.15, "bạn", 0], [2.388, "đã", 0], [2.487, "thấy", 0], [2.663, "chương", 0], [2.9, "trình", 0], [3.175, "nằm", 0], [3.388, "trong", 0], [3.562, "bộ", 0], [3.737, "nhớ", 0], [3.925, "chính,", 0], [4.438, "cùng", 0], [4.688, "chỗ", 0], [4.925, "với", 0], [5.05, "dữ", 0], [5.237, "liệu.", 0], [6.412, "Trong", 1], [6.713, "bộ", 1], [6.9, "nhớ,", 1], [7.463, "chương", 1], [7.787, "trình", 1], [8.0, "đó", 1], [8.225, "chỉ", 1], [8.438, "là", 1], [8.6, "các", 1], [8.812, "con", 1], [9.012, "số.", 1], [10.25, "Nhưng", 2], [10.738, "CPU", 2], [11.225, "không", 2], [11.463, "hiểu", 2], [11.6, "một", 2], [11.8, "câu", 2], [12.062, "như", 2], [12.4, "\"cộng", 2], [12.637, "hai", 2], [12.8, "số", 2], [13.113, "rồi", 2], [13.35, "in", 2], [13.512, "kết", 2], [13.7, "quả\".", 2], [14.819, "CPU", 3], [15.938, "chỉ", 3], [16.087, "làm", 3], [16.3, "được", 3], [16.438, "những", 3], [16.663, "việc", 3], [16.85, "rất", 3], [17.025, "nhỏ,", 3], [17.65, "mỗi", 3], [17.9, "việc", 3], [18.175, "ứng", 3], [18.35, "với", 3], [18.45, "một", 3], [18.65, "con", 3], [18.825, "số.", 3], [20.05, "Vậy", 4], [20.325, "câu", 4], [20.5, "hỏi", 4], [20.725, "của", 4], [20.875, "phần", 4], [21.062, "này", 4], [21.2, "là:", 4], [21.788, "CPU", 4], [22.375, "làm", 4], [22.6, "gì", 4], [22.825, "với", 4], [22.95, "các", 4], [23.113, "con", 4], [23.275, "số", 4], [23.5, "đó", 4], [23.762, "để", 4], [23.85, "một", 4], [24.038, "phép", 4], [24.262, "cộng", 4], [24.538, "đơn", 4], [24.75, "giản", 4], [25.025, "được", 4], [25.163, "thực", 4], [25.3, "hiện?", 4]], "cues": [0.1, 10.25, 20.325], "lang": 0.6}, {"ten": "Slide 2. Little Man Computer: mỗi lệnh là ba chữ số, mã lệnh và địa chỉ", "loai": "slide", "slide": "S02", "dung": "Hình lmc-bo-nho: bước 1 bộ nhớ với sáu lệnh và ô 99; bước 2 định dạng lệnh 3 | 99; bước 3 ba thanh ghi; bước 4 ô kết luận. Ghi nguồn: Madnick, Little Man Computer (MIT, 1965).\nHiện dần: bước 1 khi đọc “mô hình máy tính dạy học”; bước 2 khi đọc “Mỗi lệnh gồm ba chữ số”; bước 3 khi đọc “Bên trong CPU có ba thanh ghi”; bước 4 khi đọc “Như vậy, chương trình”.", "start": 37.8, "audio": "audio/cadaff8a665d79eb.mp3", "dur": 71.06, "words": [[0.1, "Để", 0], [0.3, "thấy", 0], [0.525, "rõ", 0], [0.7, "từng", 0], [0.938, "bước,", 0], [1.387, "mình", 0], [1.6, "dùng", 0], [1.812, "Little", 0], [2.15, "Man", 0], [2.388, "Computer,", 0], [3.212, "một", 0], [3.438, "mô", 0], [3.6, "hình", 0], [3.763, "máy", 0], [3.9, "tính", 0], [4.125, "dạy", 0], [4.3, "học", 0], [4.513, "do", 0], [4.713, "Stuart", 0], [5.162, "Madnick", 0], [5.562, "đưa", 0], [5.737, "ra", 0], [5.987, "ở", 0], [6.787, "MIT", 0], [7.588, "năm", 0], [8.388, "1965.", 0], [9.188, "Máy", 1], [9.55, "này", 1], [9.75, "có", 1], [9.863, "một", 1], [10.025, "bộ", 1], [10.225, "nhớ", 1], [10.475, "một", 1], [10.688, "trăm", 1], [10.925, "ô,", 1], [11.35, "đánh", 1], [11.575, "số", 1], [11.863, "từ", 1], [12.088, "00", 1], [12.575, "đến", 1], [12.8, "99.", 1], [14.287, "Ở", 2], [14.5, "đây,", 2], [14.963, "ô", 2], [15.125, "00", 2], [15.613, "đến", 2], [15.863, "ô", 2], [16.012, "05", 2], [16.462, "chứa", 2], [16.675, "một", 2], [16.875, "chương", 2], [17.113, "trình", 2], [17.325, "gồm", 2], [17.538, "sáu", 2], [17.775, "lệnh,", 2], [18.3, "đọc", 2], [18.512, "hai", 2], [18.712, "số,", 2], [19.312, "cộng", 2], [19.562, "lại", 2], [19.762, "rồi", 2], [19.962, "in", 2], [20.113, "kết", 2], [20.3, "quả;", 2], [20.913, "ô", 2], [21.087, "99", 2], [21.625, "dùng", 2], [21.85, "để", 2], [21.962, "chứa", 2], [22.212, "dữ", 2], [22.4, "liệu.", 2], [23.562, "Mỗi", 3], [23.95, "lệnh", 3], [24.225, "gồm", 3], [24.475, "ba", 3], [24.688, "chữ", 3], [24.913, "số.", 3], [26.163, "Chữ", 4], [26.363, "số", 4], [26.625, "đầu", 4], [26.837, "là", 4], [26.988, "mã", 4], [27.188, "lệnh,", 4], [27.712, "cho", 4], [27.875, "biết", 4], [28.1, "làm", 4], [28.3, "gì:", 4], [28.788, "3", 4], [29.075, "là", 4], [29.188, "ghi", 4], [29.363, "con", 4], [29.538, "số", 4], [29.788, "đang", 4], [30.0, "tính", 4], [30.238, "ra", 4], [30.363, "bộ", 4], [30.575, "nhớ,", 4], [31.15, "1", 4], [31.4, "là", 4], [31.562, "cộng.", 4], [32.788, "Hai", 5], [33.025, "chữ", 5], [33.237, "số", 5], [33.487, "sau", 5], [33.725, "là", 5], [33.837, "địa", 5], [34.013, "chỉ,", 5], [34.65, "cho", 5], [34.837, "biết", 5], [35.087, "làm", 5], [35.375, "với", 5], [35.538, "ô", 5], [35.725, "nào.", 5], [36.862, "Lệnh", 6], [37.25, "399", 6], [38.237, "nghĩa", 6], [38.462, "là", 6], [38.612, "ghi", 6], [38.788, "con", 6], [38.975, "số", 6], [39.225, "đang", 6], [39.438, "tính", 6], [39.7, "vào", 6], [39.9, "ô", 6], [40.075, "99.", 6], [41.562, "Một", 7], [41.925, "thao", 7], [42.075, "tác", 7], [42.263, "cơ", 7], [42.375, "bản", 7], [42.612, "như", 7], [42.763, "vậy", 7], [42.975, "gọi", 7], [43.175, "là", 7], [43.288, "lệnh", 7], [43.475, "máy,", 7], [44.025, "hay", 7], [44.212, "machine", 7], [44.675, "instruction,", 7], [45.612, "và", 7], [45.825, "tập", 7], [46.025, "mọi", 7], [46.188, "lệnh", 7], [46.375, "máy", 7], [46.525, "một", 7], [46.7, "loại", 7], [47.1, "CPU", 7], [47.5, "hiểu", 7], [47.737, "được", 7], [47.888, "gọi", 7], [48.125, "là", 7], [48.237, "tập", 7], [48.45, "lệnh,", 7], [48.975, "hay", 7], [49.25, "instruction", 7], [49.825, "set.", 7], [50.938, "Bên", 8], [51.25, "trong", 8], [51.675, "CPU", 8], [52.1, "có", 8], [52.25, "ba", 8], [52.425, "thanh", 8], [52.65, "ghi,", 8], [53.163, "hay", 8], [53.388, "register,", 8], [54.138, "tức", 8], [54.362, "ba", 8], [54.6, "ô", 8], [54.788, "nhớ", 8], [55.062, "rất", 8], [55.237, "nhanh", 8], [55.475, "nằm", 8], [55.688, "ngay", 8], [55.913, "trong", 8], [56.731, "CPU.", 8], [57.55, "Thanh", 9], [57.825, "ghi", 9], [58.112, "PC", 9], [58.4, "giữ", 9], [58.6, "địa", 9], [58.75, "chỉ", 9], [59.025, "của", 9], [59.15, "lệnh", 9], [59.375, "kế", 9], [59.562, "tiếp,", 9], [60.112, "thanh", 9], [60.337, "ghi", 9], [60.662, "IR", 9], [60.987, "giữ", 9], [61.15, "lệnh", 9], [61.413, "đang", 9], [61.575, "thực", 9], [61.712, "hiện,", 9], [62.212, "còn", 9], [62.438, "thanh", 9], [62.638, "ghi", 9], [62.763, "tích", 9], [63.0, "lũy", 9], [63.237, "giữ", 9], [63.438, "con", 9], [63.625, "số", 9], [63.862, "đang", 9], [64.062, "tính.", 9], [65.237, "Như", 10], [65.475, "vậy,", 10], [65.888, "chương", 10], [66.15, "trình", 10], [66.4, "là", 10], [66.537, "dãy", 10], [66.713, "lệnh", 10], [66.912, "máy", 10], [67.138, "trong", 10], [67.312, "bộ", 10], [67.487, "nhớ,", 10], [68.05, "còn", 10], [68.512, "CPU", 10], [68.975, "làm", 10], [69.175, "việc", 10], [69.388, "trên", 10], [69.6, "các", 10], [69.763, "thanh", 10], [69.95, "ghi.", 10]], "cues": [3.438, 23.562, 50.938, 65.237], "lang": 2.6}, {"ten": "Slide 3. Chu trình lệnh: nạp, tăng PC, giải mã, thực hiện, rồi lặp lại", "loai": "slide", "slide": "S03", "dung": "Hình chu-trinh-lenh: bốn bước của hình theo bốn câu mốc đầu; mũi tên quay lại và ô HLT thuộc bước 4; bước 5 là ô kết luận. Ghi nguồn: Patt & Patel, Introduction to Computing Systems, ch. 4.\nHiện dần: bước 1 khi đọc “Bước thứ nhất là nạp”; bước 2 khi đọc “Bước thứ hai”; bước 3 khi đọc “Bước thứ ba là giải mã”; bước 4 khi đọc “Bước thứ tư là thực hiện”; bước 5 khi đọc “Bốn bước này lặp lại”.", "start": 111.46, "audio": "audio/aa75071640c60272.mp3", "dur": 46.99, "words": [[0.1, "Với", 0], [0.325, "một", 0], [0.512, "chương", 0], [0.725, "trình", 0], [0.9, "như", 0], [1.075, "vậy,", 0], [1.706, "CPU", 0], [2.337, "làm", 0], [2.587, "đi", 0], [2.712, "làm", 0], [2.913, "lại", 0], [3.087, "cùng", 0], [3.3, "một", 0], [3.45, "việc", 0], [3.65, "gồm", 0], [3.925, "bốn", 0], [4.162, "bước.", 0], [5.25, "Bước", 1], [5.5, "thứ", 1], [5.65, "nhất", 1], [5.875, "là", 1], [6.05, "nạp:", 1], [6.619, "CPU", 1], [7.188, "lấy", 1], [7.35, "lệnh", 1], [7.6, "ở", 1], [7.725, "ô", 1], [7.9, "có", 1], [8.012, "địa", 1], [8.162, "chỉ", 1], [8.35, "nằm", 1], [8.588, "trong", 1], [9.031, "PC,", 1], [9.475, "chép", 1], [9.738, "vào", 1], [10.082, "IR.", 1], [10.425, "Bước", 2], [10.65, "thứ", 2], [10.8, "hai,", 2], [11.4, "CPU", 2], [12.0, "tăng", 2], [12.287, "PC", 2], [12.575, "thêm", 2], [12.725, "một,", 2], [13.162, "để", 2], [13.45, "PC", 2], [13.738, "trỏ", 2], [13.975, "sẵn", 2], [14.25, "tới", 2], [14.412, "lệnh", 2], [14.637, "kế", 2], [14.812, "tiếp.", 2], [15.912, "Bước", 3], [16.163, "thứ", 3], [16.312, "ba", 3], [16.587, "là", 3], [16.7, "giải", 3], [16.9, "mã:", 3], [17.562, "CPU", 3], [18.225, "tách", 3], [18.438, "lệnh", 3], [18.688, "thành", 3], [18.875, "mã", 3], [19.025, "lệnh", 3], [19.3, "và", 3], [19.413, "địa", 3], [19.587, "chỉ,", 3], [20.212, "chẳng", 3], [20.438, "hạn", 3], [20.637, "lệnh", 3], [20.875, "199", 3], [21.825, "tách", 3], [21.988, "thành", 3], [22.2, "mã", 3], [22.363, "1,", 3], [22.875, "tức", 3], [23.062, "cộng,", 3], [23.55, "và", 3], [23.75, "địa", 3], [23.95, "chỉ", 3], [24.188, "99.", 3], [25.7, "Bước", 4], [25.95, "thứ", 4], [26.113, "tư", 4], [26.363, "là", 4], [26.5, "thực", 4], [26.675, "hiện:", 4], [27.163, "với", 4], [27.337, "lệnh", 4], [27.562, "cộng,", 4], [28.2, "ALU", 4], [28.837, "cộng", 4], [29.062, "số", 4], [29.337, "trong", 4], [29.562, "ô", 4], [29.7, "99", 4], [30.3, "vào", 4], [30.438, "thanh", 4], [30.675, "ghi", 4], [30.825, "tích", 4], [31.062, "lũy.", 4], [32.288, "Bốn", 5], [32.575, "bước", 5], [32.763, "này", 5], [32.962, "lặp", 5], [33.15, "lại", 5], [33.388, "với", 5], [33.5, "lệnh", 5], [33.725, "kế", 5], [33.925, "tiếp", 5], [34.212, "cho", 5], [34.337, "tới", 5], [34.562, "khi", 5], [34.775, "gặp", 5], [34.975, "lệnh", 5], [35.225, "dừng,", 5], [36.269, "HLT.", 5], [37.312, "Vòng", 6], [37.612, "lặp", 6], [37.763, "đó", 6], [38.0, "gọi", 6], [38.175, "là", 6], [38.312, "chu", 6], [38.525, "trình", 6], [38.725, "lệnh,", 6], [39.225, "hay", 6], [39.487, "instruction", 6], [40.087, "cycle,", 6], [40.763, "và", 6], [41.2, "CPU", 6], [41.638, "thật", 6], [41.862, "trong", 6], [42.112, "máy", 6], [42.325, "của", 6], [42.45, "các", 6], [42.612, "bạn", 6], [42.85, "cũng", 6], [43.05, "làm", 6], [43.25, "đúng", 6], [43.438, "như", 6], [43.562, "vậy,", 6], [44.087, "chỉ", 6], [44.3, "nhanh", 6], [44.538, "hơn:", 6], [45.013, "hàng", 6], [45.25, "tỉ", 6], [45.462, "vòng", 6], [45.663, "mỗi", 6], [45.862, "giây.", 6]], "cues": [5.25, 10.425, 15.912, 25.7, 32.288], "lang": 2.6}, {"ten": "Slide 4. Lần theo từng lệnh: 25 cộng 17 ra 42 sau sáu vòng", "loai": "slide", "slide": "S04", "dung": "Chương trình LMC phía trên, kết quả chạy phía dưới. Sau câu \"PC bằng bao nhiêu?\", dừng khoảng 2 giây rồi mới hiện khung kết quả; tô dòng 4 (bước 3, PC = 03) và dòng 6 (OUTPUT 42). Mã của bộ mô phỏng (src/lmc.c) không lên slide ở chương này.\nHiện dần: bước 1 khi đọc “Mình chạy chương trình này”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 161.05, "audio": "audio/f4a8e9b56b9b874c.mp3", "dur": 53.02, "words": [[0.1, "Mình", 0], [0.475, "chạy", 0], [0.662, "chương", 0], [0.863, "trình", 0], [1.038, "này", 0], [1.225, "trên", 0], [1.4, "một", 0], [1.525, "bộ", 0], [1.725, "mô", 0], [1.913, "phỏng", 0], [2.188, "Little", 0], [2.487, "Man", 0], [2.712, "Computer,", 0], [3.538, "viết", 0], [3.763, "sẵn", 0], [4.025, "bằng", 0], [4.188, "C,", 0], [4.763, "với", 0], [4.95, "hai", 0], [5.15, "số", 0], [5.4, "đầu", 0], [5.612, "vào", 0], [5.775, "là", 0], [5.938, "25", 0], [6.537, "và", 0], [6.662, "17.", 0], [8.1, "Sau", 1], [8.4, "mỗi", 1], [8.588, "lệnh,", 1], [9.037, "bộ", 1], [9.25, "mô", 1], [9.45, "phỏng", 1], [9.725, "in", 1], [9.887, "một", 1], [10.05, "dòng:", 1], [10.537, "số", 1], [10.8, "thứ", 1], [10.938, "tự,", 1], [11.475, "giá", 1], [11.725, "trị", 1], [12.207, "PC,", 1], [12.688, "lệnh", 1], [13.0, "trong", 1], [13.463, "IR,", 1], [13.925, "giá", 1], [14.162, "trị", 1], [14.338, "thanh", 1], [14.575, "ghi", 1], [14.713, "tích", 1], [14.95, "lũy", 1], [15.238, "và", 1], [15.412, "nội", 1], [15.637, "dung", 1], [15.925, "ô", 1], [16.062, "99.", 1], [17.562, "Trước", 2], [17.825, "khi", 2], [17.975, "xem", 2], [18.212, "kết", 2], [18.4, "quả,", 2], [18.975, "các", 2], [19.137, "bạn", 2], [19.363, "thử", 2], [19.538, "đoán:", 2], [20.087, "chạy", 2], [20.325, "xong", 2], [20.538, "lệnh", 2], [20.75, "thứ", 2], [20.9, "ba,", 2], [21.375, "PC", 2], [21.85, "bằng", 2], [22.075, "bao", 2], [22.25, "nhiêu?", 2], [23.4, "Kết", 3], [23.625, "quả", 3], [23.85, "cho", 3], [23.988, "thấy", 3], [24.238, "ở", 3], [24.337, "bước", 3], [24.538, "thứ", 3], [24.7, "ba,", 3], [25.169, "PC", 3], [25.637, "bằng", 3], [25.863, "03,", 3], [26.562, "vì", 3], [26.912, "PC", 3], [27.262, "đã", 3], [27.363, "được", 3], [27.562, "tăng", 3], [27.788, "ngay", 3], [27.988, "khi", 3], [28.15, "nạp", 3], [28.325, "lệnh", 3], [28.625, "ở", 3], [28.75, "ô", 3], [28.938, "02.", 3], [30.312, "Lần", 4], [30.6, "theo", 4], [30.762, "từng", 4], [30.975, "bước:", 4], [31.425, "lệnh", 4], [31.894, "INP", 4], [32.362, "đọc", 4], [32.525, "25", 4], [33.087, "vào", 4], [33.212, "thanh", 4], [33.438, "ghi", 4], [33.575, "tích", 4], [33.812, "lũy,", 4], [34.388, "lệnh", 4], [34.794, "STA", 4], [35.2, "ghi", 4], [35.4, "25", 4], [35.95, "vào", 4], [36.15, "ô", 4], [36.3, "99,", 4], [37.125, "lệnh", 4], [37.532, "INP", 4], [37.938, "thứ", 4], [38.15, "hai", 4], [38.337, "đọc", 4], [38.513, "17.", 4], [39.925, "Lệnh", 5], [40.306, "ADD", 5], [40.688, "cộng", 5], [40.9, "số", 5], [41.2, "ở", 5], [41.35, "ô", 5], [41.513, "99", 5], [42.087, "vào", 5], [42.237, "thanh", 5], [42.475, "ghi", 5], [42.625, "tích", 5], [42.862, "lũy,", 5], [43.425, "được", 5], [43.625, "42,", 5], [44.487, "lệnh", 5], [44.963, "OUT", 5], [45.438, "in", 5], [45.65, "42,", 5], [46.5, "và", 5], [46.688, "lệnh", 5], [47.119, "HLT", 5], [47.55, "dừng", 5], [47.75, "máy.", 5], [48.925, "Một", 6], [49.288, "phép", 6], [49.587, "cộng", 6], [49.862, "cần", 6], [50.062, "sáu", 6], [50.312, "lệnh", 6], [50.513, "máy", 6], [50.812, "và", 6], [50.962, "sáu", 6], [51.237, "vòng", 6], [51.462, "chu", 6], [51.65, "trình", 6], [51.862, "lệnh.", 6]], "cues": [0.1, 23.4], "lang": 9.6}, {"ten": "Slide 5. Lệnh nhảy ghi địa chỉ mới vào PC: đếm ngược 2, 1, 0 sau mười hai vòng", "loai": "slide", "slide": "S05", "dung": "Chương trình LMC phía trên, kết quả chạy phía dưới; tô dòng 6 (bước 5, PC = 01 sau BRA) và dòng 12 (bước 11, BRZ nhảy tới 05). Ô 06 giữ hằng 1 (DAT 1, chỉ là dữ liệu, không phải lệnh). Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Chương trình cộng chạy thẳng”; bước 2 khi đọc “Mình chạy với số 2”.", "start": 223.67, "audio": "audio/749038d5d2424822.mp3", "dur": 57.98, "words": [[0.1, "Chương", 0], [0.412, "trình", 0], [0.625, "cộng", 0], [0.85, "chạy", 0], [1.012, "thẳng", 0], [1.288, "từ", 0], [1.512, "ô", 0], [1.688, "00", 0], [2.087, "tới", 0], [2.3, "ô", 0], [2.45, "05,", 0], [3.125, "vì", 0], [3.337, "sau", 0], [3.55, "mỗi", 0], [3.725, "lệnh", 0], [4.069, "PC", 0], [4.412, "chỉ", 0], [4.625, "tăng", 0], [4.812, "thêm", 0], [4.975, "một.", 0], [6.037, "Muốn", 1], [6.438, "máy", 1], [6.625, "làm", 1], [6.812, "lại", 1], [6.987, "một", 1], [7.162, "việc", 1], [7.35, "nhiều", 1], [7.575, "lần,", 1], [8.062, "Little", 1], [8.463, "Man", 1], [8.7, "Computer", 1], [9.262, "có", 1], [9.412, "lệnh", 1], [9.613, "nhảy,", 1], [10.213, "hay", 1], [10.45, "branch.", 1], [11.75, "Chương", 2], [12.025, "trình", 2], [12.25, "thứ", 2], [12.438, "hai", 2], [12.637, "đếm", 2], [12.825, "ngược:", 2], [13.287, "đọc", 2], [13.5, "một", 2], [13.675, "số,", 2], [14.287, "in", 2], [14.488, "số", 2], [14.725, "đó,", 2], [15.25, "trừ", 2], [15.525, "đi", 2], [15.65, "1", 2], [15.863, "lấy", 2], [16.113, "ở", 2], [16.288, "ô", 2], [16.45, "06,", 2], [17.275, "rồi", 2], [17.512, "lặp", 2], [17.7, "lại", 2], [17.95, "cho", 2], [18.075, "tới", 2], [18.275, "khi", 2], [18.45, "bằng", 2], [18.65, "0.", 2], [19.8, "Lệnh", 3], [20.263, "BRA", 3], [20.725, "01,", 3], [21.387, "mã", 3], [21.6, "6,", 3], [22.2, "ghi", 3], [22.4, "thẳng", 3], [22.625, "địa", 3], [22.788, "chỉ", 3], [23.012, "01", 3], [23.375, "vào", 3], [23.7, "PC", 3], [24.025, "ở", 3], [24.137, "bước", 3], [24.337, "thực", 3], [24.488, "hiện,", 3], [25.025, "nên", 3], [25.337, "vòng", 3], [25.55, "sau", 3], [25.75, "nạp", 3], [25.95, "lại", 3], [26.15, "lệnh", 3], [27.044, "OUT.", 3], [27.938, "Lệnh", 4], [28.425, "BRZ", 4], [28.913, "05,", 4], [29.637, "mã", 4], [29.863, "7,", 4], [30.45, "chỉ", 4], [30.675, "ghi", 4], [30.863, "05", 4], [31.325, "vào", 4], [31.619, "PC", 4], [31.913, "khi", 4], [32.075, "thanh", 4], [32.288, "ghi", 4], [32.438, "tích", 4], [32.675, "lũy", 4], [32.888, "bằng", 4], [33.075, "0.", 4], [34.212, "Mình", 5], [34.65, "chạy", 5], [34.925, "với", 5], [35.062, "số", 5], [35.288, "2.", 5], [36.475, "Ở", 6], [36.663, "bước", 6], [36.85, "thứ", 6], [37.013, "năm,", 6], [37.481, "PC", 6], [37.95, "vừa", 6], [38.138, "tăng", 6], [38.375, "lên", 6], [38.587, "05", 6], [39.062, "thì", 6], [39.212, "lệnh", 6], [39.656, "BRA", 6], [40.1, "ghi", 6], [40.25, "đè", 6], [40.4, "thành", 6], [40.612, "01.", 6], [41.862, "Ở", 7], [42.05, "bước", 7], [42.25, "thứ", 7], [42.388, "ba,", 7], [42.95, "BRZ", 7], [43.513, "không", 7], [43.788, "nhảy", 7], [44.05, "vì", 7], [44.2, "thanh", 7], [44.425, "ghi", 7], [44.575, "tích", 7], [44.812, "lũy", 7], [45.025, "bằng", 7], [45.237, "2;", 7], [45.763, "tới", 7], [45.925, "bước", 7], [46.125, "thứ", 7], [46.275, "mười", 7], [46.462, "một,", 7], [46.938, "thanh", 7], [47.15, "ghi", 7], [47.288, "tích", 7], [47.513, "lũy", 7], [47.725, "bằng", 7], [47.913, "0,", 7], [48.5, "BRZ", 7], [49.087, "đưa", 7], [49.225, "máy", 7], [49.438, "tới", 7], [49.65, "lệnh", 7], [50.55, "HLT.", 7], [51.45, "Bốn", 8], [51.763, "bước", 8], [51.975, "của", 8], [52.125, "chu", 8], [52.312, "trình", 8], [52.513, "lệnh", 8], [52.725, "không", 8], [52.95, "đổi:", 8], [53.487, "lệnh", 8], [53.712, "nhảy", 8], [54.0, "chỉ", 8], [54.175, "khác", 8], [54.513, "ở", 8], [54.6, "chỗ", 8], [54.812, "bước", 8], [55.0, "thực", 8], [55.15, "hiện", 8], [55.413, "ghi", 8], [55.575, "một", 8], [55.775, "giá", 8], [55.962, "trị", 8], [56.15, "mới", 8], [56.438, "vào", 8], [56.438, "PC.", 8]], "cues": [0.1, 34.212], "lang": 9.6}, {"ten": "Slide 6. Một dòng mã C trở thành nhiều lệnh máy", "loai": "slide", "slide": "S06", "dung": "Hai ý hiện lần lượt; khung hiện cuối. Ba lệnh máy có thể minh họa bằng ba dòng LDA, ADD, STA của Little Man Computer.\nHiện dần: bước 1 khi đọc “Từ ví dụ này”; bước 2 khi đọc “Chẳng hạn”; bước 3 khi đọc “Việc dịch đó”.", "start": 291.25, "audio": "audio/882e0706d1297d3c.mp3", "dur": 24.84, "words": [[0.1, "Từ", 0], [0.325, "ví", 0], [0.525, "dụ", 0], [0.713, "này,", 0], [1.163, "các", 0], [1.325, "bạn", 0], [1.562, "cần", 0], [1.762, "nhớ", 0], [2.0, "một", 0], [2.188, "điều:", 0], [2.825, "CPU", 0], [3.462, "không", 0], [3.7, "biết", 0], [3.888, "biến", 0], [4.175, "hay", 0], [4.35, "biểu", 0], [4.575, "thức.", 0], [5.638, "Mỗi", 1], [6.0, "lệnh", 1], [6.2, "máy", 1], [6.412, "chỉ", 1], [6.562, "làm", 1], [6.75, "một", 1], [6.9, "việc", 1], [7.112, "nhỏ", 1], [7.438, "trên", 1], [7.65, "thanh", 1], [7.875, "ghi", 1], [8.113, "và", 1], [8.287, "ô", 1], [8.45, "nhớ.", 1], [9.688, "Chẳng", 2], [9.963, "hạn,", 2], [10.363, "câu", 2], [10.55, "lệnh", 2], [10.787, "C", 2], [10.963, "c", 2], [11.225, "bằng", 2], [11.475, "a", 2], [11.588, "cộng", 2], [11.85, "b,", 2], [12.312, "mà", 2], [12.537, "các", 2], [12.725, "bạn", 2], [12.925, "sẽ", 2], [13.062, "viết", 2], [13.312, "ở", 2], [13.412, "Chương", 2], [13.662, "4,", 2], [14.175, "cần", 2], [14.45, "ít", 2], [14.637, "nhất", 2], [14.825, "ba", 2], [15.012, "lệnh", 2], [15.2, "máy:", 2], [15.738, "nạp", 2], [16.087, "a", 2], [16.25, "vào", 2], [16.375, "thanh", 2], [16.587, "ghi,", 2], [17.087, "cộng", 2], [17.325, "b,", 2], [17.8, "rồi", 2], [18.062, "ghi", 2], [18.225, "kết", 2], [18.425, "quả", 2], [18.675, "vào", 2], [18.812, "c.", 2], [19.113, "Việc", 3], [19.325, "dịch", 3], [19.5, "đó", 3], [19.712, "không", 3], [19.938, "do", 3], [20.05, "người", 3], [20.238, "lập", 3], [20.425, "trình", 3], [20.625, "làm", 3], [20.825, "bằng", 3], [21.012, "tay,", 3], [21.525, "mà", 3], [21.75, "do", 3], [21.913, "trình", 3], [22.125, "biên", 3], [22.337, "dịch,", 3], [22.788, "nội", 3], [23.062, "dung", 3], [23.3, "của", 3], [23.45, "Chương", 3], [23.675, "2.", 3]], "cues": [0.1, 9.688, 19.113], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.", "start": 316.69, "audio": "audio/025cbc0ee7997090.mp3", "dur": 4.9, "words": [[0.1, "Hãy", 0], [0.312, "thử", 0], [0.5, "giải", 0], [0.762, "mã", 0], [0.938, "một", 0], [1.125, "lệnh", 0], [1.337, "Little", 0], [1.712, "Man", 0], [1.95, "Computer", 0], [2.6, "chưa", 0], [2.862, "có", 0], [3.013, "trong", 0], [3.225, "chương", 0], [3.462, "trình", 0], [3.65, "mẫu.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/7b091fa7567f77e9.mp3", "dur2": 12.24, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.662, "là", 0], [0.85, "A:", 0], [1.375, "chữ", 0], [1.575, "số", 0], [1.812, "đầu", 0], [2.038, "là", 0], [2.175, "mã", 0], [2.375, "lệnh,", 0], [2.888, "hai", 0], [3.125, "chữ", 0], [3.325, "số", 0], [3.562, "sau", 0], [3.825, "là", 0], [3.938, "địa", 0], [4.125, "chỉ.", 0], [5.4, "Phương", 1], [5.763, "án", 1], [5.963, "B", 1], [6.125, "dễ", 1], [6.325, "được", 1], [6.5, "chọn", 1], [6.75, "nếu", 1], [6.963, "đọc", 1], [7.138, "cả", 1], [7.263, "ba", 1], [7.438, "chữ", 1], [7.638, "số", 1], [7.9, "như", 1], [8.075, "một", 1], [8.238, "con", 1], [8.4, "số,", 1], [8.988, "nhưng", 1], [9.275, "lệnh", 1], [9.463, "máy", 1], [9.65, "luôn", 1], [9.825, "tách", 1], [10.012, "thành", 1], [10.238, "mã", 1], [10.4, "lệnh", 1], [10.662, "và", 1], [10.8, "địa", 1], [10.975, "chỉ.", 1]], "dap_an": "A", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.", "start": 340.43, "audio": "audio/3f2a8f8b4edd3457.mp3", "dur": 3.31, "words": [[0.1, "Câu", 0], [0.312, "tiếp", 0], [0.575, "theo", 0], [0.75, "dừng", 0], [0.975, "chu", 0], [1.163, "trình", 0], [1.375, "lệnh", 0], [1.613, "ngay", 0], [1.825, "sau", 0], [2.0, "bước", 0], [2.225, "nạp.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/4c5cdebef611c73f.mp3", "dur2": 8.71, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.65, "là", 0], [0.75, "B.", 0], [1.087, "Phương", 1], [1.438, "án", 1], [1.625, "C", 1], [1.85, "nhầm", 1], [2.1, "vai", 1], [2.25, "trò", 1], [2.5, "của", 1], [2.775, "PC", 1], [3.05, "với", 1], [3.5, "IR:", 1], [3.95, "lệnh", 1], [4.237, "vừa", 1], [4.4, "nạp", 1], [4.625, "nằm", 1], [4.838, "trong", 1], [5.287, "IR,", 1], [5.737, "còn", 1], [6.094, "PC", 1], [6.45, "đã", 1], [6.562, "trỏ", 1], [6.763, "sẵn", 1], [7.037, "tới", 1], [7.2, "lệnh", 1], [7.425, "kế", 1], [7.612, "tiếp.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Các con số trong bộ nhớ”; bước 2 khi đọc “CPU làm việc trên”; bước 3 khi đọc “CPU lặp mãi”; bước 4 khi đọc “các từ khóa cần nhớ”.", "start": 359.05, "audio": "audio/edb32c85faf79c8c.mp3", "dur": 27.43, "words": [[0.1, "Các", 0], [0.287, "con", 0], [0.45, "số", 0], [0.713, "trong", 0], [0.9, "bộ", 0], [1.062, "nhớ", 0], [1.325, "là", 0], [1.425, "lệnh", 0], [1.613, "máy:", 0], [2.138, "mỗi", 0], [2.325, "con", 0], [2.525, "số", 0], [2.8, "gồm", 0], [3.038, "mã", 0], [3.175, "lệnh", 0], [3.438, "và", 0], [3.55, "địa", 0], [3.725, "chỉ,", 0], [4.362, "thuộc", 0], [4.588, "tập", 0], [4.75, "lệnh", 0], [5.025, "của", 0], [5.025, "CPU.", 0], [5.025, "CPU", 1], [5.025, "làm", 1], [5.025, "việc", 1], [5.025, "trên", 1], [5.025, "các", 1], [5.025, "thanh", 1], [5.025, "ghi:", 1], [5.025, "PC", 1], [5.025, "giữ", 1], [5.025, "địa", 1], [5.025, "chỉ", 1], [5.025, "lệnh", 1], [5.025, "kế", 1], [5.025, "tiếp,", 1], [5.025, "IR", 1], [5.025, "giữ", 1], [5.025, "lệnh", 1], [5.025, "đang", 1], [5.025, "thực", 1], [5.025, "hiện.", 1], [5.025, "CPU", 2], [5.025, "lặp", 2], [5.025, "mãi", 2], [5.025, "chu", 2], [5.025, "trình", 2], [5.025, "lệnh:", 2], [5.025, "nạp,", 2], [5.025, "tăng", 2], [5.025, "PC,", 2], [5.025, "giải", 2], [5.025, "mã,", 2], [5.025, "thực", 2], [5.025, "hiện,", 2], [5.025, "cho", 2], [5.025, "tới", 2], [5.025, "lệnh", 2], [5.025, "dừng.", 2], [5.025, "Trên", 3], [5.025, "slide", 3], [5.025, "là", 3], [5.025, "các", 3], [5.025, "từ", 3], [5.025, "khóa", 3], [5.025, "cần", 3], [5.025, "nhớ:", 3], [5.025, "lệnh", 3], [5.025, "máy,", 3], [5.025, "tập", 3], [5.025, "lệnh,", 3], [5.025, "thanh", 3], [5.025, "ghi,", 3], [5.025, "chu", 3], [5.025, "trình", 3], [5.025, "lệnh", 3], [5.025, "và", 3], [5.025, "ALU.", 3]], "cues": [0.1, 5.025, 5.025, 5.025], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Nếu muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 387.08, "audio": "audio/a79730d12afbbce2.mp3", "dur": 27.58, "words": [[0.1, "Nếu", 0], [0.5, "muốn", 0], [0.713, "đi", 0], [0.812, "xa", 0], [1.038, "hơn,", 0], [1.5, "các", 0], [1.688, "bạn", 0], [1.9, "tìm", 0], [2.125, "hiểu", 0], [2.275, "tập", 0], [2.462, "lệnh", 0], [2.725, "của", 0], [3.112, "CPU", 0], [3.5, "thật:", 0], [4.312, "x86-64", 0], [5.125, "trong", 0], [5.3, "máy", 0], [5.438, "tính", 0], [5.713, "để", 0], [5.812, "bàn", 0], [6.05, "có", 0], [6.188, "nhiều", 0], [6.388, "lệnh", 0], [6.575, "phức", 0], [6.75, "tạp", 0], [7.0, "với", 0], [7.1, "độ", 0], [7.275, "dài", 0], [7.463, "khác", 0], [7.675, "nhau,", 0], [8.175, "còn", 0], [8.438, "ARM", 0], [8.662, "và", 0], [8.938, "RISC-V", 0], [9.213, "dùng", 0], [9.425, "các", 0], [9.6, "lệnh", 0], [9.8, "đơn", 0], [9.988, "giản,", 0], [10.55, "cùng", 0], [10.775, "độ", 0], [10.963, "dài.", 0], [12.113, "Chủ", 1], [12.363, "đề", 1], [12.537, "thứ", 1], [12.738, "hai", 1], [13.0, "là", 1], [13.1, "đường", 1], [13.338, "ống", 1], [13.512, "lệnh,", 1], [14.012, "cách", 1], [14.475, "CPU", 1], [14.938, "thật", 1], [15.125, "bắt", 1], [15.287, "đầu", 1], [15.488, "nạp", 1], [15.675, "lệnh", 1], [15.938, "sau", 1], [16.113, "khi", 1], [16.262, "lệnh", 1], [16.512, "trước", 1], [16.725, "chưa", 1], [16.9, "xong.", 1], [18.075, "Bài", 2], [18.312, "tập", 2], [18.525, "mở", 2], [18.712, "rộng", 2], [18.988, "là", 2], [19.125, "viết", 2], [19.325, "chương", 2], [19.538, "trình", 2], [19.75, "Little", 2], [20.062, "Man", 2], [20.288, "Computer", 2], [20.95, "đọc", 2], [21.163, "hai", 2], [21.375, "số", 2], [21.688, "và", 2], [21.875, "in", 2], [22.038, "số", 2], [22.25, "lớn", 2], [22.475, "hơn,", 2], [22.975, "chạy", 2], [23.212, "trên", 2], [23.413, "bộ", 2], [23.587, "mô", 2], [23.762, "phỏng,", 2], [24.35, "rồi", 2], [24.575, "ghi", 2], [24.75, "bảng", 2], [24.988, "vết", 2], [25.3, "PC", 2], [25.613, "và", 2], [25.738, "thanh", 2], [25.962, "ghi", 2], [26.113, "tích", 2], [26.337, "lũy.", 2]], "cues": [0.1, 18.075], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 415.26, "audio": "audio/3e97643d12398533.mp3", "dur": 11.88, "words": [[0.875, "CPU", 0], [0.875, "nhanh", 0], [1.062, "như", 0], [1.238, "vậy,", 0], [1.738, "nhưng", 0], [2.013, "mỗi", 0], [2.188, "lần", 0], [2.375, "nạp", 0], [2.55, "lệnh", 0], [2.812, "hay", 0], [2.962, "dữ", 0], [3.138, "liệu", 0], [3.413, "đều", 0], [3.575, "phải", 0], [3.763, "chờ", 0], [3.987, "bộ", 0], [4.213, "nhớ.", 0], [5.438, "Phần", 1], [5.725, "tiếp", 1], [5.938, "theo,", 1], [6.425, "về", 1], [6.662, "phân", 1], [6.862, "cấp", 1], [7.013, "bộ", 1], [7.188, "nhớ", 1], [7.5, "và", 1], [7.625, "thiết", 1], [7.825, "bị", 1], [7.987, "vào", 1], [8.162, "ra,", 1], [8.65, "cho", 1], [8.825, "thấy", 1], [8.988, "máy", 1], [9.162, "tính", 1], [9.412, "giảm", 1], [9.662, "thời", 1], [9.812, "gian", 1], [10.088, "chờ", 1], [10.35, "đó", 1], [10.562, "ra", 1], [10.688, "sao.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Phần cứng: phân cấp bộ nhớ và thiết bị vào ra"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

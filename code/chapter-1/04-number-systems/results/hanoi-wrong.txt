@@ -1,0 +1,2 @@
+read as UTF-8       : Hà Nội
+read as Windows-1252: HÃ  Ná»™i

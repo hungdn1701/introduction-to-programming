@@ -1,0 +1,4 @@
+array: 4096 x 4096 ints (64 MB)
+row by row      : sum = 16777216,     9.0 ms
+column by column: sum = 16777216,   235.0 ms
+column / row    : 26.1 times slower

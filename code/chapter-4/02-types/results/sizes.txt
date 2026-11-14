@@ -1,0 +1,5 @@
+sizeof(char)   = 1 byte
+sizeof(int)    = 4 bytes
+sizeof(double) = 8 bytes
+INT_MIN = -2147483648
+INT_MAX = 2147483647

@@ -1,0 +1,7 @@
+step  PC  IR   instruction  ACC  mailbox 99
+   1  01  901  INP           25    0
+   2  02  399  STA 99        25   25
+   3  03  901  INP           17   25
+   4  04  199  ADD 99        42   25
+   5  05  902  OUT           42   25   -> OUTPUT 42
+   6  06  000  HLT           42   25

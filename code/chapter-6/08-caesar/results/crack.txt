@@ -1,0 +1,9 @@
+$ ./caesar 11 < goldbug.txt
+P, szhpgpc, acpozxtylepd dz cpxlcvlmwj, esle ly
+tyotgtoflw dpyepynp zq lyj wpyres td clcpwj dppy,
+ty hstns te td yze esp acpgltwtyr nslclnepc.
+$ ./caesar 11 < goldbug.txt | ./crack
+most frequent: 'p', 16 times -> key 11
+E, however, predominates so remarkably, that an
+individual sentence of any length is rarely seen,
+in which it is not the prevailing character.

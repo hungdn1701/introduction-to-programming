@@ -1,0 +1,16 @@
+search 23:
+  low =  0, high = 14, mid =  7, v[mid] = 19
+  low =  8, high = 14, mid = 11, v[mid] = 42
+  low =  8, high = 10, mid =  9, v[mid] = 23
+  index 9
+case 1: x =  23, expected  9, got  9, 3 probes  OK
+case 2: x =   1, expected  0, got  0, 4 probes  OK
+case 3: x =  99, expected 14, got 14, 4 probes  OK
+case 4: x =  24, expected -1, got -1, 4 probes  OK
+case 5: x =   0, expected -1, got -1, 4 probes  OK
+case 6: x = 100, expected -1, got -1, 4 probes  OK
+case 7: x =  19, expected  7, got  7, 1 probes  OK
+case 8: x =  30, expected 10, got 10, 4 probes  OK
+case 9: x =  56, expected 12, got 12, 4 probes  OK
+9/9 cases passed
+n = 1000000, x not present: binary search 19 probes, linear search 1000000 probes

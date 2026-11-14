@@ -1,0 +1,9 @@
+$ gcc -std=c17 -Wall -Wextra lexical.c -o lexical
+lexical.c: In function 'main':
+lexical.c:5:19: error: stray '@' in program
+    5 |     int rate = 60 @ 2;
+      |                   ^
+lexical.c:5:21: error: expected ',' or ';' before numeric constant
+    5 |     int rate = 60 @ 2;
+      |                     ^
+[exit code 1]

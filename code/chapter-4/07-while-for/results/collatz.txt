@@ -1,0 +1,6 @@
+$ echo 6 | ./collatz
+6: 8 steps, peak 16
+$ echo 27 | ./collatz
+27: 111 steps, peak 9232
+$ echo 28 | ./collatz
+28: 18 steps, peak 52

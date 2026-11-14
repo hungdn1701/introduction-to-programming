@@ -1,0 +1,10 @@
+$ gcc -std=c17 -Wall -Wextra -c sort_demo.c
+$ nm sort_demo.o | grep -E ' [TtU] [a-z]'
+0000000000000000 t compare_ints
+0000000000000044 T main
+                 U printf
+                 U putchar
+                 U qsort
+$ objdump -p sort_demo.exe | grep -E "utility|qsort"
+DLL Name: api-ms-win-crt-utility-l1-1-0.dll
+a85c       29  qsort

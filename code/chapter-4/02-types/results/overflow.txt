@@ -1,0 +1,8 @@
+$ gcc -std=c17 -Wall -Wextra overflow.c -o overflow
+overflow.c: In function 'main':
+overflow.c:8:19: warning: integer overflow in expression of type 'int' results in '-1794967296' [-Woverflow]
+    8 |     int x = 50000 * 50000;
+      |                   ^
+$ ./overflow
+int       : -1794967296
+long long : 2500000000

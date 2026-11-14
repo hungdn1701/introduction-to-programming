@@ -1,0 +1,2 @@
+$ ./addfrac < good.txt
+Enter first fraction: Enter second fraction: The sum is 38/24

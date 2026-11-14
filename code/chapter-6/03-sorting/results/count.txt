@@ -1,0 +1,4 @@
+       n      insertion      selection
+    1000         247186         499500
+   10000       24715734       49995000
+sorted input, n = 1000: insertion 999, selection 499500

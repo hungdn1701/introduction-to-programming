@@ -1,0 +1,5 @@
+$ python -m pip show requests
+Name: requests
+Version: 2.34.2
+Summary: Python HTTP for Humans.
+Requires: certifi, charset_normalizer, idna, urllib3

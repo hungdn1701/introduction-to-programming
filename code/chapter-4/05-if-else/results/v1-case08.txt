@@ -1,0 +1,2 @@
+$ ./triangle_v1 < 08.in  (1 2 3)
+SCALENE

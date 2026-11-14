@@ -1,0 +1,5 @@
+$ gcc -std=c17 -Wall -Wextra no_return.c -o no_return
+no_return.c: In function 'is_even':
+no_return.c:8:1: warning: control reaches end of non-void function [-Wreturn-type]
+    8 | }
+      | ^

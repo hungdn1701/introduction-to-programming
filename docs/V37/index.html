@@ -1,0 +1,588 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V37 — Chuỗi ký tự: xử lý ký tự và mật mã Caesar · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-6/08-caesar">Mã</a>
+<h1>V37 · Chuỗi ký tự: xử lý ký tự và mật mã Caesar</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 6</div><div class="ten">Chuỗi ký tự: xử lý ký tự và mật mã Caesar</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Mật mã của Caesar: dịch mỗi chữ cái đi ba vị trí</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Julius Caesar mã hóa thư bằng cách <b>dịch mỗi chữ cái</b> đi ba vị trí: A thành D, B thành E</li><li data-s="2">Chuẩn hóa họ tên: <code>  dang   ngoc HUNG </code> thành <code>Dang Ngoc Hung</code></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> chữ cái được biểu diễn và xử lý thế nào để chương trình tính toán được trên từng ký tự?</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Số học trên ký tự và phân loại ký tự</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Mỗi <code>char</code> là một <b>số</b> theo bảng mã ASCII: <code>'a'</code> là 97, <code>'b'</code> là 98; các chữ cái liền nhau</li><li data-s="2"><b>Số học trên ký tự</b>: <code>c - 'a'</code> là vị trí của chữ thường c; <code>'a' + k</code> là chữ thứ k</li><li data-s="3"><b>Phân loại ký tự</b> bằng <code>ctype.h</code>: <code>isalpha</code>, <code>isupper</code>, <code>islower</code>, <code>isspace</code>; đổi bằng <code>toupper</code>, <code>tolower</code></li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Dịch chữ x với khóa 3</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 540" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Dịch chữ x với khóa 3: x trừ a bằng 23 là vị trí trong bảng chữ cái; 23 cộng 3 chia lấy dư cho 26 bằng 0; a cộng 0 là a; chữ hoa làm tương tự với A; ký tự không phải chữ cái giữ nguyên.">
+  <defs>
+    <marker id="dc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="dc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="dc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="dc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="dc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="dc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- vị trí trong bảng chữ cái -->
+  <g data-s="1">
+    <rect x="60" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="92" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">a</text>
+    <text x="92" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">0</text>
+    <rect x="124" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="156" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">b</text>
+    <text x="156" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="188" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="220" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">c</text>
+    <text x="220" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="252" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="284" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">d</text>
+    <text x="284" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <rect x="316" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="348" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">e</text>
+    <text x="348" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="380" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="412" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">f</text>
+    <text x="412" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="444" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="476" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">g</text>
+    <text x="476" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="508" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="540" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">h</text>
+    <text x="540" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">7</text>
+    <rect x="572" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="604" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">i</text>
+    <text x="604" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">8</text>
+    <rect x="636" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="668" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">j</text>
+    <text x="668" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">9</text>
+    <rect x="700" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="732" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">k</text>
+    <text x="732" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">10</text>
+    <rect x="764" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="796" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">l</text>
+    <text x="796" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">11</text>
+    <rect x="828" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="860" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">m</text>
+    <text x="860" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">12</text>
+    <rect x="892" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="924" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">n</text>
+    <text x="924" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">13</text>
+    <rect x="956" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="988" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">o</text>
+    <text x="988" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">14</text>
+    <rect x="1020" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1052" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">p</text>
+    <text x="1052" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">15</text>
+    <rect x="1084" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1116" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">q</text>
+    <text x="1116" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">16</text>
+    <rect x="1148" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1180" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">r</text>
+    <text x="1180" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">17</text>
+    <rect x="1212" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1244" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">s</text>
+    <text x="1244" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">18</text>
+    <rect x="1276" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1308" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">t</text>
+    <text x="1308" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">19</text>
+    <rect x="1340" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1372" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">u</text>
+    <text x="1372" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">20</text>
+    <rect x="1404" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1436" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">v</text>
+    <text x="1436" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">21</text>
+    <rect x="1468" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1500" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">w</text>
+    <text x="1500" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">22</text>
+    <rect x="1532" y="100" width="64" height="64" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="1564" y="140.64" text-anchor="middle" font-size="24" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">x</text>
+    <text x="1564" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">23</text>
+    <rect x="1596" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1628" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">y</text>
+    <text x="1628" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">24</text>
+    <rect x="1660" y="100" width="64" height="64" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1692" y="140.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">z</text>
+    <text x="1692" y="192" text-anchor="middle" font-size="20" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">25</text>
+    <text x="60" y="250" text-anchor="start" font-size="26" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;x&#x27; − &#x27;a&#x27; = 23</text>
+  </g>
+
+  <!-- cộng khóa, chia lấy dư 26 -->
+  <g data-s="2">
+    <text x="560" y="250" text-anchor="start" font-size="26" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">(23 + 3) % 26 = 0</text>
+    <path d="M1564,98 L1564,64 L92,64 L92,96" fill="none" stroke="#8A6508" stroke-width="3" marker-end="url(#dc-mem)"/>
+    <text x="830" y="50" text-anchor="middle" font-size="22" fill="#6B4E06">quá &#x27;z&#x27; thì quay về đầu bảng</text>
+  </g>
+
+  <!-- đổi lại thành chữ -->
+  <g data-s="3">
+    <rect x="62" y="102" width="60" height="60" fill="none" stroke="#2F855A" stroke-width="5"/>
+    <text x="1100" y="250" text-anchor="start" font-size="26" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;a&#x27; + 0 = &#x27;a&#x27;</text>
+  </g>
+
+  <!-- chữ hoa, ký tự khác -->
+  <g data-s="4">
+    <rect x="60" y="320" width="800" height="140" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="460" y="378" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">isupper(c): &#x27;A&#x27; + (c − &#x27;A&#x27; + key) % 26</text>
+    <text x="460" y="416" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">islower(c): &#x27;a&#x27; + (c − &#x27;a&#x27; + key) % 26</text>
+    <rect x="900" y="320" width="760" height="140" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1280" y="378" text-anchor="middle" font-size="22" fill="#373D4E">ký tự khác (dấu phẩy, khoảng trắng,</text>
+    <text x="1280" y="416" text-anchor="middle" font-size="22" fill="#373D4E">chữ số) giữ nguyên</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Ba bước cho mỗi chữ: <b>về vị trí</b> (− 'a'), <b>dịch vòng</b> (+ key, % 26), <b>về chữ</b> (+ 'a').</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Duyệt chuỗi, phân loại từng ký tự</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 460" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Duyệt chuỗi Veni, vidi đến ký tự kết thúc: mỗi ký tự qua isupper và islower; V là chữ hoa thành Y; e, n, i là chữ thường thành h, q, l; dấu phẩy và khoảng trắng giữ nguyên.">
+  <defs>
+    <marker id="pl-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="pl-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="pl-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="pl-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="pl-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="pl-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- duyệt đến '\0' -->
+  <g data-s="1">
+    <rect x="80" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="150" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;V&#x27;</text>
+    <rect x="220" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="290" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;e&#x27;</text>
+    <rect x="360" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="430" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;n&#x27;</text>
+    <rect x="500" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="570" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;i&#x27;</text>
+    <rect x="640" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="710" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;,&#x27;</text>
+    <rect x="780" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="850" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27; &#x27;</text>
+    <rect x="920" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="990" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;v&#x27;</text>
+    <rect x="1060" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="1130" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;i&#x27;</text>
+    <rect x="1200" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="1270" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;d&#x27;</text>
+    <rect x="1340" y="60" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="1410" y="103.64" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;i&#x27;</text>
+    <rect x="1480" y="60" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1550" y="102.92" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">&#x27;\0&#x27;</text>
+    <line x1="80" y1="160" x2="1500" y2="160" stroke="#1F5FA8" stroke-width="3" marker-end="url(#pl-data)"/>
+    <text x="790" y="196" text-anchor="middle" font-size="22" fill="#1F5FA8">for (int i = 0; s[i] != &#x27;\0&#x27;; i++)</text>
+  </g>
+
+  <!-- phân loại từng ký tự -->
+  <g data-s="2">
+    <text x="150" y="250" text-anchor="middle" font-size="21" fill="#051A53">hoa</text>
+    <text x="290" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="430" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="570" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="710" y="250" text-anchor="middle" font-size="21" fill="#5B6478">khác</text>
+    <text x="850" y="250" text-anchor="middle" font-size="21" fill="#5B6478">khác</text>
+    <text x="990" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="1130" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="1270" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+    <text x="1410" y="250" text-anchor="middle" font-size="21" fill="#051A53">thường</text>
+  </g>
+
+  <!-- kết quả -->
+  <g data-s="3">
+    <rect x="80" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="150" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;Y&#x27;</text>
+    <rect x="220" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="290" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;h&#x27;</text>
+    <rect x="360" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="430" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;q&#x27;</text>
+    <rect x="500" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="570" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;l&#x27;</text>
+    <rect x="640" y="290" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="710" y="333.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">&#x27;,&#x27;</text>
+    <rect x="780" y="290" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="850" y="333.64" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">&#x27; &#x27;</text>
+    <rect x="920" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="990" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;y&#x27;</text>
+    <rect x="1060" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="1130" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;l&#x27;</text>
+    <rect x="1200" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="1270" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;g&#x27;</text>
+    <rect x="1340" y="290" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="1410" y="333.64" text-anchor="middle" font-size="24" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">&#x27;l&#x27;</text>
+    <text x="80" y="410" text-anchor="start" font-size="23" fill="#22603F">khóa 3: chữ cái dịch đi ba vị trí; dấu phẩy, khoảng trắng giữ nguyên</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p>Duyệt đến <b>'\0'</b> như strlen; mỗi ký tự rẽ nhánh theo isupper, islower.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>caesar.c: "Veni, vidi, vici" thành "Yhql, ylgl, ylfl"</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">void</span> <span class="hl-m">encrypt</span>(<span class="hl-k">char</span> s[], <span class="hl-k">int</span> key)
+{
+    <span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; s[i] != <span class="hl-s">'</span><span class="hl-s">\0</span><span class="hl-s">'</span>; i++) {
+        <span class="hl-k">unsigned</span> <span class="hl-k">char</span> c = s[i];
+        <span class="hl-k">if</span> (<span class="hl-m">isupper</span>(c))
+            s[i] = <span class="hl-s">'</span><span class="hl-s">A</span><span class="hl-s">'</span> + (c - <span class="hl-s">'</span><span class="hl-s">A</span><span class="hl-s">'</span> + key) % <span class="hl-n">26</span>;
+        <span class="hl-k">else</span> <span class="hl-k">if</span> (<span class="hl-m">islower</span>(c))
+            s[i] = <span class="hl-s">'</span><span class="hl-s">a</span><span class="hl-s">'</span> + (c - <span class="hl-s">'</span><span class="hl-s">a</span><span class="hl-s">'</span> + key) % <span class="hl-n">26</span>;
+    }
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./caesar 3 &lt; latin.txt
+Yhql, ylgl, ylfl
+$ ./caesar 3 &lt; latin.txt | ./caesar 23
+Veni, vidi, vici</pre></div><ul class="y-nho"><li data-s="2">Giải mã khóa 3 = mã hóa lại với khóa <b>23</b> (3 + 23 = 26)</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Phân tích tần suất: count[c - 'a']++ tìm ra khóa 11</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; text[n][i] != <span class="hl-s">'</span><span class="hl-s">\0</span><span class="hl-s">'</span>; i++) {
+    <span class="hl-k">unsigned</span> <span class="hl-k">char</span> c = text[n][i];
+    <span class="hl-k">if</span> (<span class="hl-m">isalpha</span>(c))
+        count[<span class="hl-m">tolower</span>(c) - <span class="hl-s">'</span><span class="hl-s">a</span><span class="hl-s">'</span>]++;
+}
+<span class="hl-k">int</span> top = <span class="hl-n">0</span>;
+<span class="hl-k">for</span> (<span class="hl-k">int</span> k = <span class="hl-n">1</span>; k &lt; <span class="hl-n">26</span>; k++)
+    <span class="hl-k">if</span> (count[k] &gt; count[top])
+        top = k;
+<span class="hl-k">int</span> key = (top - (<span class="hl-s">'</span><span class="hl-s">e</span><span class="hl-s">'</span> - <span class="hl-s">'</span><span class="hl-s">a</span><span class="hl-s">'</span>) + <span class="hl-n">26</span>) % <span class="hl-n">26</span>;
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./caesar 11 &lt; goldbug.txt
+P, szhpgpc, acpozxtylepd dz cpxlcvlmwj, esle ly
+tyotgtoflw dpyepynp zq lyj wpyres td clcpwj dppy,
+ty hstns te td yze esp acpgltwtyr nslclnepc.
+$ ./caesar 11 &lt; goldbug.txt | ./crack
+<span class="noi-bat">most frequent: 'p', 16 times -&gt; key 11</span>
+E, however, predominates so remarkably, that an
+individual sentence of any length is rarely seen,
+in which it is not the prevailing character.</pre></div><ul class="y-nho"><li data-s="2">Chữ nhiều nhất được coi là <b>e</b>; cần <b>đủ dài</b> — câu ngắn có thể sai</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>normalize.c chuẩn hóa họ tên</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; src[i] != <span class="hl-s">'</span><span class="hl-s">\0</span><span class="hl-s">'</span>; i++) {
+    <span class="hl-k">unsigned</span> <span class="hl-k">char</span> c = src[i];
+    <span class="hl-k">if</span> (<span class="hl-m">isspace</span>(c)) {
+        new_word = true;
+        <span class="hl-k">continue</span>;
+    }
+    <span class="hl-k">if</span> (new_word &amp;&amp; j &gt; <span class="hl-n">0</span>)
+        dst[j++] = <span class="hl-s">'</span><span class="hl-s"> </span><span class="hl-s">'</span>;                <span class="hl-c">/* one space between words */</span>
+    dst[j++] = new_word ? <span class="hl-m">toupper</span>(c) : <span class="hl-m">tolower</span>(c);
+    new_word = false;
+}
+dst[j] = <span class="hl-s">'</span><span class="hl-s">\0</span><span class="hl-s">'</span>;
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./normalize &lt; names.txt
+[  dang   ngoc HUNG ] -&gt; [Dang Ngoc Hung]
+[nguyen van an] -&gt; [Nguyen Van An]
+[LE  THI   b] -&gt; [Le Thi B]</pre></div><ul class="y-nho"><li data-s="2">Chuỗi kết quả tự viết thì phải tự <b>thêm '\0'</b> ở cuối</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S08"><header><h1>Chữ có dấu <span style="white-space:nowrap">UTF-8</span> không xử lý được từng byte</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">unsigned</span> <span class="hl-k">char</span> c = s[i];
+<span class="hl-k">if</span> (<span class="hl-m">isupper</span>(c))
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./caesar 3 &lt; vietnamese.txt
+Kà Qộl</pre></div><ul class="y-nho"><li data-s="2"><b>Số học trên ký tự</b> chỉ đúng với chữ Latinh không dấu của ASCII</li><li data-s="3">Đối số của hàm <code>ctype.h</code> phải là giá trị <b>unsigned char</b> hoặc EOF</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Mã hóa Caesar với khóa 3 của chữ 'Z' là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>']', ký tự đứng sau Z ba vị trí trong bảng ASCII.</div></div><div class=""><span>B</span><div>'W'</div></div><div class="dung"><span>C</span><div>'C', vì (25 + 3) % 26 = 2.</div></div><div class=""><span>D</span><div>'Z', vì Z là chữ cuối.</div></div></div><div class="giai-thich">'Z' − 'A' = 25; (25 + 3) % 26 = 2; 'A' + 2 = 'C'. Không có % 26 thì kết quả là 'A' + 28, một ký tự không phải chữ cái.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Mã hóa Caesar với khóa 3 của chữ 'Z' là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>']', ký tự đứng sau Z ba vị trí trong bảng ASCII.</div></div><div class=""><span>B</span><div>'W'</div></div><div class="dung"><span>C</span><div>'C', vì (25 + 3) % 26 = 2.</div></div><div class=""><span>D</span><div>'Z', vì Z là chữ cuối.</div></div></div><div class="giai-thich">'Z' − 'A' = 25; (25 + 3) % 26 = 2; 'A' + 2 = 'C'. Không có % 26 thì kết quả là 'A' + 28, một ký tự không phải chữ cái.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Giải mã một bản mã Caesar khóa k bằng cách mã hóa lại với khóa nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Khóa k.</div></div><div class="dung"><span>B</span><div>Khóa 26 − k, vì dịch k rồi dịch 26 − k là dịch đủ 26 vị trí.</div></div><div class=""><span>C</span><div>Khóa 0.</div></div><div class=""><span>D</span><div>Không giải mã được bằng cách mã hóa lại.</div></div></div><div class="giai-thich">Dịch tổng cộng 26 vị trí là quay về chữ ban đầu. Kết quả chạy thật: ./caesar 3 rồi ./caesar 23 cho lại Veni, vidi, vici.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Giải mã một bản mã Caesar khóa k bằng cách mã hóa lại với khóa nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Khóa k.</div></div><div class="dung"><span>B</span><div>Khóa 26 − k, vì dịch k rồi dịch 26 − k là dịch đủ 26 vị trí.</div></div><div class=""><span>C</span><div>Khóa 0.</div></div><div class=""><span>D</span><div>Không giải mã được bằng cách mã hóa lại.</div></div></div><div class="giai-thich">Dịch tổng cộng 26 vị trí là quay về chữ ban đầu. Kết quả chạy thật: ./caesar 3 rồi ./caesar 23 cho lại Veni, vidi, vici.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Số học trên ký tự</b>: <code>c - 'a'</code> là vị trí, <code>'a' + k</code> là chữ; % 26 để quay vòng</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>ctype.h</b>: <b>isalpha</b>, isupper, islower, isspace; <b>toupper</b>, tolower</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Mật mã Caesar</b> khóa 3; <b>chuẩn hóa chuỗi</b> họ tên; chỉ đúng với chữ ASCII không dấu</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>số học trên ký tự</span><span>ctype.h</span><span>toupper</span><span>isalpha</span><span>mật mã Caesar</span><span>chuẩn hóa chuỗi</span></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Giới hạn của phân tích tần suất (đoạn Suetonius: t nhiều hơn e) và thử đủ 25 khóa</li><li>Mật mã Vigenère: mỗi vị trí một khóa</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Bổ sung chương trình chuẩn hóa họ tên (normalize.c) để xử lý cả ký tự tab và dòng chỉ có khoảng trắng; viết ít nhất sáu ca kiểm thử và chạy bằng bộ chấm judge.sh của phần kiểm thử.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Cấu trúc: struct, thành viên và typedef</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Mỗi ký tự trong chuỗi là một số, và Julius Caesar đã mã hóa thư bằng phép dịch chữ cái. Chữ cái được biểu diễn thế nào để chương trình tính toán được trên từng ký tự?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:13</span>
+      <h3>Slide 1. Mật mã của Caesar: dịch mỗi chữ cái đi ba vị trí</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Julius Caesar mã hóa thư bằng cách **dịch mỗi chữ cái** đi ba vị trí: A thành D, B thành E</li><li>Chuẩn hóa họ tên: `  dang   ngoc HUNG ` thành `Dang Ngoc Hung`</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** chữ cái được biểu diễn và xử lý thế nào để chương trình tính toán được trên từng ký tự?</div></div>
+    <div class="kb-thoai"><p>Theo sử gia Suetonius, Julius Caesar viết thư mật bằng cách thay mỗi chữ cái bằng chữ đứng sau nó ba vị trí trong bảng chữ cái: A thành D, B thành E. Simon Singh mở đầu cuốn The Code Book bằng chính mật mã này. Bài toán thứ hai gần với các bạn hơn: chuẩn hóa họ tên người dùng gõ vào, bỏ khoảng trắng thừa, viết hoa chữ đầu mỗi từ, viết thường phần còn lại. Từ đó, câu hỏi của phần là: chữ cái được biểu diễn và xử lý thế nào để chương trình tính toán được trên từng ký tự?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Suetonius 56; Singh, ch. 1.
+Hiện dần: bước 1 khi đọc “Theo sử gia Suetonius”; bước 2 khi đọc “Bài toán thứ hai”; bước 3 khi đọc “Từ đó, câu hỏi”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:41</span>
+      <h3>Slide 2. Số học trên ký tự và phân loại ký tự</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Mỗi `char` là một **số** theo bảng mã ASCII: `&#x27;a&#x27;` là 97, `&#x27;b&#x27;` là 98; các chữ cái liền nhau</li><li>**Số học trên ký tự**: `c - &#x27;a&#x27;` là vị trí của chữ thường c; `&#x27;a&#x27; + k` là chữ thứ k</li><li>**Phân loại ký tự** bằng `ctype.h`: `isalpha`, `isupper`, `islower`, `isspace`; đổi bằng `toupper`, `tolower`</li></ul></div>
+    <div class="kb-thoai"><p>Ở Chương 1, các bạn đã thấy mỗi ký tự được lưu bằng một số theo bảng mã ASCII: a thường là 97, b thường là 98, và hai mươi sáu chữ cái thường nằm liền nhau, chữ hoa cũng vậy. Vì các chữ cái liền nhau, phép trừ c cho a cho vị trí của chữ c trong bảng chữ cái, từ 0 đến 25, và a cộng k cho chữ cái thứ k; đó là số học trên ký tự. Thư viện chuẩn có tệp header ctype.h để phân loại ký tự: isalpha hỏi có phải chữ cái, isupper, islower hỏi chữ hoa hay thường, isspace hỏi khoảng trắng; toupper và tolower đổi chữ.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: K&amp;R §2.7.
+Hiện dần: bước 1 khi đọc “Ở Chương 1”; bước 2 khi đọc “Vì các chữ cái liền nhau”; bước 3 khi đọc “Thư viện chuẩn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:18</span>
+      <h3>Slide 3. Dịch chữ x với khóa 3</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Ba bước cho mỗi chữ: **về vị trí** (− &#x27;a&#x27;), **dịch vòng** (+ key, % 26), **về chữ** (+ &#x27;a&#x27;).</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình lần theo chữ x với khóa 3. Bước một, x trừ a bằng 23: x là chữ thứ 23, tính từ 0. Bước hai, cộng khóa được 26, vượt quá chữ cuối; phép chia lấy dư cho 26 đưa nó về 0, tức quay vòng về đầu bảng chữ cái. Bước ba, a cộng 0 là a: x được mã hóa thành a. Chữ hoa làm tương tự với A hoa, còn dấu phẩy, khoảng trắng, chữ số thì giữ nguyên. Gộp lại, mỗi chữ cái qua đúng ba phép tính số học.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình dich-chu: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận.
+Hiện dần: bước 1 khi đọc “Bước một”; bước 2 khi đọc “Bước hai”; bước 3 khi đọc “Bước ba”; bước 4 khi đọc “Chữ hoa”; bước 5 khi đọc “Gộp lại”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:51</span>
+      <h3>Slide 4. Duyệt chuỗi, phân loại từng ký tự</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Duyệt đến **&#x27;\0&#x27;** như strlen; mỗi ký tự rẽ nhánh theo isupper, islower.</li></ul></div></div>
+    <div class="kb-thoai"><p>Áp vào cả câu, mình duyệt chuỗi Veni, vidi. Vòng for đi từ ký tự đầu đến khi gặp ký tự kết thúc chuỗi, giống strlen ở phần trước. Mỗi ký tự được phân loại: V là chữ hoa, e, n, i là chữ thường, dấu phẩy và dấu cách thuộc loại khác. Kết quả là chữ hoa và chữ thường được dịch, các ký tự khác giữ nguyên: Veni, vidi thành Yhql, ylgl. Cách duyệt này dùng được cho mọi bài toán xử lý chuỗi theo từng ký tự.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình phan-loai-ky-tu: ba bước theo ba câu mốc đầu; bước 4 ô kết luận.
+Hiện dần: bước 1 khi đọc “Vòng for”; bước 2 khi đọc “Mỗi ký tự”; bước 3 khi đọc “Kết quả”; bước 4 khi đọc “Cách duyệt này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:22</span>
+      <h3>Slide 5. caesar.c: &quot;Veni, vidi, vici&quot; thành &quot;Yhql, ylgl, ylfl&quot;</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Giải mã khóa 3 = mã hóa lại với khóa **23** (3 + 23 = 26)</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/caesar.c</span><pre><code>void encrypt(char s[], int key)
+{
+    for (int i = 0; s[i] != &#x27;\0&#x27;; i++) {
+        unsigned char c = s[i];
+        if (isupper(c))
+            s[i] = &#x27;A&#x27; + (c - &#x27;A&#x27; + key) % 26;
+        else if (islower(c))
+            s[i] = &#x27;a&#x27; + (c - &#x27;a&#x27; + key) % 26;
+    }
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm encrypt viết đúng ba bước vừa vẽ, cho chữ hoa và chữ thường; chương trình đọc từng dòng bằng fgets và nhận khóa từ dòng lệnh. Kết quả với câu nổi tiếng của Caesar, Veni, vidi, vici: bản mã là Yhql, ylgl, ylfl, dấu phẩy và khoảng trắng giữ nguyên. Giải mã không cần hàm mới: đưa bản mã qua chính chương trình với khóa 23, vì dịch 3 rồi dịch 23 là dịch đủ 26 vị trí, quay về chữ ban đầu.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới. Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Giải mã”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:59</span>
+      <h3>Slide 6. Phân tích tần suất: count[c - &#x27;a&#x27;]++ tìm ra khóa 11</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Chữ nhiều nhất được coi là **e**; cần **đủ dài** — câu ngắn có thể sai</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/crack.c</span><pre><code>for (int i = 0; text[n][i] != &#x27;\0&#x27;; i++) {
+    unsigned char c = text[n][i];
+    if (isalpha(c))
+        count[tolower(c) - &#x27;a&#x27;]++;
+}
+int top = 0;
+for (int k = 1; k &lt; 26; k++)
+    if (count[k] &gt; count[top])
+        top = k;
+int key = (top - (&#x27;e&#x27; - &#x27;a&#x27;) + 26) % 26;</code></pre></div></div>
+    <div class="kb-thoai"><p>Không biết khóa thì có đọc được bản mã không? Từ thế kỷ thứ chín, nhà toán học al-Kindi đã dùng cách phân tích tần suất: đếm số lần xuất hiện của từng chữ cái trong bản mã. Trong tiếng Anh, chữ xuất hiện nhiều nhất thường là e, như Edgar Allan Poe viết trong truyện Con bọ vàng. Chương trình crack đọc bản mã vào một mảng hai chiều, mỗi dòng một hàng, và đếm bằng một mảng count gồm hai mươi sáu phần tử. Số học trên ký tự làm chỉ số: c trừ a là vị trí của chữ c, nên phần tử thứ c trừ a tăng thêm một. Chữ nhiều nhất được coi là e, và khoảng cách từ e tới chữ đó chính là khóa. Mình mã hóa câu của Poe bằng một khóa mà chương trình không được biết. Kết quả: chữ p xuất hiện mười sáu lần, nên khóa là 11, và bản giải mã khớp câu gốc. Cách này cần đủ chữ: với một câu ngắn, chữ nhiều nhất chưa chắc đã là e.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô dòng most frequent. Phần đọc fgets vào mảng text và giải mã bằng encrypt(text[i], 26 - key) nằm trong src/crack.c. Câu thử là câu nói về chữ e trong The Gold-Bug (Poe, 1843, phạm vi công cộng), ở input/goldbug.txt. Ghi nguồn: al-Kindi (thế kỷ 9); Singh, The Code Book, ch. 1. Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Không biết khóa thì”; bước 2 khi đọc “Mình mã hóa câu của Poe”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:02</span>
+      <h3>Slide 7. normalize.c chuẩn hóa họ tên</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Chuỗi kết quả tự viết thì phải tự **thêm &#x27;\0&#x27;** ở cuối</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/normalize.c</span><pre><code>for (int i = 0; src[i] != &#x27;\0&#x27;; i++) {
+    unsigned char c = src[i];
+    if (isspace(c)) {
+        new_word = true;
+        continue;
+    }
+    if (new_word &amp;&amp; j &gt; 0)
+        dst[j++] = &#x27; &#x27;;                /* one space between words */
+    dst[j++] = new_word ? toupper(c) : tolower(c);
+    new_word = false;
+}
+dst[j] = &#x27;\0&#x27;;</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm normalize đọc chuỗi nguồn, ghi chuỗi kết quả, với biến new_word nhớ ký tự đang xét có mở đầu một từ không. Khoảng trắng chỉ bật new_word; ký tự đầu mỗi từ được toupper, các ký tự sau được tolower, và giữa hai từ chỉ ghi đúng một dấu cách. Kết quả với ba dòng: dang ngoc HUNG có khoảng trắng thừa thành Dang Ngoc Hung, LE THI b thành Le Thi B. Dòng cuối của hàm ghi ký tự kết thúc chuỗi: chuỗi tự ghép từng ký tự thì phải tự kết thúc nó.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới. Khai báo j, new_word và hàm main nằm trong src/normalize.c.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Dòng cuối”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:40</span>
+      <h3>Slide 8. Chữ có dấu UTF-8 không xử lý được từng byte</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Số học trên ký tự** chỉ đúng với chữ Latinh không dấu của ASCII</li><li>Đối số của hàm `ctype.h` phải là giá trị **unsigned char** hoặc EOF</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/caesar.c</span><pre><code>unsigned char c = s[i];
+if (isupper(c))</code></pre></div></div>
+    <div class="kb-thoai"><p>Thử chương trình với chữ Hà Nội. Ở Chương 1, các bạn đã thấy chữ có dấu trong UTF-8 chiếm nhiều byte, mỗi byte lớn hơn 127, và không byte nào là chữ cái ASCII. Kết quả: H thành K, N thành Q, i thành l, còn à và ộ giữ nguyên; bản mã để lộ gần hết thông tin. Số học trên ký tự chỉ đúng với chữ Latinh không dấu. Lưu ý thứ hai: các hàm của ctype.h nhận giá trị của unsigned char hoặc EOF; với chuỗi có byte lớn hơn 127, char có thể mang giá trị âm, nên chương trình gán sang biến unsigned char trước khi gọi isupper.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Bản mã được ghi bằng UTF-8; console Windows cần chcp 65001 để hiện đúng.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Số học trên ký tự chỉ đúng”; bước 3 khi đọc “Lưu ý thứ hai”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:27</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Chữ cái cuối bảng là phép thử của phép dịch vòng.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Mã hóa Caesar với khóa 3 của chữ &#x27;Z&#x27; là gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> &#x27;]&#x27;, ký tự đứng sau Z ba vị trí trong bảng ASCII.</li>
+      <li><b>B.</b> &#x27;W&#x27;</li>
+      <li><b>C.</b> &#x27;C&#x27;, vì (25 + 3) % 26 = 2.</li>
+      <li><b>D.</b> &#x27;Z&#x27;, vì Z là chữ cuối.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>&#x27;Z&#x27; − &#x27;A&#x27; = 25; (25 + 3) % 26 = 2; &#x27;A&#x27; + 2 = &#x27;C&#x27;. Không có % 26 thì kết quả là &#x27;A&#x27; + 28, một ký tự không phải chữ cái.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A là kết quả khi quên phép chia lấy dư cho 26: phép dịch không quay vòng mà đi ra ngoài bảng chữ cái.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:45</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, các bạn giải mã mà không cần hàm mới.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Giải mã một bản mã Caesar khóa k bằng cách mã hóa lại với khóa nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Khóa k.</li>
+      <li><b>B.</b> Khóa 26 − k, vì dịch k rồi dịch 26 − k là dịch đủ 26 vị trí.</li>
+      <li><b>C.</b> Khóa 0.</li>
+      <li><b>D.</b> Không giải mã được bằng cách mã hóa lại.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Dịch tổng cộng 26 vị trí là quay về chữ ban đầu. Kết quả chạy thật: ./caesar 3 rồi ./caesar 23 cho lại Veni, vidi, vici.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A dịch thêm k vị trí nữa, tức mã hóa hai lần, chứ không giải mã.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:02</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Số học trên ký tự**: `c - &#x27;a&#x27;` là vị trí, `&#x27;a&#x27; + k` là chữ; % 26 để quay vòng</li><li>**ctype.h**: **isalpha**, isupper, islower, isspace; **toupper**, tolower</li><li>**Mật mã Caesar** khóa 3; **chuẩn hóa chuỗi** họ tên; chỉ đúng với chữ ASCII không dấu</li></ul></div>
+    <div class="kb-thoai"><p>Mỗi ký tự là một số và các chữ cái liền nhau, nên trừ a cho vị trí, cộng a trả lại chữ, và phép chia lấy dư cho 26 làm phép dịch quay vòng. Thư viện ctype.h phân loại và đổi ký tự. Hai bài toán của phần, mật mã Caesar và chuẩn hóa họ tên, đều là một vòng duyệt chuỗi đến ký tự kết thúc, rẽ nhánh theo loại ký tự. Trên slide là những từ khóa của phần: số học trên ký tự, ctype.h, toupper, isalpha, mật mã Caesar và chuẩn hóa chuỗi.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Mỗi ký tự là một số”; bước 2 khi đọc “Thư viện ctype.h”; bước 3 khi đọc “Hai bài toán”; bước 4 khi đọc “Trên slide là những từ khóa”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:34</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Có hai chủ đề để đọc thêm. Chủ đề thứ nhất là giới hạn của phân tích tần suất: chính đoạn Suetonius tả mật mã Caesar có chữ t nhiều hơn chữ e; khi đó, cách chắc chắn là thử đủ 25 khóa. Chủ đề thứ hai là mật mã Vigenère, mỗi vị trí dùng một khóa khác nhau, nên đếm tần suất cả bản mã không còn tìm ra khóa. Bài tập mở rộng là bổ sung chương trình chuẩn hóa họ tên để xử lý cả ký tự tab và dòng chỉ có khoảng trắng, viết ít nhất sáu ca kiểm thử và chạy bằng bộ chấm của phần kiểm thử.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Có hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">7:05</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Một họ tên là một chuỗi; nhưng một sinh viên còn có mã số, ngày sinh, điểm. Phần tiếp theo mở nhóm cuối của chương, cấu trúc: gom các giá trị khác kiểu thuộc cùng một đối tượng thành một biến.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V37", "tieu_de": "Chuỗi ký tự: xử lý ký tự và mật mã Caesar", "giong": "vi-VN-NamMinhNeural", "tong": 438.72, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/4dce1dc8be615121.mp3", "dur": 12.46, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Mỗi", 1], [2.225, "ký", 1], [2.425, "tự", 1], [2.65, "trong", 1], [2.85, "chuỗi", 1], [3.05, "là", 1], [3.15, "một", 1], [3.325, "số,", 1], [3.925, "và", 1], [4.162, "Julius", 1], [4.662, "Caesar", 1], [5.15, "đã", 1], [5.275, "mã", 1], [5.45, "hóa", 1], [5.675, "thư", 1], [5.912, "bằng", 1], [6.125, "phép", 1], [6.325, "dịch", 1], [6.5, "chữ", 1], [6.7, "cái.", 1], [7.938, "Chữ", 2], [8.175, "cái", 2], [8.425, "được", 2], [8.562, "biểu", 2], [8.75, "diễn", 2], [9.0, "thế", 2], [9.137, "nào", 2], [9.387, "để", 2], [9.512, "chương", 2], [9.75, "trình", 2], [9.975, "tính", 2], [10.213, "toán", 2], [10.5, "được", 2], [10.65, "trên", 2], [10.863, "từng", 2], [11.062, "ký", 2], [11.262, "tự?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Mật mã của Caesar: dịch mỗi chữ cái đi ba vị trí", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Suetonius 56; Singh, ch. 1.\nHiện dần: bước 1 khi đọc “Theo sử gia Suetonius”; bước 2 khi đọc “Bài toán thứ hai”; bước 3 khi đọc “Từ đó, câu hỏi”.", "start": 13.06, "audio": "audio/d136d870e3f14ac5.mp3", "dur": 28.2, "words": [[0.1, "Theo", 0], [0.3, "sử", 0], [0.5, "gia", 0], [0.688, "Suetonius,", 0], [1.538, "Julius", 0], [2.112, "Caesar", 0], [2.587, "viết", 0], [2.763, "thư", 0], [2.925, "mật", 0], [3.138, "bằng", 0], [3.325, "cách", 0], [3.513, "thay", 0], [3.675, "mỗi", 0], [3.888, "chữ", 0], [4.075, "cái", 0], [4.35, "bằng", 0], [4.588, "chữ", 0], [4.763, "đứng", 0], [4.95, "sau", 0], [5.188, "nó", 0], [5.375, "ba", 0], [5.562, "vị", 0], [5.737, "trí", 0], [5.987, "trong", 0], [6.175, "bảng", 0], [6.375, "chữ", 0], [6.55, "cái:", 0], [7.138, "A", 0], [7.287, "thành", 0], [7.5, "D,", 0], [8.0, "B", 0], [8.188, "thành", 0], [8.463, "E.", 0], [8.588, "Simon", 1], [8.975, "Singh", 1], [9.25, "mở", 1], [9.45, "đầu", 1], [9.588, "cuốn", 1], [9.8, "The", 1], [9.988, "Code", 1], [10.175, "Book", 1], [10.363, "bằng", 1], [10.613, "chính", 1], [10.812, "mật", 1], [10.975, "mã", 1], [11.162, "này.", 1], [12.25, "Bài", 2], [12.5, "toán", 2], [12.738, "thứ", 2], [12.912, "hai", 2], [13.15, "gần", 2], [13.375, "với", 2], [13.475, "các", 2], [13.65, "bạn", 2], [13.838, "hơn:", 2], [14.338, "chuẩn", 2], [14.562, "hóa", 2], [14.787, "họ", 2], [15.0, "tên", 2], [15.2, "người", 2], [15.4, "dùng", 2], [15.625, "gõ", 2], [15.838, "vào,", 2], [16.325, "bỏ", 2], [16.562, "khoảng", 2], [16.863, "trắng", 2], [17.062, "thừa,", 2], [17.575, "viết", 2], [17.825, "hoa", 2], [18.075, "chữ", 2], [18.288, "đầu", 2], [18.462, "mỗi", 2], [18.688, "từ,", 2], [19.2, "viết", 2], [19.438, "thường", 2], [19.65, "phần", 2], [19.863, "còn", 2], [20.05, "lại.", 2], [21.2, "Từ", 3], [21.475, "đó,", 3], [21.975, "câu", 3], [22.175, "hỏi", 3], [22.387, "của", 3], [22.525, "phần", 3], [22.712, "là:", 3], [23.2, "chữ", 3], [23.413, "cái", 3], [23.65, "được", 3], [23.8, "biểu", 3], [23.988, "diễn", 3], [24.312, "và", 3], [24.438, "xử", 3], [24.613, "lý", 3], [24.825, "thế", 3], [24.95, "nào", 3], [25.2, "để", 3], [25.325, "chương", 3], [25.55, "trình", 3], [25.775, "tính", 3], [26.012, "toán", 3], [26.288, "được", 3], [26.438, "trên", 3], [26.625, "từng", 3], [26.825, "ký", 3], [27.025, "tự?", 3]], "cues": [0.1, 12.25, 21.2], "lang": 0.6}, {"ten": "Slide 2. Số học trên ký tự và phân loại ký tự", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: K&R §2.7.\nHiện dần: bước 1 khi đọc “Ở Chương 1”; bước 2 khi đọc “Vì các chữ cái liền nhau”; bước 3 khi đọc “Thư viện chuẩn”.", "start": 41.86, "audio": "audio/8bcf6ed569d3152c.mp3", "dur": 36.0, "words": [[0.1, "Ở", 0], [0.287, "Chương", 0], [0.512, "1,", 0], [0.925, "các", 0], [1.1, "bạn", 0], [1.337, "đã", 0], [1.425, "thấy", 0], [1.6, "mỗi", 0], [1.788, "ký", 0], [2.013, "tự", 0], [2.225, "được", 0], [2.4, "lưu", 0], [2.612, "bằng", 0], [2.788, "một", 0], [2.925, "số", 0], [3.163, "theo", 0], [3.3, "bảng", 0], [3.525, "mã", 0], [3.987, "ASCII:", 0], [4.45, "a", 0], [4.638, "thường", 0], [4.938, "là", 0], [5.05, "97,", 0], [5.9, "b", 0], [6.112, "thường", 0], [6.425, "là", 0], [6.537, "98,", 0], [7.4, "và", 0], [7.638, "hai", 0], [7.825, "mươi", 0], [7.938, "sáu", 0], [8.188, "chữ", 0], [8.375, "cái", 0], [8.562, "thường", 0], [8.825, "nằm", 0], [9.0, "liền", 0], [9.175, "nhau,", 0], [9.675, "chữ", 0], [9.912, "hoa", 0], [10.15, "cũng", 0], [10.363, "vậy.", 0], [11.488, "Vì", 1], [11.762, "các", 1], [11.95, "chữ", 1], [12.1, "cái", 1], [12.287, "liền", 1], [12.438, "nhau,", 1], [12.938, "phép", 1], [13.2, "trừ", 1], [13.387, "c", 1], [13.65, "cho", 1], [13.85, "a", 1], [14.05, "cho", 1], [14.188, "vị", 1], [14.35, "trí", 1], [14.6, "của", 1], [14.762, "chữ", 1], [14.963, "c", 1], [15.213, "trong", 1], [15.412, "bảng", 1], [15.637, "chữ", 1], [15.825, "cái,", 1], [16.4, "từ", 1], [16.637, "0", 1], [16.875, "đến", 1], [17.062, "25,", 1], [17.863, "và", 1], [18.15, "a", 1], [18.325, "cộng", 1], [18.575, "k", 1], [18.788, "cho", 1], [18.925, "chữ", 1], [19.113, "cái", 1], [19.312, "thứ", 1], [19.462, "k;", 1], [19.988, "đó", 1], [20.2, "là", 1], [20.325, "số", 1], [20.538, "học", 1], [20.75, "trên", 1], [20.988, "ký", 1], [21.188, "tự.", 1], [22.35, "Thư", 2], [22.55, "viện", 2], [22.775, "chuẩn", 2], [23.012, "có", 2], [23.137, "tệp", 2], [23.387, "header", 2], [24.0, "ctype.h", 2], [24.613, "để", 2], [24.775, "phân", 2], [24.988, "loại", 2], [25.15, "ký", 2], [25.363, "tự:", 2], [25.938, "isalpha", 2], [26.7, "hỏi", 2], [26.938, "có", 2], [27.075, "phải", 2], [27.25, "chữ", 2], [27.438, "cái,", 2], [28.025, "isupper,", 2], [29.113, "islower", 2], [29.887, "hỏi", 2], [30.1, "chữ", 2], [30.325, "hoa", 2], [30.6, "hay", 2], [30.75, "thường,", 2], [31.3, "isspace", 2], [32.1, "hỏi", 2], [32.312, "khoảng", 2], [32.638, "trắng;", 2], [33.15, "toupper", 2], [33.812, "và", 2], [33.962, "tolower", 2], [34.513, "đổi", 2], [34.725, "chữ.", 2]], "cues": [0.1, 11.488, 22.35], "lang": 0.6}, {"ten": "Slide 3. Dịch chữ x với khóa 3", "loai": "slide", "slide": "S03", "dung": "Hình dich-chu: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận.\nHiện dần: bước 1 khi đọc “Bước một”; bước 2 khi đọc “Bước hai”; bước 3 khi đọc “Bước ba”; bước 4 khi đọc “Chữ hoa”; bước 5 khi đọc “Gộp lại”.", "start": 78.46, "audio": "audio/46c36ab06bb2aeb8.mp3", "dur": 30.1, "words": [[0.1, "Mình", 0], [0.45, "lần", 0], [0.662, "theo", 0], [0.863, "chữ", 0], [1.1, "x", 0], [1.3, "với", 0], [1.45, "khóa", 0], [1.7, "3.", 0], [2.85, "Bước", 1], [3.112, "một,", 1], [3.575, "x", 1], [3.763, "trừ", 1], [4.037, "a", 1], [4.35, "bằng", 1], [4.588, "23:", 1], [5.075, "x", 1], [5.275, "là", 1], [5.475, "chữ", 1], [5.7, "thứ", 1], [5.9, "23,", 1], [6.725, "tính", 1], [6.95, "từ", 1], [7.125, "0.", 1], [8.3, "Bước", 2], [8.55, "hai,", 2], [9.088, "cộng", 2], [9.312, "khóa", 2], [9.562, "được", 2], [9.713, "26,", 2], [10.575, "vượt", 2], [10.825, "quá", 2], [11.025, "chữ", 2], [11.225, "cuối;", 2], [11.762, "phép", 2], [12.037, "chia", 2], [12.262, "lấy", 2], [12.463, "dư", 2], [12.662, "cho", 2], [12.812, "26", 2], [13.387, "đưa", 2], [13.525, "nó", 2], [13.75, "về", 2], [13.887, "0,", 2], [14.45, "tức", 2], [14.65, "quay", 2], [14.838, "vòng", 2], [15.1, "về", 2], [15.225, "đầu", 2], [15.412, "bảng", 2], [15.675, "chữ", 2], [15.875, "cái.", 2], [17.1, "Bước", 3], [17.375, "ba,", 3], [17.863, "a", 3], [18.062, "cộng", 3], [18.325, "0", 3], [18.55, "là", 3], [18.725, "a:", 3], [18.9, "x", 3], [19.087, "được", 3], [19.262, "mã", 3], [19.438, "hóa", 3], [19.688, "thành", 3], [19.95, "a.", 3], [20.125, "Chữ", 4], [20.387, "hoa", 4], [20.6, "làm", 4], [20.8, "tương", 4], [21.038, "tự", 4], [21.238, "với", 4], [21.4, "A", 4], [21.575, "hoa,", 4], [22.15, "còn", 4], [22.413, "dấu", 4], [22.625, "phẩy,", 4], [23.25, "khoảng", 4], [23.55, "trắng,", 4], [24.062, "chữ", 4], [24.275, "số", 4], [24.562, "thì", 4], [24.738, "giữ", 4], [24.913, "nguyên.", 4], [26.137, "Gộp", 5], [26.438, "lại,", 5], [26.938, "mỗi", 5], [27.175, "chữ", 5], [27.425, "cái", 5], [27.625, "qua", 5], [27.825, "đúng", 5], [28.062, "ba", 5], [28.25, "phép", 5], [28.538, "tính", 5], [28.75, "số", 5], [29.0, "học.", 5]], "cues": [2.85, 8.3, 17.1, 20.125, 26.137], "lang": 2.6}, {"ten": "Slide 4. Duyệt chuỗi, phân loại từng ký tự", "loai": "slide", "slide": "S04", "dung": "Hình phan-loai-ky-tu: ba bước theo ba câu mốc đầu; bước 4 ô kết luận.\nHiện dần: bước 1 khi đọc “Vòng for”; bước 2 khi đọc “Mỗi ký tự”; bước 3 khi đọc “Kết quả”; bước 4 khi đọc “Cách duyệt này”.", "start": 111.16, "audio": "audio/52d689c53c87797c.mp3", "dur": 29.11, "words": [[0.1, "Áp", 0], [0.325, "vào", 0], [0.525, "cả", 0], [0.738, "câu,", 0], [1.288, "mình", 0], [1.525, "duyệt", 0], [1.762, "chuỗi", 0], [2.025, "Veni,", 0], [2.75, "vidi.", 0], [4.1, "Vòng", 1], [4.412, "for", 1], [4.55, "đi", 1], [4.662, "từ", 1], [4.838, "ký", 1], [5.062, "tự", 1], [5.263, "đầu", 1], [5.513, "đến", 1], [5.7, "khi", 1], [5.875, "gặp", 1], [6.062, "ký", 1], [6.287, "tự", 1], [6.5, "kết", 1], [6.713, "thúc", 1], [6.875, "chuỗi,", 1], [7.5, "giống", 1], [7.919, "strlen", 1], [8.338, "ở", 1], [8.412, "phần", 1], [8.625, "trước.", 1], [9.738, "Mỗi", 2], [10.1, "ký", 2], [10.35, "tự", 2], [10.537, "được", 2], [10.7, "phân", 2], [10.925, "loại:", 2], [11.45, "V", 2], [11.713, "là", 2], [11.85, "chữ", 2], [12.1, "hoa,", 2], [12.725, "e,", 2], [13.262, "n,", 2], [14.012, "i", 2], [14.238, "là", 2], [14.35, "chữ", 2], [14.588, "thường,", 2], [15.1, "dấu", 2], [15.363, "phẩy", 2], [15.713, "và", 2], [15.887, "dấu", 2], [16.1, "cách", 2], [16.3, "thuộc", 2], [16.488, "loại", 2], [16.725, "khác.", 2], [17.875, "Kết", 3], [18.15, "quả", 3], [18.45, "là", 3], [18.587, "chữ", 3], [18.825, "hoa", 3], [19.1, "và", 3], [19.225, "chữ", 3], [19.425, "thường", 3], [19.65, "được", 3], [19.788, "dịch,", 3], [20.238, "các", 3], [20.413, "ký", 3], [20.6, "tự", 3], [20.8, "khác", 3], [21.062, "giữ", 3], [21.238, "nguyên:", 3], [21.837, "Veni,", 3], [22.637, "vidi", 3], [23.038, "thành", 3], [23.375, "Yhql,", 3], [23.762, "ylgl.", 3], [24.913, "Cách", 4], [25.125, "duyệt", 4], [25.325, "này", 4], [25.538, "dùng", 4], [25.738, "được", 4], [25.887, "cho", 4], [25.988, "mọi", 4], [26.188, "bài", 4], [26.363, "toán", 4], [26.625, "xử", 4], [26.8, "lý", 4], [27.05, "chuỗi", 4], [27.325, "theo", 4], [27.488, "từng", 4], [27.725, "ký", 4], [27.925, "tự.", 4]], "cues": [4.1, 9.738, 17.875, 24.913], "lang": 2.6}, {"ten": "Slide 5. caesar.c: \"Veni, vidi, vici\" thành \"Yhql, ylgl, ylfl\"", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả phía dưới. Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Giải mã”.", "start": 142.87, "audio": "audio/1505ff071215fd69.mp3", "dur": 27.12, "words": [[0.1, "Hàm", 0], [0.425, "encrypt", 0], [0.9, "viết", 0], [1.125, "đúng", 0], [1.363, "ba", 0], [1.538, "bước", 0], [1.762, "vừa", 0], [1.975, "vẽ,", 0], [2.562, "cho", 0], [2.775, "chữ", 0], [2.987, "hoa", 0], [3.25, "và", 0], [3.362, "chữ", 0], [3.587, "thường;", 0], [4.112, "chương", 0], [4.338, "trình", 0], [4.525, "đọc", 0], [4.7, "từng", 0], [4.912, "dòng", 0], [5.125, "bằng", 0], [5.362, "fgets", 0], [5.75, "và", 0], [5.9, "nhận", 0], [6.15, "khóa", 0], [6.412, "từ", 0], [6.588, "dòng", 0], [6.787, "lệnh.", 0], [7.938, "Kết", 1], [8.162, "quả", 1], [8.4, "với", 1], [8.512, "câu", 1], [8.7, "nổi", 1], [8.875, "tiếng", 1], [9.137, "của", 1], [9.3, "Caesar,", 1], [10.05, "Veni,", 1], [10.825, "vidi,", 1], [11.55, "vici:", 1], [12.35, "bản", 1], [12.625, "mã", 1], [12.863, "là", 1], [13.062, "Yhql,", 1], [13.525, "ylgl,", 1], [14.075, "ylfl,", 1], [14.875, "dấu", 1], [15.15, "phẩy", 1], [15.5, "và", 1], [15.637, "khoảng", 1], [15.925, "trắng", 1], [16.175, "giữ", 1], [16.325, "nguyên.", 1], [17.55, "Giải", 2], [17.825, "mã", 2], [18.075, "không", 2], [18.3, "cần", 2], [18.5, "hàm", 2], [18.663, "mới:", 2], [19.188, "đưa", 2], [19.375, "bản", 2], [19.6, "mã", 2], [19.825, "qua", 2], [20.0, "chính", 2], [20.25, "chương", 2], [20.475, "trình", 2], [20.725, "với", 2], [20.825, "khóa", 2], [21.05, "23,", 2], [21.812, "vì", 2], [22.012, "dịch", 2], [22.225, "3", 2], [22.438, "rồi", 2], [22.575, "dịch", 2], [22.775, "23", 2], [23.363, "là", 2], [23.488, "dịch", 2], [23.663, "đủ", 2], [23.875, "26", 2], [24.45, "vị", 2], [24.613, "trí,", 2], [25.163, "quay", 2], [25.4, "về", 2], [25.575, "chữ", 2], [25.8, "ban", 2], [26.0, "đầu.", 2]], "cues": [7.938, 17.55], "lang": 9.6}, {"ten": "Slide 6. Phân tích tần suất: count[c - 'a']++ tìm ra khóa 11", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới; tô dòng most frequent. Phần đọc fgets vào mảng text và giải mã bằng encrypt(text[i], 26 - key) nằm trong src/crack.c. Câu thử là câu nói về chữ e trong The Gold-Bug (Poe, 1843, phạm vi công cộng), ở input/goldbug.txt. Ghi nguồn: al-Kindi (thế kỷ 9); Singh, The Code Book, ch. 1. Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Không biết khóa thì”; bước 2 khi đọc “Mình mã hóa câu của Poe”.", "start": 179.59, "audio": "audio/4ea5415283ca6502.mp3", "dur": 53.35, "words": [[0.1, "Không", 0], [0.412, "biết", 0], [0.575, "khóa", 0], [0.9, "thì", 0], [1.087, "có", 0], [1.212, "đọc", 0], [1.375, "được", 0], [1.538, "bản", 0], [1.788, "mã", 0], [2.0, "không?", 0], [3.15, "Từ", 1], [3.413, "thế", 1], [3.575, "kỷ", 1], [3.763, "thứ", 1], [3.925, "chín,", 1], [4.45, "nhà", 1], [4.662, "toán", 1], [4.888, "học", 1], [5.281, "al-Kindi", 1], [5.675, "đã", 1], [5.787, "dùng", 1], [6.013, "cách", 1], [6.188, "phân", 1], [6.425, "tích", 1], [6.625, "tần", 1], [6.838, "suất:", 1], [7.4, "đếm", 1], [7.65, "số", 1], [7.912, "lần", 1], [8.125, "xuất", 1], [8.312, "hiện", 1], [8.575, "của", 1], [8.688, "từng", 1], [8.9, "chữ", 1], [9.1, "cái", 1], [9.363, "trong", 1], [9.562, "bản", 1], [9.75, "mã.", 1], [10.988, "Trong", 2], [11.3, "tiếng", 2], [11.525, "Anh,", 2], [11.95, "chữ", 2], [12.1, "xuất", 2], [12.287, "hiện", 2], [12.5, "nhiều", 2], [12.725, "nhất", 2], [12.95, "thường", 2], [13.188, "là", 2], [13.363, "e,", 2], [13.9, "như", 2], [14.275, "Edgar", 2], [14.65, "Allan", 2], [15.025, "Poe", 2], [15.4, "viết", 2], [15.65, "trong", 2], [15.863, "truyện", 2], [16.113, "Con", 2], [16.337, "bọ", 2], [16.512, "vàng.", 2], [17.637, "Chương", 3], [17.962, "trình", 3], [18.188, "crack", 3], [18.4, "đọc", 3], [18.575, "bản", 3], [18.8, "mã", 3], [19.062, "vào", 3], [19.175, "một", 3], [19.363, "mảng", 3], [19.587, "hai", 3], [19.775, "chiều,", 3], [20.337, "mỗi", 3], [20.562, "dòng", 3], [20.775, "một", 3], [20.925, "hàng,", 3], [21.425, "và", 3], [21.637, "đếm", 3], [21.887, "bằng", 3], [22.062, "một", 3], [22.225, "mảng", 3], [22.462, "count", 3], [22.725, "gồm", 3], [23.025, "hai", 3], [23.212, "mươi", 3], [23.325, "sáu", 3], [23.587, "phần", 3], [23.812, "tử.", 3], [25.025, "Số", 4], [25.3, "học", 4], [25.488, "trên", 4], [25.7, "ký", 4], [25.9, "tự", 4], [26.087, "làm", 4], [26.3, "chỉ", 4], [26.462, "số:", 4], [27.038, "c", 4], [27.312, "trừ", 4], [27.575, "a", 4], [27.825, "là", 4], [27.938, "vị", 4], [28.1, "trí", 4], [28.35, "của", 4], [28.5, "chữ", 4], [28.7, "c,", 4], [29.262, "nên", 4], [29.55, "phần", 4], [29.775, "tử", 4], [29.95, "thứ", 4], [30.137, "c", 4], [30.387, "trừ", 4], [30.663, "a", 4], [30.85, "tăng", 4], [31.075, "thêm", 4], [31.25, "một.", 4], [32.312, "Chữ", 5], [32.538, "nhiều", 5], [32.812, "nhất", 5], [33.025, "được", 5], [33.237, "coi", 5], [33.425, "là", 5], [33.638, "e,", 5], [34.15, "và", 5], [34.375, "khoảng", 5], [34.638, "cách", 5], [34.825, "từ", 5], [35.062, "e", 5], [35.237, "tới", 5], [35.462, "chữ", 5], [35.688, "đó", 5], [35.875, "chính", 5], [36.138, "là", 5], [36.237, "khóa.", 5], [37.525, "Mình", 6], [37.9, "mã", 6], [38.062, "hóa", 6], [38.263, "câu", 6], [38.475, "của", 6], [38.744, "Poe", 6], [39.013, "bằng", 6], [39.188, "một", 6], [39.35, "khóa", 6], [39.612, "mà", 6], [39.788, "chương", 6], [40.05, "trình", 6], [40.288, "không", 6], [40.487, "được", 6], [40.625, "biết.", 6], [41.7, "Kết", 7], [41.9, "quả:", 7], [42.5, "chữ", 7], [42.737, "p", 7], [42.925, "xuất", 7], [43.112, "hiện", 7], [43.337, "mười", 7], [43.538, "sáu", 7], [43.788, "lần,", 7], [44.312, "nên", 7], [44.6, "khóa", 7], [44.862, "là", 7], [44.962, "11,", 7], [45.625, "và", 7], [45.85, "bản", 7], [46.1, "giải", 7], [46.3, "mã", 7], [46.538, "khớp", 7], [46.8, "câu", 7], [47.0, "gốc.", 7], [48.062, "Cách", 8], [48.275, "này", 8], [48.5, "cần", 8], [48.737, "đủ", 8], [48.925, "chữ:", 8], [49.538, "với", 8], [49.725, "một", 8], [49.95, "câu", 8], [50.125, "ngắn,", 8], [50.638, "chữ", 8], [50.888, "nhiều", 8], [51.163, "nhất", 8], [51.413, "chưa", 8], [51.65, "chắc", 8], [51.875, "đã", 8], [52.038, "là", 8], [52.212, "e.", 8]], "cues": [0.1, 37.525], "lang": 9.6}, {"ten": "Slide 7. normalize.c chuẩn hóa họ tên", "loai": "slide", "slide": "S07", "dung": "Mã phía trên, kết quả phía dưới. Khai báo j, new_word và hàm main nằm trong src/normalize.c.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Dòng cuối”.", "start": 242.54, "audio": "audio/edf77ee27ae4f267.mp3", "dur": 27.94, "words": [[0.1, "Hàm", 0], [0.4, "normalize", 0], [0.975, "đọc", 0], [1.163, "chuỗi", 0], [1.337, "nguồn,", 0], [1.863, "ghi", 0], [2.087, "chuỗi", 0], [2.3, "kết", 0], [2.5, "quả,", 0], [3.087, "với", 0], [3.288, "biến", 0], [3.562, "new_word", 0], [3.95, "nhớ", 0], [4.162, "ký", 0], [4.375, "tự", 0], [4.612, "đang", 0], [4.775, "xét", 0], [5.025, "có", 0], [5.125, "mở", 0], [5.325, "đầu", 0], [5.525, "một", 0], [5.737, "từ", 0], [5.9, "không.", 0], [7.062, "Khoảng", 1], [7.375, "trắng", 1], [7.625, "chỉ", 1], [7.775, "bật", 1], [7.987, "new_word;", 1], [8.688, "ký", 1], [8.863, "tự", 1], [9.037, "đầu", 1], [9.225, "mỗi", 1], [9.525, "từ", 1], [9.7, "được", 1], [9.863, "toupper,", 1], [10.8, "các", 1], [10.963, "ký", 1], [11.125, "tự", 1], [11.35, "sau", 1], [11.537, "được", 1], [11.713, "tolower,", 1], [12.512, "và", 1], [12.713, "giữa", 1], [12.925, "hai", 1], [13.137, "từ", 1], [13.338, "chỉ", 1], [13.55, "ghi", 1], [13.738, "đúng", 1], [13.938, "một", 1], [14.088, "dấu", 1], [14.3, "cách.", 1], [15.363, "Kết", 2], [15.588, "quả", 2], [15.825, "với", 2], [15.95, "ba", 2], [16.137, "dòng:", 2], [16.637, "dang", 2], [16.887, "ngoc", 2], [17.456, "HUNG", 2], [18.025, "có", 2], [18.163, "khoảng", 2], [18.413, "trắng", 2], [18.65, "thừa", 2], [18.8, "thành", 2], [19.012, "Dang", 2], [19.225, "Ngoc", 2], [19.4, "Hung,", 2], [19.95, "LE", 2], [20.5, "THI", 2], [21.05, "b", 2], [21.212, "thành", 2], [21.45, "Le", 2], [21.625, "Thi", 2], [21.788, "B.", 2], [22.062, "Dòng", 3], [22.337, "cuối", 3], [22.525, "của", 3], [22.663, "hàm", 3], [22.9, "ghi", 3], [23.062, "ký", 3], [23.288, "tự", 3], [23.488, "kết", 3], [23.7, "thúc", 3], [23.85, "chuỗi:", 3], [24.45, "chuỗi", 3], [24.663, "tự", 3], [24.863, "ghép", 3], [25.113, "từng", 3], [25.337, "ký", 3], [25.525, "tự", 3], [25.775, "thì", 3], [25.962, "phải", 3], [26.137, "tự", 3], [26.35, "kết", 3], [26.575, "thúc", 3], [26.738, "nó.", 3]], "cues": [2.3, 22.062], "lang": 9.6}, {"ten": "Slide 8. Chữ có dấu UTF-8 không xử lý được từng byte", "loai": "slide", "slide": "S08", "dung": "Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Bản mã được ghi bằng UTF-8; console Windows cần chcp 65001 để hiện đúng.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Số học trên ký tự chỉ đúng”; bước 3 khi đọc “Lưu ý thứ hai”.", "start": 280.08, "audio": "audio/20e17586d4a72224.mp3", "dur": 37.54, "words": [[0.1, "Thử", 0], [0.338, "chương", 0], [0.613, "trình", 0], [0.863, "với", 0], [1.0, "chữ", 0], [1.25, "Hà", 0], [1.438, "Nội.", 0], [2.612, "Ở", 1], [2.812, "Chương", 1], [3.05, "1,", 1], [3.462, "các", 1], [3.638, "bạn", 1], [3.875, "đã", 1], [3.962, "thấy", 1], [4.15, "chữ", 1], [4.35, "có", 1], [4.487, "dấu", 1], [4.737, "trong", 1], [5.3, "UTF-8", 1], [5.862, "chiếm", 1], [6.138, "nhiều", 1], [6.312, "byte,", 1], [6.812, "mỗi", 1], [7.025, "byte", 1], [7.225, "lớn", 1], [7.487, "hơn", 1], [7.688, "127,", 1], [8.9, "và", 1], [9.137, "không", 1], [9.35, "byte", 1], [9.5, "nào", 1], [9.75, "là", 1], [9.875, "chữ", 1], [10.1, "cái", 1], [10.869, "ASCII.", 1], [11.637, "Kết", 2], [11.85, "quả:", 2], [12.45, "H", 2], [12.662, "thành", 2], [12.863, "K,", 2], [13.4, "N", 2], [13.762, "thành", 2], [14.025, "Q,", 2], [14.562, "i", 2], [14.738, "thành", 2], [15.05, "l,", 2], [15.65, "còn", 2], [16.0, "à", 2], [16.188, "và", 2], [16.35, "ộ", 2], [16.525, "giữ", 2], [16.725, "nguyên;", 2], [17.337, "bản", 2], [17.587, "mã", 2], [17.875, "để", 2], [18.0, "lộ", 2], [18.212, "gần", 2], [18.425, "hết", 2], [18.613, "thông", 2], [18.812, "tin.", 2], [19.962, "Số", 3], [20.212, "học", 3], [20.4, "trên", 3], [20.625, "ký", 3], [20.825, "tự", 3], [21.075, "chỉ", 3], [21.262, "đúng", 3], [21.488, "với", 3], [21.6, "chữ", 3], [21.8, "Latinh", 3], [22.288, "không", 3], [22.538, "dấu.", 3], [23.738, "Lưu", 4], [24.025, "ý", 4], [24.225, "thứ", 4], [24.387, "hai:", 4], [24.9, "các", 4], [25.062, "hàm", 4], [25.325, "của", 4], [25.806, "ctype.h", 4], [26.288, "nhận", 4], [26.538, "giá", 4], [26.725, "trị", 4], [26.962, "của", 4], [27.175, "unsigned", 4], [27.6, "char", 4], [27.837, "hoặc", 4], [28.438, "EOF;", 4], [29.038, "với", 4], [29.25, "chuỗi", 4], [29.512, "có", 4], [29.613, "byte", 4], [29.812, "lớn", 4], [30.075, "hơn", 4], [30.275, "127,", 4], [31.538, "char", 4], [31.8, "có", 4], [31.925, "thể", 4], [32.062, "mang", 4], [32.312, "giá", 4], [32.5, "trị", 4], [32.712, "âm,", 4], [33.212, "nên", 4], [33.513, "chương", 4], [33.737, "trình", 4], [33.95, "gán", 4], [34.175, "sang", 4], [34.413, "biến", 4], [34.638, "unsigned", 4], [35.062, "char", 4], [35.288, "trước", 4], [35.475, "khi", 4], [35.6, "gọi", 4], [35.837, "isupper.", 4]], "cues": [11.637, 19.962, 23.738], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.", "start": 327.22, "audio": "audio/9662da2ccf921c6d.mp3", "dur": 3.41, "words": [[0.1, "Chữ", 0], [0.338, "cái", 0], [0.562, "cuối", 0], [0.762, "bảng", 0], [1.038, "là", 0], [1.175, "phép", 0], [1.4, "thử", 0], [1.663, "của", 0], [1.825, "phép", 0], [2.062, "dịch", 0], [2.263, "vòng.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/0226ff111c515535.mp3", "dur2": 8.33, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.775, "C.", 0], [1.15, "Phương", 1], [1.475, "án", 1], [1.725, "A", 1], [2.025, "là", 1], [2.138, "kết", 1], [2.35, "quả", 1], [2.6, "khi", 1], [2.763, "quên", 1], [2.962, "phép", 1], [3.188, "chia", 1], [3.4, "lấy", 1], [3.6, "dư", 1], [3.8, "cho", 1], [3.962, "26:", 1], [4.8, "phép", 1], [5.062, "dịch", 1], [5.312, "không", 1], [5.55, "quay", 1], [5.713, "vòng", 1], [5.987, "mà", 1], [6.162, "đi", 1], [6.325, "ra", 1], [6.463, "ngoài", 1], [6.7, "bảng", 1], [6.925, "chữ", 1], [7.1, "cái.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.", "start": 345.56, "audio": "audio/ab9dd44acffe5db6.mp3", "dur": 3.84, "words": [[0.1, "Tiếp", 0], [0.4, "theo,", 0], [0.938, "các", 0], [1.1, "bạn", 0], [1.325, "giải", 0], [1.525, "mã", 0], [1.825, "mà", 0], [2.0, "không", 0], [2.225, "cần", 0], [2.438, "hàm", 0], [2.612, "mới.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/44530979ed5ba888.mp3", "dur2": 6.79, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.775, "B.", 0], [1.125, "Phương", 1], [1.562, "án", 1], [1.8, "A", 1], [1.938, "dịch", 1], [2.125, "thêm", 1], [2.388, "k", 1], [2.55, "vị", 1], [2.712, "trí", 1], [2.938, "nữa,", 1], [3.513, "tức", 1], [3.725, "mã", 1], [3.9, "hóa", 1], [4.15, "hai", 1], [4.375, "lần,", 1], [4.85, "chứ", 1], [5.075, "không", 1], [5.338, "giải", 1], [5.525, "mã.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Mỗi ký tự là một số”; bước 2 khi đọc “Thư viện ctype.h”; bước 3 khi đọc “Hai bài toán”; bước 4 khi đọc “Trên slide là những từ khóa”.", "start": 362.79, "audio": "audio/275a78ff381dd650.mp3", "dur": 30.98, "words": [[0.1, "Mỗi", 0], [0.463, "ký", 0], [0.725, "tự", 0], [0.938, "là", 0], [1.05, "một", 0], [1.238, "số", 0], [1.562, "và", 0], [1.675, "các", 0], [1.863, "chữ", 0], [2.025, "cái", 0], [2.212, "liền", 0], [2.362, "nhau,", 0], [2.9, "nên", 0], [3.175, "trừ", 0], [3.438, "a", 0], [3.638, "cho", 0], [3.763, "vị", 0], [3.938, "trí,", 0], [4.5, "cộng", 0], [4.763, "a", 0], [4.9, "trả", 0], [5.1, "lại", 0], [5.275, "chữ,", 0], [5.888, "và", 0], [6.1, "phép", 0], [6.35, "chia", 0], [6.562, "lấy", 0], [6.75, "dư", 0], [6.95, "cho", 0], [7.112, "26", 0], [7.688, "làm", 0], [7.888, "phép", 0], [8.1, "dịch", 0], [8.325, "quay", 0], [8.525, "vòng.", 0], [9.637, "Thư", 1], [9.85, "viện", 1], [10.438, "ctype.h", 1], [11.025, "phân", 1], [11.25, "loại", 1], [11.512, "và", 1], [11.65, "đổi", 1], [11.85, "ký", 1], [12.062, "tự.", 1], [13.25, "Hai", 2], [13.463, "bài", 2], [13.613, "toán", 2], [13.9, "của", 2], [14.037, "phần,", 2], [14.525, "mật", 2], [14.75, "mã", 2], [14.95, "Caesar", 2], [15.412, "và", 2], [15.537, "chuẩn", 2], [15.762, "hóa", 2], [16.0, "họ", 2], [16.175, "tên,", 2], [16.738, "đều", 2], [16.95, "là", 2], [17.025, "một", 2], [17.212, "vòng", 2], [17.413, "duyệt", 2], [17.6, "chuỗi", 2], [17.863, "đến", 2], [18.075, "ký", 2], [18.312, "tự", 2], [18.512, "kết", 2], [18.725, "thúc,", 2], [19.175, "rẽ", 2], [19.4, "nhánh", 2], [19.65, "theo", 2], [19.812, "loại", 2], [19.988, "ký", 2], [20.2, "tự.", 2], [21.363, "Trên", 3], [21.712, "slide", 3], [22.1, "là", 3], [22.212, "những", 3], [22.45, "từ", 3], [22.6, "khóa", 3], [22.85, "của", 3], [22.988, "phần:", 3], [23.45, "số", 3], [23.675, "học", 3], [23.863, "trên", 3], [24.087, "ký", 3], [24.288, "tự,", 3], [24.288, "ctype.h,", 3], [24.288, "toupper,", 3], [24.288, "isalpha,", 3], [24.288, "mật", 3], [24.288, "mã", 3], [24.288, "Caesar", 3], [24.288, "và", 3], [24.288, "chuẩn", 3], [24.288, "hóa", 3], [24.288, "chuỗi.", 3]], "cues": [0.1, 9.637, 13.25, 21.363], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Có hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 394.37, "audio": "audio/846c69bab1b72ddc.mp3", "dur": 30.5, "words": [[0.1, "Có", 0], [0.275, "hai", 0], [0.487, "chủ", 0], [0.75, "đề", 0], [1.0, "để", 0], [1.15, "đọc", 0], [1.35, "thêm.", 0], [2.538, "Chủ", 1], [2.788, "đề", 1], [2.962, "thứ", 1], [3.125, "nhất", 1], [3.4, "là", 1], [3.638, "giới", 1], [3.837, "hạn", 1], [4.088, "của", 1], [4.2, "phân", 1], [4.388, "tích", 1], [4.575, "tần", 1], [4.775, "suất:", 1], [5.3, "chính", 1], [5.525, "đoạn", 1], [5.713, "Suetonius", 1], [6.263, "tả", 1], [6.438, "mật", 1], [6.662, "mã", 1], [6.862, "Caesar", 1], [7.325, "có", 1], [7.463, "chữ", 1], [7.662, "t", 1], [7.875, "nhiều", 1], [8.137, "hơn", 1], [8.35, "chữ", 1], [8.575, "e;", 1], [9.062, "khi", 1], [9.238, "đó,", 1], [9.75, "cách", 1], [9.938, "chắc", 1], [10.113, "chắn", 1], [10.387, "là", 1], [10.537, "thử", 1], [10.75, "đủ", 1], [10.975, "25", 1], [11.488, "khóa.", 1], [12.713, "Chủ", 2], [12.95, "đề", 2], [13.113, "thứ", 2], [13.312, "hai", 2], [13.575, "là", 2], [13.65, "mật", 2], [13.85, "mã", 2], [14.075, "Vigenère,", 2], [14.762, "mỗi", 2], [14.975, "vị", 2], [15.137, "trí", 2], [15.412, "dùng", 2], [15.6, "một", 2], [15.75, "khóa", 2], [15.925, "khác", 2], [16.125, "nhau,", 2], [16.65, "nên", 2], [16.9, "đếm", 2], [17.113, "tần", 2], [17.325, "suất", 2], [17.512, "cả", 2], [17.65, "bản", 2], [17.875, "mã", 2], [18.15, "không", 2], [18.387, "còn", 2], [18.587, "tìm", 2], [18.8, "ra", 2], [18.938, "khóa.", 2], [20.188, "Bài", 3], [20.425, "tập", 3], [20.637, "mở", 3], [20.812, "rộng", 3], [21.1, "là", 3], [21.275, "bổ", 3], [21.488, "sung", 3], [21.688, "chương", 3], [21.887, "trình", 3], [22.1, "chuẩn", 3], [22.275, "hóa", 3], [22.5, "họ", 3], [22.688, "tên", 3], [23.1, "để", 3], [23.225, "xử", 3], [23.4, "lý", 3], [23.625, "cả", 3], [23.788, "ký", 3], [24.025, "tự", 3], [24.225, "tab", 3], [24.5, "và", 3], [24.663, "dòng", 3], [24.913, "chỉ", 3], [25.087, "có", 3], [25.2, "khoảng", 3], [25.45, "trắng,", 3], [26.0, "viết", 3], [26.337, "ít", 3], [26.538, "nhất", 3], [26.712, "sáu", 3], [27.0, "ca", 3], [27.163, "kiểm", 3], [27.4, "thử", 3], [27.675, "và", 3], [27.812, "chạy", 3], [28.038, "bằng", 3], [28.225, "bộ", 3], [28.387, "chấm", 3], [28.688, "của", 3], [28.825, "phần", 3], [29.05, "kiểm", 3], [29.262, "thử.", 3]], "cues": [0.1, 20.188], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 425.47, "audio": "audio/d88c91ca26d66f74.mp3", "dur": 12.65, "words": [[0.1, "Một", 0], [0.463, "họ", 0], [0.662, "tên", 0], [0.95, "là", 0], [1.05, "một", 0], [1.262, "chuỗi;", 0], [1.9, "nhưng", 0], [2.2, "một", 0], [2.337, "sinh", 0], [2.562, "viên", 0], [2.788, "còn", 0], [3.013, "có", 0], [3.138, "mã", 0], [3.325, "số,", 0], [3.925, "ngày", 0], [4.162, "sinh,", 0], [4.7, "điểm.", 0], [5.987, "Phần", 1], [6.275, "tiếp", 1], [6.487, "theo", 1], [6.675, "mở", 1], [6.862, "nhóm", 1], [7.15, "cuối", 1], [7.362, "của", 1], [7.513, "chương,", 1], [8.075, "cấu", 1], [8.275, "trúc:", 1], [8.762, "gom", 1], [9.062, "các", 1], [9.238, "giá", 1], [9.412, "trị", 1], [9.613, "khác", 1], [9.85, "kiểu", 1], [10.088, "thuộc", 1], [10.325, "cùng", 1], [10.5, "một", 1], [10.662, "đối", 1], [10.825, "tượng", 1], [11.1, "thành", 1], [11.3, "một", 1], [11.475, "biến.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Cấu trúc: struct, thành viên và typedef"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

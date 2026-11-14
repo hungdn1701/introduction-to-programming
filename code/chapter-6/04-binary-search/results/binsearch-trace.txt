@@ -1,0 +1,5 @@
+search 23:
+  low =  0, high = 14, mid =  7, v[mid] = 19
+  low =  8, high = 14, mid = 11, v[mid] = 42
+  low =  8, high = 10, mid =  9, v[mid] = 23
+  index 9

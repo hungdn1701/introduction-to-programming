@@ -1,0 +1,8 @@
+Thuật toán Euclid bản trừ liên tiếp (Euclid, Cơ sở, quyển VII, mệnh đề 2; Knuth, TAOCP, tập 2, mục 4.5.2)
+Đầu vào: hai số nguyên dương m, n.  Đầu ra: ước chung lớn nhất của m và n.
+
+đọc m, n
+lặp khi m ≠ n:
+    nếu m > n thì m ← m − n
+    ngược lại n ← n − m
+in m

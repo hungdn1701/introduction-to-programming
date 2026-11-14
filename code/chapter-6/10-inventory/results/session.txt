@@ -1,0 +1,35 @@
+Enter operation code: i
+Enter part number: 528
+Enter part name: Disk drive
+Enter quantity on hand: 10
+
+Enter operation code: i
+Enter part number: 914
+Enter part name: Printer cable
+Enter quantity on hand: 5
+
+Enter operation code: i
+Enter part number: 1001
+Enter part name: Mouse
+Enter quantity on hand: 20
+
+Enter operation code: i
+Enter part number: 914
+Part already exists.
+
+Enter operation code: s
+Enter part number: 914
+Part name: Printer cable
+Quantity on hand: 5
+
+Enter operation code: u
+Enter part number: 528
+Enter change in quantity on hand: 5
+
+Enter operation code: p
+Part Number   Part Name                  Quantity on Hand
+    528       Disk drive                        15
+    914       Printer cable                      5
+   1001       Mouse                             20
+
+Enter operation code: q

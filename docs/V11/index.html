@@ -1,0 +1,449 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V11 — Kiểm thử: ca kiểm thử và chấm bài tự động · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-2/05-testing">Mã</a>
+<h1>V11 · Kiểm thử: ca kiểm thử và chấm bài tự động</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 2</div><div class="ten">Kiểm thử: ca kiểm thử và chấm bài tự động</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Biên dịch không lỗi chưa có nghĩa là chương trình đúng</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">GCC chỉ kiểm tra chương trình <b>đúng luật của C</b>, không kiểm tra nó <b>giải đúng bài toán</b></li><li data-s="2">Bài nộp chạy đúng trên máy mình vẫn có thể bị hệ thống chấm báo sai</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> làm sao biết chương trình đúng với các đầu vào cần xét, và hệ thống chấm bài kiểm tra bài nộp thế nào?</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Ca kiểm thử gồm đầu vào và kết quả mong đợi, viết trước khi chạy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Kiểm thử</b> (testing): chạy chương trình với đầu vào chọn trước, so đầu ra với <b>kết quả mong đợi</b></li><li data-s="2"><b>Ca kiểm thử</b> (test case): một đầu vào cùng kết quả mong đợi của nó</li><li data-s="3"><b>Giá trị biên</b>: ranh giới giữa hai trường hợp — nơi chương trình hay sai nhất</li></ul><div class="khung" data-s="4">Dijkstra (1970): kiểm thử cho thấy <b>có lỗi</b>, nhưng không chứng minh được <b>không có lỗi</b>.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Bài toán tam giác của Myers: một chương trình nhỏ cần nhiều ca kiểm thử</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Ca kiểm thử của bài toán tam giác theo Myers: tam giác thường 3 4 5; tam giác đều 2 2 2; tam giác cân với cạnh khác ở ba vị trí 2 2 3, 2 3 2, 3 2 2; một cạnh bằng 0; một cạnh âm; tổng hai cạnh bằng cạnh thứ ba 1 2 3; tổng hai cạnh nhỏ hơn cạnh thứ ba 1 2 4.">
+  <defs>
+    <marker id="kt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="kt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="kt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="kt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="kt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="kt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- đầu vào hợp lệ -->
+  <g data-s="1">
+    <text x="40" y="40" text-anchor="start" font-size="24" fill="#373D4E" font-weight="500">Đầu vào</text>
+    <text x="320" y="40" text-anchor="start" font-size="24" fill="#373D4E" font-weight="500">Kết quả mong đợi</text>
+    <rect x="40" y="56" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="89.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">3 4 5</text>
+    <rect x="300" y="56" width="330" height="50" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="465" y="88.92" text-anchor="middle" font-size="22" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">SCALENE</text>
+    <text x="660" y="90" text-anchor="start" font-size="22" fill="#373D4E">tam giác thường</text>
+    <rect x="40" y="110" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="143.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">2 2 2</text>
+    <rect x="300" y="110" width="330" height="50" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="465" y="142.92" text-anchor="middle" font-size="22" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">EQUILATERAL</text>
+    <text x="660" y="144" text-anchor="start" font-size="22" fill="#373D4E">tam giác đều</text>
+    <rect x="40" y="164" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="197.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">2 2 3</text>
+    <rect x="300" y="164" width="330" height="50" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="465" y="196.92" text-anchor="middle" font-size="22" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">ISOSCELES</text>
+    <text x="660" y="198" text-anchor="start" font-size="22" fill="#373D4E">cân, cạnh khác ở vị trí 3</text>
+    <rect x="40" y="218" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="251.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">2 3 2</text>
+    <rect x="300" y="218" width="330" height="50" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="465" y="250.92" text-anchor="middle" font-size="22" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">ISOSCELES</text>
+    <text x="660" y="252" text-anchor="start" font-size="22" fill="#373D4E">cân, cạnh khác ở vị trí 2</text>
+    <rect x="40" y="272" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="305.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">3 2 2</text>
+    <rect x="300" y="272" width="330" height="50" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="465" y="304.92" text-anchor="middle" font-size="22" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">ISOSCELES</text>
+    <text x="660" y="306" text-anchor="start" font-size="22" fill="#373D4E">cân, cạnh khác ở vị trí 1</text>
+  </g>
+
+  <!-- đầu vào không hợp lệ và giá trị biên -->
+  <g data-s="2">
+    <rect x="40" y="326" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="359.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">0 4 5</text>
+    <rect x="300" y="326" width="330" height="50" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="465" y="358.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">NOT A TRIANGLE</text>
+    <text x="660" y="360" text-anchor="start" font-size="22" fill="#373D4E">một cạnh bằng 0</text>
+    <rect x="40" y="380" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="413.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">-3 4 5</text>
+    <rect x="300" y="380" width="330" height="50" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="465" y="412.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">NOT A TRIANGLE</text>
+    <text x="660" y="414" text-anchor="start" font-size="22" fill="#373D4E">một cạnh âm</text>
+    <rect x="40" y="434" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="467.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">1 2 3</text>
+    <rect x="300" y="434" width="330" height="50" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="465" y="466.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">NOT A TRIANGLE</text>
+    <text x="660" y="468" text-anchor="start" font-size="22" fill="#9B1C1C" font-weight="500">giá trị biên: 1 + 2 = 3</text>
+    <rect x="40" y="488" width="260" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="170" y="521.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">1 2 4</text>
+    <rect x="300" y="488" width="330" height="50" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="465" y="520.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">NOT A TRIANGLE</text>
+    <text x="660" y="522" text-anchor="start" font-size="22" fill="#373D4E">tổng hai cạnh nhỏ hơn cạnh thứ ba</text>
+  </g>
+
+  <!-- nhận xét -->
+  <g data-s="3">
+    <rect x="1180" y="160" width="540" height="230" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1450" y="229" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">Myers (1979)</text>
+    <text x="1450" y="281" text-anchor="middle" font-size="22" fill="#373D4E">phần lớn lập trình viên có kinh</text>
+    <text x="1450" y="319" text-anchor="middle" font-size="22" fill="#373D4E">nghiệm bỏ sót các ca không hợp lệ</text>
+    <text x="1450" y="357" text-anchor="middle" font-size="22" fill="#373D4E">và giá trị biên</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p>Thử cả <b>đầu vào hợp lệ</b>, <b>đầu vào không hợp lệ</b> và <b>giá trị biên</b>, mỗi trường hợp một ca riêng.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Bộ chấm tự động: biên dịch, chạy từng tệp kiểm thử, so đầu ra</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Bộ chấm tự động: nhận mã nguồn; biên dịch, lỗi thì CE; với mỗi tệp đầu vào, chạy chương trình với đầu vào chuẩn chuyển hướng từ tệp và giới hạn thời gian, quá giờ thì TLE, dừng bất thường thì RE; so đầu ra chuẩn với kết quả mong đợi, khác thì WA; mọi tệp khớp thì AC.">
+  <defs>
+    <marker id="bc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="bc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="bc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="bc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="bc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="bc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- nhận mã nguồn -->
+  <g data-s="1">
+    <rect x="20" y="180" width="260" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="150" y="225.5" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Bài nộp</text>
+    <text x="150" y="278.5" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">ab.c</text>
+  </g>
+
+  <!-- biên dịch -->
+  <g data-s="2">
+    <line x1="282" y1="235" x2="336" y2="235" stroke="#051A53" stroke-width="3" marker-end="url(#bc-navy)"/>
+    <rect x="340" y="180" width="300" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="490" y="225.5" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Biên dịch</text>
+    <text x="490" y="278.5" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">gcc</text>
+    <line x1="490" y1="292" x2="490" y2="360" stroke="#BC2626" stroke-width="3" marker-end="url(#bc-err)"/>
+    <rect x="380" y="364" width="220" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="490" y="401.5" text-anchor="middle" font-size="23" fill="#373D4E">lỗi → CE</text>
+  </g>
+
+  <!-- chạy với từng tệp đầu vào -->
+  <g data-s="3">
+    <line x1="642" y1="235" x2="696" y2="235" stroke="#051A53" stroke-width="3" marker-end="url(#bc-navy)"/>
+    <rect x="700" y="120" width="420" height="230" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="910" y="206.5" text-anchor="middle" font-size="25" fill="#123A6B" font-weight="500">Chạy từng tệp kiểm thử</text>
+    <text x="910" y="258.5" text-anchor="middle" font-size="22" fill="#373D4E">chương trình &lt; k.in</text>
+    <text x="910" y="296.5" text-anchor="middle" font-size="22" fill="#373D4E">giới hạn 2 giây</text>
+    <line x1="800" y1="352" x2="800" y2="410" stroke="#BC2626" stroke-width="3" marker-end="url(#bc-err)"/>
+    <rect x="660" y="414" width="280" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="800" y="451" text-anchor="middle" font-size="22" fill="#373D4E">quá giờ → TLE</text>
+    <line x1="1000" y1="352" x2="1000" y2="470" stroke="#BC2626" stroke-width="3" marker-end="url(#bc-err)"/>
+    <rect x="950" y="474" width="300" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1100" y="511" text-anchor="middle" font-size="22" fill="#373D4E">dừng bất thường → RE</text>
+  </g>
+
+  <!-- so đầu ra -->
+  <g data-s="4">
+    <line x1="1122" y1="235" x2="1176" y2="235" stroke="#051A53" stroke-width="3" marker-end="url(#bc-navy)"/>
+    <rect x="1180" y="160" width="280" height="150" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1320" y="225.5" text-anchor="middle" font-size="25" fill="#6B4E06" font-weight="500">So từng byte</text>
+    <text x="1320" y="277.5" text-anchor="middle" font-size="22" fill="#373D4E">đầu ra với k.out</text>
+    <line x1="1320" y1="312" x2="1320" y2="400" stroke="#BC2626" stroke-width="3" marker-end="url(#bc-err)"/>
+    <rect x="1290" y="404" width="170" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1375" y="441" text-anchor="middle" font-size="22" fill="#373D4E">khác → WA</text>
+  </g>
+
+  <!-- AC -->
+  <g data-s="5">
+    <line x1="1462" y1="235" x2="1536" y2="235" stroke="#2F855A" stroke-width="3" marker-end="url(#bc-ok)"/>
+    <text x="1499" y="200" text-anchor="middle" font-size="22" fill="#2F855A">mọi tệp khớp</text>
+    <rect x="1540" y="180" width="200" height="110" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1640" y="247" text-anchor="middle" font-size="32" fill="#22603F" font-weight="500">AC</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="6"><p>Năm kết quả: <b>AC</b> đúng mọi tệp · <b>WA</b> sai đáp án · <b>TLE</b> quá giờ · <b>RE</b> dừng bất thường · <b>CE</b> lỗi biên dịch.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Chấm năm bài nộp cho bài A cộng B: chỉ một bài AC</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">judge.sh</span><span class="hl-k">if</span> ! gcc -std=c17 -O2 -o <span class="hl-s">"</span>$exe<span class="hl-s">"</span> <span class="hl-s">"</span>$src<span class="hl-s">"</span> <span class="hl-n">2</span>&gt;/dev/null; <span class="hl-k">then</span>
+<span class="hl-k">for</span> input <span class="hl-k">in</span> <span class="hl-s">"</span>$tests<span class="hl-s">"</span>/*.in; <span class="hl-k">do</span>
+    timeout <span class="hl-n">2</span> <span class="hl-s">"</span>$exe<span class="hl-s">"</span> &lt; <span class="hl-s">"</span>$input<span class="hl-s">"</span> &gt; out/actual.txt <span class="hl-n">2</span>&gt;/dev/null
+    <span class="hl-k">if</span> [ $code -eq <span class="hl-n">124</span> ]; <span class="hl-k">then</span> r=TLE
+    <span class="hl-k">elif</span> [ $code -ne <span class="hl-n">0</span> ]; <span class="hl-k">then</span> r=RE
+    <span class="hl-k">else</span> r=WA
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>ab_ok.c: test 1: ok; test 2: ok; test 3: ok; =&gt; AC
+ab_extra.c: test 1: WA; test 2: WA; test 3: WA; =&gt; WA on test 1
+ab_int.c: test 1: ok; test 2: ok; test 3: WA; =&gt; WA on test 3
+ab_loop.c: test 1: TLE; test 2: TLE; test 3: ok; =&gt; TLE on test 1
+ab_ce.c: CE</pre></div><ul class="y-nho"><li data-s="2">In thêm lời nhắc <code>Nhap a, b:</code> là <b>WA</b>; dùng <code>int</code> thì tổng <b>4 000 000 000</b> tràn số, sai ở tệp 3</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Bộ chấm so từng ký tự: tự thêm ca kiểm thử ở giá trị biên trước khi nộp</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Lời nhắc như <code>Nhap a:</code>, khoảng trắng thừa, thiếu xuống dòng: <b>đều là WA</b></li><li data-s="2">Ví dụ trong đề thường nhỏ; tệp kiểm thử của hệ thống có <b>giá trị biên</b>: số rất lớn, số âm, số 0</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với bài toán tam giác (in đều, cân, thường hay không phải tam giác), bộ ba cạnh nào là giá trị biên?</div></div><div class="lua-chon"><div class=""><span>A</span><div>3 4 5</div></div><div class=""><span>B</span><div>2 2 2</div></div><div class="dung"><span>C</span><div>1 2 3</div></div><div class=""><span>D</span><div>10 10 3</div></div></div><div class="giai-thich">1 + 2 = 3: tổng hai cạnh bằng đúng cạnh thứ ba, nằm ngay ranh giới giữa tam giác và không phải tam giác. Chương trình dùng điều kiện &lt; thay cho &lt;= (hoặc ngược lại) sẽ sai đúng ở ca này. Ba bộ còn lại là tam giác hợp lệ.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với bài toán tam giác (in đều, cân, thường hay không phải tam giác), bộ ba cạnh nào là giá trị biên?</div></div><div class="lua-chon"><div class=""><span>A</span><div>3 4 5</div></div><div class=""><span>B</span><div>2 2 2</div></div><div class="dung"><span>C</span><div>1 2 3</div></div><div class=""><span>D</span><div>10 10 3</div></div></div><div class="giai-thich">1 + 2 = 3: tổng hai cạnh bằng đúng cạnh thứ ba, nằm ngay ranh giới giữa tam giác và không phải tam giác. Chương trình dùng điều kiện &lt; thay cho &lt;= (hoặc ngược lại) sẽ sai đúng ở ca này. Ba bộ còn lại là tam giác hợp lệ.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Bài nộp chạy đúng trên máy mình, nhưng hệ thống báo WA ở tệp 3, tệp có hai số cỡ hai tỉ. Nguyên nhân hợp lý nhất là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Hệ thống chấm bị lỗi, vì máy mình chạy đúng.</div></div><div class="dung"><span>B</span><div>Tổng vượt giới hạn của kiểu dữ liệu đang dùng, như int, nên kết quả sai.</div></div><div class=""><span>C</span><div>Chương trình chạy quá thời gian.</div></div><div class=""><span>D</span><div>Chương trình không biên dịch được trên hệ thống.</div></div></div><div class="giai-thich">Ví dụ chạy trên máy mình thường là số nhỏ; tệp 3 có tổng 4 000 000 000, vượt INT_MAX = 2 147 483 647 nên int tràn số. Quá thời gian là TLE, không biên dịch được là CE, không phải WA.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Bài nộp chạy đúng trên máy mình, nhưng hệ thống báo WA ở tệp 3, tệp có hai số cỡ hai tỉ. Nguyên nhân hợp lý nhất là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Hệ thống chấm bị lỗi, vì máy mình chạy đúng.</div></div><div class="dung"><span>B</span><div>Tổng vượt giới hạn của kiểu dữ liệu đang dùng, như int, nên kết quả sai.</div></div><div class=""><span>C</span><div>Chương trình chạy quá thời gian.</div></div><div class=""><span>D</span><div>Chương trình không biên dịch được trên hệ thống.</div></div></div><div class="giai-thich">Ví dụ chạy trên máy mình thường là số nhỏ; tệp 3 có tổng 4 000 000 000, vượt INT_MAX = 2 147 483 647 nên int tràn số. Quá thời gian là TLE, không biên dịch được là CE, không phải WA.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Kiểm thử</b>: chạy với <b>ca kiểm thử</b> gồm đầu vào và <b>kết quả mong đợi</b> xác định trước</div></div><div class="the" data-s="2"><span class="so">2</span><div>Thử cả đầu vào hợp lệ, không hợp lệ và <b>giá trị biên</b> (bài tam giác của Myers)</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Chấm bài tự động</b>: biên dịch, chạy với <b>đầu vào chuẩn</b> từ tệp, so <b>đầu ra chuẩn</b> từng ký tự — AC, WA, TLE, RE, CE</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>kiểm thử</span><span>ca kiểm thử</span><span>kết quả mong đợi</span><span>giá trị biên</span><span>chấm bài tự động</span><span>đầu vào chuẩn</span><span>đầu ra chuẩn</span></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Kiểm thử hộp đen và hộp trắng; phân lớp tương đương</li><li>Kiểm thử đơn vị (unit test) và kiểm thử hồi quy trong dự án thật</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết ít nhất mười ca kiểm thử (đầu vào và kết quả mong đợi) cho bài toán tam giác theo danh sách của Myers; giữ lại để chạy với chương trình tam giác ở chương sau.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TKC"><header><h1>Tổng kết chương 2</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Thuật toán</b>: bài toán, đầu vào, đầu ra; lưu đồ, mã giả, bảng vết; độ phức tạp và ký hiệu O lớn</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Trình biên dịch</b>: hệ thống biên dịch bốn bước; các pha phân tích và sinh mã; đọc đúng thông báo lỗi</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Kiểm thử</b>: ca kiểm thử, giá trị biên, chấm bài tự động</div></div></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Chương trình biên dịch được chưa chắc đã đúng: làm sao biết nó đúng, và hệ thống chấm bài trực tuyến kiểm tra bài nộp của các bạn ra sao?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:09</span>
+      <h3>Slide 1. Biên dịch không lỗi chưa có nghĩa là chương trình đúng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>GCC chỉ kiểm tra chương trình **đúng luật của C**, không kiểm tra nó **giải đúng bài toán**</li><li>Bài nộp chạy đúng trên máy mình vẫn có thể bị hệ thống chấm báo sai</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** làm sao biết chương trình đúng với các đầu vào cần xét, và hệ thống chấm bài kiểm tra bài nộp thế nào?</div></div>
+    <div class="kb-thoai"><p>Ở phần trước, các bạn đã thấy trình biên dịch bắt được lỗi từ vựng, cú pháp và ngữ nghĩa. Nhưng GCC chỉ kiểm tra chương trình đúng luật của C, không kiểm tra chương trình giải đúng bài toán. Nhiều bạn mới học gặp tình huống: bài chạy đúng với ví dụ trong đề, vậy mà hệ thống chấm vẫn báo sai. Câu hỏi của phần này là: làm sao biết chương trình đúng với các đầu vào cần xét, và hệ thống chấm bài kiểm tra bài nộp thế nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Ở phần trước”; bước 2 khi đọc “Nhiều bạn”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:35</span>
+      <h3>Slide 2. Ca kiểm thử gồm đầu vào và kết quả mong đợi, viết trước khi chạy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Kiểm thử** (testing): chạy chương trình với đầu vào chọn trước, so đầu ra với **kết quả mong đợi**</li><li>**Ca kiểm thử** (test case): một đầu vào cùng kết quả mong đợi của nó</li><li>**Giá trị biên**: ranh giới giữa hai trường hợp — nơi chương trình hay sai nhất</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> Dijkstra (1970): kiểm thử cho thấy **có lỗi**, nhưng không chứng minh được **không có lỗi**.</div></div>
+    <div class="kb-thoai"><p>Cách thực tế nhất để tìm lỗi là kiểm thử, hay testing: chạy chương trình với những đầu vào chọn trước, rồi so đầu ra với kết quả mong đợi. Mỗi bộ gồm một đầu vào và kết quả mong đợi của nó gọi là một ca kiểm thử, hay test case. Kết quả mong đợi phải được xác định trước khi chạy, không phải nhìn đầu ra rồi mới thấy hợp lý. Những đầu vào đáng thử nhất là giá trị biên, hay boundary value, nằm ở ranh giới giữa hai trường hợp, vì chương trình hay sai nhất ở đó. Dijkstra từng viết: kiểm thử cho thấy chương trình có lỗi, nhưng không bao giờ chứng minh được nó không có lỗi. Vì vậy, chọn ca kiểm thử là một kỹ năng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt; khung trích dẫn Dijkstra hiện cuối.
+Hiện dần: bước 1 khi đọc “Cách thực tế nhất”; bước 2 khi đọc “Mỗi bộ gồm”; bước 3 khi đọc “Những đầu vào đáng thử nhất”; bước 4 khi đọc “Dijkstra từng viết”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:13</span>
+      <h3>Slide 3. Bài toán tam giác của Myers: một chương trình nhỏ cần nhiều ca kiểm thử</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Thử cả **đầu vào hợp lệ**, **đầu vào không hợp lệ** và **giá trị biên**, mỗi trường hợp một ca riêng.</li></ul></div></div>
+    <div class="kb-thoai"><p>Năm 1979, Glenford Myers mở đầu cuốn The Art of Software Testing bằng một bài toán nhỏ: đọc ba số nguyên là ba cạnh, in ra tam giác đều, cân, thường, hay không phải tam giác. Ông yêu cầu người đọc viết các ca kiểm thử trước khi đọc tiếp. Phần lớn lập trình viên nghĩ ngay tới các ca hợp lệ: ba bốn năm là tam giác thường, hai hai hai là tam giác đều, và tam giác cân với cạnh khác nằm ở cả ba vị trí. Nhưng một chương trình tốt còn phải xử lý một cạnh bằng 0, một cạnh âm, và giá trị biên một hai ba, khi tổng hai cạnh bằng đúng cạnh thứ ba nên không tạo thành tam giác. Myers nhận xét rằng cả những lập trình viên nhiều kinh nghiệm cũng thường bỏ sót các ca này. Bài học là thử cả đầu vào hợp lệ, đầu vào không hợp lệ và giá trị biên. Bộ ca kiểm thử này sẽ dùng lại ở Chương 4, khi các bạn tự viết chương trình tam giác.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình ca-kiem-thu: bước 1 năm ca hợp lệ, bước 2 bốn ca không hợp lệ và giá trị biên (tô dòng 1 2 3), bước 3 ô nhận xét của Myers; bước 4 ô kết luận. Ghi nguồn: Myers, The Art of Software Testing (1979), ch. 1.
+Hiện dần: bước 1 khi đọc “Năm 1979”; bước 2 khi đọc “Phần lớn lập trình viên”; bước 3 khi đọc “Myers nhận xét”; bước 4 khi đọc “Bài học”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:07</span>
+      <h3>Slide 4. Bộ chấm tự động: biên dịch, chạy từng tệp kiểm thử, so đầu ra</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Năm kết quả: **AC** đúng mọi tệp · **WA** sai đáp án · **TLE** quá giờ · **RE** dừng bất thường · **CE** lỗi biên dịch.</li></ul></div></div>
+    <div class="kb-thoai"><p>Hệ thống chấm bài trực tuyến làm đúng việc kiểm thử đó, nhưng tự động. Bài nộp là một tệp mã nguồn. Bước đầu tiên là biên dịch; không biên dịch được thì kết quả là CE, compile error. Với mỗi tệp đầu vào, bộ chấm chạy chương trình, chuyển hướng đầu vào chuẩn từ tệp đó thay cho bàn phím, và đặt giới hạn thời gian. Quá giờ thì kết quả là TLE, time limit exceeded; chương trình dừng bất thường thì là RE, runtime error. Đầu ra được so từng byte với tệp kết quả mong đợi; khác dù một ký tự thì là WA, wrong answer. Chỉ khi mọi tệp đều khớp, bài mới được AC, accepted. Đây là quy ước chấm của các kỳ thi lập trình ICPC, và các hệ thống chấm bài các bạn dùng cũng theo cách này.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình bo-cham: năm bước theo năm câu mốc đầu; bước 6 ô kết luận.
+Hiện dần: bước 1 khi đọc “Hệ thống chấm bài trực tuyến”; bước 2 khi đọc “Bước đầu tiên”; bước 3 khi đọc “Với mỗi tệp đầu vào”; bước 4 khi đọc “Đầu ra được so”; bước 5 khi đọc “Chỉ khi mọi tệp”; bước 6 khi đọc “Đây là quy ước”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:55</span>
+      <h3>Slide 5. Chấm năm bài nộp cho bài A cộng B: chỉ một bài AC</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>In thêm lời nhắc `Nhap a, b:` là **WA**; dùng `int` thì tổng **4 000 000 000** tràn số, sai ở tệp 3</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">judge.sh</span><pre><code>if ! gcc -std=c17 -O2 -o &quot;$exe&quot; &quot;$src&quot; 2&gt;/dev/null; then
+for input in &quot;$tests&quot;/*.in; do
+    timeout 2 &quot;$exe&quot; &lt; &quot;$input&quot; &gt; out/actual.txt 2&gt;/dev/null
+    if [ $code -eq 124 ]; then r=TLE
+    elif [ $code -ne 0 ]; then r=RE
+    else r=WA</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình viết một bộ chấm tối giản theo đúng hình vừa xem, bằng một tệp lệnh khoảng ba mươi dòng, và chấm năm bài nộp cho bài toán đơn giản nhất của các hệ thống chấm: đọc hai số a và b, in tổng. Có ba tệp kiểm thử; tệp thứ ba là hai số hai tỉ. Các bạn đoán xem có mấy bài được AC? Kết quả cho thấy chỉ một bài AC. Bài thứ hai in thêm lời nhắc nhập a, b và chữ kết quả, nên đầu ra khác kết quả mong đợi ngay từ tệp 1: WA. Bài thứ ba dùng kiểu int, đúng ở hai tệp đầu, nhưng tổng bốn tỉ vượt giới hạn của int, in ra một số âm, nên WA ở tệp 3. Bài thứ tư lặp vô hạn: TLE. Bài cuối thiếu dấu chấm phẩy: CE.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; sau câu &quot;có mấy bài được AC?&quot;, dừng khoảng 2 giây rồi mới hiện khung kết quả. Bài dùng int in ra −294967296 với tệp 3 (chạy ngày 13/11/2026; tràn số nguyên có dấu là hành vi không xác định, Chương 4 giải thích). Bộ chấm bỏ ký tự CR mà Windows thêm trước mỗi ký tự xuống dòng trước khi so (README ghi rõ).
+Hiện dần: bước 1 khi đọc “Mình viết một bộ chấm tối giản”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:49</span>
+      <h3>Slide 6. Bộ chấm so từng ký tự: tự thêm ca kiểm thử ở giá trị biên trước khi nộp</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Lời nhắc như `Nhap a:`, khoảng trắng thừa, thiếu xuống dòng: **đều là WA**</li><li>Ví dụ trong đề thường nhỏ; tệp kiểm thử của hệ thống có **giá trị biên**: số rất lớn, số âm, số 0</li></ul></div>
+    <div class="kb-thoai"><p>Từ kết quả này, khi nộp bài cần nhớ rằng bộ chấm so từng ký tự, nên lời nhắc nhập dữ liệu, khoảng trắng thừa hay thiếu một ký tự xuống dòng đều là WA, dù phần tính toán đúng. Hãy in đúng định dạng đề yêu cầu, không hơn. Ngoài định dạng, ví dụ trong đề thường nhỏ, còn tệp kiểm thử của hệ thống có giá trị biên, như số rất lớn, số âm hay số 0. Trước khi nộp, các bạn tự viết thêm ca kiểm thử ở giá trị biên, như cách Myers làm với bài tam giác.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Từ kết quả này”; bước 2 khi đọc “Ngoài định dạng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:19</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Bài tam giác của Myers quay lại với giá trị biên.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Với bài toán tam giác (in đều, cân, thường hay không phải tam giác), bộ ba cạnh nào là giá trị biên?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 3 4 5</li>
+      <li><b>B.</b> 2 2 2</li>
+      <li><b>C.</b> 1 2 3</li>
+      <li><b>D.</b> 10 10 3</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>1 + 2 = 3: tổng hai cạnh bằng đúng cạnh thứ ba, nằm ngay ranh giới giữa tam giác và không phải tam giác. Chương trình dùng điều kiện &lt; thay cho &lt;= (hoặc ngược lại) sẽ sai đúng ở ca này. Ba bộ còn lại là tam giác hợp lệ.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án D dễ được chọn vì trông như một ca đặc biệt, nhưng đó chỉ là một tam giác cân hợp lệ. Giá trị biên là bộ một hai ba, nơi tổng hai cạnh bằng đúng cạnh thứ ba.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:41</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo đặt các bạn vào vị trí người nhận WA dù chạy đúng trên máy mình.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Bài nộp chạy đúng trên máy mình, nhưng hệ thống báo WA ở tệp 3, tệp có hai số cỡ hai tỉ. Nguyên nhân hợp lý nhất là gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Hệ thống chấm bị lỗi, vì máy mình chạy đúng.</li>
+      <li><b>B.</b> Tổng vượt giới hạn của kiểu dữ liệu đang dùng, như int, nên kết quả sai.</li>
+      <li><b>C.</b> Chương trình chạy quá thời gian.</li>
+      <li><b>D.</b> Chương trình không biên dịch được trên hệ thống.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Ví dụ chạy trên máy mình thường là số nhỏ; tệp 3 có tổng 4 000 000 000, vượt INT_MAX = 2 147 483 647 nên int tràn số. Quá thời gian là TLE, không biên dịch được là CE, không phải WA.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A dễ được chọn vì bài chạy đúng trên máy mình, nhưng trên máy mình các bạn chỉ thử số nhỏ. Tệp 3 là giá trị biên mà kiểu int không chứa nổi.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:04</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Kiểm thử**: chạy với **ca kiểm thử** gồm đầu vào và **kết quả mong đợi** xác định trước</li><li>Thử cả đầu vào hợp lệ, không hợp lệ và **giá trị biên** (bài tam giác của Myers)</li><li>**Chấm bài tự động**: biên dịch, chạy với **đầu vào chuẩn** từ tệp, so **đầu ra chuẩn** từng ký tự — AC, WA, TLE, RE, CE</li></ul></div>
+    <div class="kb-thoai"><p>Cách biết chương trình đúng là kiểm thử: chạy chương trình với các ca kiểm thử, mỗi ca gồm đầu vào và kết quả mong đợi xác định trước. Ca kiểm thử tốt phủ cả đầu vào hợp lệ, không hợp lệ và giá trị biên, như bài tam giác của Myers cho thấy. Hệ thống chấm bài tự động, hay online judge, làm việc đó cho mọi bài nộp: biên dịch, chạy với đầu vào chuẩn chuyển hướng từ tệp, so đầu ra chuẩn từng ký tự, rồi trả AC, WA, TLE, RE hoặc CE. Từ phần này, các bạn cần nắm các từ khóa: kiểm thử, ca kiểm thử, kết quả mong đợi, giá trị biên, chấm bài tự động, đầu vào chuẩn và đầu ra chuẩn.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Cách biết chương trình đúng”; bước 2 khi đọc “Ca kiểm thử tốt”; bước 3 khi đọc “Hệ thống chấm bài”; bước 4 khi đọc “các bạn cần nắm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:42</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Phần này mở ra hai chủ đề nâng cao: kiểm thử hộp đen và hộp trắng cùng cách chia đầu vào thành các lớp tương đương, và kiểm thử đơn vị trong dự án thật, chạy lại sau mỗi lần sửa mã. Bài tập mở rộng là viết ít nhất mười ca kiểm thử cho bài toán tam giác theo danh sách của Myers và giữ lại, vì Chương 4 dùng chúng để chấm chương trình tam giác của các bạn.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Phần này mở ra”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:03</span>
+      <h3>Tổng kết chương</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Thuật toán**: bài toán, đầu vào, đầu ra; lưu đồ, mã giả, bảng vết; độ phức tạp và ký hiệu O lớn</li><li>**Trình biên dịch**: hệ thống biên dịch bốn bước; các pha phân tích và sinh mã; đọc đúng thông báo lỗi</li><li>**Kiểm thử**: ca kiểm thử, giá trị biên, chấm bài tự động</li></ul></div>
+    <div class="kb-thoai"><p>Chương 2 đi từ bài toán đến chương trình chạy đúng, qua ba nhóm. Nhóm thuật toán viết lời giải thành các bước xác định, biểu diễn bằng lưu đồ và mã giả, kiểm tra bằng bảng vết, và so sánh các thuật toán bằng độ phức tạp tính toán. Nhóm trình biên dịch cho thấy mã nguồn thành tệp thực thi qua bốn bước, và mỗi thông báo lỗi đến từ một pha cụ thể. Nhóm kiểm thử cho thấy chương trình biên dịch được vẫn phải được chạy với các ca kiểm thử, kể cả giá trị biên, như hệ thống chấm bài tự động vẫn làm.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Infographic tổng kết chương: ba thẻ hiện lần lượt theo lời đọc.
+Hiện dần: bước 1 khi đọc “Chương 2 đi từ bài toán”; bước 2 khi đọc “Nhóm trình biên dịch”; bước 3 khi đọc “Nhóm kiểm thử”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:32</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Các bạn đã thấy C qua hello.c và qua bài A cộng B, nhưng chưa thấy nó trong bức tranh chung của các ngôn ngữ lập trình. Chương 3 vẽ bức tranh đó, bắt đầu từ phần về ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Tổng kết chương mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V11", "tieu_de": "Kiểm thử: ca kiểm thử và chấm bài tự động", "giong": "vi-VN-NamMinhNeural", "tong": 406.59, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/49bdc581c1b876fc.mp3", "dur": 9.26, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Chương", 1], [2.138, "trình", 1], [2.312, "biên", 1], [2.487, "dịch", 1], [2.638, "được", 1], [2.812, "chưa", 1], [3.025, "chắc", 1], [3.25, "đã", 1], [3.4, "đúng:", 1], [3.925, "làm", 1], [4.188, "sao", 1], [4.412, "biết", 1], [4.625, "nó", 1], [4.775, "đúng,", 1], [5.25, "và", 1], [5.487, "hệ", 1], [5.65, "thống", 1], [5.875, "chấm", 1], [6.112, "bài", 1], [6.263, "trực", 1], [6.463, "tuyến", 1], [6.688, "kiểm", 1], [6.9, "tra", 1], [7.075, "bài", 1], [7.25, "nộp", 1], [7.45, "của", 1], [7.575, "các", 1], [7.725, "bạn", 1], [7.95, "ra", 1], [8.075, "sao?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Biên dịch không lỗi chưa có nghĩa là chương trình đúng", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Ở phần trước”; bước 2 khi đọc “Nhiều bạn”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 9.86, "audio": "audio/fe80af6796594088.mp3", "dur": 25.06, "words": [[0.1, "Ở", 0], [0.3, "phần", 0], [0.525, "trước,", 0], [1.0, "các", 0], [1.175, "bạn", 0], [1.425, "đã", 0], [1.525, "thấy", 0], [1.712, "trình", 0], [1.938, "biên", 0], [2.163, "dịch", 0], [2.35, "bắt", 0], [2.513, "được", 0], [2.688, "lỗi", 0], [2.925, "từ", 0], [3.125, "vựng,", 0], [3.638, "cú", 0], [3.825, "pháp", 0], [4.112, "và", 0], [4.3, "ngữ", 0], [4.513, "nghĩa.", 0], [5.775, "Nhưng", 1], [6.232, "GCC", 1], [6.688, "chỉ", 1], [6.85, "kiểm", 1], [7.075, "tra", 1], [7.263, "chương", 1], [7.487, "trình", 1], [7.713, "đúng", 1], [7.9, "luật", 1], [8.025, "của", 1], [8.15, "C,", 1], [8.713, "không", 1], [8.95, "kiểm", 1], [9.162, "tra", 1], [9.35, "chương", 1], [9.575, "trình", 1], [9.812, "giải", 1], [10.012, "đúng", 1], [10.213, "bài", 1], [10.363, "toán.", 1], [11.6, "Nhiều", 2], [11.887, "bạn", 2], [12.1, "mới", 2], [12.287, "học", 2], [12.463, "gặp", 2], [12.688, "tình", 2], [12.887, "huống:", 2], [13.4, "bài", 2], [13.625, "chạy", 2], [13.838, "đúng", 2], [14.05, "với", 2], [14.175, "ví", 2], [14.35, "dụ", 2], [14.562, "trong", 2], [14.762, "đề,", 2], [15.225, "vậy", 2], [15.525, "mà", 2], [15.7, "hệ", 2], [15.875, "thống", 2], [16.125, "chấm", 2], [16.425, "vẫn", 2], [16.625, "báo", 2], [16.8, "sai.", 2], [18.0, "Câu", 3], [18.188, "hỏi", 3], [18.413, "của", 3], [18.55, "phần", 3], [18.738, "này", 3], [18.887, "là:", 3], [19.375, "làm", 3], [19.613, "sao", 3], [19.825, "biết", 3], [20.025, "chương", 3], [20.238, "trình", 3], [20.462, "đúng", 3], [20.663, "với", 3], [20.75, "các", 3], [20.925, "đầu", 3], [21.125, "vào", 3], [21.262, "cần", 3], [21.488, "xét,", 3], [21.988, "và", 3], [22.212, "hệ", 3], [22.387, "thống", 3], [22.637, "chấm", 3], [22.875, "bài", 3], [23.012, "kiểm", 3], [23.238, "tra", 3], [23.413, "bài", 3], [23.587, "nộp", 3], [23.788, "thế", 3], [23.9, "nào?", 3]], "cues": [0.1, 11.6, 18.0], "lang": 0.6}, {"ten": "Slide 2. Ca kiểm thử gồm đầu vào và kết quả mong đợi, viết trước khi chạy", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt; khung trích dẫn Dijkstra hiện cuối.\nHiện dần: bước 1 khi đọc “Cách thực tế nhất”; bước 2 khi đọc “Mỗi bộ gồm”; bước 3 khi đọc “Những đầu vào đáng thử nhất”; bước 4 khi đọc “Dijkstra từng viết”.", "start": 35.52, "audio": "audio/23f73b72f56df95e.mp3", "dur": 37.66, "words": [[0.1, "Cách", 0], [0.287, "thực", 0], [0.475, "tế", 0], [0.662, "nhất", 0], [0.887, "để", 0], [1.012, "tìm", 0], [1.275, "lỗi", 0], [1.5, "là", 0], [1.6, "kiểm", 0], [1.837, "thử,", 0], [2.462, "hay", 0], [2.675, "testing:", 0], [3.425, "chạy", 0], [3.65, "chương", 0], [3.875, "trình", 0], [4.088, "với", 0], [4.188, "những", 0], [4.4, "đầu", 0], [4.562, "vào", 0], [4.7, "chọn", 0], [4.975, "trước,", 0], [5.463, "rồi", 0], [5.713, "so", 0], [5.9, "đầu", 0], [6.088, "ra", 0], [6.312, "với", 0], [6.425, "kết", 0], [6.625, "quả", 0], [6.825, "mong", 0], [7.05, "đợi.", 0], [8.175, "Mỗi", 1], [8.55, "bộ", 1], [8.8, "gồm", 1], [8.988, "một", 1], [9.15, "đầu", 1], [9.35, "vào", 1], [9.6, "và", 1], [9.713, "kết", 1], [9.925, "quả", 1], [10.113, "mong", 1], [10.35, "đợi", 1], [10.562, "của", 1], [10.7, "nó", 1], [10.925, "gọi", 1], [11.175, "là", 1], [11.262, "một", 1], [11.475, "ca", 1], [11.6, "kiểm", 1], [11.838, "thử,", 1], [12.45, "hay", 1], [12.675, "test", 1], [12.9, "case.", 1], [14.037, "Kết", 2], [14.312, "quả", 2], [14.525, "mong", 2], [14.775, "đợi", 2], [14.988, "phải", 2], [15.125, "được", 2], [15.262, "xác", 2], [15.488, "định", 2], [15.7, "trước", 2], [15.875, "khi", 2], [16.012, "chạy,", 2], [16.538, "không", 2], [16.775, "phải", 2], [16.925, "nhìn", 2], [17.125, "đầu", 2], [17.3, "ra", 2], [17.538, "rồi", 2], [17.725, "mới", 2], [17.925, "thấy", 2], [18.113, "hợp", 2], [18.3, "lý.", 2], [19.475, "Những", 3], [19.762, "đầu", 3], [19.975, "vào", 3], [20.1, "đáng", 3], [20.312, "thử", 3], [20.475, "nhất", 3], [20.738, "là", 3], [20.925, "giá", 3], [21.137, "trị", 3], [21.325, "biên,", 3], [21.837, "hay", 3], [22.05, "boundary", 3], [22.575, "value,", 3], [23.3, "nằm", 3], [23.637, "ở", 3], [23.712, "ranh", 3], [23.9, "giới", 3], [24.125, "giữa", 3], [24.325, "hai", 3], [24.512, "trường", 3], [24.762, "hợp,", 3], [25.188, "vì", 3], [25.413, "chương", 3], [25.65, "trình", 3], [25.887, "hay", 3], [26.038, "sai", 3], [26.262, "nhất", 3], [26.525, "ở", 3], [26.65, "đó.", 3], [27.837, "Dijkstra", 4], [28.35, "từng", 4], [28.613, "viết:", 4], [29.062, "kiểm", 4], [29.275, "thử", 4], [29.538, "cho", 4], [29.688, "thấy", 4], [29.887, "chương", 4], [30.15, "trình", 4], [30.337, "có", 4], [30.462, "lỗi,", 4], [31.062, "nhưng", 4], [31.375, "không", 4], [31.6, "bao", 4], [31.725, "giờ", 4], [31.925, "chứng", 4], [32.15, "minh", 4], [32.325, "được", 4], [32.487, "nó", 4], [32.675, "không", 4], [32.888, "có", 4], [33.0, "lỗi.", 4], [34.263, "Vì", 5], [34.513, "vậy,", 5], [34.987, "chọn", 5], [35.3, "ca", 5], [35.45, "kiểm", 5], [35.688, "thử", 5], [35.95, "là", 5], [36.087, "một", 5], [36.3, "kỹ", 5], [36.475, "năng.", 5]], "cues": [0.1, 8.175, 19.475, 27.837], "lang": 0.6}, {"ten": "Slide 3. Bài toán tam giác của Myers: một chương trình nhỏ cần nhiều ca kiểm thử", "loai": "slide", "slide": "S03", "dung": "Hình ca-kiem-thu: bước 1 năm ca hợp lệ, bước 2 bốn ca không hợp lệ và giá trị biên (tô dòng 1 2 3), bước 3 ô nhận xét của Myers; bước 4 ô kết luận. Ghi nguồn: Myers, The Art of Software Testing (1979), ch. 1.\nHiện dần: bước 1 khi đọc “Năm 1979”; bước 2 khi đọc “Phần lớn lập trình viên”; bước 3 khi đọc “Myers nhận xét”; bước 4 khi đọc “Bài học”.", "start": 73.78, "audio": "audio/e9c975c094d6cf62.mp3", "dur": 50.71, "words": [[0.1, "Năm", 0], [0.412, "1979,", 0], [1.988, "Glenford", 0], [2.525, "Myers", 0], [2.812, "mở", 0], [2.987, "đầu", 0], [3.138, "cuốn", 0], [3.4, "The", 0], [3.575, "Art", 0], [3.837, "of", 0], [3.975, "Software", 0], [4.388, "Testing", 0], [4.987, "bằng", 0], [5.175, "một", 0], [5.338, "bài", 0], [5.5, "toán", 0], [5.737, "nhỏ:", 0], [6.338, "đọc", 0], [6.55, "ba", 0], [6.737, "số", 0], [6.925, "nguyên", 0], [7.25, "là", 0], [7.375, "ba", 0], [7.575, "cạnh,", 0], [8.125, "in", 0], [8.363, "ra", 0], [8.512, "tam", 0], [8.775, "giác", 0], [8.975, "đều,", 0], [9.463, "cân,", 0], [9.988, "thường,", 0], [10.512, "hay", 0], [10.738, "không", 0], [10.975, "phải", 0], [11.125, "tam", 0], [11.338, "giác.", 0], [12.425, "Ông", 1], [12.688, "yêu", 1], [12.85, "cầu", 1], [13.062, "người", 1], [13.25, "đọc", 1], [13.45, "viết", 1], [13.662, "các", 1], [13.838, "ca", 1], [13.988, "kiểm", 1], [14.238, "thử", 1], [14.5, "trước", 1], [14.688, "khi", 1], [14.85, "đọc", 1], [15.037, "tiếp.", 1], [16.15, "Phần", 2], [16.413, "lớn", 2], [16.65, "lập", 2], [16.8, "trình", 2], [16.988, "viên", 2], [17.15, "nghĩ", 2], [17.375, "ngay", 2], [17.562, "tới", 2], [17.762, "các", 2], [17.925, "ca", 2], [18.038, "hợp", 2], [18.225, "lệ:", 2], [18.775, "ba", 2], [19.012, "bốn", 2], [19.288, "năm", 2], [19.512, "là", 2], [19.65, "tam", 2], [19.913, "giác", 2], [20.075, "thường,", 2], [20.587, "hai", 2], [20.8, "hai", 2], [20.975, "hai", 2], [21.188, "là", 2], [21.288, "tam", 2], [21.538, "giác", 2], [21.712, "đều,", 2], [22.163, "và", 2], [22.387, "tam", 2], [22.625, "giác", 2], [22.8, "cân", 2], [23.0, "với", 2], [23.1, "cạnh", 2], [23.325, "khác", 2], [23.625, "nằm", 2], [23.913, "ở", 2], [23.988, "cả", 2], [24.175, "ba", 2], [24.375, "vị", 2], [24.55, "trí.", 2], [25.75, "Nhưng", 3], [26.025, "một", 3], [26.175, "chương", 3], [26.375, "trình", 3], [26.575, "tốt", 3], [26.812, "còn", 3], [27.012, "phải", 3], [27.15, "xử", 3], [27.312, "lý", 3], [27.525, "một", 3], [27.725, "cạnh", 3], [27.938, "bằng", 3], [28.113, "0,", 3], [28.613, "một", 3], [28.837, "cạnh", 3], [29.075, "âm,", 3], [29.512, "và", 3], [29.712, "giá", 3], [29.887, "trị", 3], [30.075, "biên", 3], [30.312, "một", 3], [30.462, "hai", 3], [30.625, "ba,", 3], [31.1, "khi", 3], [31.325, "tổng", 3], [31.562, "hai", 3], [31.725, "cạnh", 3], [32.013, "bằng", 3], [32.2, "đúng", 3], [32.388, "cạnh", 3], [32.587, "thứ", 3], [32.75, "ba", 3], [33.1, "nên", 3], [33.325, "không", 3], [33.55, "tạo", 3], [33.75, "thành", 3], [33.938, "tam", 3], [34.15, "giác.", 3], [35.237, "Myers", 4], [35.712, "nhận", 4], [35.913, "xét", 4], [36.163, "rằng", 4], [36.425, "cả", 4], [36.575, "những", 4], [36.775, "lập", 4], [36.962, "trình", 4], [37.163, "viên", 4], [37.325, "nhiều", 4], [37.513, "kinh", 4], [37.737, "nghiệm", 4], [38.05, "cũng", 4], [38.25, "thường", 4], [38.475, "bỏ", 4], [38.663, "sót", 4], [38.9, "các", 4], [39.075, "ca", 4], [39.237, "này.", 4], [40.325, "Bài", 5], [40.625, "học", 5], [40.825, "là", 5], [40.987, "thử", 5], [41.212, "cả", 5], [41.413, "đầu", 5], [41.638, "vào", 5], [41.788, "hợp", 5], [41.975, "lệ,", 5], [42.538, "đầu", 5], [42.837, "vào", 5], [42.975, "không", 5], [43.175, "hợp", 5], [43.35, "lệ", 5], [43.612, "và", 5], [43.775, "giá", 5], [43.975, "trị", 5], [44.175, "biên.", 5], [45.362, "Bộ", 6], [45.625, "ca", 6], [45.8, "kiểm", 6], [46.013, "thử", 6], [46.175, "này", 6], [46.4, "sẽ", 6], [46.55, "dùng", 6], [46.763, "lại", 6], [47.0, "ở", 6], [47.087, "Chương", 6], [47.35, "4,", 6], [47.862, "khi", 6], [48.138, "các", 6], [48.312, "bạn", 6], [48.525, "tự", 6], [48.725, "viết", 6], [48.938, "chương", 6], [49.188, "trình", 6], [49.4, "tam", 6], [49.625, "giác.", 6]], "cues": [0.1, 16.15, 35.237, 40.325], "lang": 2.6}, {"ten": "Slide 4. Bộ chấm tự động: biên dịch, chạy từng tệp kiểm thử, so đầu ra", "loai": "slide", "slide": "S04", "dung": "Hình bo-cham: năm bước theo năm câu mốc đầu; bước 6 ô kết luận.\nHiện dần: bước 1 khi đọc “Hệ thống chấm bài trực tuyến”; bước 2 khi đọc “Bước đầu tiên”; bước 3 khi đọc “Với mỗi tệp đầu vào”; bước 4 khi đọc “Đầu ra được so”; bước 5 khi đọc “Chỉ khi mọi tệp”; bước 6 khi đọc “Đây là quy ước”.", "start": 127.09, "audio": "audio/8b6117edc2be4d45.mp3", "dur": 46.15, "words": [[0.1, "Hệ", 0], [0.325, "thống", 0], [0.588, "chấm", 0], [0.825, "bài", 0], [0.975, "trực", 0], [1.238, "tuyến", 0], [1.475, "làm", 0], [1.675, "đúng", 0], [1.887, "việc", 0], [2.062, "kiểm", 0], [2.288, "thử", 0], [2.475, "đó,", 0], [3.013, "nhưng", 0], [3.325, "tự", 0], [3.538, "động.", 0], [4.7, "Bài", 1], [5.0, "nộp", 1], [5.3, "là", 1], [5.475, "một", 1], [5.713, "tệp", 1], [5.938, "mã", 1], [6.112, "nguồn.", 1], [7.325, "Bước", 2], [7.6, "đầu", 2], [7.812, "tiên", 2], [8.137, "là", 2], [8.262, "biên", 2], [8.512, "dịch;", 2], [8.938, "không", 2], [9.2, "biên", 2], [9.387, "dịch", 2], [9.537, "được", 2], [9.738, "thì", 2], [9.925, "kết", 2], [10.137, "quả", 2], [10.387, "là", 2], [10.812, "CE,", 2], [11.238, "compile", 2], [11.775, "error.", 2], [12.975, "Với", 3], [13.238, "mỗi", 3], [13.45, "tệp", 3], [13.662, "đầu", 3], [13.863, "vào,", 3], [14.312, "bộ", 3], [14.525, "chấm", 3], [14.775, "chạy", 3], [14.975, "chương", 3], [15.225, "trình,", 3], [15.713, "chuyển", 3], [15.938, "hướng", 3], [16.175, "đầu", 3], [16.363, "vào", 3], [16.5, "chuẩn", 3], [16.788, "từ", 3], [16.95, "tệp", 3], [17.163, "đó", 3], [17.387, "thay", 3], [17.562, "cho", 3], [17.675, "bàn", 3], [17.887, "phím,", 3], [18.425, "và", 3], [18.625, "đặt", 3], [18.812, "giới", 3], [19.025, "hạn", 3], [19.275, "thời", 3], [19.438, "gian.", 3], [20.637, "Quá", 4], [20.887, "giờ", 4], [21.137, "thì", 4], [21.325, "kết", 4], [21.525, "quả", 4], [21.762, "là", 4], [22.337, "TLE,", 4], [22.913, "time", 4], [23.225, "limit", 4], [23.625, "exceeded;", 4], [24.2, "chương", 4], [24.475, "trình", 4], [24.688, "dừng", 4], [24.85, "bất", 4], [25.012, "thường", 4], [25.275, "thì", 4], [25.425, "là", 4], [25.888, "RE,", 4], [26.35, "runtime", 4], [26.95, "error.", 4], [28.137, "Đầu", 5], [28.4, "ra", 5], [28.538, "được", 5], [28.663, "so", 5], [28.85, "từng", 5], [29.087, "byte", 5], [29.312, "với", 5], [29.425, "tệp", 5], [29.663, "kết", 5], [29.825, "quả", 5], [30.038, "mong", 5], [30.262, "đợi;", 5], [30.775, "khác", 5], [31.025, "dù", 5], [31.175, "một", 5], [31.363, "ký", 5], [31.538, "tự", 5], [31.8, "thì", 5], [31.975, "là", 5], [32.606, "WA,", 5], [33.237, "wrong", 5], [33.675, "answer.", 5], [35.013, "Chỉ", 6], [35.237, "khi", 6], [35.413, "mọi", 6], [35.625, "tệp", 6], [35.888, "đều", 6], [36.1, "khớp,", 6], [36.625, "bài", 6], [36.862, "mới", 6], [37.112, "được", 6], [37.6, "AC,", 6], [38.087, "accepted.", 6], [39.562, "Đây", 7], [39.837, "là", 7], [39.938, "quy", 7], [40.15, "ước", 7], [40.312, "chấm", 7], [40.6, "của", 7], [40.712, "các", 7], [40.888, "kỳ", 7], [41.038, "thi", 7], [41.237, "lập", 7], [41.438, "trình", 7], [42.094, "ICPC,", 7], [42.75, "và", 7], [42.987, "các", 7], [43.15, "hệ", 7], [43.288, "thống", 7], [43.525, "chấm", 7], [43.763, "bài", 7], [43.95, "các", 7], [44.125, "bạn", 7], [44.325, "dùng", 7], [44.55, "cũng", 7], [44.737, "theo", 7], [44.875, "cách", 7], [45.075, "này.", 7]], "cues": [0.1, 7.325, 12.975, 28.137, 35.013, 39.562], "lang": 2.6}, {"ten": "Slide 5. Chấm năm bài nộp cho bài A cộng B: chỉ một bài AC", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả phía dưới; sau câu \"có mấy bài được AC?\", dừng khoảng 2 giây rồi mới hiện khung kết quả. Bài dùng int in ra −294967296 với tệp 3 (chạy ngày 13/11/2026; tràn số nguyên có dấu là hành vi không xác định, Chương 4 giải thích). Bộ chấm bỏ ký tự CR mà Windows thêm trước mỗi ký tự xuống dòng trước khi so (README ghi rõ).\nHiện dần: bước 1 khi đọc “Mình viết một bộ chấm tối giản”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 175.84, "audio": "audio/9e2578dfc0b918a3.mp3", "dur": 44.3, "words": [[0.1, "Mình", 0], [0.463, "viết", 0], [0.662, "một", 0], [0.825, "bộ", 0], [1.0, "chấm", 0], [1.238, "tối", 0], [1.438, "giản", 0], [1.7, "theo", 0], [1.863, "đúng", 0], [2.05, "hình", 0], [2.225, "vừa", 0], [2.375, "xem,", 0], [2.95, "bằng", 0], [3.138, "một", 0], [3.3, "tệp", 0], [3.462, "lệnh", 0], [3.688, "khoảng", 0], [3.975, "ba", 0], [4.138, "mươi", 0], [4.287, "dòng,", 0], [4.8, "và", 0], [5.013, "chấm", 0], [5.263, "năm", 0], [5.438, "bài", 0], [5.588, "nộp", 0], [5.812, "cho", 0], [5.938, "bài", 0], [6.075, "toán", 0], [6.338, "đơn", 0], [6.525, "giản", 0], [6.737, "nhất", 0], [6.938, "của", 0], [7.088, "các", 0], [7.237, "hệ", 0], [7.4, "thống", 0], [7.612, "chấm:", 0], [8.175, "đọc", 0], [8.4, "hai", 0], [8.625, "số", 0], [8.875, "a", 0], [9.1, "và", 0], [9.25, "b,", 0], [9.75, "in", 0], [9.988, "tổng.", 0], [11.25, "Có", 1], [11.488, "ba", 1], [11.688, "tệp", 1], [11.938, "kiểm", 1], [12.15, "thử;", 1], [12.738, "tệp", 1], [12.988, "thứ", 1], [13.175, "ba", 1], [13.475, "là", 1], [13.65, "hai", 1], [13.863, "số", 1], [14.1, "hai", 1], [14.287, "tỉ.", 1], [15.537, "Các", 2], [15.725, "bạn", 2], [15.95, "đoán", 2], [16.163, "xem", 2], [16.462, "có", 2], [16.562, "mấy", 2], [16.75, "bài", 2], [16.975, "được", 2], [17.738, "AC?", 2], [18.5, "Kết", 3], [18.775, "quả", 3], [19.062, "cho", 3], [19.225, "thấy", 3], [19.488, "chỉ", 3], [19.663, "một", 3], [19.875, "bài", 3], [20.657, "AC.", 3], [21.438, "Bài", 4], [21.675, "thứ", 4], [21.925, "hai", 4], [22.15, "in", 4], [22.325, "thêm", 4], [22.575, "lời", 4], [22.75, "nhắc", 4], [22.975, "nhập", 4], [23.25, "a,", 4], [23.712, "b", 4], [24.0, "và", 4], [24.137, "chữ", 4], [24.35, "kết", 4], [24.55, "quả,", 4], [25.163, "nên", 4], [25.438, "đầu", 4], [25.6, "ra", 4], [25.738, "khác", 4], [25.962, "kết", 4], [26.15, "quả", 4], [26.363, "mong", 4], [26.587, "đợi", 4], [26.775, "ngay", 4], [26.962, "từ", 4], [27.15, "tệp", 4], [27.387, "1:", 4], [28.506, "WA.", 4], [29.625, "Bài", 5], [29.875, "thứ", 5], [30.087, "ba", 5], [30.288, "dùng", 5], [30.5, "kiểu", 5], [30.738, "int,", 5], [31.2, "đúng", 5], [31.475, "ở", 5], [31.575, "hai", 5], [31.738, "tệp", 5], [31.938, "đầu,", 5], [32.413, "nhưng", 5], [32.712, "tổng", 5], [32.962, "bốn", 5], [33.175, "tỉ", 5], [33.375, "vượt", 5], [33.575, "giới", 5], [33.788, "hạn", 5], [34.025, "của", 5], [34.2, "int,", 5], [34.675, "in", 5], [34.913, "ra", 5], [35.05, "một", 5], [35.237, "số", 5], [35.475, "âm,", 5], [36.0, "nên", 5], [36.587, "WA", 5], [37.175, "ở", 5], [37.288, "tệp", 5], [37.525, "3.", 5], [38.663, "Bài", 6], [38.925, "thứ", 6], [39.15, "tư", 6], [39.362, "lặp", 6], [39.587, "vô", 6], [39.763, "hạn:", 6], [40.45, "TLE.", 6], [41.138, "Bài", 7], [41.35, "cuối", 7], [41.562, "thiếu", 7], [41.788, "dấu", 7], [42.013, "chấm", 7], [42.275, "phẩy:", 7], [42.275, "CE.", 7]], "cues": [0.1, 18.5], "lang": 9.6}, {"ten": "Slide 6. Bộ chấm so từng ký tự: tự thêm ca kiểm thử ở giá trị biên trước khi nộp", "loai": "slide", "slide": "S06", "dung": "Hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Từ kết quả này”; bước 2 khi đọc “Ngoài định dạng”.", "start": 229.74, "audio": "audio/3d13c82cce50de76.mp3", "dur": 29.42, "words": [[0.1, "Từ", 0], [0.35, "kết", 0], [0.55, "quả", 0], [0.725, "này,", 0], [1.175, "khi", 0], [1.363, "nộp", 0], [1.538, "bài", 0], [1.7, "cần", 0], [1.9, "nhớ", 0], [2.163, "rằng", 0], [2.362, "bộ", 0], [2.538, "chấm", 0], [2.812, "so", 0], [3.0, "từng", 0], [3.225, "ký", 0], [3.425, "tự,", 0], [3.987, "nên", 0], [4.275, "lời", 0], [4.463, "nhắc", 0], [4.7, "nhập", 0], [4.888, "dữ", 0], [5.088, "liệu,", 0], [5.625, "khoảng", 0], [5.888, "trắng", 0], [6.138, "thừa", 0], [6.325, "hay", 0], [6.475, "thiếu", 0], [6.675, "một", 0], [6.875, "ký", 0], [7.062, "tự", 0], [7.237, "xuống", 0], [7.5, "dòng", 0], [7.737, "đều", 0], [7.888, "là", 0], [8.482, "WA,", 0], [9.075, "dù", 0], [9.338, "phần", 0], [9.6, "tính", 0], [9.812, "toán", 0], [10.05, "đúng.", 0], [11.188, "Hãy", 1], [11.5, "in", 1], [11.7, "đúng", 1], [11.912, "định", 1], [12.113, "dạng", 1], [12.4, "đề", 1], [12.6, "yêu", 1], [12.775, "cầu,", 1], [13.287, "không", 1], [13.588, "hơn.", 1], [14.75, "Ngoài", 2], [15.012, "định", 2], [15.213, "dạng,", 2], [15.675, "ví", 2], [15.9, "dụ", 2], [16.125, "trong", 2], [16.312, "đề", 2], [16.438, "thường", 2], [16.663, "nhỏ,", 2], [17.275, "còn", 2], [17.488, "tệp", 2], [17.712, "kiểm", 2], [17.913, "thử", 2], [18.137, "của", 2], [18.288, "hệ", 2], [18.438, "thống", 2], [18.7, "có", 2], [18.825, "giá", 2], [19.025, "trị", 2], [19.225, "biên,", 2], [19.762, "như", 2], [20.012, "số", 2], [20.262, "rất", 2], [20.45, "lớn,", 2], [20.975, "số", 2], [21.275, "âm", 2], [21.525, "hay", 2], [21.688, "số", 2], [21.913, "0.", 2], [23.075, "Trước", 3], [23.325, "khi", 3], [23.488, "nộp,", 3], [23.938, "các", 3], [24.113, "bạn", 3], [24.325, "tự", 3], [24.5, "viết", 3], [24.712, "thêm", 3], [24.962, "ca", 3], [25.137, "kiểm", 3], [25.375, "thử", 3], [25.625, "ở", 3], [25.762, "giá", 3], [25.975, "trị", 3], [26.175, "biên,", 3], [26.725, "như", 3], [27.0, "cách", 3], [27.212, "Myers", 3], [27.512, "làm", 3], [27.8, "với", 3], [27.913, "bài", 3], [28.087, "tam", 3], [28.325, "giác.", 3]], "cues": [0.1, 14.75], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.", "start": 259.76, "audio": "audio/7b898f6db6f5e2e3.mp3", "dur": 3.53, "words": [[0.1, "Bài", 0], [0.362, "tam", 0], [0.6, "giác", 0], [0.812, "của", 0], [0.925, "Myers", 0], [1.288, "quay", 0], [1.525, "lại", 0], [1.788, "với", 0], [1.913, "giá", 0], [2.125, "trị", 0], [2.337, "biên.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/184fb9d15b5864d1.mp3", "dur2": 11.9, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.688, "là", 0], [0.8, "C.", 0], [1.188, "Phương", 1], [1.538, "án", 1], [1.738, "D", 1], [1.913, "dễ", 1], [2.1, "được", 1], [2.275, "chọn", 1], [2.575, "vì", 1], [2.725, "trông", 1], [2.9, "như", 1], [3.05, "một", 1], [3.225, "ca", 1], [3.362, "đặc", 1], [3.513, "biệt,", 1], [3.975, "nhưng", 1], [4.25, "đó", 1], [4.45, "chỉ", 1], [4.625, "là", 1], [4.725, "một", 1], [4.925, "tam", 1], [5.175, "giác", 1], [5.388, "cân", 1], [5.575, "hợp", 1], [5.75, "lệ.", 1], [6.9, "Giá", 2], [7.213, "trị", 2], [7.412, "biên", 2], [7.7, "là", 2], [7.85, "bộ", 2], [8.062, "một", 2], [8.262, "hai", 2], [8.425, "ba,", 2], [8.95, "nơi", 2], [9.25, "tổng", 2], [9.512, "hai", 2], [9.675, "cạnh", 2], [9.975, "bằng", 2], [10.2, "đúng", 2], [10.4, "cạnh", 2], [10.625, "thứ", 2], [10.762, "ba.", 2]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.", "start": 281.79, "audio": "audio/762da78c4bf5faf3.mp3", "dur": 5.23, "words": [[0.1, "Câu", 0], [0.287, "tiếp", 0], [0.537, "theo", 0], [0.7, "đặt", 0], [0.863, "các", 0], [1.0, "bạn", 0], [1.238, "vào", 0], [1.363, "vị", 0], [1.525, "trí", 0], [1.75, "người", 0], [2.0, "nhận", 0], [2.575, "WA", 0], [3.15, "dù", 0], [3.35, "chạy", 0], [3.55, "đúng", 0], [3.75, "trên", 0], [3.913, "máy", 0], [4.075, "mình.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/714c208670ace8be.mp3", "dur2": 10.87, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.15, "Phương", 1], [1.488, "án", 1], [1.712, "A", 1], [1.863, "dễ", 1], [2.05, "được", 1], [2.212, "chọn", 1], [2.513, "vì", 1], [2.625, "bài", 1], [2.8, "chạy", 1], [3.0, "đúng", 1], [3.212, "trên", 1], [3.375, "máy", 1], [3.525, "mình,", 1], [4.025, "nhưng", 1], [4.312, "trên", 1], [4.487, "máy", 1], [4.638, "mình", 1], [4.862, "các", 1], [5.037, "bạn", 1], [5.275, "chỉ", 1], [5.463, "thử", 1], [5.662, "số", 1], [5.888, "nhỏ.", 1], [7.175, "Tệp", 2], [7.475, "3", 2], [7.713, "là", 2], [7.838, "giá", 2], [8.05, "trị", 2], [8.225, "biên", 2], [8.525, "mà", 2], [8.7, "kiểu", 2], [8.988, "int", 2], [9.162, "không", 2], [9.412, "chứa", 2], [9.625, "nổi.", 2]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Cách biết chương trình đúng”; bước 2 khi đọc “Ca kiểm thử tốt”; bước 3 khi đọc “Hệ thống chấm bài”; bước 4 khi đọc “các bạn cần nắm”.", "start": 304.49, "audio": "audio/97ecbc866bf2203a.mp3", "dur": 37.85, "words": [[0.1, "Cách", 0], [0.287, "biết", 0], [0.512, "chương", 0], [0.75, "trình", 0], [0.975, "đúng", 0], [1.175, "là", 0], [1.262, "kiểm", 0], [1.512, "thử:", 0], [2.1, "chạy", 0], [2.312, "chương", 0], [2.538, "trình", 0], [2.763, "với", 0], [2.862, "các", 0], [3.025, "ca", 0], [3.138, "kiểm", 0], [3.375, "thử,", 0], [3.95, "mỗi", 0], [4.15, "ca", 0], [4.35, "gồm", 0], [4.575, "đầu", 0], [4.737, "vào", 0], [4.987, "và", 0], [5.1, "kết", 0], [5.312, "quả", 0], [5.525, "mong", 0], [5.75, "đợi", 0], [5.925, "xác", 0], [6.15, "định", 0], [6.325, "trước.", 0], [7.438, "Ca", 1], [7.625, "kiểm", 1], [7.875, "thử", 1], [8.088, "tốt", 1], [8.275, "phủ", 1], [8.512, "cả", 1], [8.688, "đầu", 1], [8.887, "vào", 1], [9.037, "hợp", 1], [9.225, "lệ,", 1], [9.75, "không", 1], [10.0, "hợp", 1], [10.175, "lệ", 1], [10.412, "và", 1], [10.55, "giá", 1], [10.75, "trị", 1], [10.938, "biên,", 1], [11.45, "như", 1], [11.738, "bài", 1], [11.912, "tam", 1], [12.15, "giác", 1], [12.363, "của", 1], [12.488, "Myers", 1], [12.762, "cho", 1], [12.9, "thấy.", 1], [14.1, "Hệ", 2], [14.325, "thống", 2], [14.575, "chấm", 2], [14.8, "bài", 2], [14.925, "tự", 2], [15.125, "động,", 2], [15.625, "hay", 2], [15.875, "online", 2], [16.238, "judge,", 2], [16.988, "làm", 2], [17.225, "việc", 2], [17.387, "đó", 2], [17.575, "cho", 2], [17.7, "mọi", 2], [17.875, "bài", 2], [18.062, "nộp:", 2], [18.512, "biên", 2], [18.762, "dịch,", 2], [19.225, "chạy", 2], [19.438, "với", 2], [19.562, "đầu", 2], [19.75, "vào", 2], [19.875, "chuẩn", 2], [20.125, "chuyển", 2], [20.325, "hướng", 2], [20.538, "từ", 2], [20.7, "tệp,", 2], [21.188, "so", 2], [21.425, "đầu", 2], [21.613, "ra", 2], [21.75, "chuẩn", 2], [22.0, "từng", 2], [22.2, "ký", 2], [22.4, "tự,", 2], [22.95, "rồi", 2], [23.212, "trả", 2], [23.212, "AC,", 2], [23.212, "WA,", 2], [23.212, "TLE,", 2], [23.212, "RE", 2], [23.212, "hoặc", 2], [23.212, "CE.", 2], [23.212, "Từ", 3], [23.212, "phần", 3], [23.212, "này,", 3], [23.212, "các", 3], [23.212, "bạn", 3], [23.212, "cần", 3], [23.212, "nắm", 3], [23.212, "các", 3], [23.212, "từ", 3], [23.212, "khóa:", 3], [23.212, "kiểm", 3], [23.212, "thử,", 3], [23.212, "ca", 3], [23.212, "kiểm", 3], [23.212, "thử,", 3], [23.212, "kết", 3], [23.212, "quả", 3], [23.212, "mong", 3], [23.212, "đợi,", 3], [23.212, "giá", 3], [23.212, "trị", 3], [23.212, "biên,", 3], [23.212, "chấm", 3], [23.212, "bài", 3], [23.212, "tự", 3], [23.212, "động,", 3], [23.212, "đầu", 3], [23.212, "vào", 3], [23.212, "chuẩn", 3], [23.212, "và", 3], [23.212, "đầu", 3], [23.212, "ra", 3], [23.212, "chuẩn.", 3]], "cues": [0.1, 7.438, 14.1, 23.212], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Phần này mở ra”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 342.94, "audio": "audio/65ced74b89436c46.mp3", "dur": 19.58, "words": [[0.1, "Phần", 0], [0.35, "này", 0], [0.55, "mở", 0], [0.762, "ra", 0], [0.887, "hai", 0], [1.062, "chủ", 0], [1.288, "đề", 0], [1.438, "nâng", 0], [1.65, "cao:", 0], [2.188, "kiểm", 0], [2.388, "thử", 0], [2.575, "hộp", 0], [2.775, "đen", 0], [3.05, "và", 0], [3.15, "hộp", 0], [3.35, "trắng", 0], [3.625, "cùng", 0], [3.825, "cách", 0], [4.013, "chia", 0], [4.213, "đầu", 0], [4.438, "vào", 0], [4.575, "thành", 0], [4.787, "các", 0], [4.975, "lớp", 0], [5.175, "tương", 0], [5.412, "đương,", 0], [5.875, "và", 0], [6.05, "kiểm", 0], [6.263, "thử", 0], [6.45, "đơn", 0], [6.65, "vị", 0], [6.85, "trong", 0], [7.037, "dự", 0], [7.225, "án", 0], [7.425, "thật,", 0], [7.875, "chạy", 0], [8.1, "lại", 0], [8.3, "sau", 0], [8.488, "mỗi", 0], [8.675, "lần", 0], [8.863, "sửa", 0], [9.05, "mã.", 0], [10.312, "Bài", 1], [10.55, "tập", 1], [10.762, "mở", 1], [10.95, "rộng", 1], [11.238, "là", 1], [11.4, "viết", 1], [11.65, "ít", 1], [11.825, "nhất", 1], [12.062, "mười", 1], [12.262, "ca", 1], [12.438, "kiểm", 1], [12.675, "thử", 1], [12.912, "cho", 1], [13.025, "bài", 1], [13.2, "toán", 1], [13.438, "tam", 1], [13.637, "giác", 1], [13.863, "theo", 1], [14.0, "danh", 1], [14.188, "sách", 1], [14.387, "của", 1], [14.512, "Myers", 1], [14.85, "và", 1], [14.988, "giữ", 1], [15.175, "lại,", 1], [15.725, "vì", 1], [15.938, "Chương", 1], [16.212, "4", 1], [16.438, "dùng", 1], [16.637, "chúng", 1], [16.913, "để", 1], [17.012, "chấm", 1], [17.25, "chương", 1], [17.475, "trình", 1], [17.688, "tam", 1], [17.913, "giác", 1], [18.113, "của", 1], [18.225, "các", 1], [18.4, "bạn.", 1]], "cues": [0.1, 10.312], "lang": 0.6}, {"ten": "Tổng kết chương", "loai": "ket-chuong", "slide": "TKC", "dung": "Infographic tổng kết chương: ba thẻ hiện lần lượt theo lời đọc.\nHiện dần: bước 1 khi đọc “Chương 2 đi từ bài toán”; bước 2 khi đọc “Nhóm trình biên dịch”; bước 3 khi đọc “Nhóm kiểm thử”.", "start": 363.12, "audio": "audio/2dcaa74381179177.mp3", "dur": 28.9, "words": [[0.1, "Chương", 0], [0.5, "2", 0], [0.675, "đi", 0], [0.8, "từ", 0], [0.988, "bài", 0], [1.15, "toán", 0], [1.475, "đến", 0], [1.675, "chương", 0], [1.9, "trình", 0], [2.125, "chạy", 0], [2.337, "đúng,", 0], [2.837, "qua", 0], [3.112, "ba", 0], [3.337, "nhóm.", 0], [4.562, "Nhóm", 1], [4.912, "thuật", 1], [5.1, "toán", 1], [5.338, "viết", 1], [5.525, "lời", 1], [5.713, "giải", 1], [5.925, "thành", 1], [6.15, "các", 1], [6.338, "bước", 1], [6.475, "xác", 1], [6.713, "định,", 1], [7.188, "biểu", 1], [7.412, "diễn", 1], [7.688, "bằng", 1], [7.9, "lưu", 1], [8.125, "đồ", 1], [8.35, "và", 1], [8.463, "mã", 1], [8.675, "giả,", 1], [9.312, "kiểm", 1], [9.525, "tra", 1], [9.738, "bằng", 1], [9.938, "bảng", 1], [10.15, "vết,", 1], [10.588, "và", 1], [10.838, "so", 1], [11.025, "sánh", 1], [11.275, "các", 1], [11.425, "thuật", 1], [11.613, "toán", 1], [11.875, "bằng", 1], [12.062, "độ", 1], [12.213, "phức", 1], [12.425, "tạp", 1], [12.662, "tính", 1], [12.875, "toán.", 1], [14.088, "Nhóm", 2], [14.45, "trình", 2], [14.637, "biên", 2], [14.825, "dịch", 2], [15.0, "cho", 2], [15.137, "thấy", 2], [15.35, "mã", 2], [15.512, "nguồn", 2], [15.738, "thành", 2], [15.938, "tệp", 2], [16.188, "thực", 2], [16.363, "thi", 2], [16.538, "qua", 2], [16.75, "bốn", 2], [17.0, "bước,", 2], [17.425, "và", 2], [17.637, "mỗi", 2], [17.85, "thông", 2], [18.05, "báo", 2], [18.225, "lỗi", 2], [18.475, "đến", 2], [18.688, "từ", 2], [18.825, "một", 2], [19.025, "pha", 2], [19.225, "cụ", 2], [19.438, "thể.", 2], [20.675, "Nhóm", 3], [21.038, "kiểm", 3], [21.25, "thử", 3], [21.475, "cho", 3], [21.613, "thấy", 3], [21.812, "chương", 3], [22.038, "trình", 3], [22.238, "biên", 3], [22.438, "dịch", 3], [22.613, "được", 3], [22.788, "vẫn", 3], [22.988, "phải", 3], [23.15, "được", 3], [23.325, "chạy", 3], [23.562, "với", 3], [23.688, "các", 3], [23.85, "ca", 3], [23.962, "kiểm", 3], [24.2, "thử,", 3], [24.8, "kể", 3], [24.95, "cả", 3], [25.137, "giá", 3], [25.35, "trị", 3], [25.538, "biên,", 3], [26.05, "như", 3], [26.325, "hệ", 3], [26.462, "thống", 3], [26.725, "chấm", 3], [26.962, "bài", 3], [27.125, "tự", 3], [27.312, "động", 3], [27.575, "vẫn", 3], [27.75, "làm.", 3]], "cues": [0.1, 14.088, 20.675], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Tổng kết chương mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 392.62, "audio": "audio/f612b8bbdab41611.mp3", "dur": 13.37, "words": [[0.1, "Các", 0], [0.3, "bạn", 0], [0.55, "đã", 0], [0.65, "thấy", 0], [0.863, "C", 0], [1.075, "qua", 0], [1.312, "hello.c", 0], [2.212, "và", 0], [2.337, "qua", 0], [2.538, "bài", 0], [2.763, "A", 0], [2.925, "cộng", 0], [3.163, "B,", 0], [3.675, "nhưng", 0], [3.962, "chưa", 0], [4.162, "thấy", 0], [4.338, "nó", 0], [4.562, "trong", 0], [4.763, "bức", 0], [4.925, "tranh", 0], [5.125, "chung", 0], [5.35, "của", 0], [5.463, "các", 0], [5.625, "ngôn", 0], [5.812, "ngữ", 0], [6.025, "lập", 0], [6.225, "trình.", 0], [7.338, "Chương", 1], [7.662, "3", 1], [7.85, "vẽ", 1], [7.975, "bức", 1], [8.162, "tranh", 1], [8.412, "đó,", 1], [8.9, "bắt", 1], [9.1, "đầu", 1], [9.325, "từ", 1], [9.512, "phần", 1], [9.75, "về", 1], [9.875, "ngôn", 1], [10.113, "ngữ:", 1], [10.7, "từ", 1], [10.9, "mã", 1], [11.1, "máy", 1], [11.35, "đến", 1], [11.55, "ngôn", 1], [11.75, "ngữ", 1], [11.975, "bậc", 1], [12.175, "cao.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

@@ -1,0 +1,4 @@
+$ ./caesar 3 < latin.txt
+Yhql, ylgl, ylfl
+$ ./caesar 3 < latin.txt | ./caesar 23
+Veni, vidi, vici

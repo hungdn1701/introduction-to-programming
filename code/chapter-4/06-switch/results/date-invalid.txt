@@ -1,0 +1,2 @@
+$ echo 3/13/2026 | ./date
+Dated this 3rd day of (month 13?), 2026.

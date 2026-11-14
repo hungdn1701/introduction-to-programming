@@ -1,0 +1,7 @@
+901 ; 00 INP     read the start value into ACC
+902 ; 01 OUT     output ACC
+705 ; 02 BRZ 05  if ACC = 0, jump to 05
+206 ; 03 SUB 06  ACC = ACC - mailbox 06 (holds 1)
+601 ; 04 BRA 01  jump back to 01
+000 ; 05 HLT     stop
+001 ; 06 DAT 1   the constant 1

@@ -1,0 +1,7 @@
+$ gcc -std=c17 -Wall -Wextra semantic.c -o semantic
+semantic.c: In function 'main':
+semantic.c:6:26: error: 'rate' undeclared (first use in this function)
+    6 |     position = initial + rate * 60;
+      |                          ^~~~
+semantic.c:6:26: note: each undeclared identifier is reported only once for each function it appears in
+[exit code 1]

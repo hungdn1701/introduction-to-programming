@@ -1,0 +1,10 @@
+Thuật toán Euclid (Knuth, TAOCP, tập 1, mục 1.1, Algorithm E)
+Đầu vào: hai số nguyên dương m, n.  Đầu ra: ước chung lớn nhất của m và n.
+
+đọc m, n
+lặp:
+    r ← m mod n
+    nếu r = 0 thì
+        in n; dừng
+    m ← n
+    n ← r

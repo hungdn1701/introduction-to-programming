@@ -1,0 +1,9 @@
+$ gcc -std=c17 -Wall -Wextra hello_no_semicolon.c -o hello
+hello_no_semicolon.c: In function 'main':
+hello_no_semicolon.c:5:29: error: expected ';' before 'return'
+    5 |     printf("hello, world\n")
+      |                             ^
+      |                             ;
+    6 |     return 0;
+      |     ~~~~~~                   
+[exit code 1]

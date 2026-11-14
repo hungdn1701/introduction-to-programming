@@ -1,0 +1,6 @@
+middle = (320, 200)
+addpoint((1, 2), (3, 4)) = (4, 6)
+ptinrect((100, 100), screen) = 1
+ptinrect((700, 100), screen) = 0
+after move_copy(p, 10): p = (1, 2)
+after move(&p, 10)    : p = (11, 2)

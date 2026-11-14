@@ -1,0 +1,2 @@
+for (i = 1; i < 10; i++) runs 9 times
+for (i = 0; i < 10; i++) runs 10 times

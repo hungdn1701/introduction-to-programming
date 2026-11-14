@@ -1,0 +1,8 @@
+$ gcc -std=c17 -Wall -Wextra no_ampersand.c -o no_ampersand
+no_ampersand.c: In function 'main':
+no_ampersand.c:7:13: warning: format '%d' expects argument of type 'int *', but argument 2 has type 'int' [-Wformat=]
+$ echo 42 | ./no_ampersand                (int n = 0;)
+Enter n: n = 0
+[exit code 0]
+$ echo 42 | ./no_ampersand_12345          (int n = 12345;)
+[exit code 139: Segmentation fault]

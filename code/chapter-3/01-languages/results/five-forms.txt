@@ -1,0 +1,8 @@
+$ lmc add.lmc   (machine code: 901 399 901 199 902 000)
+OUTPUT 42
+$ gcc sum.c -o sum && ./sum
+42
+$ python sum.py
+42
+$ java Sum.java
+42

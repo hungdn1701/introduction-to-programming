@@ -1,0 +1,460 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V04 — Phần cứng: phân cấp bộ nhớ và thiết bị vào ra · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-1/03-memory-hierarchy">Mã</a>
+<h1>V04 · Phần cứng: phân cấp bộ nhớ và thiết bị vào ra</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 1</div><div class="ten">Phần cứng: phân cấp bộ nhớ và thiết bị vào ra</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>CPU thực hiện một lệnh nhanh hơn RAM trả dữ liệu hàng trăm lần</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">CPU thực hiện một lệnh trong <b>chưa tới một nano giây</b></li><li data-s="2">Đọc một ô của RAM mất <b>khoảng một trăm nano giây</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> máy tính làm thế nào để CPU không phải chờ bộ nhớ ở mọi lệnh?</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>RAM mất dữ liệu khi tắt máy; ROM và bộ nhớ thứ cấp thì không</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 480" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Khi bật máy: firmware nằm trong ROM chạy đầu tiên; firmware nạp hệ điều hành từ bộ nhớ thứ cấp (SSD) vào RAM; CPU thực hiện hệ điều hành từ RAM. RAM mất nội dung khi tắt nguồn, ROM và SSD giữ nội dung.">
+  <defs>
+    <marker id="kd-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="kd-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="kd-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="kd-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="kd-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="kd-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- ROM -->
+  <g data-s="1">
+    <rect x="40" y="60" width="420" height="240" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="250" y="134" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">ROM</text>
+    <text x="250" y="186" text-anchor="middle" font-size="22" fill="#373D4E">firmware (UEFI)</text>
+    <text x="250" y="224" text-anchor="middle" font-size="22" fill="#373D4E">giữ khi tắt nguồn</text>
+    <text x="250" y="262" text-anchor="middle" font-size="22" fill="#373D4E">chạy đầu tiên</text>
+  </g>
+
+  <!-- SSD nạp vào RAM -->
+  <g data-s="2">
+    <rect x="1300" y="60" width="420" height="240" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1510" y="134" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">Bộ nhớ thứ cấp</text>
+    <text x="1510" y="186" text-anchor="middle" font-size="22" fill="#373D4E">SSD, ổ cứng</text>
+    <text x="1510" y="224" text-anchor="middle" font-size="22" fill="#373D4E">giữ khi tắt nguồn</text>
+    <text x="1510" y="262" text-anchor="middle" font-size="22" fill="#373D4E">chứa hệ điều hành, tệp</text>
+    <rect x="670" y="60" width="420" height="240" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="880" y="134" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">RAM</text>
+    <text x="880" y="186" text-anchor="middle" font-size="22" fill="#373D4E">đọc ghi theo địa chỉ</text>
+    <text x="880" y="224" text-anchor="middle" font-size="22" fill="#373D4E">mất khi tắt nguồn</text>
+    <text x="880" y="262" text-anchor="middle" font-size="22" fill="#373D4E">chứa chương trình đang chạy</text>
+    <line x1="1296" y1="180" x2="1094" y2="180" stroke="#1F5FA8" stroke-width="3" marker-end="url(#kd-data)"/>
+    <text x="1195" y="164" text-anchor="middle" font-size="22" fill="#1F5FA8">nạp hệ điều hành</text>
+    <line x1="462" y1="180" x2="666" y2="180" stroke="#051A53" stroke-width="3" marker-end="url(#kd-navy)"/>
+    <text x="564" y="164" text-anchor="middle" font-size="22" fill="#051A53">firmware ra lệnh</text>
+  </g>
+
+  <!-- CPU chạy từ RAM -->
+  <g data-s="3">
+    <rect x="670" y="370" width="420" height="90" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="880" y="425" text-anchor="middle" font-size="28" fill="#051A53" font-weight="500">CPU</text>
+    <line x1="880" y1="302" x2="880" y2="366" stroke="#051A53" stroke-width="3" marker-start="url(#kd-navy)" marker-end="url(#kd-navy)"/>
+    <text x="900" y="342" text-anchor="start" font-size="22" fill="#051A53">lệnh và dữ liệu</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p><b>RAM</b> chứa chương trình đang chạy, mất khi tắt nguồn; <b>ROM</b> chứa firmware chạy đầu tiên; <b>bộ nhớ thứ cấp</b> giữ tệp lâu dài.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Thiết bị vào ra đưa dữ liệu vào máy và đưa kết quả ra</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Thiết bị nhập</b>: bàn phím, chuột, micro, camera, cảm biến</li><li data-s="2"><b>Thiết bị xuất</b>: màn hình, loa, máy in</li><li data-s="3">Vừa nhập vừa xuất: màn hình cảm ứng, ổ lưu trữ, card mạng</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Phân cấp bộ nhớ: gần CPU thì nhanh và nhỏ, xa CPU thì chậm và lớn</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 600" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Phân cấp bộ nhớ: thanh ghi dưới 1 ns, vài trăm byte; cache L1 đến L3 khoảng 1 đến 10 ns, vài MB; RAM khoảng 100 ns, hàng chục GB; SSD khoảng 0,1 ms, hàng trăm GB; ổ cứng khoảng 10 ms, hàng TB. Lên trên nhanh, nhỏ, đắt; xuống dưới chậm, lớn, rẻ.">
+  <defs>
+    <marker id="pc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="pc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="pc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="pc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="pc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="pc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Thanh ghi -->
+  <g data-s="1">
+    <rect x="610" y="30" width="380" height="86" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="800" y="84" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Thanh ghi</text>
+    <text x="1420" y="70" text-anchor="start" font-size="25" fill="#373D4E" font-weight="500">&lt; 1 ns</text>
+    <text x="1420" y="102" text-anchor="start" font-size="22" fill="#5B6478">vài trăm byte</text>
+  </g>
+
+  <!-- Cache L1, L2, L3 -->
+  <g data-s="2">
+    <rect x="520" y="130" width="560" height="86" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="800" y="184" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Cache L1, L2, L3</text>
+    <text x="1420" y="170" text-anchor="start" font-size="25" fill="#373D4E" font-weight="500">1–10 ns</text>
+    <text x="1420" y="202" text-anchor="start" font-size="22" fill="#5B6478">vài MB</text>
+  </g>
+
+  <!-- RAM -->
+  <g data-s="3">
+    <rect x="430" y="230" width="740" height="86" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="800" y="284" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500">RAM</text>
+    <text x="1420" y="270" text-anchor="start" font-size="25" fill="#373D4E" font-weight="500">≈ 100 ns</text>
+    <text x="1420" y="302" text-anchor="start" font-size="22" fill="#5B6478">hàng chục GB</text>
+  </g>
+
+  <!-- SSD -->
+  <g data-s="4">
+    <rect x="340" y="330" width="920" height="86" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="800" y="384" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500">SSD</text>
+    <text x="1420" y="370" text-anchor="start" font-size="25" fill="#373D4E" font-weight="500">≈ 0,1 ms</text>
+    <text x="1420" y="402" text-anchor="start" font-size="22" fill="#5B6478">hàng trăm GB</text>
+  </g>
+
+  <!-- Ổ cứng -->
+  <g data-s="5">
+    <rect x="250" y="430" width="1100" height="86" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="800" y="484" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500">Ổ cứng</text>
+    <text x="1420" y="470" text-anchor="start" font-size="25" fill="#373D4E" font-weight="500">≈ 10 ms</text>
+    <text x="1420" y="502" text-anchor="start" font-size="22" fill="#5B6478">hàng TB</text>
+  </g>
+
+  <!-- trục nhanh chậm -->
+  <g data-s="6">
+    <line x1="60" y1="520" x2="60" y2="70" stroke="#5B6478" stroke-width="3" marker-end="url(#pc-grey)"/>
+    <text x="80" y="70" text-anchor="start" font-size="22" fill="#5B6478">nhanh, nhỏ, đắt</text>
+    <text x="80" y="520" text-anchor="start" font-size="22" fill="#5B6478">chậm, lớn, rẻ</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="7"><p>Dữ liệu vừa dùng và dữ liệu nằm gần nó được giữ ở <b>cache</b>: phần lớn lần đọc không phải chờ RAM.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Cùng dữ liệu, cùng phép cộng: duyệt theo cột chậm hơn vì không tận dụng cache</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Mảng hai chiều nằm trong bộ nhớ theo từng hàng liền nhau. Cache nạp cả một đoạn 64 byte, tức 16 số int, mỗi lần. Duyệt theo hàng: phần tử kế tiếp nằm trong đoạn đã nạp. Duyệt theo cột: mỗi bước nhảy 16 KB, gần như bước nào cũng phải đọc từ RAM.">
+  <defs>
+    <marker id="hc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="hc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="hc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="hc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="hc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="hc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- mảng trong bộ nhớ -->
+  <g data-s="1">
+    <text x="40" y="50" text-anchor="start" font-size="25" fill="#6B4E06" font-weight="500">Bộ nhớ: hàng 0, rồi hàng 1, rồi hàng 2…</text>
+    <rect x="40" y="70" width="210" height="60" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="145" y="107.56" text-anchor="middle" font-size="21" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">a[0][0]</text>
+    <rect x="250" y="70" width="210" height="60" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="355" y="107.56" text-anchor="middle" font-size="21" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">a[0][1]</text>
+    <rect x="460" y="70" width="210" height="60" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="565" y="107.56" text-anchor="middle" font-size="21" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">a[0][2]</text>
+    <rect x="670" y="70" width="210" height="60" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="775" y="107.56" text-anchor="middle" font-size="21" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">…</text>
+    <rect x="880" y="70" width="210" height="60" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="985" y="107.56" text-anchor="middle" font-size="21" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">a[0][4095]</text>
+    <rect x="1090" y="70" width="210" height="60" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1195" y="107.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">a[1][0]</text>
+    <rect x="1300" y="70" width="210" height="60" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1405" y="107.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">a[1][1]</text>
+    <rect x="1510" y="70" width="210" height="60" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1615" y="107.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">…</text>
+  </g>
+
+  <!-- cache nạp cả đoạn -->
+  <g data-s="2">
+    <rect x="36" y="64" width="638" height="72" rx="4" fill="none" stroke="#2F855A" stroke-width="4"/>
+    <text x="355" y="175" text-anchor="middle" font-size="23" fill="#22603F">cache nạp một đoạn 64 byte = 16 số int</text>
+  </g>
+
+  <!-- duyệt theo hàng -->
+  <g data-s="3">
+    <rect x="40" y="230" width="800" height="290" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="440" y="327.5" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500">Theo hàng: a[i][j], j tăng</text>
+    <text x="440" y="380.5" text-anchor="middle" font-size="23" fill="#373D4E">phần tử kế tiếp nằm ngay bên cạnh</text>
+    <text x="440" y="419.5" text-anchor="middle" font-size="23" fill="#373D4E">15 trong 16 lần đọc có sẵn trong cache</text>
+    <text x="440" y="458.5" text-anchor="middle" font-size="23" fill="#373D4E">≈ 1 lần chờ RAM cho mỗi 16 số</text>
+  </g>
+
+  <!-- duyệt theo cột -->
+  <g data-s="4">
+    <rect x="920" y="230" width="800" height="290" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1320" y="327.5" text-anchor="middle" font-size="28" fill="#9B1C1C" font-weight="500">Theo cột: a[i][j], i tăng</text>
+    <text x="1320" y="380.5" text-anchor="middle" font-size="23" fill="#373D4E">phần tử kế tiếp cách 4096 × 4 byte = 16 KB</text>
+    <text x="1320" y="419.5" text-anchor="middle" font-size="23" fill="#373D4E">gần như mỗi lần đọc phải lấy từ RAM</text>
+    <text x="1320" y="458.5" text-anchor="middle" font-size="23" fill="#373D4E">≈ 1 lần chờ RAM cho mỗi số</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p><b>Tính cục bộ</b>: chương trình dùng dữ liệu nằm gần nhau thì cache phát huy tác dụng.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Kết quả đo: cộng theo cột chậm hơn khoảng 26 lần</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">Terminal</span>gcc -std=c17 -Wall -Wextra -O1 -o out/locality src/locality.c
+./out/locality &gt; results/locality.txt
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>array: 4096 x 4096 ints (64 MB)
+<span class="noi-bat">row by row      : sum = 16777216,     9.0 ms</span>
+<span class="noi-bat">column by column: sum = 16777216,   235.0 ms</span>
+<span class="noi-bat">column / row    : 26.1 times slower</span></pre></div><ul class="y-nho"><li data-s="2">Cùng 16 777 216 phép cộng, cùng tổng: <b>9 ms</b> theo hàng, <b>235 ms</b> theo cột</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>RAM mất nội dung khi tắt nguồn: dữ liệu phải được ghi thành tệp</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Bảng số của chương trình đo chỉ nằm trong RAM: <b>tắt chương trình là mất</b></li><li data-s="2">Muốn giữ lại, dữ liệu phải được ghi xuống bộ nhớ thứ cấp, thành <b>tệp</b></li></ul><div class="khung" data-s="3">Ai quản lý tệp và quyết định chương trình nào được dùng CPU, RAM? <b>Hệ điều hành</b> — phần cuối của chương.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Hai cách cộng mọi số của cùng một bảng cho cùng tổng, nhưng cách duyệt theo cột chậm hơn khoảng 26 lần. Nguyên nhân chính là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Duyệt theo cột thực hiện nhiều phép cộng hơn.</div></div><div class="dung"><span>B</span><div>Số kế tiếp theo cột nằm xa trong bộ nhớ, nên hầu hết lần đọc không có sẵn trong cache.</div></div><div class=""><span>C</span><div>CPU cộng các số trong cùng một cột chậm hơn.</div></div><div class=""><span>D</span><div>Bảng quá lớn nên không vừa RAM.</div></div></div><div class="giai-thich">Số phép cộng như nhau. Bảng xếp theo hàng trong bộ nhớ; cache nạp từng đoạn 64 byte liền nhau, nên duyệt theo hàng tận dụng được, duyệt theo cột thì gần như mỗi lần đọc phải chờ RAM. Bảng 64 MB vẫn vừa RAM.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Hai cách cộng mọi số của cùng một bảng cho cùng tổng, nhưng cách duyệt theo cột chậm hơn khoảng 26 lần. Nguyên nhân chính là gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Duyệt theo cột thực hiện nhiều phép cộng hơn.</div></div><div class="dung"><span>B</span><div>Số kế tiếp theo cột nằm xa trong bộ nhớ, nên hầu hết lần đọc không có sẵn trong cache.</div></div><div class=""><span>C</span><div>CPU cộng các số trong cùng một cột chậm hơn.</div></div><div class=""><span>D</span><div>Bảng quá lớn nên không vừa RAM.</div></div></div><div class="giai-thich">Số phép cộng như nhau. Bảng xếp theo hàng trong bộ nhớ; cache nạp từng đoạn 64 byte liền nhau, nên duyệt theo hàng tận dụng được, duyệt theo cột thì gần như mỗi lần đọc phải chờ RAM. Bảng 64 MB vẫn vừa RAM.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Khi vừa bật máy, chương trình nào chạy đầu tiên và nó nằm ở đâu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Hệ điều hành, nằm trong RAM.</div></div><div class=""><span>B</span><div>Hệ điều hành, nằm trên ổ SSD.</div></div><div class="dung"><span>C</span><div>Firmware, nằm trong ROM.</div></div><div class=""><span>D</span><div>Chương trình người dùng mở gần nhất, nằm trong cache.</div></div></div><div class="giai-thich">Lúc bật máy, RAM chưa có gì vì RAM mất nội dung khi tắt nguồn. Firmware trong ROM chạy đầu tiên và nạp hệ điều hành từ bộ nhớ thứ cấp vào RAM.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Khi vừa bật máy, chương trình nào chạy đầu tiên và nó nằm ở đâu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Hệ điều hành, nằm trong RAM.</div></div><div class=""><span>B</span><div>Hệ điều hành, nằm trên ổ SSD.</div></div><div class="dung"><span>C</span><div>Firmware, nằm trong ROM.</div></div><div class=""><span>D</span><div>Chương trình người dùng mở gần nhất, nằm trong cache.</div></div></div><div class="giai-thich">Lúc bật máy, RAM chưa có gì vì RAM mất nội dung khi tắt nguồn. Firmware trong ROM chạy đầu tiên và nạp hệ điều hành từ bộ nhớ thứ cấp vào RAM.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Phân cấp bộ nhớ</b>: thanh ghi, cache, RAM, SSD, ổ cứng — lên trên nhanh, nhỏ, đắt</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Cache</b> giữ dữ liệu vừa dùng và dữ liệu lân cận; <b>tính cục bộ</b> quyết định cache có giúp được không</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>RAM</b> mất nội dung khi tắt nguồn; ROM chứa firmware; bộ nhớ thứ cấp giữ tệp; thiết bị vào ra nối máy với bên ngoài</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>phân cấp bộ nhớ</span><span>cache</span><span>RAM</span><span>ROM</span><span>bộ nhớ thứ cấp</span><span>tính cục bộ</span><span>thiết bị vào ra</span></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Cache nhiều tầng L1, L2, L3 và dòng cache 64 byte</li><li>Bộ nhớ ảo: hệ điều hành dùng bộ nhớ thứ cấp để mở rộng RAM</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Chạy locality.c với các kích thước bảng 256, 1024, 4096 trên máy của các bạn; vẽ bảng thời gian và giải thích vì sao khoảng cách hai cách duyệt tăng khi bảng lớn hơn cache.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Dữ liệu: hệ đếm và biểu diễn dữ liệu trong máy tính</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. CPU nhanh hơn bộ nhớ rất nhiều lần, vậy làm sao để CPU không phải chờ bộ nhớ ở mọi lệnh?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:08</span>
+      <h3>Slide 1. CPU thực hiện một lệnh nhanh hơn RAM trả dữ liệu hàng trăm lần</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>CPU thực hiện một lệnh trong **chưa tới một nano giây**</li><li>Đọc một ô của RAM mất **khoảng một trăm nano giây**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** máy tính làm thế nào để CPU không phải chờ bộ nhớ ở mọi lệnh?</div></div>
+    <div class="kb-thoai"><p>Ở phần về chu trình lệnh, các bạn đã thấy mỗi vòng CPU đều phải nạp lệnh, và nhiều lệnh còn đọc hay ghi dữ liệu trong bộ nhớ. Một CPU ngày nay thực hiện một lệnh trong chưa tới một nano giây, tức một phần tỉ giây. Trong khi đó, đọc một ô của RAM mất khoảng một trăm nano giây. Nếu lệnh nào cũng phải chờ RAM, CPU sẽ phải chờ gần như toàn bộ thời gian. Vậy câu hỏi của phần này là: máy tính làm thế nào để CPU không phải chờ bộ nhớ ở mọi lệnh?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Các con số là bậc độ lớn, theo bảng thời gian của Norvig.
+Hiện dần: bước 1 khi đọc “Ở phần về chu trình lệnh”; bước 2 khi đọc “Trong khi đó”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:38</span>
+      <h3>Slide 2. RAM mất dữ liệu khi tắt máy; ROM và bộ nhớ thứ cấp thì không</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**RAM** chứa chương trình đang chạy, mất khi tắt nguồn; **ROM** chứa firmware chạy đầu tiên; **bộ nhớ thứ cấp** giữ tệp lâu dài.</li></ul></div></div>
+    <div class="kb-thoai"><p>Trước khi trả lời, mình gọi tên ba loại bộ nhớ các bạn sẽ gặp, qua những gì xảy ra khi bật máy. Trước hết là ROM, viết tắt của Read-Only Memory. ROM giữ nội dung cả khi tắt nguồn, và chứa firmware, chương trình chạy đầu tiên khi bật máy. Bộ nhớ thứ cấp, như ổ SSD hay ổ cứng, cũng giữ nội dung khi tắt nguồn và chứa hệ điều hành cùng các tệp. Firmware ra lệnh nạp hệ điều hành từ bộ nhớ thứ cấp vào RAM. RAM, viết tắt của Random Access Memory, đọc ghi được theo địa chỉ nhưng mất nội dung khi tắt nguồn, và chính là bộ nhớ chính chứa chương trình đang chạy. Cuối cùng, CPU thực hiện hệ điều hành và các chương trình từ RAM. Ba loại bộ nhớ này khác nhau ở hai điểm: có giữ nội dung khi tắt nguồn hay không, và nhanh hay chậm.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình ram-rom: bước 1 ROM, bước 2 bộ nhớ thứ cấp nạp vào RAM, bước 3 CPU chạy từ RAM; bước 4 ô kết luận.
+Hiện dần: bước 1 khi đọc “Trước hết là ROM”; bước 2 khi đọc “Bộ nhớ thứ cấp”; bước 3 khi đọc “Cuối cùng, CPU”; bước 4 khi đọc “Ba loại bộ nhớ này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:28</span>
+      <h3>Slide 3. Thiết bị vào ra đưa dữ liệu vào máy và đưa kết quả ra</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Thiết bị nhập**: bàn phím, chuột, micro, camera, cảm biến</li><li>**Thiết bị xuất**: màn hình, loa, máy in</li><li>Vừa nhập vừa xuất: màn hình cảm ứng, ổ lưu trữ, card mạng</li></ul></div>
+    <div class="kb-thoai"><p>Ngoài bộ nhớ, máy tính cần thiết bị vào ra để làm việc với thế giới bên ngoài. Thiết bị nhập đưa dữ liệu vào máy: bàn phím, chuột, micro, camera, hay cảm biến nhiệt độ trong máy điều hòa. Thiết bị xuất đưa kết quả ra: màn hình, loa, máy in. Một số thiết bị làm cả hai việc, như màn hình cảm ứng, card mạng, và chính các ổ lưu trữ của bộ nhớ thứ cấp. Với CPU, mọi thiết bị vào ra đều chậm hơn RAM nhiều lần.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt; mỗi ý có một nhóm biểu tượng thiết bị (tự vẽ, không dùng ảnh thương hiệu).
+Hiện dần: bước 1 khi đọc “Ngoài bộ nhớ”; bước 2 khi đọc “Thiết bị xuất”; bước 3 khi đọc “Một số thiết bị”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:58</span>
+      <h3>Slide 4. Phân cấp bộ nhớ: gần CPU thì nhanh và nhỏ, xa CPU thì chậm và lớn</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Dữ liệu vừa dùng và dữ liệu nằm gần nó được giữ ở **cache**: phần lớn lần đọc không phải chờ RAM.</li></ul></div></div>
+    <div class="kb-thoai"><p>Giờ mình trả lời câu hỏi đầu phần. Máy tính không dùng một loại bộ nhớ, mà xếp nhiều loại thành tầng, gọi là phân cấp bộ nhớ, hay memory hierarchy. Trên cùng là các thanh ghi trong CPU, đọc trong chưa tới một nano giây, nhưng chỉ chứa vài trăm byte. Ngay dưới là cache, bộ nhớ đệm của CPU, có vài tầng gọi là L1, L2, L3, đọc trong khoảng một đến mười nano giây, chứa vài megabyte. Tiếp theo là RAM, khoảng một trăm nano giây, hàng chục gigabyte. Dưới nữa là SSD, khoảng một phần mười mili giây, tức chậm hơn RAM khoảng một nghìn lần, hàng trăm gigabyte, và dưới cùng là ổ cứng, khoảng mười mili giây, hàng terabyte. Càng lên trên càng nhanh, càng nhỏ và càng đắt. Điểm mấu chốt là cache giữ bản sao của dữ liệu vừa dùng và dữ liệu nằm gần nó, nên phần lớn lần đọc của CPU được trả ngay từ cache, không phải chờ RAM.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình phan-cap: năm tầng hiện lần lượt theo năm câu mốc đầu; bước 6 trục nhanh chậm; bước 7 ô kết luận. Các con số là bậc độ lớn (CS:APP §1.6; bảng thời gian của Norvig), ghi nguồn trên slide.
+Hiện dần: bước 1 khi đọc “Trên cùng là các thanh ghi”; bước 2 khi đọc “Ngay dưới là cache”; bước 3 khi đọc “Tiếp theo là RAM”; bước 4 khi đọc “Dưới nữa là SSD”; bước 5 khi đọc “dưới cùng là ổ cứng”; bước 6 khi đọc “Càng lên trên”; bước 7 khi đọc “Điểm mấu chốt”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:56</span>
+      <h3>Slide 5. Cùng dữ liệu, cùng phép cộng: duyệt theo cột chậm hơn vì không tận dụng cache</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Tính cục bộ**: chương trình dùng dữ liệu nằm gần nhau thì cache phát huy tác dụng.</li></ul></div></div>
+    <div class="kb-thoai"><p>Cache chỉ giúp được khi chương trình dùng dữ liệu nằm gần nhau. Mình xét một bảng số 4096 hàng, 4096 cột, mỗi số 4 byte. Trong bộ nhớ, bảng được xếp theo từng hàng: hết hàng 0 mới đến hàng 1. Mỗi lần thiếu dữ liệu, cache không nạp riêng một số, mà nạp cả một đoạn 64 byte, tức 16 số liền nhau. Nếu cộng theo hàng, số kế tiếp nằm ngay bên cạnh, nên 15 trong 16 lần đọc đã có sẵn trong cache. Còn nếu cộng theo cột, số kế tiếp cách 4096 số, tức 16 kilobyte, nên gần như lần đọc nào cũng phải chờ RAM. Hiện tượng này gọi là tính cục bộ, hay locality: chương trình dùng lại dữ liệu vừa dùng và dữ liệu nằm gần đó thì cache phát huy tác dụng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình duyet-hang-cot: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Hình chưa đưa thời gian đo, để người học đoán ở slide sau. Ghi nguồn: CS:APP §6.2.
+Hiện dần: bước 1 khi đọc “Mình xét một bảng số”; bước 2 khi đọc “Mỗi lần thiếu dữ liệu”; bước 3 khi đọc “Nếu cộng theo hàng”; bước 4 khi đọc “Còn nếu cộng theo cột”; bước 5 khi đọc “Hiện tượng này gọi là”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:44</span>
+      <h3>Slide 6. Kết quả đo: cộng theo cột chậm hơn khoảng 26 lần</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Cùng 16 777 216 phép cộng, cùng tổng: **9 ms** theo hàng, **235 ms** theo cột</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">run.sh</span><pre><code>gcc -std=c17 -Wall -Wextra -O1 -o out/locality src/locality.c
+./out/locality &gt; results/locality.txt</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình đo điều đó bằng một chương trình C viết sẵn, theo ví dụ trong sách về hệ thống máy tính của Bryant và O&#x27;Hallaron. Chương trình tạo bảng 4096 nhân 4096 số, gán mọi số bằng 1, cộng một lần theo hàng và một lần theo cột, rồi in thời gian. Các bạn chưa cần đọc mã, chỉ cần đọc kết quả. Trước khi xem, các bạn thử đoán: hai cách chênh nhau bao nhiêu lần? Kết quả cho thấy cả hai cách cùng cộng hơn mười sáu triệu số và cùng ra một tổng, nhưng cách theo hàng mất 9 mili giây, cách theo cột mất 235 mili giây, chậm hơn khoảng 26 lần. Phép tính như nhau, chỉ khác thứ tự đọc bộ nhớ.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Lệnh biên dịch và chạy phía trên, kết quả phía dưới. Sau câu &quot;chênh nhau bao nhiêu lần?&quot;, dừng khoảng 2 giây rồi mới hiện khung kết quả. Kết quả chạy ngày 13/11/2026 trên máy biên soạn (Intel Core i5-8400H, GCC 13.2); lần chạy lại cho 10 ms và 271 ms, tỉ lệ vẫn khoảng 26–27 lần. Mã src/locality.c không lên slide ở chương này.
+Hiện dần: bước 1 khi đọc “Mình đo điều đó”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:34</span>
+      <h3>Slide 7. RAM mất nội dung khi tắt nguồn: dữ liệu phải được ghi thành tệp</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bảng số của chương trình đo chỉ nằm trong RAM: **tắt chương trình là mất**</li><li>Muốn giữ lại, dữ liệu phải được ghi xuống bộ nhớ thứ cấp, thành **tệp**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> Ai quản lý tệp và quyết định chương trình nào được dùng CPU, RAM? **Hệ điều hành** — phần cuối của chương.</div></div>
+    <div class="kb-thoai"><p>Còn một điều cần nhớ về RAM. Bảng số của chương trình đo chỉ nằm trong RAM, nên chương trình kết thúc hay máy tắt là mất. Muốn giữ lại, dữ liệu phải được ghi xuống bộ nhớ thứ cấp, thành tệp. Việc ghi tệp, cũng như việc chia CPU và RAM cho các chương trình, do hệ điều hành đảm nhận, nội dung phần cuối của chương.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung hiện cuối.
+Hiện dần: bước 1 khi đọc “Còn một điều”; bước 2 khi đọc “Muốn giữ lại”; bước 3 khi đọc “Việc ghi tệp”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:55</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Kết quả đo vừa rồi cần một lời giải thích.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Hai cách cộng mọi số của cùng một bảng cho cùng tổng, nhưng cách duyệt theo cột chậm hơn khoảng 26 lần. Nguyên nhân chính là gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Duyệt theo cột thực hiện nhiều phép cộng hơn.</li>
+      <li><b>B.</b> Số kế tiếp theo cột nằm xa trong bộ nhớ, nên hầu hết lần đọc không có sẵn trong cache.</li>
+      <li><b>C.</b> CPU cộng các số trong cùng một cột chậm hơn.</li>
+      <li><b>D.</b> Bảng quá lớn nên không vừa RAM.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Số phép cộng như nhau. Bảng xếp theo hàng trong bộ nhớ; cache nạp từng đoạn 64 byte liền nhau, nên duyệt theo hàng tận dụng được, duyệt theo cột thì gần như mỗi lần đọc phải chờ RAM. Bảng 64 MB vẫn vừa RAM.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A dễ được chọn vì nghĩ chậm hơn là làm nhiều hơn, nhưng hai cách làm đúng cùng số phép cộng. Khác nhau chỉ ở chỗ cache có dữ liệu sẵn hay không.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:16</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo đưa các bạn về lúc vừa bật máy.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Khi vừa bật máy, chương trình nào chạy đầu tiên và nó nằm ở đâu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Hệ điều hành, nằm trong RAM.</li>
+      <li><b>B.</b> Hệ điều hành, nằm trên ổ SSD.</li>
+      <li><b>C.</b> Firmware, nằm trong ROM.</li>
+      <li><b>D.</b> Chương trình người dùng mở gần nhất, nằm trong cache.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Lúc bật máy, RAM chưa có gì vì RAM mất nội dung khi tắt nguồn. Firmware trong ROM chạy đầu tiên và nạp hệ điều hành từ bộ nhớ thứ cấp vào RAM.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A sai vì lúc vừa bật máy, RAM trống: RAM mất nội dung khi tắt nguồn. Firmware trong ROM chạy trước, rồi mới nạp hệ điều hành vào RAM.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:36</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Phân cấp bộ nhớ**: thanh ghi, cache, RAM, SSD, ổ cứng — lên trên nhanh, nhỏ, đắt</li><li>**Cache** giữ dữ liệu vừa dùng và dữ liệu lân cận; **tính cục bộ** quyết định cache có giúp được không</li><li>**RAM** mất nội dung khi tắt nguồn; ROM chứa firmware; bộ nhớ thứ cấp giữ tệp; thiết bị vào ra nối máy với bên ngoài</li></ul></div>
+    <div class="kb-thoai"><p>Phân cấp bộ nhớ là cách máy tính giữ cho CPU ít phải chờ: nhiều tầng, lên trên nhanh, nhỏ và đắt, xuống dưới chậm, lớn và rẻ. Cache giúp được khi chương trình có tính cục bộ, tức dùng dữ liệu vừa dùng và dữ liệu nằm gần đó, như phép đo duyệt theo hàng cho thấy. Ngoài ra, RAM mất nội dung khi tắt nguồn, ROM chứa firmware, bộ nhớ thứ cấp giữ tệp, còn thiết bị vào ra nối máy với bên ngoài. Trên slide là các từ khóa cần nhớ: phân cấp bộ nhớ, cache, RAM, ROM, bộ nhớ thứ cấp, tính cục bộ và thiết bị vào ra.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Phân cấp bộ nhớ là cách”; bước 2 khi đọc “Cache giúp được”; bước 3 khi đọc “Ngoài ra”; bước 4 khi đọc “các từ khóa cần nhớ”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:11</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Có hai chủ đề nâng cao cho các bạn muốn đọc thêm: cache nhiều tầng L1, L2, L3 cùng dòng cache 64 byte, và bộ nhớ ảo, cách hệ điều hành dùng bộ nhớ thứ cấp để mở rộng RAM. Bài tập mở rộng là chạy chương trình đo với các kích thước bảng 256, 1024 và 4096 trên máy của các bạn, rồi giải thích vì sao khoảng cách giữa hai cách duyệt tăng khi bảng lớn hơn cache.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:36</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Phần cứng đã đủ ba khối, nhưng bên trong các khối đó, mọi thứ chỉ là bit 0 và 1. Phần tiếp theo, về hệ đếm và biểu diễn dữ liệu trong máy tính, cho thấy số, chữ và cả tiếng Việt có dấu được biểu diễn bằng bit ra sao.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V04", "tieu_de": "Phần cứng: phân cấp bộ nhớ và thiết bị vào ra", "giong": "vi-VN-NamMinhNeural", "tong": 411.37, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/2bb7449d936c299e.mp3", "dur": 8.18, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.6, "CPU", 1], [2.587, "nhanh", 1], [2.812, "hơn", 1], [3.013, "bộ", 1], [3.188, "nhớ", 1], [3.425, "rất", 1], [3.612, "nhiều", 1], [3.8, "lần,", 1], [4.25, "vậy", 1], [4.438, "làm", 1], [4.612, "sao", 1], [4.888, "để", 1], [5.25, "CPU", 1], [5.612, "không", 1], [5.85, "phải", 1], [6.013, "chờ", 1], [6.2, "bộ", 1], [6.388, "nhớ", 1], [6.662, "ở", 1], [6.775, "mọi", 1], [6.987, "lệnh?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. CPU thực hiện một lệnh nhanh hơn RAM trả dữ liệu hàng trăm lần", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Các con số là bậc độ lớn, theo bảng thời gian của Norvig.\nHiện dần: bước 1 khi đọc “Ở phần về chu trình lệnh”; bước 2 khi đọc “Trong khi đó”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 8.78, "audio": "audio/715a9f2be2cc4dc4.mp3", "dur": 29.35, "words": [[0.1, "Ở", 0], [0.275, "phần", 0], [0.537, "về", 0], [0.675, "chu", 0], [0.887, "trình", 0], [1.087, "lệnh,", 0], [1.538, "các", 0], [1.712, "bạn", 0], [1.95, "đã", 0], [2.05, "thấy", 0], [2.237, "mỗi", 0], [2.462, "vòng", 0], [2.931, "CPU", 0], [3.4, "đều", 0], [3.538, "phải", 0], [3.7, "nạp", 0], [3.888, "lệnh,", 0], [4.362, "và", 0], [4.55, "nhiều", 0], [4.75, "lệnh", 0], [5.0, "còn", 0], [5.188, "đọc", 0], [5.362, "hay", 0], [5.5, "ghi", 0], [5.638, "dữ", 0], [5.825, "liệu", 0], [6.088, "trong", 0], [6.275, "bộ", 0], [6.45, "nhớ.", 0], [7.662, "Một", 1], [8.143, "CPU", 1], [8.625, "ngày", 1], [8.912, "nay", 1], [9.075, "thực", 1], [9.238, "hiện", 1], [9.463, "một", 1], [9.662, "lệnh", 1], [9.938, "trong", 1], [10.137, "chưa", 1], [10.325, "tới", 1], [10.537, "một", 1], [10.75, "nano", 1], [11.1, "giây,", 1], [11.625, "tức", 1], [11.838, "một", 1], [12.012, "phần", 1], [12.25, "tỉ", 1], [12.438, "giây.", 1], [13.575, "Trong", 2], [13.85, "khi", 2], [13.975, "đó,", 2], [14.475, "đọc", 2], [14.7, "một", 2], [14.975, "ô", 2], [15.088, "của", 2], [15.262, "RAM", 2], [15.475, "mất", 2], [15.613, "khoảng", 2], [15.938, "một", 2], [16.125, "trăm", 2], [16.4, "nano", 2], [16.738, "giây.", 2], [17.863, "Nếu", 3], [18.262, "lệnh", 3], [18.45, "nào", 3], [18.637, "cũng", 3], [18.825, "phải", 3], [19.0, "chờ", 3], [19.225, "RAM,", 3], [19.857, "CPU", 3], [20.488, "sẽ", 3], [20.663, "phải", 3], [20.85, "chờ", 3], [21.1, "gần", 3], [21.325, "như", 3], [21.525, "toàn", 3], [21.8, "bộ", 3], [21.988, "thời", 3], [22.137, "gian.", 3], [23.325, "Vậy", 4], [23.6, "câu", 4], [23.775, "hỏi", 4], [24.0, "của", 4], [24.15, "phần", 4], [24.35, "này", 4], [24.5, "là:", 4], [25.038, "máy", 4], [25.225, "tính", 4], [25.462, "làm", 4], [25.637, "thế", 4], [25.775, "nào", 4], [26.0, "để", 4], [26.375, "CPU", 4], [26.75, "không", 4], [26.988, "phải", 4], [27.15, "chờ", 4], [27.363, "bộ", 4], [27.562, "nhớ", 4], [27.85, "ở", 4], [27.95, "mọi", 4], [28.163, "lệnh?", 4]], "cues": [0.1, 13.575, 23.6], "lang": 0.6}, {"ten": "Slide 2. RAM mất dữ liệu khi tắt máy; ROM và bộ nhớ thứ cấp thì không", "loai": "slide", "slide": "S02", "dung": "Hình ram-rom: bước 1 ROM, bước 2 bộ nhớ thứ cấp nạp vào RAM, bước 3 CPU chạy từ RAM; bước 4 ô kết luận.\nHiện dần: bước 1 khi đọc “Trước hết là ROM”; bước 2 khi đọc “Bộ nhớ thứ cấp”; bước 3 khi đọc “Cuối cùng, CPU”; bước 4 khi đọc “Ba loại bộ nhớ này”.", "start": 38.73, "audio": "audio/6efb78aec6eac096.mp3", "dur": 47.06, "words": [[0.1, "Trước", 0], [0.35, "khi", 0], [0.487, "trả", 0], [0.688, "lời,", 0], [1.163, "mình", 0], [1.375, "gọi", 0], [1.575, "tên", 0], [1.788, "ba", 0], [1.95, "loại", 0], [2.138, "bộ", 0], [2.35, "nhớ", 0], [2.575, "các", 0], [2.75, "bạn", 0], [2.95, "sẽ", 0], [3.1, "gặp,", 0], [3.6, "qua", 0], [3.862, "những", 0], [4.075, "gì", 0], [4.213, "xảy", 0], [4.438, "ra", 0], [4.612, "khi", 0], [4.75, "bật", 0], [4.925, "máy.", 0], [6.1, "Trước", 1], [6.412, "hết", 1], [6.638, "là", 1], [6.825, "ROM,", 1], [7.325, "viết", 1], [7.638, "tắt", 1], [7.85, "của", 1], [8.137, "Read-Only", 1], [8.838, "Memory.", 1], [10.325, "ROM", 2], [10.7, "giữ", 2], [10.863, "nội", 2], [11.088, "dung", 2], [11.325, "cả", 2], [11.5, "khi", 2], [11.65, "tắt", 2], [11.85, "nguồn,", 2], [12.338, "và", 2], [12.588, "chứa", 2], [12.85, "firmware,", 2], [13.613, "chương", 2], [13.863, "trình", 2], [14.088, "chạy", 2], [14.262, "đầu", 2], [14.438, "tiên", 2], [14.725, "khi", 2], [14.863, "bật", 2], [15.037, "máy.", 2], [16.238, "Bộ", 3], [16.512, "nhớ", 3], [16.762, "thứ", 3], [16.925, "cấp,", 3], [17.387, "như", 3], [17.663, "ổ", 3], [18.032, "SSD", 3], [18.4, "hay", 3], [18.575, "ổ", 3], [18.738, "cứng,", 3], [19.3, "cũng", 3], [19.525, "giữ", 3], [19.688, "nội", 3], [19.887, "dung", 3], [20.125, "khi", 3], [20.3, "tắt", 3], [20.5, "nguồn", 3], [20.775, "và", 3], [20.887, "chứa", 3], [21.113, "hệ", 3], [21.288, "điều", 3], [21.45, "hành", 3], [21.7, "cùng", 3], [21.9, "các", 3], [22.075, "tệp.", 3], [23.15, "Firmware", 4], [23.725, "ra", 4], [23.863, "lệnh", 4], [24.062, "nạp", 4], [24.238, "hệ", 4], [24.438, "điều", 4], [24.613, "hành", 4], [24.85, "từ", 4], [25.025, "bộ", 4], [25.238, "nhớ", 4], [25.488, "thứ", 4], [25.65, "cấp", 4], [25.887, "vào", 4], [26.1, "RAM.", 4], [27.25, "RAM,", 5], [27.825, "viết", 5], [28.075, "tắt", 5], [28.262, "của", 5], [28.538, "Random", 5], [29.087, "Access", 5], [29.462, "Memory,", 5], [30.3, "đọc", 5], [30.538, "ghi", 5], [30.7, "được", 5], [30.85, "theo", 5], [31.0, "địa", 5], [31.188, "chỉ", 5], [31.363, "nhưng", 5], [31.575, "mất", 5], [31.762, "nội", 5], [31.962, "dung", 5], [32.175, "khi", 5], [32.337, "tắt", 5], [32.538, "nguồn,", 5], [33.05, "và", 5], [33.263, "chính", 5], [33.487, "là", 5], [33.587, "bộ", 5], [33.788, "nhớ", 5], [34.0, "chính", 5], [34.237, "chứa", 5], [34.45, "chương", 5], [34.688, "trình", 5], [34.888, "đang", 5], [35.075, "chạy.", 5], [36.225, "Cuối", 6], [36.475, "cùng,", 6], [37.088, "CPU", 6], [37.7, "thực", 6], [37.875, "hiện", 6], [38.087, "hệ", 6], [38.275, "điều", 6], [38.462, "hành", 6], [38.712, "và", 6], [38.825, "các", 6], [39.0, "chương", 6], [39.237, "trình", 6], [39.475, "từ", 6], [39.663, "RAM.", 6], [40.825, "Ba", 7], [41.062, "loại", 7], [41.237, "bộ", 7], [41.45, "nhớ", 7], [41.675, "này", 7], [41.85, "khác", 7], [42.062, "nhau", 7], [42.312, "ở", 7], [42.462, "hai", 7], [42.65, "điểm:", 7], [43.212, "có", 7], [43.362, "giữ", 7], [43.525, "nội", 7], [43.725, "dung", 7], [43.962, "khi", 7], [44.138, "tắt", 7], [44.35, "nguồn", 7], [44.575, "hay", 7], [44.725, "không,", 7], [45.225, "và", 7], [45.462, "nhanh", 7], [45.712, "hay", 7], [45.862, "chậm.", 7]], "cues": [6.1, 16.238, 36.225, 40.825], "lang": 2.6}, {"ten": "Slide 3. Thiết bị vào ra đưa dữ liệu vào máy và đưa kết quả ra", "loai": "slide", "slide": "S03", "dung": "Ba ý hiện lần lượt; mỗi ý có một nhóm biểu tượng thiết bị (tự vẽ, không dùng ảnh thương hiệu).\nHiện dần: bước 1 khi đọc “Ngoài bộ nhớ”; bước 2 khi đọc “Thiết bị xuất”; bước 3 khi đọc “Một số thiết bị”.", "start": 88.39, "audio": "audio/057e6f5792499ccc.mp3", "dur": 29.18, "words": [[0.1, "Ngoài", 0], [0.375, "bộ", 0], [0.575, "nhớ,", 0], [1.15, "máy", 0], [1.363, "tính", 0], [1.625, "cần", 0], [1.837, "thiết", 0], [2.038, "bị", 0], [2.2, "vào", 0], [2.4, "ra", 0], [2.638, "để", 0], [2.75, "làm", 0], [2.962, "việc", 0], [3.188, "với", 0], [3.312, "thế", 0], [3.462, "giới", 0], [3.712, "bên", 0], [3.938, "ngoài.", 0], [5.138, "Thiết", 1], [5.375, "bị", 1], [5.537, "nhập", 1], [5.775, "đưa", 1], [5.963, "dữ", 1], [6.15, "liệu", 1], [6.4, "vào", 1], [6.562, "máy:", 1], [7.125, "bàn", 1], [7.362, "phím,", 1], [7.925, "chuột,", 1], [8.475, "micro,", 1], [9.35, "camera,", 1], [10.225, "hay", 1], [10.45, "cảm", 1], [10.675, "biến", 1], [10.875, "nhiệt", 1], [11.025, "độ", 1], [11.25, "trong", 1], [11.438, "máy", 1], [11.625, "điều", 1], [11.787, "hòa.", 1], [12.95, "Thiết", 2], [13.225, "bị", 2], [13.387, "xuất", 2], [13.625, "đưa", 2], [13.812, "kết", 2], [14.037, "quả", 2], [14.275, "ra:", 2], [14.825, "màn", 2], [15.113, "hình,", 2], [15.6, "loa,", 2], [16.238, "máy", 2], [16.525, "in.", 2], [17.637, "Một", 3], [17.988, "số", 3], [18.188, "thiết", 3], [18.413, "bị", 3], [18.562, "làm", 3], [18.812, "cả", 3], [19.0, "hai", 3], [19.175, "việc,", 3], [19.613, "như", 3], [19.837, "màn", 3], [20.038, "hình", 3], [20.225, "cảm", 3], [20.512, "ứng,", 3], [20.962, "card", 3], [21.175, "mạng,", 3], [21.7, "và", 3], [21.9, "chính", 3], [22.137, "các", 3], [22.375, "ổ", 3], [22.488, "lưu", 3], [22.688, "trữ", 3], [22.988, "của", 3], [23.1, "bộ", 3], [23.3, "nhớ", 3], [23.538, "thứ", 3], [23.688, "cấp.", 3], [24.775, "Với", 4], [25.368, "CPU,", 4], [25.962, "mọi", 4], [26.175, "thiết", 4], [26.363, "bị", 4], [26.538, "vào", 4], [26.738, "ra", 4], [26.962, "đều", 4], [27.125, "chậm", 4], [27.4, "hơn", 4], [27.65, "RAM", 4], [27.825, "nhiều", 4], [28.05, "lần.", 4]], "cues": [0.1, 12.95, 17.637], "lang": 0.6}, {"ten": "Slide 4. Phân cấp bộ nhớ: gần CPU thì nhanh và nhỏ, xa CPU thì chậm và lớn", "loai": "slide", "slide": "S04", "dung": "Hình phan-cap: năm tầng hiện lần lượt theo năm câu mốc đầu; bước 6 trục nhanh chậm; bước 7 ô kết luận. Các con số là bậc độ lớn (CS:APP §1.6; bảng thời gian của Norvig), ghi nguồn trên slide.\nHiện dần: bước 1 khi đọc “Trên cùng là các thanh ghi”; bước 2 khi đọc “Ngay dưới là cache”; bước 3 khi đọc “Tiếp theo là RAM”; bước 4 khi đọc “Dưới nữa là SSD”; bước 5 khi đọc “dưới cùng là ổ cứng”; bước 6 khi đọc “Càng lên trên”; bước 7 khi đọc “Điểm mấu chốt”.", "start": 118.17, "audio": "audio/17205df2ff38ea4d.mp3", "dur": 55.3, "words": [[0.1, "Giờ", 0], [0.412, "mình", 0], [0.688, "trả", 0], [0.85, "lời", 0], [1.062, "câu", 0], [1.262, "hỏi", 0], [1.475, "đầu", 0], [1.65, "phần.", 0], [2.812, "Máy", 1], [3.2, "tính", 1], [3.475, "không", 1], [3.725, "dùng", 1], [3.9, "một", 1], [4.037, "loại", 1], [4.237, "bộ", 1], [4.438, "nhớ,", 1], [5.0, "mà", 1], [5.237, "xếp", 1], [5.463, "nhiều", 1], [5.662, "loại", 1], [5.838, "thành", 1], [6.037, "tầng,", 1], [6.525, "gọi", 1], [6.8, "là", 1], [6.912, "phân", 1], [7.112, "cấp", 1], [7.263, "bộ", 1], [7.45, "nhớ,", 1], [8.025, "hay", 1], [8.238, "memory", 1], [8.738, "hierarchy.", 1], [10.238, "Trên", 2], [10.55, "cùng", 2], [10.775, "là", 2], [10.875, "các", 2], [11.037, "thanh", 2], [11.238, "ghi", 2], [11.438, "trong", 2], [12.0, "CPU,", 2], [12.562, "đọc", 2], [12.787, "trong", 2], [12.988, "chưa", 2], [13.162, "tới", 2], [13.363, "một", 2], [13.575, "nano", 2], [13.912, "giây,", 2], [14.463, "nhưng", 2], [14.762, "chỉ", 2], [14.963, "chứa", 2], [15.238, "vài", 2], [15.4, "trăm", 2], [15.637, "byte.", 2], [16.75, "Ngay", 3], [17.062, "dưới", 3], [17.275, "là", 3], [17.413, "cache,", 3], [17.9, "bộ", 3], [18.113, "nhớ", 3], [18.337, "đệm", 3], [18.587, "của", 3], [19.125, "CPU,", 3], [19.663, "có", 3], [19.788, "vài", 3], [19.925, "tầng", 3], [20.2, "gọi", 3], [20.4, "là", 3], [20.575, "L1,", 3], [21.387, "L2,", 3], [22.35, "L3,", 3], [23.25, "đọc", 3], [23.488, "trong", 3], [23.637, "khoảng", 3], [23.875, "một", 3], [24.012, "đến", 3], [24.225, "mười", 3], [24.413, "nano", 3], [24.762, "giây,", 3], [25.262, "chứa", 3], [25.562, "vài", 3], [25.775, "megabyte.", 3], [27.175, "Tiếp", 4], [27.512, "theo", 4], [27.725, "là", 4], [27.85, "RAM,", 4], [28.35, "khoảng", 4], [28.637, "một", 4], [28.825, "trăm", 4], [29.075, "nano", 4], [29.413, "giây,", 4], [29.95, "hàng", 4], [30.212, "chục", 4], [30.475, "gigabyte.", 4], [31.887, "Dưới", 5], [32.175, "nữa", 5], [32.388, "là", 5], [32.906, "SSD,", 5], [33.425, "khoảng", 5], [33.663, "một", 5], [33.812, "phần", 5], [34.025, "mười", 5], [34.237, "mili", 5], [34.575, "giây,", 5], [35.087, "tức", 5], [35.263, "chậm", 5], [35.5, "hơn", 5], [35.737, "RAM", 5], [35.925, "khoảng", 5], [36.175, "một", 5], [36.337, "nghìn", 5], [36.525, "lần,", 5], [36.975, "hàng", 5], [37.225, "trăm", 5], [37.462, "gigabyte,", 5], [38.237, "và", 5], [38.438, "dưới", 5], [38.6, "cùng", 5], [38.837, "là", 5], [38.987, "ổ", 5], [39.15, "cứng,", 5], [39.7, "khoảng", 5], [39.987, "mười", 5], [40.175, "mili", 5], [40.5, "giây,", 5], [41.013, "hàng", 5], [41.3, "terabyte.", 5], [42.688, "Càng", 6], [42.975, "lên", 6], [43.2, "trên", 6], [43.413, "càng", 6], [43.625, "nhanh,", 6], [44.138, "càng", 6], [44.425, "nhỏ", 6], [44.825, "và", 6], [44.975, "càng", 6], [45.237, "đắt.", 6], [46.263, "Điểm", 7], [46.513, "mấu", 7], [46.7, "chốt", 7], [46.975, "là", 7], [47.138, "cache", 7], [47.35, "giữ", 7], [47.513, "bản", 7], [47.725, "sao", 7], [47.962, "của", 7], [48.087, "dữ", 7], [48.263, "liệu", 7], [48.513, "vừa", 7], [48.712, "dùng", 7], [49.0, "và", 7], [49.112, "dữ", 7], [49.288, "liệu", 7], [49.538, "nằm", 7], [49.737, "gần", 7], [49.938, "nó,", 7], [50.487, "nên", 7], [50.763, "phần", 7], [50.987, "lớn", 7], [51.225, "lần", 7], [51.375, "đọc", 7], [51.55, "của", 7], [51.938, "CPU", 7], [52.325, "được", 7], [52.475, "trả", 7], [52.675, "ngay", 7], [52.85, "từ", 7], [53.05, "cache,", 7], [53.487, "không", 7], [53.725, "phải", 7], [53.913, "chờ", 7], [54.138, "RAM.", 7]], "cues": [10.238, 16.75, 27.175, 31.887, 38.438, 42.688, 46.263], "lang": 2.6}, {"ten": "Slide 5. Cùng dữ liệu, cùng phép cộng: duyệt theo cột chậm hơn vì không tận dụng cache", "loai": "slide", "slide": "S05", "dung": "Hình duyet-hang-cot: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Hình chưa đưa thời gian đo, để người học đoán ở slide sau. Ghi nguồn: CS:APP §6.2.\nHiện dần: bước 1 khi đọc “Mình xét một bảng số”; bước 2 khi đọc “Mỗi lần thiếu dữ liệu”; bước 3 khi đọc “Nếu cộng theo hàng”; bước 4 khi đọc “Còn nếu cộng theo cột”; bước 5 khi đọc “Hiện tượng này gọi là”.", "start": 176.07, "audio": "audio/35483eb739594f7e.mp3", "dur": 46.13, "words": [[0.1, "Cache", 0], [0.312, "chỉ", 0], [0.475, "giúp", 0], [0.688, "được", 0], [0.863, "khi", 0], [1.038, "chương", 0], [1.275, "trình", 0], [1.475, "dùng", 0], [1.7, "dữ", 0], [1.887, "liệu", 0], [2.138, "nằm", 0], [2.362, "gần", 0], [2.538, "nhau.", 0], [3.7, "Mình", 1], [4.062, "xét", 1], [4.312, "một", 1], [4.463, "bảng", 1], [4.688, "số", 1], [4.938, "4096", 1], [6.3, "hàng,", 1], [6.787, "4096", 1], [8.238, "cột,", 1], [8.725, "mỗi", 1], [8.963, "số", 1], [9.2, "4", 1], [9.438, "byte.", 1], [10.562, "Trong", 2], [10.863, "bộ", 2], [11.05, "nhớ,", 2], [11.588, "bảng", 2], [11.85, "được", 2], [11.963, "xếp", 2], [12.213, "theo", 2], [12.375, "từng", 2], [12.613, "hàng:", 2], [13.088, "hết", 2], [13.3, "hàng", 2], [13.562, "0", 2], [13.787, "mới", 2], [14.012, "đến", 2], [14.225, "hàng", 2], [14.412, "1.", 2], [15.463, "Mỗi", 3], [15.812, "lần", 3], [16.012, "thiếu", 3], [16.238, "dữ", 3], [16.413, "liệu,", 3], [16.925, "cache", 3], [17.113, "không", 3], [17.387, "nạp", 3], [17.575, "riêng", 3], [17.762, "một", 3], [17.9, "số,", 3], [18.5, "mà", 3], [18.7, "nạp", 3], [18.95, "cả", 3], [19.062, "một", 3], [19.25, "đoạn", 3], [19.512, "64", 3], [20.012, "byte,", 3], [20.525, "tức", 3], [20.738, "16", 3], [21.212, "số", 3], [21.438, "liền", 3], [21.625, "nhau.", 3], [22.775, "Nếu", 4], [23.2, "cộng", 4], [23.438, "theo", 4], [23.625, "hàng,", 4], [24.062, "số", 4], [24.325, "kế", 4], [24.55, "tiếp", 4], [24.825, "nằm", 4], [25.05, "ngay", 4], [25.25, "bên", 4], [25.45, "cạnh,", 4], [25.975, "nên", 4], [26.262, "15", 4], [26.75, "trong", 4], [26.9, "16", 4], [27.312, "lần", 4], [27.488, "đọc", 4], [27.663, "đã", 4], [27.825, "có", 4], [27.95, "sẵn", 4], [28.238, "trong", 4], [28.413, "cache.", 4], [29.488, "Còn", 5], [29.738, "nếu", 5], [29.913, "cộng", 5], [30.125, "theo", 5], [30.288, "cột,", 5], [30.738, "số", 5], [30.975, "kế", 5], [31.212, "tiếp", 5], [31.413, "cách", 5], [31.587, "4096", 5], [32.987, "số,", 5], [33.587, "tức", 5], [33.812, "16", 5], [34.275, "kilobyte,", 5], [35.05, "nên", 5], [35.362, "gần", 5], [35.575, "như", 5], [35.763, "lần", 5], [35.938, "đọc", 5], [36.1, "nào", 5], [36.312, "cũng", 5], [36.513, "phải", 5], [36.688, "chờ", 5], [36.913, "RAM.", 5], [38.062, "Hiện", 6], [38.325, "tượng", 6], [38.55, "này", 6], [38.725, "gọi", 6], [38.888, "là", 6], [38.987, "tính", 6], [39.225, "cục", 6], [39.388, "bộ,", 6], [39.875, "hay", 6], [40.087, "locality:", 6], [41.15, "chương", 6], [41.413, "trình", 6], [41.6, "dùng", 6], [41.775, "lại", 6], [41.888, "dữ", 6], [42.05, "liệu", 6], [42.3, "vừa", 6], [42.487, "dùng", 6], [42.775, "và", 6], [42.888, "dữ", 6], [43.062, "liệu", 6], [43.325, "nằm", 6], [43.525, "gần", 6], [43.737, "đó", 6], [44.0, "thì", 6], [44.188, "cache", 6], [44.375, "phát", 6], [44.562, "huy", 6], [44.75, "tác", 6], [44.95, "dụng.", 6]], "cues": [3.7, 15.463, 22.775, 29.488, 38.062], "lang": 2.6}, {"ten": "Slide 6. Kết quả đo: cộng theo cột chậm hơn khoảng 26 lần", "loai": "slide", "slide": "S06", "dung": "Lệnh biên dịch và chạy phía trên, kết quả phía dưới. Sau câu \"chênh nhau bao nhiêu lần?\", dừng khoảng 2 giây rồi mới hiện khung kết quả. Kết quả chạy ngày 13/11/2026 trên máy biên soạn (Intel Core i5-8400H, GCC 13.2); lần chạy lại cho 10 ms và 271 ms, tỉ lệ vẫn khoảng 26–27 lần. Mã src/locality.c không lên slide ở chương này.\nHiện dần: bước 1 khi đọc “Mình đo điều đó”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 224.8, "audio": "audio/20aad80c31237fe4.mp3", "dur": 40.01, "words": [[0.1, "Mình", 0], [0.475, "đo", 0], [0.613, "điều", 0], [0.762, "đó", 0], [1.025, "bằng", 0], [1.2, "một", 0], [1.35, "chương", 0], [1.575, "trình", 0], [1.775, "C", 0], [1.962, "viết", 0], [2.087, "sẵn,", 0], [2.725, "theo", 0], [2.938, "ví", 0], [3.1, "dụ", 0], [3.312, "trong", 0], [3.487, "sách", 0], [3.7, "về", 0], [3.875, "hệ", 0], [4.025, "thống", 0], [4.213, "máy", 0], [4.35, "tính", 0], [4.6, "của", 0], [4.888, "Bryant", 0], [5.425, "và", 0], [5.625, "O'Hallaron.", 0], [7.287, "Chương", 1], [7.6, "trình", 1], [7.825, "tạo", 1], [8.012, "bảng", 1], [8.225, "4096", 1], [9.512, "nhân", 1], [9.775, "4096", 1], [11.113, "số,", 1], [11.762, "gán", 1], [12.025, "mọi", 1], [12.2, "số", 1], [12.438, "bằng", 1], [12.625, "1,", 1], [13.075, "cộng", 1], [13.3, "một", 1], [13.463, "lần", 1], [13.662, "theo", 1], [13.85, "hàng", 1], [14.113, "và", 1], [14.213, "một", 1], [14.387, "lần", 1], [14.6, "theo", 1], [14.762, "cột,", 1], [15.25, "rồi", 1], [15.55, "in", 1], [15.738, "thời", 1], [15.9, "gian.", 1], [17.1, "Các", 2], [17.3, "bạn", 2], [17.538, "chưa", 2], [17.725, "cần", 2], [17.925, "đọc", 2], [18.087, "mã,", 2], [18.663, "chỉ", 2], [18.913, "cần", 2], [19.15, "đọc", 2], [19.325, "kết", 2], [19.512, "quả.", 2], [20.8, "Trước", 3], [21.05, "khi", 3], [21.175, "xem,", 3], [21.688, "các", 3], [21.85, "bạn", 3], [22.075, "thử", 3], [22.262, "đoán:", 3], [22.837, "hai", 3], [23.075, "cách", 3], [23.262, "chênh", 3], [23.438, "nhau", 3], [23.675, "bao", 3], [23.875, "nhiêu", 3], [24.1, "lần?", 3], [25.238, "Kết", 4], [25.488, "quả", 4], [25.712, "cho", 4], [25.863, "thấy", 4], [26.062, "cả", 4], [26.225, "hai", 4], [26.4, "cách", 4], [26.6, "cùng", 4], [26.812, "cộng", 4], [27.038, "hơn", 4], [27.2, "mười", 4], [27.363, "sáu", 4], [27.6, "triệu", 4], [27.8, "số", 4], [28.125, "và", 4], [28.262, "cùng", 4], [28.488, "ra", 4], [28.6, "một", 4], [28.788, "tổng,", 4], [29.363, "nhưng", 4], [29.637, "cách", 4], [29.812, "theo", 4], [29.962, "hàng", 4], [30.175, "mất", 4], [30.35, "9", 4], [30.625, "mili", 4], [30.887, "giây,", 4], [31.387, "cách", 4], [31.562, "theo", 4], [31.738, "cột", 4], [31.938, "mất", 4], [32.112, "235", 4], [33.062, "mili", 4], [33.362, "giây,", 4], [33.875, "chậm", 4], [34.163, "hơn", 4], [34.362, "khoảng", 4], [34.663, "26", 4], [35.188, "lần.", 4], [36.3, "Phép", 5], [36.6, "tính", 5], [36.837, "như", 5], [36.987, "nhau,", 5], [37.513, "chỉ", 5], [37.712, "khác", 5], [37.95, "thứ", 5], [38.15, "tự", 5], [38.375, "đọc", 5], [38.55, "bộ", 5], [38.775, "nhớ.", 5]], "cues": [0.1, 25.238], "lang": 9.6}, {"ten": "Slide 7. RAM mất nội dung khi tắt nguồn: dữ liệu phải được ghi thành tệp", "loai": "slide", "slide": "S07", "dung": "Hai ý hiện lần lượt; khung hiện cuối.\nHiện dần: bước 1 khi đọc “Còn một điều”; bước 2 khi đọc “Muốn giữ lại”; bước 3 khi đọc “Việc ghi tệp”.", "start": 274.41, "audio": "audio/49cbee4042c85097.mp3", "dur": 20.59, "words": [[0.1, "Còn", 0], [0.375, "một", 0], [0.537, "điều", 0], [0.738, "cần", 0], [0.975, "nhớ", 0], [1.275, "về", 0], [1.438, "RAM.", 0], [2.6, "Bảng", 1], [2.888, "số", 1], [3.125, "của", 1], [3.25, "chương", 1], [3.462, "trình", 1], [3.7, "đo", 1], [3.875, "chỉ", 1], [4.062, "nằm", 1], [4.287, "trong", 1], [4.5, "RAM,", 1], [5.025, "nên", 1], [5.338, "chương", 1], [5.588, "trình", 1], [5.8, "kết", 1], [5.975, "thúc", 1], [6.188, "hay", 1], [6.362, "máy", 1], [6.575, "tắt", 1], [6.825, "là", 1], [6.975, "mất.", 1], [8.037, "Muốn", 2], [8.438, "giữ", 2], [8.613, "lại,", 2], [9.113, "dữ", 2], [9.325, "liệu", 2], [9.588, "phải", 2], [9.738, "được", 2], [9.925, "ghi", 2], [10.137, "xuống", 2], [10.412, "bộ", 2], [10.588, "nhớ", 2], [10.85, "thứ", 2], [11.037, "cấp,", 2], [11.525, "thành", 2], [11.775, "tệp.", 2], [12.887, "Việc", 3], [13.2, "ghi", 3], [13.375, "tệp,", 3], [13.887, "cũng", 3], [14.05, "như", 3], [14.213, "việc", 3], [14.425, "chia", 3], [14.919, "CPU", 3], [15.412, "và", 3], [15.562, "RAM", 3], [15.838, "cho", 3], [15.975, "các", 3], [16.137, "chương", 3], [16.363, "trình,", 3], [16.812, "do", 3], [17.038, "hệ", 3], [17.2, "điều", 3], [17.363, "hành", 3], [17.55, "đảm", 3], [17.762, "nhận,", 3], [18.275, "nội", 3], [18.55, "dung", 3], [18.775, "phần", 3], [19.012, "cuối", 3], [19.212, "của", 3], [19.375, "chương.", 3]], "cues": [0.1, 8.037, 12.887], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 295.6, "audio": "audio/5fe42b088f0ad146.mp3", "dur": 3.14, "words": [[0.1, "Kết", 0], [0.325, "quả", 0], [0.55, "đo", 0], [0.825, "vừa", 0], [1.025, "rồi", 0], [1.238, "cần", 0], [1.475, "một", 0], [1.65, "lời", 0], [1.875, "giải", 0], [2.087, "thích.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/7cd5593172cfab62.mp3", "dur2": 10.8, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.163, "Phương", 1], [1.512, "án", 1], [1.75, "A", 1], [1.9, "dễ", 1], [2.087, "được", 1], [2.25, "chọn", 1], [2.538, "vì", 1], [2.65, "nghĩ", 1], [2.875, "chậm", 1], [3.112, "hơn", 1], [3.388, "là", 1], [3.487, "làm", 1], [3.688, "nhiều", 1], [3.888, "hơn,", 1], [4.412, "nhưng", 1], [4.7, "hai", 1], [4.875, "cách", 1], [5.088, "làm", 1], [5.35, "đúng", 1], [5.562, "cùng", 1], [5.75, "số", 1], [5.963, "phép", 1], [6.175, "cộng.", 1], [7.338, "Khác", 2], [7.638, "nhau", 2], [7.875, "chỉ", 2], [8.137, "ở", 2], [8.25, "chỗ", 2], [8.475, "cache", 2], [8.7, "có", 2], [8.812, "dữ", 2], [9.0, "liệu", 2], [9.225, "sẵn", 2], [9.512, "hay", 2], [9.65, "không.", 2]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 316.14, "audio": "audio/7ce20ca420f1cf84.mp3", "dur": 3.29, "words": [[0.1, "Câu", 0], [0.312, "tiếp", 0], [0.588, "theo", 0], [0.787, "đưa", 0], [0.925, "các", 0], [1.113, "bạn", 0], [1.387, "về", 0], [1.5, "lúc", 0], [1.725, "vừa", 0], [1.913, "bật", 0], [2.1, "máy.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/85e2f3df562edb57.mp3", "dur2": 10.94, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.65, "là", 0], [0.75, "C.", 0], [1.1, "Phương", 1], [1.475, "án", 1], [1.712, "A", 1], [1.837, "sai", 1], [2.15, "vì", 1], [2.275, "lúc", 1], [2.462, "vừa", 1], [2.638, "bật", 1], [2.825, "máy,", 1], [3.362, "RAM", 1], [3.625, "trống:", 1], [4.188, "RAM", 1], [4.438, "mất", 1], [4.612, "nội", 1], [4.825, "dung", 1], [5.075, "khi", 1], [5.25, "tắt", 1], [5.463, "nguồn.", 1], [6.6, "Firmware", 2], [7.188, "trong", 2], [7.45, "ROM", 2], [7.662, "chạy", 2], [7.888, "trước,", 2], [8.375, "rồi", 2], [8.65, "mới", 2], [8.825, "nạp", 2], [9.0, "hệ", 2], [9.213, "điều", 2], [9.4, "hành", 2], [9.613, "vào", 2], [9.762, "RAM.", 2]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Phân cấp bộ nhớ là cách”; bước 2 khi đọc “Cache giúp được”; bước 3 khi đọc “Ngoài ra”; bước 4 khi đọc “các từ khóa cần nhớ”.", "start": 336.97, "audio": "audio/7a369f92479e5d6f.mp3", "dur": 33.86, "words": [[0.1, "Phân", 0], [0.388, "cấp", 0], [0.562, "bộ", 0], [0.738, "nhớ", 0], [1.05, "là", 0], [1.163, "cách", 0], [1.363, "máy", 0], [1.5, "tính", 0], [1.762, "giữ", 0], [2.0, "cho", 0], [2.425, "CPU", 0], [2.85, "ít", 0], [3.013, "phải", 0], [3.188, "chờ:", 0], [3.8, "nhiều", 0], [4.037, "tầng,", 0], [4.562, "lên", 0], [4.875, "trên", 0], [5.075, "nhanh,", 0], [5.562, "nhỏ", 0], [5.95, "và", 0], [6.112, "đắt,", 0], [6.55, "xuống", 0], [6.838, "dưới", 0], [7.037, "chậm,", 0], [7.612, "lớn", 0], [7.975, "và", 0], [8.113, "rẻ.", 0], [9.363, "Cache", 1], [9.575, "giúp", 1], [9.75, "được", 1], [9.912, "khi", 1], [10.075, "chương", 1], [10.3, "trình", 1], [10.512, "có", 1], [10.637, "tính", 1], [10.825, "cục", 1], [10.988, "bộ,", 1], [11.488, "tức", 1], [11.662, "dùng", 1], [11.912, "dữ", 1], [12.075, "liệu", 1], [12.312, "vừa", 1], [12.488, "dùng", 1], [12.775, "và", 1], [12.887, "dữ", 1], [13.062, "liệu", 1], [13.312, "nằm", 1], [13.512, "gần", 1], [13.713, "đó,", 1], [14.25, "như", 1], [14.5, "phép", 1], [14.738, "đo", 1], [14.9, "duyệt", 1], [15.113, "theo", 1], [15.275, "hàng", 1], [15.488, "cho", 1], [15.637, "thấy.", 1], [16.85, "Ngoài", 2], [17.125, "ra,", 2], [17.6, "RAM", 2], [17.85, "mất", 2], [18.025, "nội", 2], [18.225, "dung", 2], [18.462, "khi", 2], [18.625, "tắt", 2], [18.825, "nguồn,", 2], [19.325, "ROM", 2], [19.637, "chứa", 2], [19.887, "firmware,", 2], [20.625, "bộ", 2], [20.85, "nhớ", 2], [21.1, "thứ", 2], [21.262, "cấp", 2], [21.488, "giữ", 2], [21.688, "tệp,", 2], [22.212, "còn", 2], [22.425, "thiết", 2], [22.625, "bị", 2], [22.788, "vào", 2], [22.975, "ra", 2], [23.137, "nối", 2], [23.337, "máy", 2], [23.6, "với", 2], [23.7, "bên", 2], [23.913, "ngoài.", 2], [25.087, "Trên", 3], [25.425, "slide", 3], [25.85, "là", 3], [25.975, "các", 3], [26.175, "từ", 3], [26.288, "khóa", 3], [26.525, "cần", 3], [26.725, "nhớ:", 3], [27.288, "phân", 3], [27.562, "cấp", 3], [27.738, "bộ", 3], [27.938, "nhớ,", 3], [28.525, "cache,", 3], [29.0, "RAM,", 3], [29.613, "ROM,", 3], [30.212, "bộ", 3], [30.475, "nhớ", 3], [30.725, "thứ", 3], [30.913, "cấp,", 3], [31.413, "tính", 3], [31.613, "cục", 3], [31.788, "bộ", 3], [32.05, "và", 3], [32.188, "thiết", 3], [32.388, "bị", 3], [32.562, "vào", 3], [32.737, "ra.", 3]], "cues": [0.1, 9.363, 16.85, 25.975], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 371.43, "audio": "audio/eaf82eaa42bad0f9.mp3", "dur": 24.65, "words": [[0.1, "Có", 0], [0.287, "hai", 0], [0.475, "chủ", 0], [0.7, "đề", 0], [0.863, "nâng", 0], [1.075, "cao", 0], [1.312, "cho", 0], [1.438, "các", 0], [1.587, "bạn", 0], [1.788, "muốn", 0], [1.962, "đọc", 0], [2.125, "thêm:", 0], [2.638, "cache", 0], [2.862, "nhiều", 0], [3.05, "tầng", 0], [3.35, "L1,", 0], [4.088, "L2,", 0], [5.037, "L3", 0], [5.65, "cùng", 0], [5.925, "dòng", 0], [6.15, "cache", 0], [6.325, "64", 0], [6.825, "byte,", 0], [7.312, "và", 0], [7.525, "bộ", 0], [7.75, "nhớ", 0], [7.987, "ảo,", 0], [8.537, "cách", 0], [8.7, "hệ", 0], [8.875, "điều", 0], [9.025, "hành", 0], [9.213, "dùng", 0], [9.4, "bộ", 0], [9.575, "nhớ", 0], [9.812, "thứ", 0], [9.95, "cấp", 0], [10.188, "để", 0], [10.35, "mở", 0], [10.575, "rộng", 0], [10.8, "RAM.", 0], [11.938, "Bài", 1], [12.175, "tập", 1], [12.387, "mở", 1], [12.575, "rộng", 1], [12.863, "là", 1], [13.025, "chạy", 1], [13.225, "chương", 1], [13.463, "trình", 1], [13.688, "đo", 1], [13.875, "với", 1], [13.988, "các", 1], [14.15, "kích", 1], [14.325, "thước", 1], [14.537, "bảng", 1], [14.787, "256,", 1], [16.05, "1024", 1], [17.45, "và", 1], [17.575, "4096", 1], [18.975, "trên", 1], [19.175, "máy", 1], [19.387, "của", 1], [19.512, "các", 1], [19.675, "bạn,", 1], [20.175, "rồi", 1], [20.4, "giải", 1], [20.575, "thích", 1], [20.788, "vì", 1], [20.988, "sao", 1], [21.2, "khoảng", 1], [21.45, "cách", 1], [21.65, "giữa", 1], [21.837, "hai", 1], [22.012, "cách", 1], [22.225, "duyệt", 1], [22.45, "tăng", 1], [22.675, "khi", 1], [22.85, "bảng", 1], [23.087, "lớn", 1], [23.337, "hơn", 1], [23.55, "cache.", 1]], "cues": [0.287, 11.938], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 396.68, "audio": "audio/3b9ba8630afd80ea.mp3", "dur": 14.09, "words": [[0.1, "Phần", 0], [0.4, "cứng", 0], [0.675, "đã", 0], [0.775, "đủ", 0], [0.975, "ba", 0], [1.15, "khối,", 0], [1.75, "nhưng", 0], [2.05, "bên", 0], [2.263, "trong", 0], [2.425, "các", 0], [2.562, "khối", 0], [2.725, "đó,", 0], [3.25, "mọi", 0], [3.487, "thứ", 0], [3.688, "chỉ", 0], [3.925, "là", 0], [4.075, "bit", 0], [4.287, "0", 0], [4.588, "và", 0], [4.688, "1.", 0], [5.8, "Phần", 1], [6.088, "tiếp", 1], [6.3, "theo,", 1], [6.787, "về", 1], [6.987, "hệ", 1], [7.162, "đếm", 1], [7.45, "và", 1], [7.575, "biểu", 1], [7.763, "diễn", 1], [8.025, "dữ", 1], [8.2, "liệu", 1], [8.438, "trong", 1], [8.625, "máy", 1], [8.762, "tính,", 1], [9.3, "cho", 1], [9.512, "thấy", 1], [9.7, "số,", 1], [10.312, "chữ", 1], [10.6, "và", 1], [10.75, "cả", 1], [10.925, "tiếng", 1], [11.162, "Việt", 1], [11.338, "có", 1], [11.45, "dấu", 1], [11.7, "được", 1], [11.838, "biểu", 1], [12.025, "diễn", 1], [12.312, "bằng", 1], [12.525, "bit", 1], [12.738, "ra", 1], [12.9, "sao.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Dữ liệu: hệ đếm và biểu diễn dữ liệu trong máy tính"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

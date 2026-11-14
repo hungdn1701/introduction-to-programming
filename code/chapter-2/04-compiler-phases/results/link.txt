@@ -1,0 +1,11 @@
+$ gcc -std=c17 -Wall -Wextra -c link.c -o link.o
+link.c: In function 'main':
+link.c:5:5: warning: implicit declaration of function 'prinft'; did you mean 'printf'? [-Wimplicit-function-declaration]
+    5 |     prinft("hello, world\n");
+      |     ^~~~~~
+      |     printf
+[exit code 0]
+$ gcc link.o -o link
+ld.exe: link.o:link.c:(.text+0x18): undefined reference to `prinft'
+collect2.exe: error: ld returned 1 exit status
+[exit code 1]

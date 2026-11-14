@@ -1,0 +1,6 @@
+$ javac Bank.java
+Bank.java:5: error: balance has private access in Account
+        acc.balance = -1000;
+           ^
+1 error
+[exit code 1]

@@ -1,0 +1,6 @@
+$ echo 28212 | ./repdigit
+28212: repeated digit
+$ echo 2026 | ./repdigit
+2026: repeated digit
+$ echo 1357 | ./repdigit
+1357: no repeated digit

@@ -1,0 +1,13 @@
+step  PC  IR   instruction  ACC  mailbox 06
+   1  01  901  INP            2    1
+   2  02  902  OUT            2    1   -> OUTPUT 2
+   3  03  705  BRZ 05         2    1
+   4  04  206  SUB 06         1    1
+   5  01  601  BRA 01         1    1
+   6  02  902  OUT            1    1   -> OUTPUT 1
+   7  03  705  BRZ 05         1    1
+   8  04  206  SUB 06         0    1
+   9  01  601  BRA 01         0    1
+  10  02  902  OUT            0    1   -> OUTPUT 0
+  11  05  705  BRZ 05         0    1
+  12  06  000  HLT            0    1

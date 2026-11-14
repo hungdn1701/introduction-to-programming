@@ -1,0 +1,457 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V09 — Trình biên dịch: từ mã nguồn đến tệp thực thi · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-2/03-compilation">Mã</a>
+<h1>V09 · Trình biên dịch: từ mã nguồn đến tệp thực thi</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 2</div><div class="ten">Trình biên dịch: từ mã nguồn đến tệp thực thi</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Mã nguồn là văn bản, CPU chỉ hiểu lệnh máy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">hello.c là <b>văn bản</b>: người đọc được, CPU không thực hiện được</li><li data-s="2">CPU chỉ thực hiện <b>lệnh máy</b> — như các lệnh ba chữ số của Little Man Computer ở Chương 1</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> tệp hello.c trở thành chương trình chạy được qua những bước nào?</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Trình biên dịch dịch một lần rồi chạy nhiều lần; trình thông dịch dịch mỗi lần chạy</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 440" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Trình biên dịch dịch toàn bộ mã nguồn thành tệp thực thi một lần, sau đó chạy tệp thực thi nhiều lần không cần mã nguồn. Trình thông dịch đọc và thực hiện từng câu lệnh của mã nguồn mỗi lần chạy.">
+  <defs>
+    <marker id="bt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="bt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="bt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="bt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="bt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="bt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- biên dịch -->
+  <g data-s="1">
+    <text x="40" y="50" text-anchor="start" font-size="27" fill="#051A53" font-weight="500">Biên dịch (C)</text>
+    <rect x="40" y="80" width="280" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="180" y="144" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">hello.c</text>
+    <line x1="322" y1="135" x2="456" y2="135" stroke="#051A53" stroke-width="3" marker-end="url(#bt-navy)"/>
+    <text x="389" y="120" text-anchor="middle" font-size="22" fill="#051A53">gcc, một lần</text>
+    <rect x="460" y="80" width="300" height="110" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="610" y="144" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500">hello.exe</text>
+    <line x1="762" y1="135" x2="890" y2="135" stroke="#2F855A" stroke-width="3" marker-end="url(#bt-ok)"/>
+    <text x="826" y="120" text-anchor="middle" font-size="22" fill="#2F855A">chạy nhiều lần</text>
+    <rect x="894" y="80" width="300" height="110" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1044" y="123" text-anchor="middle" font-size="22" fill="#373D4E">CPU thực hiện</text>
+    <text x="1044" y="161" text-anchor="middle" font-size="22" fill="#373D4E">mã máy trực tiếp</text>
+  </g>
+
+  <!-- thông dịch -->
+  <g data-s="2">
+    <text x="40" y="260" text-anchor="start" font-size="27" fill="#123A6B" font-weight="500">Thông dịch (Python)</text>
+    <rect x="40" y="290" width="280" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="180" y="354" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">hello.py</text>
+    <line x1="322" y1="345" x2="456" y2="345" stroke="#1F5FA8" stroke-width="3" marker-end="url(#bt-data)"/>
+    <text x="389" y="330" text-anchor="middle" font-size="22" fill="#1F5FA8">mỗi lần chạy</text>
+    <rect x="460" y="290" width="734" height="110" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="827" y="333" text-anchor="middle" font-size="22" fill="#373D4E">trình thông dịch python đọc từng câu lệnh</text>
+    <text x="827" y="371" text-anchor="middle" font-size="22" fill="#373D4E">và thực hiện ngay, không tạo tệp thực thi</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="3"><p>C dùng <b>trình biên dịch</b>: tạo tệp thực thi chạy trực tiếp trên CPU; Python thường dùng <b>trình thông dịch</b>.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Hệ thống biên dịch C: tiền xử lý, biên dịch, hợp dịch, liên kết</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Hệ thống biên dịch C: hello.c qua bộ tiền xử lý thành hello.i; qua trình biên dịch thành hợp ngữ hello.s; qua trình hợp dịch thành mã đối tượng hello.o; trình liên kết ghép mã của hàm in chuỗi trong thư viện chuẩn, tạo tệp thực thi hello.exe.">
+  <defs>
+    <marker id="ht-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ht-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ht-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ht-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ht-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ht-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- mã nguồn -->
+  <g data-s="1">
+    <rect x="20" y="160" width="300" height="120" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="170" y="211" text-anchor="middle" font-size="27" fill="#051A53" font-weight="500">hello.c</text>
+    <text x="170" y="264" text-anchor="middle" font-size="23" fill="#373D4E">mã nguồn</text>
+  </g>
+
+  <!-- Tiền xử lý -->
+  <g data-s="2">
+    <line x1="322" y1="220" x2="371" y2="220" stroke="#051A53" stroke-width="3" marker-end="url(#ht-navy)"/>
+    <rect x="375" y="160" width="300" height="120" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="525" y="211" text-anchor="middle" font-size="27" fill="#051A53" font-weight="500">hello.i</text>
+    <text x="525" y="264" text-anchor="middle" font-size="23" fill="#373D4E">đã tiền xử lý</text>
+    <rect x="355" y="330" width="340" height="70" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="525" y="372.5" text-anchor="middle" font-size="23" fill="#373D4E">Tiền xử lý</text>
+    <line x1="525" y1="328" x2="525" y2="284" stroke="#5B6478" stroke-width="3" marker-end="url(#ht-grey)"/>
+  </g>
+
+  <!-- Trình biên dịch -->
+  <g data-s="3">
+    <line x1="677" y1="220" x2="726" y2="220" stroke="#051A53" stroke-width="3" marker-end="url(#ht-navy)"/>
+    <rect x="730" y="160" width="300" height="120" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="880" y="211" text-anchor="middle" font-size="27" fill="#051A53" font-weight="500">hello.s</text>
+    <text x="880" y="264" text-anchor="middle" font-size="23" fill="#373D4E">hợp ngữ</text>
+    <rect x="710" y="330" width="340" height="70" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="880" y="372.5" text-anchor="middle" font-size="23" fill="#373D4E">Trình biên dịch</text>
+    <line x1="880" y1="328" x2="880" y2="284" stroke="#5B6478" stroke-width="3" marker-end="url(#ht-grey)"/>
+  </g>
+
+  <!-- Trình hợp dịch -->
+  <g data-s="4">
+    <line x1="1032" y1="220" x2="1081" y2="220" stroke="#051A53" stroke-width="3" marker-end="url(#ht-navy)"/>
+    <rect x="1085" y="160" width="300" height="120" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1235" y="211" text-anchor="middle" font-size="27" fill="#6B4E06" font-weight="500">hello.o</text>
+    <text x="1235" y="264" text-anchor="middle" font-size="23" fill="#373D4E">mã đối tượng</text>
+    <rect x="1065" y="330" width="340" height="70" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1235" y="372.5" text-anchor="middle" font-size="23" fill="#373D4E">Trình hợp dịch</text>
+    <line x1="1235" y1="328" x2="1235" y2="284" stroke="#5B6478" stroke-width="3" marker-end="url(#ht-grey)"/>
+  </g>
+
+  <!-- Trình liên kết -->
+  <g data-s="5">
+    <line x1="1387" y1="220" x2="1436" y2="220" stroke="#051A53" stroke-width="3" marker-end="url(#ht-navy)"/>
+    <rect x="1440" y="160" width="300" height="120" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1590" y="211" text-anchor="middle" font-size="27" fill="#22603F" font-weight="500">hello.exe</text>
+    <text x="1590" y="264" text-anchor="middle" font-size="23" fill="#373D4E">tệp thực thi</text>
+    <rect x="1420" y="330" width="340" height="70" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1590" y="372.5" text-anchor="middle" font-size="23" fill="#373D4E">Trình liên kết</text>
+    <line x1="1590" y1="328" x2="1590" y2="284" stroke="#5B6478" stroke-width="3" marker-end="url(#ht-grey)"/>
+  </g>
+
+  <!-- thư viện -->
+  <g data-s="6">
+    <rect x="1420" y="440" width="340" height="70" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1590" y="481.5" text-anchor="middle" font-size="21" fill="#373D4E">thư viện chuẩn C (puts, printf…)</text>
+    <line x1="1590" y1="438" x2="1590" y2="404" stroke="#8A6508" stroke-width="3" marker-end="url(#ht-mem)"/>
+  </g>
+</svg></figure><div class="ket-luan" data-s="7"><p>Lệnh <code>gcc</code> gọi lần lượt <b>bốn công cụ</b>; mỗi công cụ tạo một tệp làm đầu vào cho công cụ sau.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Dừng GCC sau từng bước để xem sản phẩm của bước đó</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">Terminal</span>gcc -std=c17 -E ../src/hello.c -o hello.i      <span class="hl-c"># 1. preprocessor: hello.c -&gt; hello.i
+</span>gcc -std=c17 -S hello.i -o hello.s              <span class="hl-c"># 2. compiler: hello.i -&gt; hello.s (assembly)
+</span>gcc -std=c17 -c hello.s -o hello.o              <span class="hl-c"># 3. assembler: hello.s -&gt; hello.o (object code)
+</span>gcc hello.o -o hello.exe                        <span class="hl-c"># 4. linker: hello.o + C library -&gt; hello.exe
+</span></pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ wc -l hello.c hello.i hello.s
+    7 hello.c
+<span class="noi-bat"> 1559 hello.i</span>
+   29 hello.s
+ 1595 total
+$ ls -l hello.o hello.exe
+63710 hello.exe
+914 hello.o
+$ ./hello.exe
+hello, world</pre></div><ul class="y-nho"><li data-s="2">hello.c 7 dòng thành hello.i <b>1 559 dòng</b>: tiền xử lý đã chép cả stdio.h vào</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Hợp ngữ của hàm main: vài lệnh máy, một lời gọi hàm in chuỗi</h1></header><main class="bo-cuc-ma"><div class="ma-hang ma-y"><pre class="ma"><span class="nhan">Hợp ngữ x86-64</span>main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$32, %rsp
+	call	__main
+	leaq	<span class="hl-m">.LC0</span>(%rip), %rax
+	movq	%rax, %rcx
+	call	puts
+	movl	$0, %eax
+	addq	$32, %rsp
+	popq	%rbp
+	ret
+</pre><ul class="y-nho"><li data-s="1">Mỗi dòng là <b>một lệnh máy</b> viết bằng tên gợi nhớ, như LDA, ADD của Little Man Computer</li><li data-s="2"><code>call puts</code>: trình biên dịch thay <code>printf</code> bằng <code>puts</code>, hàm in chuỗi đơn giản hơn của thư viện chuẩn</li><li data-s="3">Python chạy thẳng <code>hello.py</code> bằng trình thông dịch: <b>không có</b> tệp .s, .o hay .exe</li></ul></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Cùng một tên chưa định nghĩa: GCC từ chối cả chương trình, Python chạy tới dòng lỗi mới dừng</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">hello, world</span><span class="hl-s">\n</span><span class="hl-s">"</span>);
+<span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">%d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, count);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra name_error.c -o name_error
+name_error.c: In function 'main':
+<span class="noi-bat">name_error.c:6:20: error: 'count' undeclared (first use in this function)</span>
+[exit code 1]
+$ python name_error.py
+<span class="noi-bat">hello, world</span>
+Traceback (most recent call last):
+  File "name_error.py", line 2, in &lt;module&gt;
+    print(count)
+          ^^^^^
+NameError: name 'count' is not defined. Did you mean: 'round'?
+[exit code 1]</pre></div><ul class="y-nho"><li data-s="2">Trình biên dịch kiểm tra <b>cả mã nguồn trước khi chạy</b>; trình thông dịch gặp lỗi này <b>khi chạy tới dòng đó</b></li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>Tệp thực thi gắn với một loại CPU và một hệ điều hành</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">hello.exe dịch trên Windows <span style="white-space:nowrap">x86-64</span> <b>không chạy</b> trên Linux hay điện thoại ARM; hello.c thì biên dịch lại được ở đó</li><li data-s="2">Sửa hello.c mà <b>không biên dịch lại</b> thì hello.exe vẫn là bản cũ</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Sau bước tiền xử lý, tệp hello.i còn chứa dòng #include &lt;stdio.h&gt; không?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Còn, vì tiền xử lý chỉ kiểm tra cú pháp.</div></div><div class=""><span>B</span><div>Còn, vì dòng đó chỉ được xử lý ở bước liên kết.</div></div><div class="dung"><span>C</span><div>Không, dòng đó đã được thay bằng nội dung của stdio.h, nên hello.i dài hơn nhiều.</div></div><div class=""><span>D</span><div>Không, vì tiền xử lý xóa mọi dòng bắt đầu bằng dấu #, không thêm gì.</div></div></div><div class="giai-thich">Bộ tiền xử lý thay chỉ thị #include bằng nội dung tệp header; vì vậy hello.i có 1 559 dòng trong khi hello.c chỉ có 7. Kiểm tra cú pháp là việc của trình biên dịch; liên kết ghép mã đã biên dịch của thư viện.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Sau bước tiền xử lý, tệp hello.i còn chứa dòng #include &lt;stdio.h&gt; không?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Còn, vì tiền xử lý chỉ kiểm tra cú pháp.</div></div><div class=""><span>B</span><div>Còn, vì dòng đó chỉ được xử lý ở bước liên kết.</div></div><div class="dung"><span>C</span><div>Không, dòng đó đã được thay bằng nội dung của stdio.h, nên hello.i dài hơn nhiều.</div></div><div class=""><span>D</span><div>Không, vì tiền xử lý xóa mọi dòng bắt đầu bằng dấu #, không thêm gì.</div></div></div><div class="giai-thich">Bộ tiền xử lý thay chỉ thị #include bằng nội dung tệp header; vì vậy hello.i có 1 559 dòng trong khi hello.c chỉ có 7. Kiểm tra cú pháp là việc của trình biên dịch; liên kết ghép mã đã biên dịch của thư viện.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Bạn sửa dòng chữ trong hello.c thành "xin chao" rồi chạy ngay hello.exe, không biên dịch lại. Màn hình in gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>hello, world — tệp thực thi vẫn là bản dịch cũ.</div></div><div class=""><span>B</span><div>xin chao — hello.exe tự đọc lại hello.c.</div></div><div class=""><span>C</span><div>Báo lỗi vì mã nguồn đã thay đổi.</div></div><div class=""><span>D</span><div>Không in gì vì hello.exe bị xóa khi sửa hello.c.</div></div></div><div class="giai-thich">Với ngôn ngữ biên dịch, tệp thực thi chứa mã máy dịch từ mã nguồn lúc biên dịch và không đọc lại mã nguồn. Muốn thấy thay đổi phải biên dịch lại. Phương án B đúng với cách chạy bằng trình thông dịch như Python.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Bạn sửa dòng chữ trong hello.c thành "xin chao" rồi chạy ngay hello.exe, không biên dịch lại. Màn hình in gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>hello, world — tệp thực thi vẫn là bản dịch cũ.</div></div><div class=""><span>B</span><div>xin chao — hello.exe tự đọc lại hello.c.</div></div><div class=""><span>C</span><div>Báo lỗi vì mã nguồn đã thay đổi.</div></div><div class=""><span>D</span><div>Không in gì vì hello.exe bị xóa khi sửa hello.c.</div></div></div><div class="giai-thich">Với ngôn ngữ biên dịch, tệp thực thi chứa mã máy dịch từ mã nguồn lúc biên dịch và không đọc lại mã nguồn. Muốn thấy thay đổi phải biên dịch lại. Phương án B đúng với cách chạy bằng trình thông dịch như Python.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Trình biên dịch</b> dịch một lần, tạo <b>tệp thực thi</b>; <b>trình thông dịch</b> thực hiện mã nguồn mỗi lần chạy</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Hệ thống biên dịch</b> C: tiền xử lý → biên dịch ra <b>hợp ngữ</b> → hợp dịch → <b>trình liên kết</b> ghép thư viện</div></div><div class="the" data-s="3"><span class="so">3</span><div>Tệp thực thi gắn với một CPU, một hệ điều hành; sửa mã nguồn thì biên dịch lại</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>mã nguồn</span><span>trình biên dịch</span><span>trình thông dịch</span><span>tiền xử lý</span><span>hợp ngữ</span><span>trình liên kết</span><span>tệp thực thi</span><span>GCC</span></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Biên dịch tức thời (JIT) của Java và JavaScript: kết hợp biên dịch và thông dịch</li><li>Liên kết tĩnh và liên kết động: tệp .a, .dll, .so</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Tạo đủ bốn sản phẩm của hello.c bằng các tùy chọn -E, -S, -c của GCC; so sánh kích thước bốn tệp và tìm trong hello.s dòng gọi hàm in chuỗi.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Trình biên dịch: các pha phân tích và sinh mã</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Chương trình C là văn bản, còn CPU chỉ thực hiện lệnh máy: tệp hello.c trở thành chương trình chạy được qua những bước nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:10</span>
+      <h3>Slide 1. Mã nguồn là văn bản, CPU chỉ hiểu lệnh máy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>hello.c là **văn bản**: người đọc được, CPU không thực hiện được</li><li>CPU chỉ thực hiện **lệnh máy** — như các lệnh ba chữ số của Little Man Computer ở Chương 1</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** tệp hello.c trở thành chương trình chạy được qua những bước nào?</div></div>
+    <div class="kb-thoai"><p>Đây là chương trình C đầu tiên trong sách của Kernighan và Ritchie: nó chỉ in một dòng hello, world. Tệp hello.c chứa văn bản, gọi là mã nguồn, hay source code, mà người đọc được. Ở Chương 1, các bạn đã thấy CPU chỉ thực hiện lệnh máy, những con số như lệnh ba chữ số của Little Man Computer. Giữa văn bản và lệnh máy phải có một bước dịch. Phần này đi tìm câu trả lời cho câu hỏi: tệp hello.c trở thành chương trình chạy được qua những bước nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Mã hello.c hiện nhỏ ở góc slide (chưa giảng cú pháp; Chương 4 giảng).
+Hiện dần: bước 1 khi đọc “Đây là chương trình”; bước 2 khi đọc “Ở Chương 1”; bước 3 khi đọc “Phần này đi tìm câu trả lời”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:40</span>
+      <h3>Slide 2. Trình biên dịch dịch một lần rồi chạy nhiều lần; trình thông dịch dịch mỗi lần chạy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>C dùng **trình biên dịch**: tạo tệp thực thi chạy trực tiếp trên CPU; Python thường dùng **trình thông dịch**.</li></ul></div></div>
+    <div class="kb-thoai"><p>Có hai cách đưa mã nguồn tới CPU. Cách thứ nhất dùng trình biên dịch, hay compiler: dịch toàn bộ mã nguồn sang mã máy một lần, tạo ra một tệp thực thi, rồi chạy tệp đó bao nhiêu lần cũng được mà không cần mã nguồn nữa. Cách thứ hai dùng trình thông dịch, hay interpreter: mỗi lần chạy, trình thông dịch đọc từng câu lệnh của mã nguồn và thực hiện ngay, không tạo tệp thực thi. C là ngôn ngữ được biên dịch, còn Python thường chạy bằng trình thông dịch.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình bien-dich-thong-dich: bước 1 dòng biên dịch, bước 2 dòng thông dịch; bước 3 ô kết luận.
+Hiện dần: bước 1 khi đọc “Có hai cách đưa mã nguồn”; bước 2 khi đọc “Cách thứ hai”; bước 3 khi đọc “C là ngôn ngữ”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:10</span>
+      <h3>Slide 3. Hệ thống biên dịch C: tiền xử lý, biên dịch, hợp dịch, liên kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Lệnh `gcc` gọi lần lượt **bốn công cụ**; mỗi công cụ tạo một tệp làm đầu vào cho công cụ sau.</li></ul></div></div>
+    <div class="kb-thoai"><p>Với C, việc biên dịch thật ra gồm bốn bước, gọi chung là hệ thống biên dịch, hay compilation system, theo cách trình bày của Bryant và O&#x27;Hallaron. Điểm xuất phát là tệp hello.c. Bước thứ nhất là tiền xử lý: dòng include ở đầu chương trình yêu cầu chép nội dung tệp stdio.h vào, kết quả là tệp hello.i. Bước thứ hai là biên dịch theo nghĩa hẹp: dịch hello.i sang hợp ngữ, tức lệnh máy viết bằng tên gợi nhớ, trong tệp hello.s. Bước thứ ba là hợp dịch: đổi hợp ngữ thành mã máy thật, trong tệp mã đối tượng hello.o. Bước cuối là liên kết: trình liên kết ghép hello.o với mã đã biên dịch sẵn của thư viện chuẩn, tạo tệp thực thi hello.exe. Mã của hàm in chuỗi không nằm trong hello.c, mà được lấy từ thư viện chuẩn ở bước này. Bốn bước này đều do một lệnh gcc điều phối.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình he-thong-bien-dich: sáu bước theo sáu câu mốc đầu; bước 7 ô kết luận. Ghi nguồn: CS:APP §1.2, hình 1.3.
+Hiện dần: bước 1 khi đọc “Điểm xuất phát”; bước 2 khi đọc “Bước thứ nhất”; bước 3 khi đọc “Bước thứ hai”; bước 4 khi đọc “Bước thứ ba”; bước 5 khi đọc “Bước cuối”; bước 6 khi đọc “Mã của hàm in chuỗi”; bước 7 khi đọc “Bốn bước này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:05</span>
+      <h3>Slide 4. Dừng GCC sau từng bước để xem sản phẩm của bước đó</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>hello.c 7 dòng thành hello.i **1 559 dòng**: tiền xử lý đã chép cả stdio.h vào</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">run.sh</span><pre><code>gcc -std=c17 -E ../src/hello.c -o hello.i      # 1. preprocessor: hello.c -&gt; hello.i
+gcc -std=c17 -S hello.i -o hello.s              # 2. compiler: hello.i -&gt; hello.s (assembly)
+gcc -std=c17 -c hello.s -o hello.o              # 3. assembler: hello.s -&gt; hello.o (object code)
+gcc hello.o -o hello.exe                        # 4. linker: hello.o + C library -&gt; hello.exe</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình chạy từng bước trên máy biên soạn, với GCC 13.2 cho Windows. Các tùy chọn trừ E, trừ S, trừ c yêu cầu GCC dừng ngay sau bước tiền xử lý, sau bước biên dịch, và sau bước hợp dịch; lệnh cuối cùng chỉ còn việc liên kết. Trước khi xem kết quả, các bạn thử đoán: tệp hello.i sau tiền xử lý dài bao nhiêu dòng? Kết quả cho thấy hello.c chỉ có bảy dòng, nhưng hello.i có tới 1 559 dòng, vì nội dung của stdio.h đã được chép vào. Tệp hợp ngữ hello.s chỉ còn 29 dòng. Tệp mã đối tượng hello.o nặng 914 byte, còn tệp thực thi hello.exe nặng hơn sáu mươi nghìn byte, vì đã được ghép thêm mã của thư viện. Chạy hello.exe, chương trình in đúng dòng hello, world.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Lệnh phía trên, kết quả phía dưới. Sau câu &quot;dài bao nhiêu dòng?&quot;, dừng khoảng 2 giây rồi mới hiện khung kết quả; tô dòng hello.i. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0, MinGW-w64 UCRT, Windows 11); số dòng của hello.i khác giữa các bản GCC.
+Hiện dần: bước 1 khi đọc “Mình chạy từng bước”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:04</span>
+      <h3>Slide 5. Hợp ngữ của hàm main: vài lệnh máy, một lời gọi hàm in chuỗi</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Mỗi dòng là **một lệnh máy** viết bằng tên gợi nhớ, như LDA, ADD của Little Man Computer</li><li>`call puts`: trình biên dịch thay `printf` bằng `puts`, hàm in chuỗi đơn giản hơn của thư viện chuẩn</li><li>Python chạy thẳng `hello.py` bằng trình thông dịch: **không có** tệp .s, .o hay .exe</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">results/hello-s-main.txt</span><pre><code>main:
+	pushq	%rbp
+	movq	%rsp, %rbp
+	subq	$32, %rsp
+	call	__main
+	leaq	.LC0(%rip), %rax
+	movq	%rax, %rcx
+	call	puts
+	movl	$0, %eax
+	addq	$32, %rsp
+	popq	%rbp
+	ret</code></pre></div></div>
+    <div class="kb-thoai"><p>Mở tệp hello.s, đoạn ứng với hàm main chỉ có khoảng mười dòng hợp ngữ. Mỗi dòng là một lệnh máy của CPU x86-64 viết bằng tên gợi nhớ, giống LDA hay ADD của Little Man Computer, chỉ có điều tập lệnh lớn hơn rất nhiều. Một chi tiết đáng chú ý là dòng call puts: chương trình gọi printf, nhưng trình biên dịch thấy chuỗi không có định dạng nào, nên thay bằng puts, một hàm in chuỗi đơn giản hơn của thư viện chuẩn. Trình biên dịch được phép làm vậy vì kết quả in ra không đổi. Còn với Python, lệnh python hello.py chạy thẳng mã nguồn bằng trình thông dịch, và không có tệp .s, .o hay .exe nào được tạo ra.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hợp ngữ bên trái, ba ý bên phải hiện lần lượt; highlight dòng call puts khi đọc &quot;dòng call puts&quot;. Đoạn hợp ngữ trích từ out/hello.s (đã bỏ các dòng chỉ thị .seh_), ghi ở results/hello-s-main.txt.
+Hiện dần: bước 1 khi đọc “Mở tệp hello.s”; bước 2 khi đọc “Một chi tiết”; bước 3 khi đọc “Còn với Python”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:49</span>
+      <h3>Slide 6. Cùng một tên chưa định nghĩa: GCC từ chối cả chương trình, Python chạy tới dòng lỗi mới dừng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Trình biên dịch kiểm tra **cả mã nguồn trước khi chạy**; trình thông dịch gặp lỗi này **khi chạy tới dòng đó**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/name_error.c</span><pre><code>printf(&quot;hello, world\n&quot;);
+printf(&quot;%d\n&quot;, count);</code></pre></div></div>
+    <div class="kb-thoai"><p>Khác biệt giữa biên dịch và thông dịch lộ rõ khi chương trình có lỗi. Mình viết cùng một chương trình hai dòng bằng C và bằng Python: dòng đầu in hello, world, dòng thứ hai in một tên count chưa được định nghĩa ở đâu cả. Các bạn đoán xem, mỗi bản có in được dòng hello, world không? Kết quả cho thấy GCC báo lỗi count undeclared, tức tên count chưa được khai báo, và không tạo tệp thực thi, nên chương trình C không chạy được dòng nào. Trình thông dịch Python thì chạy dòng đầu, in hello, world, rồi tới dòng thứ hai mới báo lỗi NameError và dừng. Trình biên dịch kiểm tra toàn bộ mã nguồn trước khi có tệp thực thi, còn trình thông dịch chỉ phát hiện lỗi này khi chạy tới đúng dòng chứa nó.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã C phía trên (hai dòng trong main của src/name_error.c; bản Python src/name_error.py có hai dòng tương ứng), kết quả phía dưới; sau câu &quot;in được dòng hello, world không?&quot;, dừng khoảng 2 giây; tô dòng lỗi của GCC và dòng hello, world của Python. Đường dẫn trong traceback đã rút còn tên tệp. Kết quả chạy ngày 14/11/2026 (GCC 13.2.0, Python 3.12.10).
+Hiện dần: bước 1 khi đọc “Khác biệt giữa biên dịch và thông dịch”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:40</span>
+      <h3>Slide 7. Tệp thực thi gắn với một loại CPU và một hệ điều hành</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>hello.exe dịch trên Windows x86-64 **không chạy** trên Linux hay điện thoại ARM; hello.c thì biên dịch lại được ở đó</li><li>Sửa hello.c mà **không biên dịch lại** thì hello.exe vẫn là bản cũ</li></ul></div>
+    <div class="kb-thoai"><p>Từ đây có hai hệ quả mà người lập trình C gặp hằng ngày. Hệ quả thứ nhất: trình biên dịch dịch cho một tập lệnh và một hệ điều hành cụ thể. Tệp hello.exe dịch trên Windows cho CPU x86-64 không chạy được trên Linux hay trên điện thoại dùng CPU ARM, nhưng mã nguồn hello.c thì mang sang đó biên dịch lại được. Hệ quả thứ hai: tệp thực thi là bản dịch tại một thời điểm. Sửa hello.c mà không biên dịch lại thì chạy hello.exe vẫn ra kết quả cũ.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Từ đây có hai hệ quả”; bước 2 khi đọc “Hệ quả thứ hai”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:11</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Mình mở đầu bằng việc nhìn vào tệp hello.i.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Sau bước tiền xử lý, tệp hello.i còn chứa dòng #include &lt;stdio.h&gt; không?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Còn, vì tiền xử lý chỉ kiểm tra cú pháp.</li>
+      <li><b>B.</b> Còn, vì dòng đó chỉ được xử lý ở bước liên kết.</li>
+      <li><b>C.</b> Không, dòng đó đã được thay bằng nội dung của stdio.h, nên hello.i dài hơn nhiều.</li>
+      <li><b>D.</b> Không, vì tiền xử lý xóa mọi dòng bắt đầu bằng dấu #, không thêm gì.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Bộ tiền xử lý thay chỉ thị #include bằng nội dung tệp header; vì vậy hello.i có 1 559 dòng trong khi hello.c chỉ có 7. Kiểm tra cú pháp là việc của trình biên dịch; liên kết ghép mã đã biên dịch của thư viện.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án D dễ được chọn vì dòng include đúng là biến mất, nhưng nó được thay bằng hơn một nghìn dòng của stdio.h, không phải bị xóa trắng.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:31</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo là một tình huống rất hay gặp khi mới học.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Bạn sửa dòng chữ trong hello.c thành &quot;xin chao&quot; rồi chạy ngay hello.exe, không biên dịch lại. Màn hình in gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> hello, world — tệp thực thi vẫn là bản dịch cũ.</li>
+      <li><b>B.</b> xin chao — hello.exe tự đọc lại hello.c.</li>
+      <li><b>C.</b> Báo lỗi vì mã nguồn đã thay đổi.</li>
+      <li><b>D.</b> Không in gì vì hello.exe bị xóa khi sửa hello.c.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: A</b> — <span>Với ngôn ngữ biên dịch, tệp thực thi chứa mã máy dịch từ mã nguồn lúc biên dịch và không đọc lại mã nguồn. Muốn thấy thay đổi phải biên dịch lại. Phương án B đúng với cách chạy bằng trình thông dịch như Python.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là A. Phương án B mô tả đúng cách chạy bằng trình thông dịch, như Python đọc lại mã nguồn mỗi lần chạy, nên dễ nhầm. Với C, phải biên dịch lại mới có bản mới.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án A.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:52</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Trình biên dịch** dịch một lần, tạo **tệp thực thi**; **trình thông dịch** thực hiện mã nguồn mỗi lần chạy</li><li>**Hệ thống biên dịch** C: tiền xử lý → biên dịch ra **hợp ngữ** → hợp dịch → **trình liên kết** ghép thư viện</li><li>Tệp thực thi gắn với một CPU, một hệ điều hành; sửa mã nguồn thì biên dịch lại</li></ul></div>
+    <div class="kb-thoai"><p>Tệp văn bản hello.c thành chương trình chạy được nhờ hệ thống biên dịch. Với C, trình biên dịch dịch mã nguồn một lần thành tệp thực thi, khác với trình thông dịch thực hiện mã nguồn mỗi lần chạy. Bốn bước đó là tiền xử lý, biên dịch ra hợp ngữ, hợp dịch thành mã đối tượng, rồi trình liên kết ghép thêm mã của thư viện. Sản phẩm cuối gắn với một loại CPU và một hệ điều hành, và phải biên dịch lại sau mỗi lần sửa mã nguồn. Trên slide là các từ khóa cần nhớ: mã nguồn, trình biên dịch, trình thông dịch, tiền xử lý, hợp ngữ, trình liên kết, tệp thực thi và GCC.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Tệp văn bản hello.c”; bước 2 khi đọc “Bốn bước đó”; bước 3 khi đọc “Sản phẩm cuối”; bước 4 khi đọc “các từ khóa cần nhớ”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:29</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Có hai chủ đề để đọc thêm: biên dịch tức thời, cách Java và JavaScript kết hợp biên dịch với thông dịch, và liên kết tĩnh so với liên kết động qua các tệp thư viện .dll hay .so. Bài tập mở rộng là tự tạo đủ bốn sản phẩm của hello.c bằng các tùy chọn của GCC, so sánh kích thước, và tìm trong hello.s dòng gọi hàm in chuỗi.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Có hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:50</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Đến đây trình biên dịch vẫn là một hộp kín. Phần tiếp theo mở hộp đó ra, với các pha phân tích và sinh mã, và cho thấy mỗi thông báo lỗi của GCC sinh ra ở pha nào.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V09", "tieu_de": "Trình biên dịch: từ mã nguồn đến tệp thực thi", "giong": "vi-VN-NamMinhNeural", "tong": 421.76, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/c046e9a9953e4820.mp3", "dur": 9.5, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Chương", 1], [2.163, "trình", 1], [2.375, "C", 1], [2.625, "là", 1], [2.737, "văn", 1], [2.925, "bản,", 1], [3.438, "còn", 1], [3.869, "CPU", 1], [4.3, "chỉ", 1], [4.45, "thực", 1], [4.6, "hiện", 1], [4.812, "lệnh", 1], [5.0, "máy:", 1], [5.537, "tệp", 1], [5.787, "hello.c", 1], [6.6, "trở", 1], [6.763, "thành", 1], [6.963, "chương", 1], [7.188, "trình", 1], [7.412, "chạy", 1], [7.6, "được", 1], [7.763, "qua", 1], [7.963, "những", 1], [8.162, "bước", 1], [8.338, "nào?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Mã nguồn là văn bản, CPU chỉ hiểu lệnh máy", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Mã hello.c hiện nhỏ ở góc slide (chưa giảng cú pháp; Chương 4 giảng).\nHiện dần: bước 1 khi đọc “Đây là chương trình”; bước 2 khi đọc “Ở Chương 1”; bước 3 khi đọc “Phần này đi tìm câu trả lời”.", "start": 10.1, "audio": "audio/3ede42991854a5dc.mp3", "dur": 29.88, "words": [[0.1, "Đây", 0], [0.325, "là", 0], [0.438, "chương", 0], [0.675, "trình", 0], [0.875, "C", 0], [1.062, "đầu", 0], [1.225, "tiên", 0], [1.512, "trong", 0], [1.688, "sách", 0], [1.9, "của", 0], [2.163, "Kernighan", 0], [2.862, "và", 0], [2.987, "Ritchie:", 0], [3.737, "nó", 0], [3.962, "chỉ", 0], [4.275, "in", 0], [4.45, "một", 0], [4.625, "dòng", 0], [4.888, "hello,", 0], [5.513, "world.", 0], [6.675, "Tệp", 1], [7.062, "hello.c", 1], [7.963, "chứa", 1], [8.213, "văn", 1], [8.412, "bản,", 1], [8.938, "gọi", 1], [9.213, "là", 1], [9.325, "mã", 1], [9.525, "nguồn,", 1], [10.088, "hay", 1], [10.338, "source", 1], [10.713, "code,", 1], [11.2, "mà", 1], [11.438, "người", 1], [11.637, "đọc", 1], [11.787, "được.", 1], [12.863, "Ở", 2], [13.062, "Chương", 2], [13.287, "1,", 2], [13.7, "các", 2], [13.875, "bạn", 2], [14.113, "đã", 2], [14.213, "thấy", 2], [14.675, "CPU", 2], [15.137, "chỉ", 2], [15.325, "thực", 2], [15.475, "hiện", 2], [15.7, "lệnh", 2], [15.887, "máy,", 2], [16.413, "những", 2], [16.65, "con", 2], [16.812, "số", 2], [17.062, "như", 2], [17.3, "lệnh", 2], [17.525, "ba", 2], [17.688, "chữ", 2], [17.875, "số", 2], [18.137, "của", 2], [18.288, "Little", 2], [18.65, "Man", 2], [18.887, "Computer.", 2], [20.312, "Giữa", 3], [20.625, "văn", 3], [20.837, "bản", 3], [21.125, "và", 3], [21.225, "lệnh", 3], [21.462, "máy", 3], [21.75, "phải", 3], [21.95, "có", 3], [22.062, "một", 3], [22.262, "bước", 3], [22.462, "dịch.", 3], [23.525, "Phần", 4], [23.775, "này", 4], [23.95, "đi", 4], [24.087, "tìm", 4], [24.337, "câu", 4], [24.512, "trả", 4], [24.7, "lời", 4], [24.913, "cho", 4], [25.038, "câu", 4], [25.2, "hỏi:", 4], [25.8, "tệp", 4], [26.05, "hello.c", 4], [26.9, "trở", 4], [27.062, "thành", 4], [27.275, "chương", 4], [27.512, "trình", 4], [27.738, "chạy", 4], [27.962, "được", 4], [28.125, "qua", 4], [28.325, "những", 4], [28.538, "bước", 4], [28.712, "nào?", 4]], "cues": [0.1, 12.863, 23.525], "lang": 0.6}, {"ten": "Slide 2. Trình biên dịch dịch một lần rồi chạy nhiều lần; trình thông dịch dịch mỗi lần chạy", "loai": "slide", "slide": "S02", "dung": "Hình bien-dich-thong-dich: bước 1 dòng biên dịch, bước 2 dòng thông dịch; bước 3 ô kết luận.\nHiện dần: bước 1 khi đọc “Có hai cách đưa mã nguồn”; bước 2 khi đọc “Cách thứ hai”; bước 3 khi đọc “C là ngôn ngữ”.", "start": 40.58, "audio": "audio/eae4265f8a30cb9e.mp3", "dur": 26.98, "words": [[0.1, "Có", 0], [0.287, "hai", 0], [0.5, "cách", 0], [0.713, "đưa", 0], [0.887, "mã", 0], [1.113, "nguồn", 0], [1.375, "tới", 0], [2.282, "CPU.", 0], [3.188, "Cách", 1], [3.375, "thứ", 1], [3.55, "nhất", 1], [3.788, "dùng", 1], [4.025, "trình", 1], [4.225, "biên", 1], [4.412, "dịch,", 1], [4.875, "hay", 1], [5.088, "compiler:", 1], [5.975, "dịch", 1], [6.188, "toàn", 1], [6.412, "bộ", 1], [6.588, "mã", 1], [6.75, "nguồn", 1], [6.975, "sang", 1], [7.225, "mã", 1], [7.388, "máy", 1], [7.562, "một", 1], [7.75, "lần,", 1], [8.225, "tạo", 1], [8.5, "ra", 1], [8.6, "một", 1], [8.775, "tệp", 1], [8.975, "thực", 1], [9.137, "thi,", 1], [9.675, "rồi", 1], [9.938, "chạy", 1], [10.125, "tệp", 1], [10.325, "đó", 1], [10.55, "bao", 1], [10.762, "nhiêu", 1], [10.975, "lần", 1], [11.225, "cũng", 1], [11.412, "được", 1], [11.6, "mà", 1], [11.738, "không", 1], [11.975, "cần", 1], [12.162, "mã", 1], [12.287, "nguồn", 1], [12.488, "nữa.", 1], [13.688, "Cách", 2], [13.887, "thứ", 2], [14.125, "hai", 2], [14.312, "dùng", 2], [14.525, "trình", 2], [14.725, "thông", 2], [14.925, "dịch,", 2], [15.375, "hay", 2], [15.65, "interpreter:", 2], [16.475, "mỗi", 2], [16.675, "lần", 2], [16.887, "chạy,", 2], [17.438, "trình", 2], [17.65, "thông", 2], [17.85, "dịch", 2], [18.0, "đọc", 2], [18.2, "từng", 2], [18.413, "câu", 2], [18.587, "lệnh", 2], [18.85, "của", 2], [18.962, "mã", 2], [19.137, "nguồn", 2], [19.438, "và", 2], [19.525, "thực", 2], [19.688, "hiện", 2], [19.875, "ngay,", 2], [20.375, "không", 2], [20.637, "tạo", 2], [20.863, "tệp", 2], [21.087, "thực", 2], [21.25, "thi.", 2], [22.4, "C", 3], [22.75, "là", 3], [22.837, "ngôn", 3], [23.062, "ngữ", 3], [23.275, "được", 3], [23.425, "biên", 3], [23.65, "dịch,", 3], [24.1, "còn", 3], [24.363, "Python", 3], [24.812, "thường", 3], [25.075, "chạy", 3], [25.288, "bằng", 3], [25.5, "trình", 3], [25.712, "thông", 3], [25.913, "dịch.", 3]], "cues": [0.1, 13.688, 22.4], "lang": 2.6}, {"ten": "Slide 3. Hệ thống biên dịch C: tiền xử lý, biên dịch, hợp dịch, liên kết", "loai": "slide", "slide": "S03", "dung": "Hình he-thong-bien-dich: sáu bước theo sáu câu mốc đầu; bước 7 ô kết luận. Ghi nguồn: CS:APP §1.2, hình 1.3.\nHiện dần: bước 1 khi đọc “Điểm xuất phát”; bước 2 khi đọc “Bước thứ nhất”; bước 3 khi đọc “Bước thứ hai”; bước 4 khi đọc “Bước thứ ba”; bước 5 khi đọc “Bước cuối”; bước 6 khi đọc “Mã của hàm in chuỗi”; bước 7 khi đọc “Bốn bước này”.", "start": 70.16, "audio": "audio/968bf8e935d3092c.mp3", "dur": 52.25, "words": [[0.1, "Với", 0], [0.35, "C,", 0], [0.838, "việc", 0], [1.05, "biên", 0], [1.262, "dịch", 0], [1.45, "thật", 0], [1.625, "ra", 0], [1.788, "gồm", 0], [2.075, "bốn", 0], [2.325, "bước,", 0], [2.75, "gọi", 0], [2.987, "chung", 0], [3.237, "là", 0], [3.362, "hệ", 0], [3.513, "thống", 0], [3.725, "biên", 0], [3.9, "dịch,", 0], [4.362, "hay", 0], [4.575, "compilation", 0], [5.225, "system,", 0], [6.0, "theo", 0], [6.237, "cách", 0], [6.425, "trình", 0], [6.65, "bày", 0], [6.825, "của", 0], [7.037, "Bryant", 0], [7.5, "và", 0], [7.7, "O'Hallaron.", 0], [9.312, "Điểm", 1], [9.6, "xuất", 1], [9.762, "phát", 1], [10.037, "là", 1], [10.25, "tệp", 1], [10.55, "hello.c.", 1], [12.35, "Bước", 2], [12.6, "thứ", 2], [12.762, "nhất", 2], [13.012, "là", 2], [13.238, "tiền", 2], [13.475, "xử", 2], [13.65, "lý:", 2], [14.2, "dòng", 2], [14.512, "include", 2], [14.975, "ở", 2], [15.175, "đầu", 2], [15.363, "chương", 2], [15.6, "trình", 2], [15.863, "yêu", 2], [15.975, "cầu", 2], [16.188, "chép", 2], [16.425, "nội", 2], [16.625, "dung", 2], [16.837, "tệp", 2], [17.663, "stdio.h", 2], [18.488, "vào,", 2], [18.962, "kết", 2], [19.137, "quả", 2], [19.387, "là", 2], [19.5, "tệp", 2], [19.775, "hello.i.", 2], [21.525, "Bước", 3], [21.775, "thứ", 3], [21.975, "hai", 3], [22.225, "là", 3], [22.312, "biên", 3], [22.525, "dịch", 3], [22.712, "theo", 3], [22.875, "nghĩa", 3], [23.087, "hẹp:", 3], [23.575, "dịch", 3], [23.812, "hello.i", 3], [24.663, "sang", 3], [24.925, "hợp", 3], [25.1, "ngữ,", 3], [25.65, "tức", 3], [25.837, "lệnh", 3], [26.05, "máy", 3], [26.25, "viết", 3], [26.438, "bằng", 3], [26.637, "tên", 3], [26.863, "gợi", 3], [27.05, "nhớ,", 3], [27.587, "trong", 3], [27.825, "tệp", 3], [28.1, "hello.s.", 3], [29.812, "Bước", 4], [30.075, "thứ", 4], [30.262, "ba", 4], [30.538, "là", 4], [30.65, "hợp", 4], [30.837, "dịch:", 4], [31.325, "đổi", 4], [31.55, "hợp", 4], [31.775, "ngữ", 4], [32.0, "thành", 4], [32.212, "mã", 4], [32.388, "máy", 4], [32.575, "thật,", 4], [33.05, "trong", 4], [33.275, "tệp", 4], [33.5, "mã", 4], [33.725, "đối", 4], [33.9, "tượng", 4], [34.188, "hello.o.", 4], [35.962, "Bước", 5], [36.212, "cuối", 5], [36.413, "là", 5], [36.538, "liên", 5], [36.737, "kết:", 5], [37.225, "trình", 5], [37.438, "liên", 5], [37.638, "kết", 5], [37.837, "ghép", 5], [38.075, "hello.o", 5], [38.925, "với", 5], [39.05, "mã", 5], [39.275, "đã", 5], [39.4, "biên", 5], [39.612, "dịch", 5], [39.75, "sẵn", 5], [40.062, "của", 5], [40.175, "thư", 5], [40.325, "viện", 5], [40.525, "chuẩn,", 5], [41.075, "tạo", 5], [41.275, "tệp", 5], [41.5, "thực", 5], [41.65, "thi", 5], [41.85, "hello.exe.", 5], [43.138, "Mã", 6], [43.388, "của", 6], [43.538, "hàm", 6], [43.737, "in", 6], [43.925, "chuỗi", 6], [44.2, "không", 6], [44.462, "nằm", 6], [44.663, "trong", 6], [44.862, "hello.c,", 6], [45.925, "mà", 6], [46.1, "được", 6], [46.25, "lấy", 6], [46.425, "từ", 6], [46.6, "thư", 6], [46.788, "viện", 6], [47.013, "chuẩn", 6], [47.325, "ở", 6], [47.388, "bước", 6], [47.612, "này.", 6], [48.688, "Bốn", 7], [48.987, "bước", 7], [49.175, "này", 7], [49.4, "đều", 7], [49.587, "do", 7], [49.737, "một", 7], [49.925, "lệnh", 7], [50.381, "gcc", 7], [50.837, "điều", 7], [51.025, "phối.", 7]], "cues": [9.312, 12.35, 21.525, 29.812, 35.962, 43.138, 48.688], "lang": 2.6}, {"ten": "Slide 4. Dừng GCC sau từng bước để xem sản phẩm của bước đó", "loai": "slide", "slide": "S04", "dung": "Lệnh phía trên, kết quả phía dưới. Sau câu \"dài bao nhiêu dòng?\", dừng khoảng 2 giây rồi mới hiện khung kết quả; tô dòng hello.i. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0, MinGW-w64 UCRT, Windows 11); số dòng của hello.i khác giữa các bản GCC.\nHiện dần: bước 1 khi đọc “Mình chạy từng bước”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 125.01, "audio": "audio/b79ffb07d16d4b93.mp3", "dur": 50.18, "words": [[0.1, "Mình", 0], [0.5, "chạy", 0], [0.713, "từng", 0], [0.925, "bước", 0], [1.113, "trên", 0], [1.275, "máy", 0], [1.438, "biên", 0], [1.625, "soạn,", 0], [2.15, "với", 0], [2.562, "GCC", 0], [2.975, "13.2", 0], [3.875, "cho", 0], [4.075, "Windows.", 0], [5.5, "Các", 1], [5.7, "tùy", 1], [5.9, "chọn", 1], [6.2, "trừ", 1], [6.45, "E,", 1], [6.963, "trừ", 1], [7.225, "S,", 1], [7.688, "trừ", 1], [7.9, "c", 1], [8.162, "yêu", 1], [8.363, "cầu", 1], [8.776, "GCC", 1], [9.188, "dừng", 1], [9.4, "ngay", 1], [9.613, "sau", 1], [9.787, "bước", 1], [9.975, "tiền", 1], [10.188, "xử", 1], [10.363, "lý,", 1], [10.887, "sau", 1], [11.125, "bước", 1], [11.312, "biên", 1], [11.512, "dịch,", 1], [11.938, "và", 1], [12.15, "sau", 1], [12.35, "bước", 1], [12.512, "hợp", 1], [12.7, "dịch;", 1], [13.175, "lệnh", 1], [13.475, "cuối", 1], [13.625, "cùng", 1], [13.887, "chỉ", 1], [14.037, "còn", 1], [14.25, "việc", 1], [14.438, "liên", 1], [14.65, "kết.", 1], [15.738, "Trước", 2], [16.0, "khi", 2], [16.137, "xem", 2], [16.375, "kết", 2], [16.562, "quả,", 2], [17.125, "các", 2], [17.288, "bạn", 2], [17.512, "thử", 2], [17.688, "đoán:", 2], [18.238, "tệp", 2], [18.538, "hello.i", 2], [19.375, "sau", 2], [19.575, "tiền", 2], [19.812, "xử", 2], [19.975, "lý", 2], [20.175, "dài", 2], [20.413, "bao", 2], [20.6, "nhiêu", 2], [20.8, "dòng?", 2], [21.95, "Kết", 3], [22.2, "quả", 3], [22.438, "cho", 3], [22.575, "thấy", 3], [22.788, "hello.c", 3], [23.613, "chỉ", 3], [23.775, "có", 3], [23.875, "bảy", 3], [24.087, "dòng,", 3], [24.613, "nhưng", 3], [24.925, "hello.i", 3], [25.75, "có", 3], [25.875, "tới", 3], [26.371, "1", 3], [26.867, "559", 3], [27.363, "dòng,", 3], [27.85, "vì", 3], [28.05, "nội", 3], [28.262, "dung", 3], [28.475, "của", 3], [29.275, "stdio.h", 3], [30.075, "đã", 3], [30.212, "được", 3], [30.4, "chép", 3], [30.625, "vào.", 3], [31.75, "Tệp", 4], [32.075, "hợp", 4], [32.312, "ngữ", 4], [32.55, "hello.s", 4], [33.475, "chỉ", 4], [33.688, "còn", 4], [33.975, "29", 4], [34.513, "dòng.", 4], [35.638, "Tệp", 5], [35.938, "mã", 5], [36.163, "đối", 5], [36.325, "tượng", 5], [36.6, "hello.o", 5], [37.513, "nặng", 5], [37.775, "914", 5], [38.562, "byte,", 5], [39.038, "còn", 5], [39.237, "tệp", 5], [39.45, "thực", 5], [39.6, "thi", 5], [39.788, "hello.exe", 5], [41.013, "nặng", 5], [41.275, "hơn", 5], [41.462, "sáu", 5], [41.675, "mươi", 5], [41.775, "nghìn", 5], [42.0, "byte,", 5], [42.487, "vì", 5], [42.775, "đã", 5], [42.875, "được", 5], [43.05, "ghép", 5], [43.288, "thêm", 5], [43.5, "mã", 5], [43.725, "của", 5], [43.875, "thư", 5], [44.025, "viện.", 5], [45.212, "Chạy", 6], [45.587, "hello.exe,", 6], [47.175, "chương", 6], [47.462, "trình", 6], [47.763, "in", 6], [47.938, "đúng", 6], [48.15, "dòng", 6], [48.362, "hello,", 6], [49.0, "world.", 6]], "cues": [0.1, 21.95], "lang": 9.6}, {"ten": "Slide 5. Hợp ngữ của hàm main: vài lệnh máy, một lời gọi hàm in chuỗi", "loai": "slide", "slide": "S05", "dung": "Hợp ngữ bên trái, ba ý bên phải hiện lần lượt; highlight dòng call puts khi đọc \"dòng call puts\". Đoạn hợp ngữ trích từ out/hello.s (đã bỏ các dòng chỉ thị .seh_), ghi ở results/hello-s-main.txt.\nHiện dần: bước 1 khi đọc “Mở tệp hello.s”; bước 2 khi đọc “Một chi tiết”; bước 3 khi đọc “Còn với Python”.", "start": 184.79, "audio": "audio/21f12982bc366829.mp3", "dur": 38.98, "words": [[0.1, "Mở", 0], [0.475, "tệp", 0], [0.775, "hello.s,", 0], [1.875, "đoạn", 0], [2.163, "ứng", 0], [2.35, "với", 0], [2.462, "hàm", 0], [2.675, "main", 0], [2.913, "chỉ", 0], [3.075, "có", 0], [3.188, "khoảng", 0], [3.487, "mười", 0], [3.65, "dòng", 0], [3.888, "hợp", 0], [4.088, "ngữ.", 0], [5.312, "Mỗi", 1], [5.688, "dòng", 1], [5.987, "là", 1], [6.075, "một", 1], [6.237, "lệnh", 1], [6.438, "máy", 1], [6.662, "của", 1], [6.662, "CPU", 1], [6.662, "x86-64", 1], [6.662, "viết", 1], [6.662, "bằng", 1], [6.662, "tên", 1], [6.662, "gợi", 1], [6.662, "nhớ,", 1], [6.662, "giống", 1], [6.662, "LDA", 1], [6.662, "hay", 1], [6.662, "ADD", 1], [6.662, "của", 1], [6.662, "Little", 1], [6.662, "Man", 1], [6.662, "Computer,", 1], [6.662, "chỉ", 1], [6.662, "có", 1], [6.662, "điều", 1], [6.662, "tập", 1], [6.662, "lệnh", 1], [6.662, "lớn", 1], [6.662, "hơn", 1], [6.662, "rất", 1], [6.662, "nhiều.", 1], [6.662, "Một", 2], [6.662, "chi", 2], [6.662, "tiết", 2], [6.662, "đáng", 2], [6.662, "chú", 2], [6.662, "ý", 2], [6.662, "là", 2], [6.662, "dòng", 2], [6.662, "call", 2], [6.662, "puts:", 2], [6.662, "chương", 2], [6.662, "trình", 2], [6.662, "gọi", 2], [6.662, "printf,", 2], [6.662, "nhưng", 2], [6.662, "trình", 2], [6.662, "biên", 2], [6.662, "dịch", 2], [6.662, "thấy", 2], [6.662, "chuỗi", 2], [6.662, "không", 2], [6.662, "có", 2], [6.662, "định", 2], [6.662, "dạng", 2], [6.662, "nào,", 2], [6.662, "nên", 2], [6.662, "thay", 2], [6.662, "bằng", 2], [6.662, "puts,", 2], [6.662, "một", 2], [6.662, "hàm", 2], [6.662, "in", 2], [6.662, "chuỗi", 2], [6.662, "đơn", 2], [6.662, "giản", 2], [6.662, "hơn", 2], [6.662, "của", 2], [6.662, "thư", 2], [6.662, "viện", 2], [6.662, "chuẩn.", 2], [6.662, "Trình", 3], [6.662, "biên", 3], [6.662, "dịch", 3], [6.662, "được", 3], [6.662, "phép", 3], [6.662, "làm", 3], [6.662, "vậy", 3], [6.662, "vì", 3], [6.662, "kết", 3], [6.662, "quả", 3], [6.662, "in", 3], [6.662, "ra", 3], [6.662, "không", 3], [6.662, "đổi.", 3], [6.662, "Còn", 4], [6.662, "với", 4], [6.662, "Python,", 4], [6.662, "lệnh", 4], [6.662, "python", 4], [6.662, "hello.py", 4], [6.662, "chạy", 4], [6.662, "thẳng", 4], [6.662, "mã", 4], [6.662, "nguồn", 4], [6.662, "bằng", 4], [6.662, "trình", 4], [6.662, "thông", 4], [6.662, "dịch,", 4], [6.662, "và", 4], [6.662, "không", 4], [6.662, "có", 4], [6.662, "tệp", 4], [6.662, ".s,", 4], [6.662, ".o", 4], [6.662, "hay", 4], [6.662, ".exe", 4], [6.662, "nào", 4], [6.662, "được", 4], [6.662, "tạo", 4], [6.662, "ra.", 4]], "cues": [0.1, 6.662, 6.662], "lang": 5.6}, {"ten": "Slide 6. Cùng một tên chưa định nghĩa: GCC từ chối cả chương trình, Python chạy tới dòng lỗi mới dừng", "loai": "slide", "slide": "S06", "dung": "Mã C phía trên (hai dòng trong main của src/name_error.c; bản Python src/name_error.py có hai dòng tương ứng), kết quả phía dưới; sau câu \"in được dòng hello, world không?\", dừng khoảng 2 giây; tô dòng lỗi của GCC và dòng hello, world của Python. Đường dẫn trong traceback đã rút còn tên tệp. Kết quả chạy ngày 14/11/2026 (GCC 13.2.0, Python 3.12.10).\nHiện dần: bước 1 khi đọc “Khác biệt giữa biên dịch và thông dịch”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 229.37, "audio": "audio/423bd836dc0f9507.mp3", "dur": 41.33, "words": [[0.1, "Khác", 0], [0.375, "biệt", 0], [0.588, "giữa", 0], [0.787, "biên", 0], [1.025, "dịch", 0], [1.238, "và", 0], [1.375, "thông", 0], [1.587, "dịch", 0], [1.775, "lộ", 0], [2.025, "rõ", 0], [2.263, "khi", 0], [2.438, "chương", 0], [2.688, "trình", 0], [2.888, "có", 0], [3.025, "lỗi.", 0], [4.275, "Mình", 1], [4.638, "viết", 1], [4.812, "cùng", 1], [4.987, "một", 1], [5.138, "chương", 1], [5.338, "trình", 1], [5.55, "hai", 1], [5.713, "dòng", 1], [5.925, "bằng", 1], [6.112, "C", 1], [6.388, "và", 1], [6.5, "bằng", 1], [6.7, "Python:", 1], [7.438, "dòng", 1], [7.7, "đầu", 1], [7.925, "in", 1], [8.1, "hello,", 1], [8.75, "world,", 1], [9.287, "dòng", 1], [9.537, "thứ", 1], [9.725, "hai", 1], [9.938, "in", 1], [10.1, "một", 1], [10.287, "tên", 1], [10.463, "count", 1], [10.688, "chưa", 1], [10.863, "được", 1], [11.0, "định", 1], [11.213, "nghĩa", 1], [11.463, "ở", 1], [11.65, "đâu", 1], [11.812, "cả.", 1], [13.1, "Các", 2], [13.3, "bạn", 2], [13.525, "đoán", 2], [13.725, "xem,", 2], [14.262, "mỗi", 2], [14.488, "bản", 2], [14.738, "có", 2], [14.887, "in", 2], [15.062, "được", 2], [15.213, "dòng", 2], [15.475, "hello,", 2], [16.137, "world", 2], [16.387, "không?", 2], [17.55, "Kết", 3], [17.775, "quả", 3], [18.0, "cho", 3], [18.125, "thấy", 3], [18.512, "GCC", 3], [18.9, "báo", 3], [19.113, "lỗi", 3], [19.312, "count", 3], [19.637, "undeclared,", 3], [20.625, "tức", 3], [20.812, "tên", 3], [21.038, "count", 3], [21.288, "chưa", 3], [21.475, "được", 3], [21.6, "khai", 3], [21.788, "báo,", 3], [22.312, "và", 3], [22.538, "không", 3], [22.775, "tạo", 3], [22.962, "tệp", 3], [23.188, "thực", 3], [23.337, "thi,", 3], [23.887, "nên", 3], [24.188, "chương", 3], [24.425, "trình", 3], [24.6, "C", 3], [24.825, "không", 3], [25.05, "chạy", 3], [25.225, "được", 3], [25.375, "dòng", 3], [25.6, "nào.", 3], [26.712, "Trình", 4], [27.025, "thông", 4], [27.225, "dịch", 4], [27.4, "Python", 4], [27.825, "thì", 4], [27.975, "chạy", 4], [28.175, "dòng", 4], [28.387, "đầu,", 4], [28.837, "in", 4], [29.05, "hello,", 4], [29.75, "world,", 4], [30.288, "rồi", 4], [30.55, "tới", 4], [30.7, "dòng", 4], [30.887, "thứ", 4], [31.062, "hai", 4], [31.275, "mới", 4], [31.462, "báo", 4], [31.7, "lỗi", 4], [31.9, "NameError", 4], [32.538, "và", 4], [32.688, "dừng.", 4], [33.812, "Trình", 5], [34.125, "biên", 5], [34.325, "dịch", 5], [34.5, "kiểm", 5], [34.7, "tra", 5], [34.875, "toàn", 5], [35.125, "bộ", 5], [35.325, "mã", 5], [35.475, "nguồn", 5], [35.737, "trước", 5], [35.925, "khi", 5], [36.1, "có", 5], [36.212, "tệp", 5], [36.438, "thực", 5], [36.6, "thi,", 5], [37.138, "còn", 5], [37.362, "trình", 5], [37.538, "thông", 5], [37.725, "dịch", 5], [37.9, "chỉ", 5], [38.05, "phát", 5], [38.237, "hiện", 5], [38.462, "lỗi", 5], [38.663, "này", 5], [38.9, "khi", 5], [39.075, "chạy", 5], [39.3, "tới", 5], [39.5, "đúng", 5], [39.725, "dòng", 5], [39.938, "chứa", 5], [40.138, "nó.", 5]], "cues": [0.1, 17.55], "lang": 9.6}, {"ten": "Slide 7. Tệp thực thi gắn với một loại CPU và một hệ điều hành", "loai": "slide", "slide": "S07", "dung": "Hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Từ đây có hai hệ quả”; bước 2 khi đọc “Hệ quả thứ hai”.", "start": 280.3, "audio": "audio/d6fc198e63da4a5a.mp3", "dur": 30.36, "words": [[0.1, "Từ", 0], [0.362, "đây", 0], [0.562, "có", 0], [0.688, "hai", 0], [0.863, "hệ", 0], [1.025, "quả", 0], [1.325, "mà", 0], [1.5, "người", 0], [1.712, "lập", 0], [1.938, "trình", 0], [2.163, "C", 0], [2.438, "gặp", 0], [2.625, "hằng", 0], [2.825, "ngày.", 0], [3.925, "Hệ", 1], [4.175, "quả", 1], [4.4, "thứ", 1], [4.575, "nhất:", 1], [5.05, "trình", 1], [5.275, "biên", 1], [5.487, "dịch", 1], [5.662, "dịch", 1], [5.875, "cho", 1], [6.0, "một", 1], [6.188, "tập", 1], [6.362, "lệnh", 1], [6.65, "và", 1], [6.763, "một", 1], [6.95, "hệ", 1], [7.15, "điều", 1], [7.325, "hành", 1], [7.525, "cụ", 1], [7.713, "thể.", 1], [8.963, "Tệp", 2], [9.338, "hello.exe", 2], [10.562, "dịch", 2], [10.762, "trên", 2], [11.025, "Windows", 2], [11.512, "cho", 2], [11.512, "CPU", 2], [11.512, "x86-64", 2], [11.512, "không", 2], [11.512, "chạy", 2], [11.512, "được", 2], [11.512, "trên", 2], [11.512, "Linux", 2], [11.512, "hay", 2], [11.512, "trên", 2], [11.512, "điện", 2], [11.512, "thoại", 2], [11.512, "dùng", 2], [11.512, "CPU", 2], [11.512, "ARM,", 2], [11.512, "nhưng", 2], [11.512, "mã", 2], [11.512, "nguồn", 2], [11.512, "hello.c", 2], [11.512, "thì", 2], [11.512, "mang", 2], [11.512, "sang", 2], [11.512, "đó", 2], [11.512, "biên", 2], [11.512, "dịch", 2], [11.512, "lại", 2], [11.512, "được.", 2], [11.512, "Hệ", 3], [11.512, "quả", 3], [11.512, "thứ", 3], [11.512, "hai:", 3], [11.512, "tệp", 3], [11.512, "thực", 3], [11.512, "thi", 3], [11.512, "là", 3], [11.512, "bản", 3], [11.512, "dịch", 3], [11.512, "tại", 3], [11.512, "một", 3], [11.512, "thời", 3], [11.512, "điểm.", 3], [11.512, "Sửa", 4], [11.512, "hello.c", 4], [11.512, "mà", 4], [11.512, "không", 4], [11.512, "biên", 4], [11.512, "dịch", 4], [11.512, "lại", 4], [11.512, "thì", 4], [11.512, "chạy", 4], [11.512, "hello.exe", 4], [11.512, "vẫn", 4], [11.512, "ra", 4], [11.512, "kết", 4], [11.512, "quả", 4], [11.512, "cũ.", 4]], "cues": [0.1, 11.512], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.", "start": 311.26, "audio": "audio/d569b827d25a969f.mp3", "dur": 3.79, "words": [[0.1, "Mình", 0], [0.475, "mở", 0], [0.662, "đầu", 0], [0.875, "bằng", 0], [1.075, "việc", 0], [1.275, "nhìn", 0], [1.55, "vào", 0], [1.7, "tệp", 0], [1.988, "hello.i.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/a0440101ebda5ac8.mp3", "dur2": 9.72, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.762, "C.", 0], [1.15, "Phương", 1], [1.488, "án", 1], [1.675, "D", 1], [1.85, "dễ", 1], [2.05, "được", 1], [2.225, "chọn", 1], [2.525, "vì", 1], [2.638, "dòng", 1], [2.925, "include", 1], [3.362, "đúng", 1], [3.612, "là", 1], [3.712, "biến", 1], [3.925, "mất,", 1], [4.338, "nhưng", 1], [4.588, "nó", 1], [4.737, "được", 1], [4.9, "thay", 1], [5.05, "bằng", 1], [5.263, "hơn", 1], [5.463, "một", 1], [5.612, "nghìn", 1], [5.812, "dòng", 1], [6.05, "của", 1], [6.869, "stdio.h,", 1], [7.688, "không", 1], [7.925, "phải", 1], [8.113, "bị", 1], [8.275, "xóa", 1], [8.5, "trắng.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án A.", "start": 331.37, "audio": "audio/077a22d96a0a7cde.mp3", "dur": 3.46, "words": [[0.1, "Tiếp", 0], [0.438, "theo", 0], [0.675, "là", 0], [0.75, "một", 0], [0.95, "tình", 0], [1.163, "huống", 0], [1.4, "rất", 0], [1.562, "hay", 0], [1.762, "gặp", 0], [1.975, "khi", 0], [2.163, "mới", 0], [2.375, "học.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/5b06f35a6cda2a6e.mp3", "dur2": 11.38, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.863, "A.", 0], [1.225, "Phương", 1], [1.562, "án", 1], [1.762, "B", 1], [1.925, "mô", 1], [2.1, "tả", 1], [2.337, "đúng", 1], [2.538, "cách", 1], [2.712, "chạy", 1], [2.913, "bằng", 1], [3.112, "trình", 1], [3.312, "thông", 1], [3.5, "dịch,", 1], [3.95, "như", 1], [4.213, "Python", 1], [4.65, "đọc", 1], [4.825, "lại", 1], [5.013, "mã", 1], [5.175, "nguồn", 1], [5.388, "mỗi", 1], [5.55, "lần", 1], [5.75, "chạy,", 1], [6.287, "nên", 1], [6.575, "dễ", 1], [6.775, "nhầm.", 1], [7.925, "Với", 2], [8.175, "C,", 2], [8.725, "phải", 2], [8.925, "biên", 2], [9.137, "dịch", 2], [9.338, "lại", 2], [9.562, "mới", 2], [9.825, "có", 2], [9.938, "bản", 2], [10.162, "mới.", 2]], "dap_an": "A", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Tệp văn bản hello.c”; bước 2 khi đọc “Bốn bước đó”; bước 3 khi đọc “Sản phẩm cuối”; bước 4 khi đọc “các từ khóa cần nhớ”.", "start": 352.81, "audio": "audio/fd1ad09ef21147f7.mp3", "dur": 35.71, "words": [[0.1, "Tệp", 0], [0.375, "văn", 0], [0.562, "bản", 0], [0.8, "hello.c", 0], [1.663, "thành", 0], [1.913, "chương", 0], [2.125, "trình", 0], [2.337, "chạy", 0], [2.562, "được", 0], [2.737, "nhờ", 0], [2.987, "hệ", 0], [3.15, "thống", 0], [3.375, "biên", 0], [3.55, "dịch.", 0], [4.588, "Với", 1], [4.838, "C,", 1], [5.388, "trình", 1], [5.6, "biên", 1], [5.8, "dịch", 1], [5.95, "dịch", 1], [6.138, "mã", 1], [6.3, "nguồn", 1], [6.525, "một", 1], [6.688, "lần", 1], [6.912, "thành", 1], [7.125, "tệp", 1], [7.362, "thực", 1], [7.513, "thi,", 1], [8.088, "khác", 1], [8.338, "với", 1], [8.475, "trình", 1], [8.7, "thông", 1], [8.9, "dịch", 1], [9.075, "thực", 1], [9.213, "hiện", 1], [9.463, "mã", 1], [9.6, "nguồn", 1], [9.825, "mỗi", 1], [9.988, "lần", 1], [10.188, "chạy.", 1], [11.363, "Bốn", 2], [11.675, "bước", 2], [11.85, "đó", 2], [12.062, "là", 2], [12.188, "tiền", 2], [12.438, "xử", 2], [12.613, "lý,", 2], [13.15, "biên", 2], [13.412, "dịch", 2], [13.613, "ra", 2], [13.75, "hợp", 2], [13.95, "ngữ,", 2], [14.512, "hợp", 2], [14.725, "dịch", 2], [14.938, "thành", 2], [15.113, "mã", 2], [15.312, "đối", 2], [15.488, "tượng,", 2], [16.05, "rồi", 2], [16.312, "trình", 2], [16.55, "liên", 2], [16.775, "kết", 2], [16.988, "ghép", 2], [17.212, "thêm", 2], [17.438, "mã", 2], [17.675, "của", 2], [17.825, "thư", 2], [17.988, "viện.", 2], [19.175, "Sản", 3], [19.5, "phẩm", 3], [19.762, "cuối", 3], [19.95, "gắn", 3], [20.212, "với", 3], [20.3, "một", 3], [20.475, "loại", 3], [20.938, "CPU", 3], [21.4, "và", 3], [21.512, "một", 3], [21.675, "hệ", 3], [21.863, "điều", 3], [22.025, "hành,", 3], [22.5, "và", 3], [22.75, "phải", 3], [22.887, "biên", 3], [23.1, "dịch", 3], [23.275, "lại", 3], [23.462, "sau", 3], [23.675, "mỗi", 3], [23.863, "lần", 3], [24.075, "sửa", 3], [24.275, "mã", 3], [24.45, "nguồn.", 3], [25.637, "Trên", 4], [25.975, "slide", 4], [26.413, "là", 4], [26.55, "các", 4], [26.75, "từ", 4], [26.863, "khóa", 4], [27.1, "cần", 4], [27.325, "nhớ:", 4], [27.887, "mã", 4], [28.087, "nguồn,", 4], [28.625, "trình", 4], [28.913, "biên", 4], [29.137, "dịch,", 4], [29.587, "trình", 4], [29.85, "thông", 4], [30.075, "dịch,", 4], [30.538, "tiền", 4], [30.75, "xử", 4], [30.95, "lý,", 4], [31.512, "hợp", 4], [31.75, "ngữ,", 4], [32.35, "trình", 4], [32.612, "liên", 4], [32.825, "kết,", 4], [33.312, "tệp", 4], [33.525, "thực", 4], [33.688, "thi", 4], [33.95, "và", 4], [33.95, "GCC.", 4]], "cues": [0.1, 11.363, 19.175, 26.55], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Có hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 389.12, "audio": "audio/721a53bddff90830.mp3", "dur": 20.66, "words": [[0.1, "Có", 0], [0.287, "hai", 0], [0.487, "chủ", 0], [0.7, "đề", 0], [0.9, "để", 0], [1.025, "đọc", 0], [1.2, "thêm:", 0], [1.675, "biên", 0], [1.938, "dịch", 0], [2.125, "tức", 0], [2.288, "thời,", 0], [2.788, "cách", 0], [2.987, "Java", 0], [3.413, "và", 0], [3.562, "JavaScript", 0], [4.237, "kết", 0], [4.45, "hợp", 0], [4.662, "biên", 0], [4.875, "dịch", 0], [5.037, "với", 0], [5.125, "thông", 0], [5.312, "dịch,", 0], [5.737, "và", 0], [5.925, "liên", 0], [6.138, "kết", 0], [6.325, "tĩnh", 0], [6.588, "so", 0], [6.8, "với", 0], [6.912, "liên", 0], [7.112, "kết", 0], [7.312, "động", 0], [7.562, "qua", 0], [7.737, "các", 0], [7.938, "tệp", 0], [8.137, "thư", 0], [8.3, "viện", 0], [8.675, ".dll", 0], [9.162, "hay", 0], [9.412, ".so.", 0], [10.65, "Bài", 1], [10.887, "tập", 1], [11.088, "mở", 1], [11.275, "rộng", 1], [11.562, "là", 1], [11.725, "tự", 1], [11.912, "tạo", 1], [12.15, "đủ", 1], [12.325, "bốn", 1], [12.562, "sản", 1], [12.8, "phẩm", 1], [13.075, "của", 1], [13.238, "hello.c", 1], [14.1, "bằng", 1], [14.287, "các", 1], [14.463, "tùy", 1], [14.637, "chọn", 1], [14.925, "của", 1], [15.431, "GCC,", 1], [15.938, "so", 1], [16.175, "sánh", 1], [16.387, "kích", 1], [16.575, "thước,", 1], [17.05, "và", 1], [17.238, "tìm", 1], [17.512, "trong", 1], [17.712, "hello.s", 1], [18.538, "dòng", 1], [18.812, "gọi", 1], [19.0, "hàm", 1], [19.25, "in", 1], [19.413, "chuỗi.", 1]], "cues": [0.1, 10.65], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 410.38, "audio": "audio/dcff039585abf3f1.mp3", "dur": 10.78, "words": [[0.1, "Đến", 0], [0.4, "đây", 0], [0.562, "trình", 0], [0.812, "biên", 0], [1.038, "dịch", 0], [1.25, "vẫn", 0], [1.45, "là", 0], [1.562, "một", 0], [1.762, "hộp", 0], [1.975, "kín.", 0], [3.15, "Phần", 1], [3.425, "tiếp", 1], [3.65, "theo", 1], [3.825, "mở", 1], [4.013, "hộp", 1], [4.175, "đó", 1], [4.375, "ra,", 1], [4.838, "với", 1], [5.05, "các", 1], [5.213, "pha", 1], [5.375, "phân", 1], [5.588, "tích", 1], [5.787, "và", 1], [5.963, "sinh", 1], [6.175, "mã,", 1], [6.75, "và", 1], [6.963, "cho", 1], [7.112, "thấy", 1], [7.287, "mỗi", 1], [7.5, "thông", 1], [7.713, "báo", 1], [7.9, "lỗi", 1], [8.137, "của", 1], [8.488, "GCC", 1], [8.838, "sinh", 1], [9.1, "ra", 1], [9.325, "ở", 1], [9.463, "pha", 1], [9.65, "nào.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Trình biên dịch: các pha phân tích và sinh mã"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

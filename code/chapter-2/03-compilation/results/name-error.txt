@@ -1,0 +1,12 @@
+$ gcc -std=c17 -Wall -Wextra name_error.c -o name_error
+name_error.c: In function 'main':
+name_error.c:6:20: error: 'count' undeclared (first use in this function)
+[exit code 1]
+$ python name_error.py
+hello, world
+Traceback (most recent call last):
+  File "name_error.py", line 2, in <module>
+    print(count)
+          ^^^^^
+NameError: name 'count' is not defined. Did you mean: 'round'?
+[exit code 1]

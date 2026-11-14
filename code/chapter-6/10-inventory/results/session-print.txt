@@ -1,0 +1,9 @@
+Enter operation code: u
+Enter part number: 528
+Enter change in quantity on hand: 5
+
+Enter operation code: p
+Part Number   Part Name                  Quantity on Hand
+    528       Disk drive                        15
+    914       Printer cable                      5
+   1001       Mouse                             20

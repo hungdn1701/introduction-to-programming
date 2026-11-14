@@ -1,0 +1,8 @@
+Enter operation code: i
+Enter part number: 528
+Enter part name: Disk drive
+Enter quantity on hand: 10
+
+Enter operation code: i
+Enter part number: 914
+Part already exists.

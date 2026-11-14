@@ -1,0 +1,7 @@
+$ echo 'Dang Ngoc Hung' | ./strings
+strlen(s) = 5, sizeof(s) = 10, my_strlen(s) = 5
+strcmp("apple", "banana") = -1
+t = "hello, world", strlen(t) = 12
+fgets read 15 characters: [Dang Ngoc Hung
+]
+without the newline: [Dang Ngoc Hung]

@@ -1,0 +1,5 @@
+insertion sort, n =   10000:      8 ms
+insertion sort, n =   20000:     35 ms
+insertion sort, n =   40000:    153 ms
+insertion sort, n =   80000:    597 ms
+qsort,          n = 1000000:    109 ms

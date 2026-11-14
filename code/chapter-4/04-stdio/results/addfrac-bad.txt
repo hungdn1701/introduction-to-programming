@@ -1,0 +1,4 @@
+$ ./addfrac < bad.txt
+Enter first fraction: Enter second fraction: 
+scanf read 1 and 1 values: input must look like 5/6
+[exit code 1]

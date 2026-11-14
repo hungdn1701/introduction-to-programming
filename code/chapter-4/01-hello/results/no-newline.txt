@@ -1,0 +1,2 @@
+$ ./hello_no_newline; echo "<- next prompt starts here"
+hello, world<- next prompt starts here

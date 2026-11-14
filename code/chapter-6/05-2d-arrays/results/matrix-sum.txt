@@ -1,0 +1,6 @@
+          sub1 sub2 sub3  row sum
+student 1    7    8    9       24
+student 2    6    5    8       19
+student 3    9    9   10       28
+student 4    4    7    6       17
+col sum     26   29   33

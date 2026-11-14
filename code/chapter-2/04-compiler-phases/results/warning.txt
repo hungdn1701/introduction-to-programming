@@ -1,0 +1,6 @@
+$ gcc -std=c17 -Wall -Wextra warning.c -o warning
+warning.c: In function 'main':
+warning.c:6:9: warning: unused variable 'unused' [-Wunused-variable]
+    6 |     int unused;
+      |         ^~~~~~
+[exit code 0]

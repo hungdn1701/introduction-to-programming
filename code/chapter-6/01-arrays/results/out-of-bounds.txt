@@ -1,0 +1,11 @@
+$ gcc -std=c17 -Wall -Wextra out_of_bounds.c -o out_of_bounds
+$ ./out_of_bounds
+&a[0] = 000000FD841FFBA0, &a[9] = 000000FD841FFBC4
+&before = 000000FD841FFBC8, &after = 000000FD841FFB9C
+before = 0, after = 222
+$ gcc -std=c17 -Wall -Wextra -O2 out_of_bounds.c -o out_of_bounds_O2
+out_of_bounds.c: In function 'main':
+out_of_bounds.c:16:14: warning: iteration 10 invokes undefined behavior
+[-Waggressive-loop-optimizations]
+out_of_bounds.c:16:14: warning: '__builtin_memset' forming offset [40, 43] is out of the bounds
+[0, 40] of object 'a' with type 'int[10]' [-Warray-bounds=]

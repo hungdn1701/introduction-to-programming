@@ -1,0 +1,4 @@
+$ gcc -std=c17 -Wall -Wextra triangle_order.c -o triangle_order
+$ sh judge.sh triangle_order.c tests/triangle
+triangle_order.c: test 01: ok; test 02: WA; test 03: ok; test 04: ok; test 05: ok;
+    test 06: ok; test 07: ok; test 08: ok; test 09: ok; test 10: ok; => WA on test 02

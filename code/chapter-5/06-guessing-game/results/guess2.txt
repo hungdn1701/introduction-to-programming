@@ -1,0 +1,2 @@
+halving strategy, secrets 1..100: at most 7 guesses
+secret 62 found in 3 guesses

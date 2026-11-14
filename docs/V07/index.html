@@ -1,0 +1,400 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V07 — Thuật toán: từ bài toán đến lưu đồ và mã giả · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-2/01-algorithm">Mã</a>
+<h1>V07 · Thuật toán: từ bài toán đến lưu đồ và mã giả</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 2</div><div class="ten">Thuật toán: từ bài toán đến lưu đồ và mã giả</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="CH"><header><h1>Chương 2: Cơ bản về lập trình và trình biên dịch</h1></header><main class="bo-cuc-lo-trinh"><div class="lo-trinh" style="--cot: 3"><div class="chang" data-s="1"><div class="ten-chang"><span class="so">1</span>Thuật toán</div><ol><li class="hien-tai"><span>Từ bài toán đến lưu đồ và mã giả</span></li><li class=""><span>Độ phức tạp tính toán</span></li></ol></div><div class="chang" data-s="2"><div class="ten-chang"><span class="so">2</span>Trình biên dịch</div><ol><li class=""><span>Từ mã nguồn đến tệp thực thi</span></li><li class=""><span>Các pha phân tích và sinh mã</span></li></ol></div><div class="chang" data-s="3"><div class="ten-chang"><span class="so">3</span>Kiểm thử</div><ol><li class=""><span>Ca kiểm thử và chấm bài tự động</span></li></ol></div></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Máy không đoán ý: lời giải phải gồm những bước xác định</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Tìm ước chung lớn nhất của 1071 và 462: người học toán làm được, nhưng <b>làm theo những bước nào?</b></li><li data-s="2">Một bước như "chia cho số thích hợp" đủ cho người, <b>không đủ cho máy</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> làm sao mô tả lời giải đủ chính xác để người khác, hay máy tính, làm theo mà không phải đoán?</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Bài toán cho đầu vào, đầu ra; thuật toán là các bước biến đầu vào thành đầu ra</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Bài toán</b>: nêu rõ <b>đầu vào</b> (hai số nguyên dương m, n) và <b>đầu ra</b> (ước chung lớn nhất)</li><li data-s="2"><b>Thuật toán</b>: dãy hữu hạn bước <b>xác định, thực hiện được</b>, biến đầu vào thành đầu ra</li><li data-s="3">Knuth: năm điều kiện — hữu hạn, xác định, có đầu vào, có đầu ra, thực hiện được</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Thuật toán Euclid vẽ bằng lưu đồ và viết bằng mã giả</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 640" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Lưu đồ thuật toán Euclid: bắt đầu; đọc m, n; tính r là phần dư của m chia n; khối điều kiện r bằng 0; nếu không: m nhận n, n nhận r, quay lại tính r; nếu có: in n, kết thúc. Bên phải là mã giả của cùng thuật toán.">
+  <defs>
+    <marker id="ld-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ld-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ld-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ld-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ld-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ld-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- bắt đầu, đọc đầu vào -->
+  <g data-s="1">
+    <ellipse cx="330" cy="50" rx="130" ry="34" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="330" y="59" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">Bắt đầu</text>
+    <line x1="330" y1="86" x2="330" y2="116" stroke="#051A53" stroke-width="3" marker-end="url(#ld-navy)"/>
+    <polygon points="190,120 500,120 470,190 160,190" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="330" y="163" text-anchor="middle" font-size="24" fill="#123A6B">Đọc m, n</text>
+  </g>
+
+  <!-- tính phần dư -->
+  <g data-s="2">
+    <line x1="330" y1="192" x2="330" y2="222" stroke="#051A53" stroke-width="3" marker-end="url(#ld-navy)"/>
+    <rect x="170" y="226" width="320" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="330" y="269" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">r ← m mod n</text>
+  </g>
+
+  <!-- khối điều kiện -->
+  <g data-s="3">
+    <line x1="330" y1="298" x2="330" y2="328" stroke="#051A53" stroke-width="3" marker-end="url(#ld-navy)"/>
+    <polygon points="330,332 470,402 330,472 190,402" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="330" y="411" text-anchor="middle" font-size="25" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">r = 0 ?</text>
+  </g>
+
+  <!-- nhánh không: giảm và lặp -->
+  <g data-s="4">
+    <line x1="472" y1="402" x2="600" y2="402" stroke="#051A53" stroke-width="3" marker-end="url(#ld-navy)"/>
+    <text x="536" y="388" text-anchor="middle" font-size="22" fill="#051A53">không</text>
+    <rect x="604" y="362" width="300" height="80" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="754" y="410" text-anchor="middle" font-size="24" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">m ← n;  n ← r</text>
+    <path d="M754,360 L754,261 L494,261" fill="none" stroke="#051A53" stroke-width="3" marker-end="url(#ld-navy)"/>
+  </g>
+
+  <!-- nhánh có: in kết quả, kết thúc -->
+  <g data-s="5">
+    <line x1="330" y1="474" x2="330" y2="506" stroke="#2F855A" stroke-width="3" marker-end="url(#ld-ok)"/>
+    <text x="350" y="498" text-anchor="start" font-size="22" fill="#22603F">có</text>
+    <polygon points="190,510 500,510 470,570 160,570" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="330" y="548" text-anchor="middle" font-size="22" fill="#22603F">In n (ước chung lớn nhất)</text>
+  </g>
+
+  <!-- mã giả -->
+  <g data-s="6">
+    <rect x="1000" y="60" width="720" height="470" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1360" y="304" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500">Mã giả</text>
+    <text x="1050" y="160" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">đọc m, n</text>
+    <text x="1050" y="210" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">lặp:</text>
+    <text x="1050" y="260" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">    r ← m mod n</text>
+    <text x="1050" y="310" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">    nếu r = 0 thì</text>
+    <text x="1050" y="360" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">        in n; dừng</text>
+    <text x="1050" y="410" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">    m ← n</text>
+    <text x="1050" y="460" text-anchor="start" font-size="25" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">    n ← r</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="7"><p><b>Lưu đồ</b> cho thấy luồng điều khiển bằng hình; <b>mã giả</b> viết cùng các bước bằng câu ngắn có cấu trúc.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Bảng vết: chạy thuật toán bằng tay với 1071 và 462</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">Mã giả</span>đọc m, n
+lặp:
+    r ← m mod n
+    nếu r = 0 thì
+        in n; dừng
+    m ← n
+    n ← r
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>step      m      n      r
+   1   1071    462    147
+   2    462    147     21
+<span class="noi-bat">   3    147     21      0</span>
+<span class="noi-bat">gcd = 21</span></pre></div><ul class="y-nho"><li data-s="2">Ba lần lặp: r = 147, 21, 0 — <b>ước chung lớn nhất là 21</b></li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Một bài toán, hai thuật toán: bản trừ liên tiếp cũng ra 21, sau mười một lần lặp</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">Mã giả</span>đọc m, n
+lặp khi m ≠ n:
+    nếu m &gt; n thì m ← m − n
+    ngược lại n ← n − m
+in m
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>step      m      n
+   1    609    462
+<span class="noi-bat">   2    147    462</span>
+   3    147    315
+   4    147    168
+   5    147     21
+   6    126     21
+   7    105     21
+   8     84     21
+   9     63     21
+  10     42     21
+  11     21     21
+<span class="noi-bat">gcd = 21</span></pre></div><ul class="y-nho"><li data-s="2">Cùng bài toán, cùng đầu ra 21: bản chia lấy dư <b>3 lần lặp</b>, bản trừ liên tiếp <b>11 lần lặp</b></li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Thuật toán phải dừng: với Euclid, n nhỏ dần sau mỗi lần lặp</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Bước mơ hồ như "chia cho số thích hợp" <b>không phải bước của thuật toán</b>: máy không đoán ý</li><li data-s="2">Euclid luôn dừng: phần dư r nhỏ hơn n, nên <b>n giảm sau mỗi lần lặp</b> và không thể giảm mãi</li></ul></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong lưu đồ Euclid, điều gì bảo đảm thuật toán luôn dừng?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Khối đọc m, n chỉ thực hiện một lần.</div></div><div class="dung"><span>B</span><div>Phần dư r nhỏ hơn n, nên sau mỗi lần lặp n giảm, và số nguyên dương không thể giảm mãi.</div></div><div class=""><span>C</span><div>Lưu đồ có khối kết thúc.</div></div><div class=""><span>D</span><div>m luôn lớn hơn n.</div></div></div><div class="giai-thich">Một lưu đồ có khối kết thúc vẫn có thể lặp vô hạn nếu điều kiện dừng không bao giờ đúng. Với Euclid, n nhận giá trị r &lt; n, nên n giảm dần đến khi r = 0. m không nhất thiết lớn hơn n (thử m = 12, n = 18).</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong lưu đồ Euclid, điều gì bảo đảm thuật toán luôn dừng?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Khối đọc m, n chỉ thực hiện một lần.</div></div><div class="dung"><span>B</span><div>Phần dư r nhỏ hơn n, nên sau mỗi lần lặp n giảm, và số nguyên dương không thể giảm mãi.</div></div><div class=""><span>C</span><div>Lưu đồ có khối kết thúc.</div></div><div class=""><span>D</span><div>m luôn lớn hơn n.</div></div></div><div class="giai-thich">Một lưu đồ có khối kết thúc vẫn có thể lặp vô hạn nếu điều kiện dừng không bao giờ đúng. Với Euclid, n nhận giá trị r &lt; n, nên n giảm dần đến khi r = 0. m không nhất thiết lớn hơn n (thử m = 12, n = 18).</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chạy thuật toán Euclid với m = 12, n = 18. Sau lần lặp đầu tiên (r ← m mod n; m ← n; n ← r), m và n bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>m = 12, n = 6.</div></div><div class=""><span>B</span><div>m = 6, n = 0.</div></div><div class="dung"><span>C</span><div>m = 18, n = 12.</div></div><div class=""><span>D</span><div>m = 18, n = 6.</div></div></div><div class="giai-thich">12 mod 18 = 12 vì 12 nhỏ hơn 18. Sau đó m ← 18, n ← 12: hai số đổi chỗ. Lần lặp sau mới tính 18 mod 12 = 6.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chạy thuật toán Euclid với m = 12, n = 18. Sau lần lặp đầu tiên (r ← m mod n; m ← n; n ← r), m và n bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>m = 12, n = 6.</div></div><div class=""><span>B</span><div>m = 6, n = 0.</div></div><div class="dung"><span>C</span><div>m = 18, n = 12.</div></div><div class=""><span>D</span><div>m = 18, n = 6.</div></div></div><div class="giai-thich">12 mod 18 = 12 vì 12 nhỏ hơn 18. Sau đó m ← 18, n ← 12: hai số đổi chỗ. Lần lặp sau mới tính 18 mod 12 = 6.</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Bài toán</b> nêu đầu vào, đầu ra; <b>thuật toán</b> là dãy hữu hạn bước xác định biến đầu vào thành đầu ra</div></div><div class="the" data-s="2"><span class="so">2</span><div>Biểu diễn thuật toán bằng ngôn ngữ tự nhiên, <b>lưu đồ</b>, <b>mã giả</b></div></div><div class="the" data-s="3"><span class="so">3</span><div>Kiểm tra bằng tay với <b>bảng vết</b>; luôn hỏi: thuật toán có dừng không?</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>bài toán</span><span>thuật toán</span><span>đầu vào</span><span>đầu ra</span><span>lưu đồ</span><span>mã giả</span><span>bảng vết</span></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Chứng minh tính đúng của Euclid: ước chung của m và n cũng là ước chung của n và m mod n</li><li>Thuật toán Euclid mở rộng tìm nghiệm của ax + by = gcd(a, b)</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết mã giả và vẽ lưu đồ cho thuật toán tìm số lớn nhất trong một dãy n số; lập bảng vết với dãy 7, 2, 9, 4.</p></div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Thuật toán: độ phức tạp tính toán</div></main><footer><span>Chương 2 · Cơ bản về lập trình và trình biên dịch</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Mình bắt đầu Chương 2, cơ bản về lập trình và trình biên dịch. Chương này mở đầu bằng câu hỏi: trước khi viết mã, làm sao mô tả lời giải một bài toán đủ chính xác để máy làm theo?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:13</span>
+      <h3>Giới thiệu chương</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chương 1 cho thấy máy tính thực hiện chương trình ra sao. Chương này đi theo chiều ngược lại: từ một bài toán đến chương trình chạy được và đúng, qua năm phần chia làm ba nhóm. Nhóm thuật toán có hai phần: từ bài toán đến lưu đồ và mã giả, rồi độ phức tạp tính toán. Nhóm trình biên dịch có hai phần: từ mã nguồn đến tệp thực thi, rồi các pha phân tích và sinh mã. Nhóm kiểm thử có một phần, về ca kiểm thử và chấm bài tự động.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide lộ trình sinh từ kế hoạch; ba nhóm hiện lần lượt, phần hiện tại được tô nổi.
+Hiện dần: bước 1 khi đọc “Nhóm thuật toán”; bước 2 khi đọc “Nhóm trình biên dịch”; bước 3 khi đọc “Nhóm kiểm thử”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:41</span>
+      <h3>Slide 1. Máy không đoán ý: lời giải phải gồm những bước xác định</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Tìm ước chung lớn nhất của 1071 và 462: người học toán làm được, nhưng **làm theo những bước nào?**</li><li>Một bước như &quot;chia cho số thích hợp&quot; đủ cho người, **không đủ cho máy**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** làm sao mô tả lời giải đủ chính xác để người khác, hay máy tính, làm theo mà không phải đoán?</div></div>
+    <div class="kb-thoai"><p>Mình xét một bài toán quen thuộc: tìm ước chung lớn nhất của 1071 và 462. Các bạn tính được, có thể bằng cách phân tích ra thừa số nguyên tố. Nhưng nếu phải viết lại cách làm cho một người chưa học, hay cho máy tính, thì viết những bước nào? Người làm toán chấp nhận những bước như &quot;chia cho số thích hợp&quot;, vì người đọc tự hiểu. Máy tính thì không đoán ý, nó chỉ làm đúng từng bước được chỉ ra. Vì thế, câu hỏi của phần này là: làm sao mô tả lời giải đủ chính xác để người khác, hay máy tính, làm theo mà không phải đoán?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Mình xét một bài toán”; bước 2 khi đọc “Người làm toán”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:17</span>
+      <h3>Slide 2. Bài toán cho đầu vào, đầu ra; thuật toán là các bước biến đầu vào thành đầu ra</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Bài toán**: nêu rõ **đầu vào** (hai số nguyên dương m, n) và **đầu ra** (ước chung lớn nhất)</li><li>**Thuật toán**: dãy hữu hạn bước **xác định, thực hiện được**, biến đầu vào thành đầu ra</li><li>Knuth: năm điều kiện — hữu hạn, xác định, có đầu vào, có đầu ra, thực hiện được</li></ul></div>
+    <div class="kb-thoai"><p>Trước hết cần phân biệt bài toán, hay problem, với lời giải. Bài toán nêu rõ đầu vào đã cho và đầu ra phải tính: ở đây, đầu vào là hai số nguyên dương m và n, đầu ra là ước chung lớn nhất của chúng. Lời giải gồm các bước biến đầu vào thành đầu ra, gọi là thuật toán, hay algorithm. Knuth, trong tập đầu của bộ sách The Art of Computer Programming, nêu năm điều kiện một thuật toán phải thỏa. Thuật toán phải hữu hạn, tức dừng sau một số bước. Mỗi bước phải xác định, không mơ hồ. Thuật toán có đầu vào, có đầu ra, và mỗi bước đều thực hiện được bằng bút và giấy.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: Knuth, TAOCP vol. 1, §1.1.
+Hiện dần: bước 1 khi đọc “Trước hết”; bước 2 khi đọc “Lời giải gồm các bước”; bước 3 khi đọc “nêu năm điều kiện”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:55</span>
+      <h3>Slide 3. Thuật toán Euclid vẽ bằng lưu đồ và viết bằng mã giả</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Lưu đồ** cho thấy luồng điều khiển bằng hình; **mã giả** viết cùng các bước bằng câu ngắn có cấu trúc.</li></ul></div></div>
+    <div class="kb-thoai"><p>Thuật toán mình dùng là thuật toán Euclid, có từ hơn hai nghìn năm trước, và cũng là thuật toán Knuth chọn để mở đầu bộ sách. Mình biểu diễn nó bằng lưu đồ, hay flowchart, theo các ký hiệu chuẩn. Lưu đồ bắt đầu bằng khối hình bầu dục, rồi khối hình bình hành đọc hai số m và n. Bước đầu tiên tính r là phần dư khi chia m cho n. Khối hình thoi là một điều kiện: r có bằng 0 không? Nếu chưa bằng 0, m nhận giá trị của n, n nhận giá trị của r, và mũi tên quay lại bước tính phần dư. Nếu bằng 0, n chính là ước chung lớn nhất, thuật toán in n rồi kết thúc. Bên phải là mã giả, hay pseudocode, viết cùng các bước đó bằng câu ngắn có cấu trúc, gần với cách viết của ngôn ngữ lập trình. Hai cách biểu diễn cùng một thuật toán: lưu đồ dễ nhìn luồng điều khiển, mã giả dễ chuyển thành mã. Trong mã giả, mũi tên trái nghĩa là gán giá trị, còn mod là phép lấy phần dư.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình luu-do-euclid: sáu bước theo sáu câu mốc đầu; bước 7 ô kết luận. Ghi nguồn: Euclid, Elements VII.2; ký hiệu lưu đồ theo ISO 5807.
+Hiện dần: bước 1 khi đọc “Lưu đồ bắt đầu”; bước 2 khi đọc “Bước đầu tiên tính”; bước 3 khi đọc “Khối hình thoi”; bước 4 khi đọc “Nếu chưa bằng 0”; bước 5 khi đọc “Nếu bằng 0”; bước 6 khi đọc “Bên phải là mã giả”; bước 7 khi đọc “Hai cách biểu diễn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:54</span>
+      <h3>Slide 4. Bảng vết: chạy thuật toán bằng tay với 1071 và 462</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Ba lần lặp: r = 147, 21, 0 — **ước chung lớn nhất là 21**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/euclid.txt</span><pre><code>đọc m, n
+lặp:
+    r ← m mod n
+    nếu r = 0 thì
+        in n; dừng
+    m ← n
+    n ← r</code></pre></div></div>
+    <div class="kb-thoai"><p>Có mã giả rồi, làm sao biết nó đúng? Cách đơn giản nhất là chạy bằng tay và ghi giá trị của m, n và r sau mỗi lần lặp vào một bảng, gọi là bảng vết, hay trace table. Các bạn thử đoán trước: với 1071 và 462, vòng lặp chạy mấy lần? Mình kiểm tra thuật toán bằng một chương trình nhỏ viết sẵn, in đúng bảng vết đó. Theo bảng vết, lần đầu 1071 chia 462 dư 147, lần hai 462 chia 147 dư 21, và lần ba 147 chia 21 dư 0, nên thuật toán dừng và in 21. Chỉ ba lần lặp, không cần phân tích ra thừa số nguyên tố.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã giả phía trên, bảng vết phía dưới; sau câu &quot;vòng lặp chạy mấy lần?&quot;, dừng khoảng 2 giây rồi mới hiện bảng; tô dòng lần lặp thứ ba và dòng kết quả. Bảng vết in bởi src/euclid_trace.c (dựng sẵn, không lên slide ở chương này).
+Hiện dần: bước 1 khi đọc “Mình kiểm tra thuật toán”; bước 2 khi đọc “Theo bảng vết”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:46</span>
+      <h3>Slide 5. Một bài toán, hai thuật toán: bản trừ liên tiếp cũng ra 21, sau mười một lần lặp</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Cùng bài toán, cùng đầu ra 21: bản chia lấy dư **3 lần lặp**, bản trừ liên tiếp **11 lần lặp**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/euclid_sub.txt</span><pre><code>đọc m, n
+lặp khi m ≠ n:
+    nếu m &gt; n thì m ← m − n
+    ngược lại n ← n − m
+in m</code></pre></div></div>
+    <div class="kb-thoai"><p>Một bài toán có thể có nhiều thuật toán. Trong bộ sách Cơ sở, Euclid thật ra không chia lấy dư mà trừ liên tiếp: lấy số lớn trừ đi số nhỏ, lặp lại cho tới khi hai số bằng nhau. Knuth ghi lại cách viết này ở tập hai của bộ sách. Mã giả chỉ cần phép so sánh và phép trừ. Cùng đầu vào 1071 và 462, bảng vết cho thấy thuật toán cũng dừng ở 21, nhưng sau mười một lần lặp thay vì ba. Hai dòng đầu là ví dụ: 1071 trừ 462 hai lần mới còn 147, và hai phép trừ đó chính là một phép chia lấy dư của bản trước. Như vậy, hai thuật toán cùng giải một bài toán, cùng cho đầu ra đúng, nhưng số bước khác nhau.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã giả phía trên, bảng vết phía dưới; tô dòng 3 (bước 2, còn 147) và dòng cuối (gcd = 21). Bảng vết in bởi src/euclid_sub_trace.c (dựng sẵn, không lên slide ở chương này). Ghi nguồn: Euclid, Cơ sở, quyển VII, mệnh đề 2; Knuth, TAOCP vol. 2, §4.5.2. Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Một bài toán có thể có”; bước 2 khi đọc “Cùng đầu vào 1071 và 462”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:39</span>
+      <h3>Slide 6. Thuật toán phải dừng: với Euclid, n nhỏ dần sau mỗi lần lặp</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bước mơ hồ như &quot;chia cho số thích hợp&quot; **không phải bước của thuật toán**: máy không đoán ý</li><li>Euclid luôn dừng: phần dư r nhỏ hơn n, nên **n giảm sau mỗi lần lặp** và không thể giảm mãi</li></ul></div>
+    <div class="kb-thoai"><p>Từ ví dụ này rút ra hai yêu cầu khi viết thuật toán. Yêu cầu thứ nhất là mỗi bước phải xác định: &quot;chia cho số thích hợp&quot; là gợi ý cho người, không phải bước cho máy. Yêu cầu thứ hai là thuật toán phải dừng với mọi đầu vào. Với Euclid, điều đó có lý do rõ ràng: phần dư luôn nhỏ hơn số chia, nên n giảm sau mỗi lần lặp, và một số nguyên dương không thể giảm mãi. Một dãy bước không bảo đảm dừng chưa phải là thuật toán.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Từ ví dụ này”; bước 2 khi đọc “Yêu cầu thứ hai”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:07</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Một thuật toán còn phải dừng, và câu hỏi này hỏi điều gì bảo đảm điều đó.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Trong lưu đồ Euclid, điều gì bảo đảm thuật toán luôn dừng?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Khối đọc m, n chỉ thực hiện một lần.</li>
+      <li><b>B.</b> Phần dư r nhỏ hơn n, nên sau mỗi lần lặp n giảm, và số nguyên dương không thể giảm mãi.</li>
+      <li><b>C.</b> Lưu đồ có khối kết thúc.</li>
+      <li><b>D.</b> m luôn lớn hơn n.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Một lưu đồ có khối kết thúc vẫn có thể lặp vô hạn nếu điều kiện dừng không bao giờ đúng. Với Euclid, n nhận giá trị r &lt; n, nên n giảm dần đến khi r = 0. m không nhất thiết lớn hơn n (thử m = 12, n = 18).</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án C dễ được chọn vì lưu đồ có khối kết thúc, nhưng có khối đó chưa chắc đã đến được nó. Điều bảo đảm dừng là n giảm sau mỗi lần lặp.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:30</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo là một bảng vết nhỏ để các bạn tự chạy tay.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Chạy thuật toán Euclid với m = 12, n = 18. Sau lần lặp đầu tiên (r ← m mod n; m ← n; n ← r), m và n bằng bao nhiêu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> m = 12, n = 6.</li>
+      <li><b>B.</b> m = 6, n = 0.</li>
+      <li><b>C.</b> m = 18, n = 12.</li>
+      <li><b>D.</b> m = 18, n = 6.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>12 mod 18 = 12 vì 12 nhỏ hơn 18. Sau đó m ← 18, n ← 12: hai số đổi chỗ. Lần lặp sau mới tính 18 mod 12 = 6.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án D dễ được chọn khi nghĩ ngay đến phần dư 6, nhưng ở lần lặp đầu, 12 chia 18 dư 12, nên lần lặp này chỉ đổi chỗ hai số. Thuật toán vẫn đúng mà không cần m lớn hơn n.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C. Bảng vết đầy đủ: results/euclid-12-18.txt.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:54</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Bài toán** nêu đầu vào, đầu ra; **thuật toán** là dãy hữu hạn bước xác định biến đầu vào thành đầu ra</li><li>Biểu diễn thuật toán bằng ngôn ngữ tự nhiên, **lưu đồ**, **mã giả**</li><li>Kiểm tra bằng tay với **bảng vết**; luôn hỏi: thuật toán có dừng không?</li></ul></div>
+    <div class="kb-thoai"><p>Muốn máy tính giải được một bài toán, trước hết phải viết lời giải thành thuật toán: xác định bài toán với đầu vào và đầu ra, rồi viết dãy hữu hạn bước xác định. Lời giải được biểu diễn bằng ngôn ngữ tự nhiên, bằng lưu đồ để thấy luồng điều khiển, hay bằng mã giả để gần với mã. Trước khi tin một thuật toán, hãy chạy bằng tay với bảng vết và tự hỏi nó có dừng không. Trên slide là những từ khóa của phần: bài toán, thuật toán, đầu vào, đầu ra, lưu đồ, mã giả và bảng vết.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Muốn máy tính giải được”; bước 2 khi đọc “Lời giải được biểu diễn”; bước 3 khi đọc “Trước khi tin”; bước 4 khi đọc “Trên slide là những từ khóa”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:24</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Các bạn muốn đọc thêm có hai chủ đề. Chủ đề thứ nhất là chứng minh vì sao Euclid đúng: ước chung của m và n cũng là ước chung của n và phần dư. Chủ đề thứ hai là thuật toán Euclid mở rộng, dùng nhiều trong mật mã. Bài tập mở rộng là viết mã giả, vẽ lưu đồ cho thuật toán tìm số lớn nhất trong một dãy, rồi lập bảng vết với dãy 7, 2, 9, 4.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Các bạn muốn đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:49</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Bản chia lấy dư cần ba lần lặp, bản trừ liên tiếp cần mười một, và khoảng cách giữa hai thuật toán đúng có thể còn xa hơn nhiều. Phần tiếp theo, về độ phức tạp tính toán, đo khoảng cách đó mà không cần chạy thử trên từng máy.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V07", "tieu_de": "Thuật toán: từ bài toán đến lưu đồ và mã giả", "giong": "vi-VN-NamMinhNeural", "tong": 424.14, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/17995f4e00433560.mp3", "dur": 12.91, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Mình", 1], [2.225, "bắt", 1], [2.388, "đầu", 1], [2.587, "Chương", 1], [2.837, "2,", 1], [3.375, "cơ", 1], [3.562, "bản", 1], [3.825, "về", 1], [3.925, "lập", 1], [4.138, "trình", 1], [4.4, "và", 1], [4.5, "trình", 1], [4.725, "biên", 1], [4.938, "dịch.", 1], [5.987, "Chương", 2], [6.263, "này", 2], [6.438, "mở", 2], [6.638, "đầu", 2], [6.787, "bằng", 2], [6.987, "câu", 2], [7.162, "hỏi:", 2], [7.725, "trước", 2], [7.9, "khi", 2], [8.025, "viết", 2], [8.213, "mã,", 2], [8.775, "làm", 2], [9.037, "sao", 2], [9.262, "mô", 2], [9.412, "tả", 2], [9.575, "lời", 2], [9.75, "giải", 2], [9.988, "một", 2], [10.175, "bài", 2], [10.325, "toán", 2], [10.588, "đủ", 2], [10.75, "chính", 2], [10.963, "xác", 2], [11.25, "để", 2], [11.387, "máy", 2], [11.588, "làm", 2], [11.762, "theo?", 2]], "cues": [], "lang": 0.6}, {"ten": "Giới thiệu chương", "loai": "mo-chuong", "slide": "CH", "dung": "Slide lộ trình sinh từ kế hoạch; ba nhóm hiện lần lượt, phần hiện tại được tô nổi.\nHiện dần: bước 1 khi đọc “Nhóm thuật toán”; bước 2 khi đọc “Nhóm trình biên dịch”; bước 3 khi đọc “Nhóm kiểm thử”.", "start": 13.51, "audio": "audio/27f85093ae9edbc3.mp3", "dur": 27.29, "words": [[0.1, "Chương", 0], [0.425, "1", 0], [0.613, "cho", 0], [0.75, "thấy", 0], [0.938, "máy", 0], [1.137, "tính", 0], [1.375, "thực", 0], [1.538, "hiện", 0], [1.8, "chương", 0], [2.038, "trình", 0], [2.263, "ra", 0], [2.4, "sao.", 0], [3.575, "Chương", 1], [3.862, "này", 1], [4.075, "đi", 1], [4.188, "theo", 1], [4.325, "chiều", 1], [4.525, "ngược", 1], [4.725, "lại:", 1], [5.225, "từ", 1], [5.412, "một", 1], [5.6, "bài", 1], [5.75, "toán", 1], [6.05, "đến", 1], [6.25, "chương", 1], [6.475, "trình", 1], [6.688, "chạy", 1], [6.875, "được", 1], [7.062, "và", 1], [7.225, "đúng,", 1], [7.75, "qua", 1], [8.05, "năm", 1], [8.238, "phần", 1], [8.488, "chia", 1], [8.725, "làm", 1], [8.95, "ba", 1], [9.137, "nhóm.", 1], [10.35, "Nhóm", 2], [10.688, "thuật", 2], [10.9, "toán", 2], [11.15, "có", 2], [11.275, "hai", 2], [11.45, "phần:", 2], [11.963, "từ", 2], [12.125, "bài", 2], [12.275, "toán", 2], [12.575, "đến", 2], [12.787, "lưu", 2], [12.95, "đồ", 2], [13.175, "và", 2], [13.287, "mã", 2], [13.512, "giả,", 2], [14.137, "rồi", 2], [14.387, "độ", 2], [14.588, "phức", 2], [14.787, "tạp", 2], [15.05, "tính", 2], [15.275, "toán.", 2], [16.488, "Nhóm", 3], [16.85, "trình", 3], [17.038, "biên", 3], [17.238, "dịch", 3], [17.413, "có", 3], [17.538, "hai", 3], [17.712, "phần:", 3], [18.238, "từ", 3], [18.413, "mã", 3], [18.575, "nguồn", 3], [18.825, "đến", 3], [19.025, "tệp", 3], [19.25, "thực", 3], [19.413, "thi,", 3], [19.962, "rồi", 3], [20.262, "các", 3], [20.45, "pha", 3], [20.637, "phân", 3], [20.863, "tích", 3], [21.075, "và", 3], [21.288, "sinh", 3], [21.512, "mã.", 3], [22.762, "Nhóm", 4], [23.125, "kiểm", 4], [23.337, "thử", 4], [23.575, "có", 4], [23.675, "một", 4], [23.85, "phần,", 4], [24.337, "về", 4], [24.625, "ca", 4], [24.8, "kiểm", 4], [25.038, "thử", 4], [25.325, "và", 4], [25.475, "chấm", 4], [25.725, "bài", 4], [25.887, "tự", 4], [26.1, "động.", 4]], "cues": [10.35, 16.488, 22.762], "lang": 0.6}, {"ten": "Slide 1. Máy không đoán ý: lời giải phải gồm những bước xác định", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Mình xét một bài toán”; bước 2 khi đọc “Người làm toán”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 41.4, "audio": "audio/a5085c1a250954cb.mp3", "dur": 35.04, "words": [[0.1, "Mình", 0], [0.463, "xét", 0], [0.688, "một", 0], [0.838, "bài", 0], [1.0, "toán", 0], [1.25, "quen", 0], [1.462, "thuộc:", 0], [1.975, "tìm", 0], [2.237, "ước", 0], [2.375, "chung", 0], [2.575, "lớn", 0], [2.812, "nhất", 0], [3.013, "của", 0], [3.125, "1071", 0], [4.575, "và", 0], [4.787, "462.", 0], [6.737, "Các", 1], [6.938, "bạn", 1], [7.162, "tính", 1], [7.412, "được,", 1], [7.812, "có", 1], [7.963, "thể", 1], [8.188, "bằng", 1], [8.412, "cách", 1], [8.6, "phân", 1], [8.838, "tích", 1], [9.062, "ra", 1], [9.287, "thừa", 1], [9.537, "số", 1], [9.762, "nguyên", 1], [10.062, "tố.", 1], [11.275, "Nhưng", 2], [11.562, "nếu", 2], [11.775, "phải", 2], [11.925, "viết", 2], [12.113, "lại", 2], [12.275, "cách", 2], [12.488, "làm", 2], [12.762, "cho", 2], [12.875, "một", 2], [13.062, "người", 2], [13.262, "chưa", 2], [13.5, "học,", 2], [13.963, "hay", 2], [14.213, "cho", 2], [14.338, "máy", 2], [14.5, "tính,", 2], [15.05, "thì", 2], [15.25, "viết", 2], [15.488, "những", 2], [15.675, "bước", 2], [15.863, "nào?", 2], [17.012, "Người", 3], [17.325, "làm", 3], [17.575, "toán", 3], [17.8, "chấp", 3], [17.975, "nhận", 3], [18.225, "những", 3], [18.425, "bước", 3], [18.625, "như", 3], [18.95, "\"chia", 3], [19.262, "cho", 3], [19.425, "số", 3], [19.65, "thích", 3], [19.825, "hợp\",", 3], [20.387, "vì", 3], [20.6, "người", 3], [20.812, "đọc", 3], [21.0, "tự", 3], [21.225, "hiểu.", 3], [22.438, "Máy", 4], [22.825, "tính", 4], [23.125, "thì", 4], [23.262, "không", 4], [23.512, "đoán", 4], [23.775, "ý,", 4], [24.275, "nó", 4], [24.488, "chỉ", 4], [24.65, "làm", 4], [24.9, "đúng", 4], [25.125, "từng", 4], [25.35, "bước", 4], [25.538, "được", 4], [25.7, "chỉ", 4], [25.913, "ra.", 4], [27.05, "Vì", 5], [27.312, "thế,", 5], [27.837, "câu", 5], [28.012, "hỏi", 5], [28.225, "của", 5], [28.363, "phần", 5], [28.55, "này", 5], [28.7, "là:", 5], [29.175, "làm", 5], [29.438, "sao", 5], [29.663, "mô", 5], [29.812, "tả", 5], [29.988, "lời", 5], [30.175, "giải", 5], [30.387, "đủ", 5], [30.575, "chính", 5], [30.8, "xác", 5], [31.062, "để", 5], [31.188, "người", 5], [31.375, "khác,", 5], [31.9, "hay", 5], [32.1, "máy", 5], [32.288, "tính,", 5], [32.812, "làm", 5], [33.087, "theo", 5], [33.3, "mà", 5], [33.438, "không", 5], [33.663, "phải", 5], [33.825, "đoán?", 5]], "cues": [0.1, 17.012, 27.837], "lang": 0.6}, {"ten": "Slide 2. Bài toán cho đầu vào, đầu ra; thuật toán là các bước biến đầu vào thành đầu ra", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: Knuth, TAOCP vol. 1, §1.1.\nHiện dần: bước 1 khi đọc “Trước hết”; bước 2 khi đọc “Lời giải gồm các bước”; bước 3 khi đọc “nêu năm điều kiện”.", "start": 77.04, "audio": "audio/3425f337d831ae9b.mp3", "dur": 37.8, "words": [[0.1, "Trước", 0], [0.388, "hết", 0], [0.575, "cần", 0], [0.775, "phân", 0], [0.963, "biệt", 0], [1.113, "bài", 0], [1.288, "toán,", 0], [1.887, "hay", 0], [2.1, "problem,", 0], [2.837, "với", 0], [3.038, "lời", 0], [3.212, "giải.", 0], [4.5, "Bài", 1], [4.737, "toán", 1], [5.013, "nêu", 1], [5.162, "rõ", 1], [5.35, "đầu", 1], [5.575, "vào", 1], [5.725, "đã", 1], [5.888, "cho", 1], [6.162, "và", 1], [6.287, "đầu", 1], [6.487, "ra", 1], [6.675, "phải", 1], [6.85, "tính:", 1], [7.45, "ở", 1], [7.625, "đây,", 1], [8.113, "đầu", 1], [8.35, "vào", 1], [8.5, "là", 1], [8.625, "hai", 1], [8.838, "số", 1], [9.025, "nguyên", 1], [9.287, "dương", 1], [9.575, "m", 1], [9.938, "và", 1], [10.113, "n,", 1], [10.8, "đầu", 1], [11.062, "ra", 1], [11.262, "là", 1], [11.412, "ước", 1], [11.55, "chung", 1], [11.75, "lớn", 1], [11.988, "nhất", 1], [12.175, "của", 1], [12.338, "chúng.", 1], [13.525, "Lời", 2], [13.838, "giải", 2], [14.113, "gồm", 2], [14.338, "các", 2], [14.525, "bước", 2], [14.713, "biến", 2], [14.988, "đầu", 2], [15.188, "vào", 2], [15.338, "thành", 2], [15.525, "đầu", 2], [15.7, "ra,", 2], [16.188, "gọi", 2], [16.45, "là", 2], [16.562, "thuật", 2], [16.788, "toán,", 2], [17.337, "hay", 2], [17.6, "algorithm.", 2], [19.188, "Knuth,", 3], [19.7, "trong", 3], [19.925, "tập", 3], [20.087, "đầu", 3], [20.3, "của", 3], [20.413, "bộ", 3], [20.587, "sách", 3], [20.825, "The", 3], [21.012, "Art", 3], [21.262, "of", 3], [21.45, "Computer", 3], [21.85, "Programming,", 3], [22.637, "nêu", 3], [22.925, "năm", 3], [23.163, "điều", 3], [23.288, "kiện", 3], [23.538, "một", 3], [23.738, "thuật", 3], [23.925, "toán", 3], [24.188, "phải", 3], [24.375, "thỏa.", 3], [25.675, "Thuật", 4], [25.938, "toán", 4], [26.2, "phải", 4], [26.4, "hữu", 4], [26.6, "hạn,", 4], [27.087, "tức", 4], [27.275, "dừng", 4], [27.538, "sau", 4], [27.775, "một", 4], [27.962, "số", 4], [28.188, "bước.", 4], [29.312, "Mỗi", 5], [29.712, "bước", 5], [29.925, "phải", 5], [30.1, "xác", 5], [30.325, "định,", 5], [30.775, "không", 5], [31.062, "mơ", 5], [31.262, "hồ.", 5], [32.425, "Thuật", 6], [32.688, "toán", 6], [32.938, "có", 6], [33.05, "đầu", 6], [33.237, "vào,", 6], [33.712, "có", 6], [33.85, "đầu", 6], [34.038, "ra,", 6], [34.525, "và", 6], [34.725, "mỗi", 6], [34.938, "bước", 6], [35.163, "đều", 6], [35.337, "thực", 6], [35.525, "hiện", 6], [35.788, "được", 6], [35.938, "bằng", 6], [36.15, "bút", 6], [36.362, "và", 6], [36.562, "giấy.", 6]], "cues": [0.1, 13.525, 22.637], "lang": 0.6}, {"ten": "Slide 3. Thuật toán Euclid vẽ bằng lưu đồ và viết bằng mã giả", "loai": "slide", "slide": "S03", "dung": "Hình luu-do-euclid: sáu bước theo sáu câu mốc đầu; bước 7 ô kết luận. Ghi nguồn: Euclid, Elements VII.2; ký hiệu lưu đồ theo ISO 5807.\nHiện dần: bước 1 khi đọc “Lưu đồ bắt đầu”; bước 2 khi đọc “Bước đầu tiên tính”; bước 3 khi đọc “Khối hình thoi”; bước 4 khi đọc “Nếu chưa bằng 0”; bước 5 khi đọc “Nếu bằng 0”; bước 6 khi đọc “Bên phải là mã giả”; bước 7 khi đọc “Hai cách biểu diễn”.", "start": 115.44, "audio": "audio/e1f0df8d2caaa43c.mp3", "dur": 56.64, "words": [[0.1, "Thuật", 0], [0.35, "toán", 0], [0.55, "mình", 0], [0.713, "dùng", 0], [0.95, "là", 0], [1.062, "thuật", 0], [1.275, "toán", 0], [1.587, "Euclid,", 0], [2.125, "có", 0], [2.275, "từ", 0], [2.475, "hơn", 0], [2.725, "hai", 0], [2.9, "nghìn", 0], [3.138, "năm", 0], [3.325, "trước,", 0], [3.812, "và", 0], [4.05, "cũng", 0], [4.225, "là", 0], [4.325, "thuật", 0], [4.55, "toán", 0], [4.787, "Knuth", 0], [4.95, "chọn", 0], [5.25, "để", 0], [5.375, "mở", 0], [5.612, "đầu", 0], [5.8, "bộ", 0], [5.987, "sách.", 0], [7.088, "Mình", 1], [7.463, "biểu", 1], [7.662, "diễn", 1], [7.875, "nó", 1], [8.088, "bằng", 1], [8.325, "lưu", 1], [8.512, "đồ,", 1], [9.012, "hay", 1], [9.275, "flowchart,", 1], [10.075, "theo", 1], [10.325, "các", 1], [10.525, "ký", 1], [10.7, "hiệu", 1], [10.887, "chuẩn.", 1], [12.125, "Lưu", 2], [12.387, "đồ", 2], [12.562, "bắt", 2], [12.738, "đầu", 2], [12.925, "bằng", 2], [13.088, "khối", 2], [13.287, "hình", 2], [13.438, "bầu", 2], [13.6, "dục,", 2], [14.05, "rồi", 2], [14.275, "khối", 2], [14.463, "hình", 2], [14.637, "bình", 2], [14.825, "hành", 2], [15.012, "đọc", 2], [15.175, "hai", 2], [15.35, "số", 2], [15.6, "m", 2], [16.075, "và", 2], [16.238, "n.", 2], [16.7, "Bước", 3], [16.925, "đầu", 3], [17.1, "tiên", 3], [17.312, "tính", 3], [17.587, "r", 3], [17.95, "là", 3], [18.075, "phần", 3], [18.312, "dư", 3], [18.475, "khi", 3], [18.65, "chia", 3], [18.887, "m", 3], [19.325, "cho", 3], [19.538, "n.", 3], [19.962, "Khối", 4], [20.175, "hình", 4], [20.375, "thoi", 4], [20.6, "là", 4], [20.675, "một", 4], [20.837, "điều", 4], [21.012, "kiện:", 4], [21.587, "r", 4], [21.988, "có", 4], [22.137, "bằng", 4], [22.337, "0", 4], [22.55, "không?", 4], [23.675, "Nếu", 5], [24.113, "chưa", 5], [24.35, "bằng", 5], [24.538, "0,", 5], [25.038, "m", 5], [25.363, "nhận", 5], [25.625, "giá", 5], [25.8, "trị", 5], [26.012, "của", 5], [26.212, "n,", 5], [26.95, "n", 5], [27.387, "nhận", 5], [27.663, "giá", 5], [27.837, "trị", 5], [28.062, "của", 5], [28.275, "r,", 5], [28.9, "và", 5], [29.087, "mũi", 5], [29.337, "tên", 5], [29.525, "quay", 5], [29.75, "lại", 5], [29.913, "bước", 5], [30.113, "tính", 5], [30.35, "phần", 5], [30.55, "dư.", 5], [31.675, "Nếu", 6], [32.062, "bằng", 6], [32.25, "0,", 6], [32.737, "n", 6], [33.15, "chính", 6], [33.4, "là", 6], [33.562, "ước", 6], [33.688, "chung", 6], [33.913, "lớn", 6], [34.125, "nhất,", 6], [34.562, "thuật", 6], [34.775, "toán", 6], [35.062, "in", 6], [35.263, "n", 6], [35.663, "rồi", 6], [35.938, "kết", 6], [36.175, "thúc.", 6], [37.225, "Bên", 7], [37.538, "phải", 7], [37.75, "là", 7], [37.862, "mã", 7], [38.075, "giả,", 7], [38.625, "hay", 7], [38.812, "pseudocode,", 7], [39.625, "viết", 7], [39.913, "cùng", 7], [40.112, "các", 7], [40.275, "bước", 7], [40.438, "đó", 7], [40.663, "bằng", 7], [40.888, "câu", 7], [41.087, "ngắn", 7], [41.375, "có", 7], [41.5, "cấu", 7], [41.725, "trúc,", 7], [42.212, "gần", 7], [42.487, "với", 7], [42.6, "cách", 7], [42.775, "viết", 7], [42.987, "của", 7], [43.112, "ngôn", 7], [43.337, "ngữ", 7], [43.562, "lập", 7], [43.775, "trình.", 7], [44.9, "Hai", 8], [45.125, "cách", 8], [45.312, "biểu", 8], [45.5, "diễn", 8], [45.788, "cùng", 8], [45.962, "một", 8], [46.112, "thuật", 8], [46.312, "toán:", 8], [46.875, "lưu", 8], [47.125, "đồ", 8], [47.337, "dễ", 8], [47.5, "nhìn", 8], [47.763, "luồng", 8], [48.0, "điều", 8], [48.138, "khiển,", 8], [48.712, "mã", 8], [48.938, "giả", 8], [49.188, "dễ", 8], [49.388, "chuyển", 8], [49.663, "thành", 8], [49.862, "mã.", 8], [51.075, "Trong", 9], [51.375, "mã", 9], [51.55, "giả,", 9], [52.163, "mũi", 9], [52.362, "tên", 9], [52.6, "trái", 9], [52.8, "nghĩa", 9], [53.038, "là", 9], [53.212, "gán", 9], [53.45, "giá", 9], [53.638, "trị,", 9], [54.188, "còn", 9], [54.45, "mod", 9], [54.675, "là", 9], [54.837, "phép", 9], [55.075, "lấy", 9], [55.275, "phần", 9], [55.5, "dư.", 9]], "cues": [12.125, 16.7, 19.962, 23.675, 31.675, 37.225, 44.9], "lang": 2.6}, {"ten": "Slide 4. Bảng vết: chạy thuật toán bằng tay với 1071 và 462", "loai": "slide", "slide": "S04", "dung": "Mã giả phía trên, bảng vết phía dưới; sau câu \"vòng lặp chạy mấy lần?\", dừng khoảng 2 giây rồi mới hiện bảng; tô dòng lần lặp thứ ba và dòng kết quả. Bảng vết in bởi src/euclid_trace.c (dựng sẵn, không lên slide ở chương này).\nHiện dần: bước 1 khi đọc “Mình kiểm tra thuật toán”; bước 2 khi đọc “Theo bảng vết”.", "start": 174.68, "audio": "audio/51d7588644683d86.mp3", "dur": 42.02, "words": [[0.1, "Có", 0], [0.275, "mã", 0], [0.5, "giả", 0], [0.762, "rồi,", 0], [1.238, "làm", 0], [1.525, "sao", 0], [1.762, "biết", 0], [2.0, "nó", 0], [2.175, "đúng?", 0], [3.337, "Cách", 1], [3.538, "đơn", 1], [3.75, "giản", 1], [3.95, "nhất", 1], [4.162, "là", 1], [4.4, "chạy", 1], [4.6, "bằng", 1], [4.812, "tay", 1], [5.062, "và", 1], [5.188, "ghi", 1], [5.362, "giá", 1], [5.55, "trị", 1], [5.775, "của", 1], [5.987, "m,", 1], [6.725, "n", 1], [7.138, "và", 1], [7.325, "r", 1], [7.662, "sau", 1], [7.888, "mỗi", 1], [8.075, "lần", 1], [8.275, "lặp", 1], [8.463, "vào", 1], [8.6, "một", 1], [8.787, "bảng,", 1], [9.363, "gọi", 1], [9.637, "là", 1], [9.762, "bảng", 1], [10.0, "vết,", 1], [10.475, "hay", 1], [10.688, "trace", 1], [10.963, "table.", 1], [12.25, "Các", 2], [12.45, "bạn", 2], [12.662, "thử", 2], [12.825, "đoán", 2], [13.05, "trước:", 2], [13.5, "với", 2], [13.662, "1071", 2], [15.062, "và", 2], [15.25, "462,", 2], [16.587, "vòng", 2], [16.863, "lặp", 2], [17.075, "chạy", 2], [17.262, "mấy", 2], [17.438, "lần?", 2], [18.575, "Mình", 3], [18.962, "kiểm", 3], [19.175, "tra", 3], [19.337, "thuật", 3], [19.575, "toán", 3], [19.863, "bằng", 3], [20.025, "một", 3], [20.175, "chương", 3], [20.4, "trình", 3], [20.562, "nhỏ", 3], [20.812, "viết", 3], [20.95, "sẵn,", 3], [21.55, "in", 3], [21.788, "đúng", 3], [22.0, "bảng", 3], [22.225, "vết", 3], [22.387, "đó.", 3], [23.575, "Theo", 4], [23.788, "bảng", 4], [23.988, "vết,", 4], [24.4, "lần", 4], [24.625, "đầu", 4], [24.788, "1071", 4], [26.1, "chia", 4], [26.312, "462", 4], [27.312, "dư", 4], [27.488, "147,", 4], [28.775, "lần", 4], [29.025, "hai", 4], [29.225, "462", 4], [30.2, "chia", 4], [30.4, "147", 4], [31.337, "dư", 4], [31.512, "21,", 4], [32.275, "và", 4], [32.45, "lần", 4], [32.65, "ba", 4], [32.825, "147", 4], [33.737, "chia", 4], [33.975, "21", 4], [34.4, "dư", 4], [34.587, "0,", 4], [35.125, "nên", 4], [35.4, "thuật", 4], [35.575, "toán", 4], [35.812, "dừng", 4], [36.062, "và", 4], [36.263, "in", 4], [36.475, "21.", 4], [37.875, "Chỉ", 5], [38.125, "ba", 5], [38.35, "lần", 5], [38.562, "lặp,", 5], [38.975, "không", 5], [39.237, "cần", 5], [39.438, "phân", 5], [39.638, "tích", 5], [39.837, "ra", 5], [40.05, "thừa", 5], [40.3, "số", 5], [40.525, "nguyên", 5], [40.812, "tố.", 5]], "cues": [18.575, 23.575], "lang": 9.6}, {"ten": "Slide 5. Một bài toán, hai thuật toán: bản trừ liên tiếp cũng ra 21, sau mười một lần lặp", "loai": "slide", "slide": "S05", "dung": "Mã giả phía trên, bảng vết phía dưới; tô dòng 3 (bước 2, còn 147) và dòng cuối (gcd = 21). Bảng vết in bởi src/euclid_sub_trace.c (dựng sẵn, không lên slide ở chương này). Ghi nguồn: Euclid, Cơ sở, quyển VII, mệnh đề 2; Knuth, TAOCP vol. 2, §4.5.2. Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Một bài toán có thể có”; bước 2 khi đọc “Cùng đầu vào 1071 và 462”.", "start": 226.3, "audio": "audio/d79beca917649ab9.mp3", "dur": 43.68, "words": [[0.1, "Một", 0], [0.487, "bài", 0], [0.662, "toán", 0], [0.975, "có", 0], [1.087, "thể", 0], [1.3, "có", 0], [1.438, "nhiều", 0], [1.663, "thuật", 0], [1.887, "toán.", 0], [3.1, "Trong", 1], [3.4, "bộ", 1], [3.575, "sách", 1], [3.763, "Cơ", 1], [3.9, "sở,", 1], [4.55, "Euclid", 1], [5.0, "thật", 1], [5.2, "ra", 1], [5.375, "không", 1], [5.6, "chia", 1], [5.787, "lấy", 1], [5.987, "dư", 1], [6.225, "mà", 1], [6.388, "trừ", 1], [6.625, "liên", 1], [6.85, "tiếp:", 1], [7.388, "lấy", 1], [7.6, "số", 1], [7.812, "lớn", 1], [8.075, "trừ", 1], [8.238, "đi", 1], [8.375, "số", 1], [8.6, "nhỏ,", 1], [9.225, "lặp", 1], [9.463, "lại", 1], [9.7, "cho", 1], [9.825, "tới", 1], [10.037, "khi", 1], [10.238, "hai", 1], [10.425, "số", 1], [10.675, "bằng", 1], [10.875, "nhau.", 1], [12.025, "Knuth", 2], [12.425, "ghi", 2], [12.6, "lại", 2], [12.775, "cách", 2], [12.975, "viết", 2], [13.162, "này", 2], [13.412, "ở", 2], [13.525, "tập", 2], [13.75, "hai", 2], [13.988, "của", 2], [14.137, "bộ", 2], [14.325, "sách.", 2], [15.412, "Mã", 3], [15.812, "giả", 3], [16.113, "chỉ", 3], [16.3, "cần", 3], [16.512, "phép", 3], [16.738, "so", 3], [17.012, "sánh", 3], [17.35, "và", 3], [17.475, "phép", 3], [17.712, "trừ.", 3], [18.837, "Cùng", 4], [19.125, "đầu", 4], [19.325, "vào", 4], [19.413, "1071", 4], [20.762, "và", 4], [20.938, "462,", 4], [22.288, "bảng", 4], [22.55, "vết", 4], [22.712, "cho", 4], [22.825, "thấy", 4], [23.0, "thuật", 4], [23.212, "toán", 4], [23.488, "cũng", 4], [23.688, "dừng", 4], [23.95, "ở", 4], [24.062, "21,", 4], [24.85, "nhưng", 4], [25.137, "sau", 4], [25.375, "mười", 4], [25.525, "một", 4], [25.712, "lần", 4], [25.962, "lặp", 4], [26.188, "thay", 4], [26.375, "vì", 4], [26.525, "ba.", 4], [27.663, "Hai", 5], [27.887, "dòng", 5], [28.1, "đầu", 5], [28.3, "là", 5], [28.413, "ví", 5], [28.6, "dụ:", 5], [29.113, "1071", 5], [30.45, "trừ", 5], [30.637, "462", 5], [31.637, "hai", 5], [31.85, "lần", 5], [32.075, "mới", 5], [32.312, "còn", 5], [32.513, "147,", 5], [33.737, "và", 5], [33.962, "hai", 5], [34.163, "phép", 5], [34.4, "trừ", 5], [34.575, "đó", 5], [34.775, "chính", 5], [35.025, "là", 5], [35.087, "một", 5], [35.263, "phép", 5], [35.513, "chia", 5], [35.737, "lấy", 5], [35.938, "dư", 5], [36.15, "của", 5], [36.288, "bản", 5], [36.5, "trước.", 5], [37.612, "Như", 6], [37.862, "vậy,", 6], [38.275, "hai", 6], [38.462, "thuật", 6], [38.675, "toán", 6], [38.925, "cùng", 6], [39.138, "giải", 6], [39.325, "một", 6], [39.5, "bài", 6], [39.65, "toán,", 6], [40.225, "cùng", 6], [40.5, "cho", 6], [40.638, "đầu", 6], [40.837, "ra", 6], [40.987, "đúng,", 6], [41.5, "nhưng", 6], [41.788, "số", 6], [42.05, "bước", 6], [42.25, "khác", 6], [42.513, "nhau.", 6]], "cues": [0.1, 18.837], "lang": 9.6}, {"ten": "Slide 6. Thuật toán phải dừng: với Euclid, n nhỏ dần sau mỗi lần lặp", "loai": "slide", "slide": "S06", "dung": "Hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Từ ví dụ này”; bước 2 khi đọc “Yêu cầu thứ hai”.", "start": 279.58, "audio": "audio/76f432b6f4f26d8a.mp3", "dur": 27.74, "words": [[0.1, "Từ", 0], [0.3, "ví", 0], [0.5, "dụ", 0], [0.7, "này", 0], [0.925, "rút", 0], [1.137, "ra", 0], [1.325, "hai", 0], [1.562, "yêu", 0], [1.775, "cầu", 0], [2.062, "khi", 0], [2.225, "viết", 0], [2.413, "thuật", 0], [2.612, "toán.", 0], [3.837, "Yêu", 1], [4.062, "cầu", 1], [4.312, "thứ", 1], [4.5, "nhất", 1], [4.787, "là", 1], [5.037, "mỗi", 1], [5.275, "bước", 1], [5.463, "phải", 1], [5.612, "xác", 1], [5.838, "định:", 1], [6.55, "\"chia", 1], [6.85, "cho", 1], [7.013, "số", 1], [7.237, "thích", 1], [7.425, "hợp\"", 1], [7.825, "là", 1], [7.963, "gợi", 1], [8.188, "ý", 1], [8.4, "cho", 1], [8.55, "người,", 1], [9.075, "không", 1], [9.338, "phải", 1], [9.5, "bước", 1], [9.713, "cho", 1], [9.838, "máy.", 1], [11.025, "Yêu", 2], [11.25, "cầu", 2], [11.488, "thứ", 2], [11.7, "hai", 2], [11.988, "là", 2], [12.1, "thuật", 2], [12.325, "toán", 2], [12.6, "phải", 2], [12.787, "dừng", 2], [13.05, "với", 2], [13.162, "mọi", 2], [13.387, "đầu", 2], [13.575, "vào.", 2], [14.7, "Với", 3], [15.05, "Euclid,", 3], [15.688, "điều", 3], [15.9, "đó", 3], [16.1, "có", 3], [16.212, "lý", 3], [16.413, "do", 3], [16.6, "rõ", 3], [16.825, "ràng:", 3], [17.312, "phần", 3], [17.575, "dư", 3], [17.762, "luôn", 3], [17.925, "nhỏ", 3], [18.163, "hơn", 3], [18.375, "số", 3], [18.587, "chia,", 3], [19.188, "nên", 3], [19.512, "n", 3], [19.837, "giảm", 3], [20.125, "sau", 3], [20.337, "mỗi", 3], [20.525, "lần", 3], [20.712, "lặp,", 3], [21.125, "và", 3], [21.3, "một", 3], [21.475, "số", 3], [21.675, "nguyên", 3], [21.925, "dương", 3], [22.163, "không", 3], [22.387, "thể", 3], [22.525, "giảm", 3], [22.75, "mãi.", 3], [23.988, "Một", 4], [24.375, "dãy", 4], [24.6, "bước", 4], [24.8, "không", 4], [25.062, "bảo", 4], [25.262, "đảm", 4], [25.525, "dừng", 4], [25.762, "chưa", 4], [25.988, "phải", 4], [26.2, "là", 4], [26.312, "thuật", 4], [26.538, "toán.", 4]], "cues": [0.1, 11.025], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 307.92, "audio": "audio/59e1e262b6e9240a.mp3", "dur": 4.94, "words": [[0.1, "Một", 0], [0.463, "thuật", 0], [0.662, "toán", 0], [0.9, "còn", 0], [1.062, "phải", 0], [1.212, "dừng,", 0], [1.712, "và", 0], [1.95, "câu", 0], [2.125, "hỏi", 0], [2.3, "này", 0], [2.5, "hỏi", 0], [2.712, "điều", 0], [2.875, "gì", 0], [3.112, "bảo", 0], [3.362, "đảm", 0], [3.612, "điều", 0], [3.75, "đó.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/aadd00daaf6564b7.mp3", "dur2": 10.58, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.775, "B.", 0], [1.137, "Phương", 1], [1.475, "án", 1], [1.637, "C", 1], [1.85, "dễ", 1], [2.05, "được", 1], [2.212, "chọn", 1], [2.513, "vì", 1], [2.638, "lưu", 1], [2.85, "đồ", 1], [3.05, "có", 1], [3.175, "khối", 1], [3.375, "kết", 1], [3.575, "thúc,", 1], [4.013, "nhưng", 1], [4.275, "có", 1], [4.4, "khối", 1], [4.588, "đó", 1], [4.775, "chưa", 1], [5.0, "chắc", 1], [5.237, "đã", 1], [5.388, "đến", 1], [5.588, "được", 1], [5.737, "nó.", 1], [6.938, "Điều", 2], [7.162, "bảo", 2], [7.4, "đảm", 2], [7.638, "dừng", 2], [7.875, "là", 2], [8.137, "n", 2], [8.562, "giảm", 2], [8.875, "sau", 2], [9.113, "mỗi", 2], [9.325, "lần", 2], [9.537, "lặp.", 2]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C. Bảng vết đầy đủ: results/euclid-12-18.txt.", "start": 330.04, "audio": "audio/ceb427f1c951876f.mp3", "dur": 3.74, "words": [[0.1, "Tiếp", 0], [0.425, "theo", 0], [0.662, "là", 0], [0.738, "một", 0], [0.925, "bảng", 0], [1.163, "vết", 0], [1.35, "nhỏ", 0], [1.65, "để", 0], [1.762, "các", 0], [1.925, "bạn", 0], [2.163, "tự", 0], [2.388, "chạy", 0], [2.6, "tay.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/9e4d1d99d103591e.mp3", "dur2": 13.99, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.775, "C.", 0], [1.137, "Phương", 1], [1.45, "án", 1], [1.637, "D", 1], [1.8, "dễ", 1], [2.0, "được", 1], [2.163, "chọn", 1], [2.413, "khi", 1], [2.587, "nghĩ", 1], [2.8, "ngay", 1], [2.975, "đến", 1], [3.175, "phần", 1], [3.375, "dư", 1], [3.513, "6,", 1], [4.1, "nhưng", 1], [4.4, "ở", 1], [4.463, "lần", 1], [4.675, "lặp", 1], [4.85, "đầu,", 1], [5.287, "12", 1], [5.713, "chia", 1], [5.912, "18", 1], [6.362, "dư", 1], [6.5, "12,", 1], [7.237, "nên", 1], [7.525, "lần", 1], [7.713, "lặp", 1], [7.888, "này", 1], [8.088, "chỉ", 1], [8.287, "đổi", 1], [8.5, "chỗ", 1], [8.75, "hai", 1], [8.925, "số.", 1], [10.162, "Thuật", 2], [10.412, "toán", 2], [10.675, "vẫn", 2], [10.863, "đúng", 2], [11.113, "mà", 2], [11.287, "không", 2], [11.537, "cần", 2], [11.825, "m", 2], [12.175, "lớn", 2], [12.463, "hơn", 2], [12.738, "n.", 2]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Muốn máy tính giải được”; bước 2 khi đọc “Lời giải được biểu diễn”; bước 3 khi đọc “Trước khi tin”; bước 4 khi đọc “Trên slide là những từ khóa”.", "start": 354.37, "audio": "audio/ca421974d997818f.mp3", "dur": 29.95, "words": [[0.1, "Muốn", 0], [0.487, "máy", 0], [0.625, "tính", 0], [0.9, "giải", 0], [1.15, "được", 0], [1.312, "một", 0], [1.475, "bài", 0], [1.637, "toán,", 0], [2.175, "trước", 0], [2.4, "hết", 0], [2.587, "phải", 0], [2.737, "viết", 0], [2.938, "lời", 0], [3.138, "giải", 0], [3.362, "thành", 0], [3.575, "thuật", 0], [3.763, "toán:", 0], [4.312, "xác", 0], [4.575, "định", 0], [4.8, "bài", 0], [4.95, "toán", 0], [5.263, "với", 0], [5.375, "đầu", 0], [5.562, "vào", 0], [5.8, "và", 0], [5.912, "đầu", 0], [6.1, "ra,", 0], [6.588, "rồi", 0], [6.85, "viết", 0], [7.05, "dãy", 0], [7.237, "hữu", 0], [7.425, "hạn", 0], [7.675, "bước", 0], [7.838, "xác", 0], [8.075, "định.", 0], [9.213, "Lời", 1], [9.525, "giải", 1], [9.812, "được", 1], [9.963, "biểu", 1], [10.15, "diễn", 1], [10.45, "bằng", 1], [10.637, "ngôn", 1], [10.863, "ngữ", 1], [11.088, "tự", 1], [11.3, "nhiên,", 1], [11.825, "bằng", 1], [12.075, "lưu", 1], [12.25, "đồ", 1], [12.488, "để", 1], [12.6, "thấy", 1], [12.762, "luồng", 1], [12.963, "điều", 1], [13.113, "khiển,", 1], [13.7, "hay", 1], [13.875, "bằng", 1], [14.075, "mã", 1], [14.25, "giả", 1], [14.575, "để", 1], [14.7, "gần", 1], [14.938, "với", 1], [15.062, "mã.", 1], [16.337, "Trước", 2], [16.6, "khi", 2], [16.75, "tin", 2], [16.95, "một", 2], [17.113, "thuật", 2], [17.3, "toán,", 2], [17.837, "hãy", 2], [18.012, "chạy", 2], [18.188, "bằng", 2], [18.4, "tay", 2], [18.637, "với", 2], [18.75, "bảng", 2], [18.988, "vết", 2], [19.225, "và", 2], [19.4, "tự", 2], [19.613, "hỏi", 2], [19.825, "nó", 2], [20.038, "có", 2], [20.163, "dừng", 2], [20.35, "không.", 2], [21.5, "Trên", 3], [21.85, "slide", 3], [22.275, "là", 3], [22.45, "những", 3], [22.7, "từ", 3], [22.863, "khóa", 3], [23.15, "của", 3], [23.3, "phần:", 3], [23.837, "bài", 3], [24.075, "toán,", 3], [24.663, "thuật", 3], [24.9, "toán,", 3], [25.475, "đầu", 3], [25.75, "vào,", 3], [26.275, "đầu", 3], [26.55, "ra,", 3], [27.087, "lưu", 3], [27.35, "đồ,", 3], [27.85, "mã", 3], [28.113, "giả", 3], [28.512, "và", 3], [28.663, "bảng", 3], [28.9, "vết.", 3]], "cues": [0.1, 9.213, 16.337, 21.5], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Các bạn muốn đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 384.92, "audio": "audio/f7b84234161dd39a.mp3", "dur": 24.29, "words": [[0.1, "Các", 0], [0.3, "bạn", 0], [0.525, "muốn", 0], [0.713, "đọc", 0], [0.887, "thêm", 0], [1.175, "có", 0], [1.312, "hai", 0], [1.5, "chủ", 0], [1.75, "đề.", 0], [2.875, "Chủ", 1], [3.125, "đề", 1], [3.288, "thứ", 1], [3.462, "nhất", 1], [3.725, "là", 1], [3.925, "chứng", 1], [4.138, "minh", 1], [4.325, "vì", 1], [4.463, "sao", 1], [4.763, "Euclid", 1], [5.112, "đúng:", 1], [5.625, "ước", 1], [5.812, "chung", 1], [6.037, "của", 1], [6.237, "m", 1], [6.713, "và", 1], [6.888, "n", 1], [7.338, "cũng", 1], [7.575, "là", 1], [7.737, "ước", 1], [7.875, "chung", 1], [8.113, "của", 1], [8.312, "n", 1], [8.8, "và", 1], [8.95, "phần", 1], [9.162, "dư.", 1], [10.287, "Chủ", 2], [10.525, "đề", 2], [10.7, "thứ", 2], [10.912, "hai", 2], [11.175, "là", 2], [11.275, "thuật", 2], [11.5, "toán", 2], [11.812, "Euclid", 2], [12.2, "mở", 2], [12.4, "rộng,", 2], [12.912, "dùng", 2], [13.162, "nhiều", 2], [13.412, "trong", 2], [13.613, "mật", 2], [13.775, "mã.", 2], [15.012, "Bài", 3], [15.262, "tập", 3], [15.475, "mở", 3], [15.662, "rộng", 3], [15.938, "là", 3], [16.1, "viết", 3], [16.3, "mã", 3], [16.488, "giả,", 3], [17.1, "vẽ", 3], [17.3, "lưu", 3], [17.488, "đồ", 3], [17.688, "cho", 3], [17.825, "thuật", 3], [18.012, "toán", 3], [18.275, "tìm", 3], [18.512, "số", 3], [18.712, "lớn", 3], [18.938, "nhất", 3], [19.163, "trong", 3], [19.337, "một", 3], [19.488, "dãy,", 3], [20.1, "rồi", 3], [20.337, "lập", 3], [20.525, "bảng", 3], [20.775, "vết", 3], [20.962, "với", 3], [21.087, "dãy", 3], [21.288, "7,", 3], [21.913, "2,", 3], [22.488, "9,", 3], [23.025, "4.", 3]], "cues": [0.1, 15.012], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 409.81, "audio": "audio/51f72626fcb076af.mp3", "dur": 13.73, "words": [[0.1, "Bản", 0], [0.412, "chia", 0], [0.613, "lấy", 0], [0.863, "dư", 0], [1.038, "cần", 0], [1.288, "ba", 0], [1.475, "lần", 0], [1.675, "lặp,", 0], [2.125, "bản", 0], [2.388, "trừ", 0], [2.6, "liên", 0], [2.837, "tiếp", 0], [3.05, "cần", 0], [3.225, "mười", 0], [3.388, "một,", 0], [3.888, "và", 0], [4.112, "khoảng", 0], [4.362, "cách", 0], [4.55, "giữa", 0], [4.713, "hai", 0], [4.888, "thuật", 0], [5.088, "toán", 0], [5.375, "đúng", 0], [5.562, "có", 0], [5.662, "thể", 0], [5.875, "còn", 0], [6.112, "xa", 0], [6.338, "hơn", 0], [6.525, "nhiều.", 0], [7.65, "Phần", 1], [7.95, "tiếp", 1], [8.162, "theo,", 1], [8.625, "về", 1], [8.825, "độ", 1], [9.0, "phức", 1], [9.2, "tạp", 1], [9.438, "tính", 1], [9.662, "toán,", 1], [10.213, "đo", 1], [10.475, "khoảng", 1], [10.762, "cách", 1], [10.912, "đó", 1], [11.137, "mà", 1], [11.312, "không", 1], [11.525, "cần", 1], [11.725, "chạy", 1], [11.912, "thử", 1], [12.15, "trên", 1], [12.338, "từng", 1], [12.55, "máy.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Thuật toán: độ phức tạp tính toán"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

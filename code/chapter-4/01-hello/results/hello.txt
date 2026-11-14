@@ -1,0 +1,5 @@
+$ gcc --version
+gcc.exe (MinGW-W64 x86_64-ucrt-posix-seh, built by Brecht Sanders, r8) 13.2.0
+$ gcc -std=c17 -Wall -Wextra hello.c -o hello
+$ ./hello
+hello, world

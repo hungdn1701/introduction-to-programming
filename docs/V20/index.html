@@ -1,0 +1,443 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V20 — Rẽ nhánh: câu lệnh switch · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-4/06-switch">Mã</a>
+<h1>V20 · Rẽ nhánh: câu lệnh switch</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 4</div><div class="ten">Rẽ nhánh: câu lệnh switch</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>In ngày theo kiểu văn bản pháp lý cần hai lựa chọn theo giá trị nguyên</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Văn bản pháp lý tiếng Anh ghi ngày: <b>Dated this 3rd day of June, 2026</b></li><li data-s="2">Hậu tố st, nd, rd, th theo <b>ngày</b>; tên tháng theo <b>số tháng</b> — mười hai trường hợp</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> rẽ nhánh theo giá trị của một biến nguyên thế nào cho gọn và ít sai?</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Câu lệnh switch: một biểu thức nguyên, nhiều nhãn case, một nhãn default</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Câu lệnh switch</b> tính một biểu thức nguyên, rồi <b>nhảy</b> tới nhãn <b>case</b> có hằng bằng giá trị đó</li><li data-s="2">Không khớp case nào thì nhảy tới <b>default</b></li><li data-s="3"><b>break</b> kết thúc switch; thiếu break thì chạy tiếp case bên dưới: <b><span style="white-space:nowrap">fall-through</span></b></li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>switch nhảy tới case khớp, gộp nhiều nhãn, ra khỏi switch ở break</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Câu lệnh switch với day = 21: tính giá trị day; nhảy thẳng tới nhãn case 21, gộp chung với case 1 và case 31; in st; gặp break thì ra khỏi switch, các case sau không chạy.">
+  <defs>
+    <marker id="sw-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="sw-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="sw-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="sw-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="sw-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="sw-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+    <rect x="40" y="20" width="760" height="510" rx="4" fill="#1E1E2E"/>
+    <text x="64" y="60" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">switch (day) {</text>
+    <text x="64" y="108" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">case 1: case 21: case 31:</text>
+    <text x="64" y="156" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;st&quot;); break;</text>
+    <text x="64" y="204" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">case 2: case 22:</text>
+    <text x="64" y="252" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;nd&quot;); break;</text>
+    <text x="64" y="300" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">case 3: case 23:</text>
+    <text x="64" y="348" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;rd&quot;); break;</text>
+    <text x="64" y="396" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">default:</text>
+    <text x="64" y="444" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;th&quot;); break;</text>
+    <text x="64" y="492" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">}</text>
+
+  <!-- tính day -->
+  <g data-s="1">
+    <rect x="980" y="40" width="700" height="80" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1330" y="89.5" text-anchor="middle" font-size="27" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">day = 21</text>
+  </g>
+
+  <!-- nhảy tới case 21 -->
+  <g data-s="2">
+    <line x1="978" y1="110" x2="600" y2="110" stroke="#2F855A" stroke-width="3" marker-end="url(#sw-ok)"/>
+    <text x="790" y="96" text-anchor="middle" font-size="22" fill="#2F855A">nhảy tới</text>
+    <rect x="44" y="82" width="752" height="44" fill="none" stroke="#2F855A" stroke-width="3.5"/>
+  </g>
+
+  <!-- in st -->
+  <g data-s="3">
+    <rect x="980" y="180" width="700" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1330" y="228.5" text-anchor="middle" font-size="25" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">printf(&quot;st&quot;)  →  21st</text>
+  </g>
+
+  <!-- break -->
+  <g data-s="4">
+    <rect x="44" y="130" width="752" height="44" fill="none" stroke="#BC2626" stroke-width="3"/>
+    <path d="M800,152 L900,152 L900,530 L60,530" fill="none" stroke="#BC2626" stroke-width="3" marker-end="url(#sw-err)"/>
+    <rect x="980" y="300" width="700" height="120" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1330" y="348" text-anchor="middle" font-size="24" fill="#373D4E">break: ra khỏi switch,</text>
+    <text x="1330" y="388" text-anchor="middle" font-size="24" fill="#373D4E">các case sau không chạy</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Nhiều nhãn <b>case liền nhau</b> dùng chung một nhánh: 1, 21, 31 cùng in st.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Hai switch in ngày theo kiểu văn bản pháp lý</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">switch</span> (day) {
+<span class="hl-k">case</span> <span class="hl-n">1</span>: <span class="hl-k">case</span> <span class="hl-n">21</span>: <span class="hl-k">case</span> <span class="hl-n">31</span>:
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">st</span><span class="hl-s">"</span>); <span class="hl-k">break</span>;
+<span class="hl-k">case</span> <span class="hl-n">2</span>: <span class="hl-k">case</span> <span class="hl-n">22</span>:
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">nd</span><span class="hl-s">"</span>); <span class="hl-k">break</span>;
+<span class="hl-k">case</span> <span class="hl-n">3</span>: <span class="hl-k">case</span> <span class="hl-n">23</span>:
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">rd</span><span class="hl-s">"</span>); <span class="hl-k">break</span>;
+<span class="hl-k">default</span>:
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">th</span><span class="hl-s">"</span>); <span class="hl-k">break</span>;
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>Dated this 3rd day of June, 2026.
+Dated this 21st day of November, 2026.
+Dated this 12th day of January, 2027.
+Dated this 2nd day of September, 2026.</pre></div><ul class="y-nho"><li data-s="2">Ngày 12 rơi vào <b>default</b>: 12th, không phải 12nd</li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Switch thứ hai chọn tên tháng; default bắt tháng không hợp lệ</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">switch</span> (month) {
+<span class="hl-k">case</span> <span class="hl-n">1</span>:  <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">January</span><span class="hl-s">"</span>);   <span class="hl-k">break</span>;
+<span class="hl-k">case</span> <span class="hl-n">2</span>:  <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">February</span><span class="hl-s">"</span>);  <span class="hl-k">break</span>;
+<span class="hl-k">case</span> <span class="hl-n">12</span>: <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">December</span><span class="hl-s">"</span>);  <span class="hl-k">break</span>;
+<span class="hl-k">default</span>: <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">(month %d?)</span><span class="hl-s">"</span>, month); <span class="hl-k">break</span>;
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ echo 3/13/2026 | ./date
+Dated this 3rd day of (month 13?), 2026.</pre></div><ul class="y-nho"><li data-s="2">Mười hai nhánh, <b>mỗi nhánh một dòng</b>; người đọc thấy ngay tháng nào in tên nào</li><li data-s="3"><b>default</b> bắt giá trị ngoài 1 đến 12, lỗi nhập hiện rõ trên kết quả</li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>switch theo ký tự phép toán: hằng '+' cũng là một số nguyên</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">switch</span> (op) {
+<span class="hl-k">case</span> <span class="hl-s">'</span><span class="hl-s">+</span><span class="hl-s">'</span>: <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">%d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, a + b); <span class="hl-k">break</span>;
+<span class="hl-k">case</span> <span class="hl-s">'</span><span class="hl-s">/</span><span class="hl-s">'</span>:
+    <span class="hl-k">if</span> (b == <span class="hl-n">0</span>)
+        <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">division by zero</span><span class="hl-s">\n</span><span class="hl-s">"</span>);
+    <span class="hl-k">else</span>
+        <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">%d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, a / b);
+    <span class="hl-k">break</span>;
+<span class="hl-k">default</span>:
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">unknown operator %c</span><span class="hl-s">\n</span><span class="hl-s">"</span>, op);
+    <span class="hl-k">break</span>;
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ echo 7 + 2 | ./calc
+9
+$ echo 7 / 2 | ./calc
+3
+$ echo 7 / 0 | ./calc
+division by zero
+$ echo 7 % 2 | ./calc
+unknown operator %</pre></div><ul class="y-nho"><li data-s="2">Ký tự không có nhãn case nào, như <code>%</code>, rơi vào <b>default</b></li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>Thiếu break: ngày 2 in thành 2ndrd</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 440" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Fall-through: với day = 2, thiếu break sau printf nd, chương trình chạy tiếp câu lệnh của case 3 và in thêm rd, thành 2ndrd. GCC với -Wextra cảnh báo this statement may fall through.">
+  <defs>
+    <marker id="ft-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ft-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ft-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ft-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ft-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ft-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+    <rect x="40" y="40" width="760" height="254" rx="4" fill="#1E1E2E"/>
+    <text x="64" y="80" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">case 2: case 22:</text>
+    <text x="64" y="136" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;nd&quot;);</text>
+    <text x="64" y="192" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">case 3: case 23:</text>
+    <text x="64" y="248" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">    printf(&quot;rd&quot;); break;</text>
+
+  <!-- chạy nd -->
+  <g data-s="1">
+    <rect x="44" y="88" width="752" height="52" fill="none" stroke="#2F855A" stroke-width="3.5"/>
+    <rect x="980" y="50" width="700" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1330" y="98.5" text-anchor="middle" font-size="25" fill="#373D4E">day = 2: in nd</text>
+  </g>
+
+  <!-- rơi xuống case 3 -->
+  <g data-s="2">
+    <path d="M800,114 L860,114 L860,226 L800,226" fill="none" stroke="#BC2626" stroke-width="3" marker-end="url(#ft-err)"/>
+    <rect x="44" y="200" width="752" height="52" fill="none" stroke="#BC2626" stroke-width="3.5"/>
+    <rect x="980" y="170" width="700" height="170" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1330" y="226.5" text-anchor="middle" font-size="25" fill="#9B1C1C" font-weight="500">không có break</text>
+    <text x="1330" y="278.5" text-anchor="middle" font-size="22" fill="#373D4E">chạy tiếp printf(&quot;rd&quot;): in 2ndrd</text>
+    <text x="1330" y="316.5" text-anchor="middle" font-size="22" fill="#373D4E">GCC: this statement may fall through</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="3"><p>Mỗi case kết thúc bằng <b>break</b>; switch chỉ so <b>bằng với hằng nguyên</b> — điều kiện dạng khoảng vẫn dùng if.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong switch chọn hậu tố (case 1, 21, 31: st; case 2, 22: nd; case 3, 23: rd; default: th), ngày 11 in hậu tố nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>st, vì 11 kết thúc bằng chữ số 1.</div></div><div class=""><span>B</span><div>nd.</div></div><div class="dung"><span>C</span><div>th, vì 11 không khớp nhãn case nào nên nhảy tới default.</div></div><div class=""><span>D</span><div>Không in gì.</div></div></div><div class="giai-thich">switch so bằng với từng hằng, không nhìn chữ số cuối: 11 không bằng 1, 21 hay 31, nên nhảy tới default và in th. Đó cũng là lý do bản của King liệt kê 21, 31 chứ không dùng phép chia lấy dư.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong switch chọn hậu tố (case 1, 21, 31: st; case 2, 22: nd; case 3, 23: rd; default: th), ngày 11 in hậu tố nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>st, vì 11 kết thúc bằng chữ số 1.</div></div><div class=""><span>B</span><div>nd.</div></div><div class="dung"><span>C</span><div>th, vì 11 không khớp nhãn case nào nên nhảy tới default.</div></div><div class=""><span>D</span><div>Không in gì.</div></div></div><div class="giai-thich">switch so bằng với từng hằng, không nhìn chữ số cuối: 11 không bằng 1, 21 hay 31, nên nhảy tới default và in th. Đó cũng là lý do bản của King liệt kê 21, 31 chứ không dùng phép chia lấy dư.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Quên break ở nhánh case 1: case 21: case 31: printf("st");. Ngày 1 in hậu tố nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>st</div></div><div class="dung"><span>B</span><div>stnd, vì chạy tràn xuống nhánh của case 2.</div></div><div class=""><span>C</span><div>th</div></div><div class=""><span>D</span><div>Lỗi biên dịch, vì thiếu break.</div></div></div><div class="giai-thich">Thiếu break, sau khi in st chương trình chạy tiếp câu lệnh của case 2 và in nd, rồi gặp break ở đó mới ra khỏi switch. GCC chỉ cảnh báo -Wimplicit-fallthrough, không báo lỗi.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Quên break ở nhánh case 1: case 21: case 31: printf("st");. Ngày 1 in hậu tố nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>st</div></div><div class="dung"><span>B</span><div>stnd, vì chạy tràn xuống nhánh của case 2.</div></div><div class=""><span>C</span><div>th</div></div><div class=""><span>D</span><div>Lỗi biên dịch, vì thiếu break.</div></div></div><div class="giai-thich">Thiếu break, sau khi in st chương trình chạy tiếp câu lệnh của case 2 và in nd, rồi gặp break ở đó mới ra khỏi switch. GCC chỉ cảnh báo -Wimplicit-fallthrough, không báo lỗi.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Câu lệnh switch</b> nhảy tới <b>case</b> có hằng bằng giá trị biểu thức, hoặc tới <b>default</b></div></div><div class="the" data-s="2"><span class="so">2</span><div><b>break</b> ra khỏi switch; thiếu break là <b><span style="white-space:nowrap">fall-through</span></b> — GCC cảnh báo</div></div><div class="the" data-s="3"><span class="so">3</span><div>Nhãn liền nhau dùng chung nhánh; chỉ so bằng với hằng nguyên, điều kiện khoảng dùng if</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>câu lệnh switch</span><span>case</span><span>default</span><span>break</span><span>fall-through</span></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Thuộc tính [[fallthrough]] của C23 để ghi rõ <span style="white-space:nowrap">fall-through</span> có chủ ý</li><li>Bảng tra cứu bằng mảng thay cho switch dài (ở Chương 6)</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết chương trình máy tính bỏ túi đọc biểu thức dạng a op b (op là + - * /), dùng switch theo ký tự op; xử lý chia cho 0 và toán tử không hợp lệ bằng default.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Vòng lặp: câu lệnh while và for</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Khi cần so một biến với nhiều hằng số, chuỗi else-if dài và dễ sai: C có cách viết nào ngắn hơn cho trường hợp đó?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:09</span>
+      <h3>Slide 1. In ngày theo kiểu văn bản pháp lý cần hai lựa chọn theo giá trị nguyên</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Văn bản pháp lý tiếng Anh ghi ngày: **Dated this 3rd day of June, 2026**</li><li>Hậu tố st, nd, rd, th theo **ngày**; tên tháng theo **số tháng** — mười hai trường hợp</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** rẽ nhánh theo giá trị của một biến nguyên thế nào cho gọn và ít sai?</div></div>
+    <div class="kb-thoai"><p>Bài toán của phần này lấy từ sách của King: in một ngày theo kiểu văn bản pháp lý tiếng Anh, như Dated this 3rd day of June, 2026. Chương trình phải chọn hậu tố st, nd, rd hay th theo ngày, và chọn tên tháng theo số tháng. Viết bằng chuỗi else-if thì riêng tên tháng đã cần mười hai nhánh, mỗi nhánh lặp lại month bằng một số, rất dễ gõ sai. Câu hỏi đặt ra là: rẽ nhánh theo giá trị của một biến nguyên thế nào cho gọn và ít sai?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: King §5.3.
+Hiện dần: bước 1 khi đọc “Bài toán của phần này”; bước 2 khi đọc “Viết bằng chuỗi else-if”; bước 3 khi đọc “Câu hỏi đặt ra”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:39</span>
+      <h3>Slide 2. Câu lệnh switch: một biểu thức nguyên, nhiều nhãn case, một nhãn default</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Câu lệnh switch** tính một biểu thức nguyên, rồi **nhảy** tới nhãn **case** có hằng bằng giá trị đó</li><li>Không khớp case nào thì nhảy tới **default**</li><li>**break** kết thúc switch; thiếu break thì chạy tiếp case bên dưới: **fall-through**</li></ul></div>
+    <div class="kb-thoai"><p>Câu trả lời là câu lệnh switch. Switch tính giá trị của một biểu thức nguyên, rồi nhảy thẳng tới nhãn case có hằng bằng giá trị đó, và chạy các câu lệnh từ nhãn đó trở đi. Nếu giá trị không khớp case nào, switch nhảy tới nhãn default. Mỗi nhánh thường kết thúc bằng câu lệnh break, để thoát khỏi switch. Thiếu break, chương trình không dừng ở cuối nhánh mà chạy tiếp các câu lệnh của case bên dưới, hiện tượng gọi là fall-through. Từ này các bạn sẽ gặp trong cảnh báo của GCC.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: K&amp;R §3.4.
+Hiện dần: bước 1 khi đọc “Câu trả lời là”; bước 2 khi đọc “Nếu giá trị”; bước 3 khi đọc “Mỗi nhánh thường”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:09</span>
+      <h3>Slide 3. switch nhảy tới case khớp, gộp nhiều nhãn, ra khỏi switch ở break</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Nhiều nhãn **case liền nhau** dùng chung một nhánh: 1, 21, 31 cùng in st.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình lần theo switch chọn hậu tố. Với day bằng 21, trước hết switch tính giá trị của day. Switch nhảy thẳng tới dòng có nhãn case 21, mà không xét lần lượt từng nhánh như chuỗi else-if. Dòng đó gộp ba nhãn case 1, case 21 và case 31, vì cả ba ngày đều dùng hậu tố st. Câu lệnh in st được thực hiện. Gặp break, chương trình ra khỏi switch, các case bên dưới không chạy. Cách viết các nhãn liền nhau như vậy giúp nhiều giá trị dùng chung một nhánh mà không lặp mã.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình switch-nhay: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận.
+Hiện dần: bước 1 khi đọc “Với day bằng 21”; bước 2 khi đọc “Switch nhảy thẳng”; bước 3 khi đọc “Câu lệnh in st”; bước 4 khi đọc “Gặp break”; bước 5 khi đọc “Cách viết các nhãn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:44</span>
+      <h3>Slide 4. Hai switch in ngày theo kiểu văn bản pháp lý</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Ngày 12 rơi vào **default**: 12th, không phải 12nd</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/date.c</span><pre><code>switch (day) {
+case 1: case 21: case 31:
+    printf(&quot;st&quot;); break;
+case 2: case 22:
+    printf(&quot;nd&quot;); break;
+case 3: case 23:
+    printf(&quot;rd&quot;); break;
+default:
+    printf(&quot;th&quot;); break;
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Chương trình đọc ngày, tháng, năm theo dạng ngày gạch chéo tháng gạch chéo năm, rồi dùng hai câu lệnh switch: một switch theo ngày cho hậu tố, một switch theo tháng cho tên tháng, như bản của King. Mình chạy với bốn ngày: mùng 3 tháng 6, 21 tháng 11, 12 tháng 1 và mùng 2 tháng 9. Các bạn thử đoán hậu tố của ngày 12. Kết quả cho thấy 3rd, 21st, 2nd như mong đợi, còn ngày 12 không khớp case nào nên rơi vào default, in 12th. Đây cũng là quy tắc tiếng Anh: 11th, 12th, 13th.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã switch hậu tố phía trên, kết quả phía dưới; sau câu &quot;hậu tố của ngày 12&quot;, dừng khoảng 2 giây. Switch tên tháng nằm trong src/date.c. King đọc dạng tháng/ngày/năm; bản này đọc ngày/tháng/năm (README ghi rõ). Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Chương trình đọc ngày”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:31</span>
+      <h3>Slide 5. Switch thứ hai chọn tên tháng; default bắt tháng không hợp lệ</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Mười hai nhánh, **mỗi nhánh một dòng**; người đọc thấy ngay tháng nào in tên nào</li><li>**default** bắt giá trị ngoài 1 đến 12, lỗi nhập hiện rõ trên kết quả</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/date.c</span><pre><code>switch (month) {
+case 1:  printf(&quot;January&quot;);   break;
+case 2:  printf(&quot;February&quot;);  break;
+case 12: printf(&quot;December&quot;);  break;
+default: printf(&quot;(month %d?)&quot;, month); break;
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Switch thứ hai chọn tên tháng theo số tháng. Mười hai nhánh, mỗi nhánh viết trên một dòng: nhãn case, lời gọi printf và break, nên người đọc nhìn là thấy tháng nào in tên nào, ngắn hơn hẳn mười hai nhánh else-if. Trên slide, mình rút gọn còn ba tháng đầu, cuối và nhánh default. Các bạn thử đoán: người dùng gõ nhầm ngày 3 tháng 13 thì chương trình in gì? Kết quả cho thấy hậu tố vẫn đúng là 3rd, còn phần tên tháng in dấu hỏi kèm số 13. Nhánh default bắt mọi giá trị ngoài 1 đến 12, nên lỗi nhập hiện rõ trên kết quả thay vì bị in thành một tháng sai.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên (đã rút gọn: tháng 3 đến 11 nằm trong src/date.c), kết quả phía dưới; hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Switch thứ hai”; bước 2 khi đọc “Các bạn thử đoán”; bước 3 khi đọc “Nhánh default”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:17</span>
+      <h3>Slide 6. switch theo ký tự phép toán: hằng &#x27;+&#x27; cũng là một số nguyên</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Ký tự không có nhãn case nào, như `%`, rơi vào **default**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/calc.c</span><pre><code>switch (op) {
+case &#x27;+&#x27;: printf(&quot;%d\n&quot;, a + b); break;
+case &#x27;/&#x27;:
+    if (b == 0)
+        printf(&quot;division by zero\n&quot;);
+    else
+        printf(&quot;%d\n&quot;, a / b);
+    break;
+default:
+    printf(&quot;unknown operator %c\n&quot;, op);
+    break;
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Biểu thức của switch phải có kiểu nguyên, và một ký tự trong C cũng là số nguyên. Hằng ký tự dấu cộng, viết trong cặp nháy đơn, mang mã 43 trong bảng ASCII, nên nó đứng được sau từ khóa case. Ví dụ thứ hai phỏng theo máy tính trong sách của Kernighan và Ritchie: chương trình đọc hai số nguyên với một ký tự phép toán ở giữa, rồi switch theo ký tự đó. Nhánh chia có thêm một câu lệnh if, vì chia một số nguyên cho 0 là hành vi không xác định. Mình chạy với bốn dòng nhập. 7 cộng 2 in 9. 7 chia 2 in 3, vì chia hai số nguyên thì bỏ phần lẻ. 7 chia 0 đi vào câu lệnh if và in division by zero. Còn dấu phần trăm của phép chia lấy dư không có nhãn case nào, nên chương trình rơi vào default và báo unknown operator.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên (rút gọn: nhánh &#x27;-&#x27;, &#x27;*&#x27; nằm trong src/calc.c), kết quả phía dưới; highlight case &#x27;+&#x27; khi đọc &quot;mã 43&quot;, if (b == 0) khi đọc nhánh chia. Ghi nguồn: K&amp;R §4.3 (máy tính, bản rút gọn). Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Biểu thức của switch”; bước 2 khi đọc “Mình chạy với bốn dòng nhập”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:14</span>
+      <h3>Slide 7. Thiếu break: ngày 2 in thành 2ndrd</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Mỗi case kết thúc bằng **break**; switch chỉ so **bằng với hằng nguyên** — điều kiện dạng khoảng vẫn dùng if.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình bỏ câu lệnh break sau nhánh in nd rồi biên dịch lại. GCC với Wextra cảnh báo ngay: this statement may fall through, nghĩa là câu lệnh này có thể chạy tràn xuống case sau. Với ngày 2, chương trình in nd, rồi vì không có break, chạy tiếp câu lệnh in rd của case 3, nên dòng kết quả là Dated this 2ndrd day of September. Từ ví dụ này có hai điều cần nhớ: mỗi nhánh của switch kết thúc bằng break, và switch chỉ so bằng với các hằng nguyên, nên điều kiện dạng khoảng, như điểm từ 8 đến 10, vẫn phải viết bằng if.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình fall-through: bước 1 nhánh nd, bước 2 chạy tràn sang case 3; bước 3 ô kết luận. Cảnh báo và kết quả chạy thật: results/date-nobreak.txt.
+Hiện dần: bước 1 khi đọc “Mình bỏ câu lệnh break”; bước 2 khi đọc “Với ngày 2”; bước 3 khi đọc “Từ ví dụ này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:50</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Ngày 11 là ngoại lệ của quy tắc hậu tố tiếng Anh.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Trong switch chọn hậu tố (case 1, 21, 31: st; case 2, 22: nd; case 3, 23: rd; default: th), ngày 11 in hậu tố nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> st, vì 11 kết thúc bằng chữ số 1.</li>
+      <li><b>B.</b> nd.</li>
+      <li><b>C.</b> th, vì 11 không khớp nhãn case nào nên nhảy tới default.</li>
+      <li><b>D.</b> Không in gì.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>switch so bằng với từng hằng, không nhìn chữ số cuối: 11 không bằng 1, 21 hay 31, nên nhảy tới default và in th. Đó cũng là lý do bản của King liệt kê 21, 31 chứ không dùng phép chia lấy dư.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A dễ được chọn vì 11 kết thúc bằng chữ số 1, nhưng switch so bằng cả giá trị, nên 11 rơi vào default.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:09</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, một break bị quên trong chính câu lệnh switch đó.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Quên break ở nhánh case 1: case 21: case 31: printf(&quot;st&quot;);. Ngày 1 in hậu tố nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> st</li>
+      <li><b>B.</b> stnd, vì chạy tràn xuống nhánh của case 2.</li>
+      <li><b>C.</b> th</li>
+      <li><b>D.</b> Lỗi biên dịch, vì thiếu break.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Thiếu break, sau khi in st chương trình chạy tiếp câu lệnh của case 2 và in nd, rồi gặp break ở đó mới ra khỏi switch. GCC chỉ cảnh báo -Wimplicit-fallthrough, không báo lỗi.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án D dễ được chọn vì đây rõ ràng là lỗi, nhưng với C, thiếu break là hợp lệ: GCC chỉ cảnh báo, và chương trình chạy tràn xuống nhánh dưới.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:30</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Câu lệnh switch** nhảy tới **case** có hằng bằng giá trị biểu thức, hoặc tới **default**</li><li>**break** ra khỏi switch; thiếu break là **fall-through** — GCC cảnh báo</li><li>Nhãn liền nhau dùng chung nhánh; chỉ so bằng với hằng nguyên, điều kiện khoảng dùng if</li></ul></div>
+    <div class="kb-thoai"><p>Khi lựa chọn dựa trên một giá trị nguyên, câu lệnh switch tính biểu thức rồi nhảy thẳng tới case có hằng bằng giá trị đó, hoặc tới default. Mỗi nhánh kết thúc bằng break; thiếu break thì chạy tràn xuống nhánh dưới, và GCC cảnh báo fall-through. Khi nhiều giá trị dùng chung một nhánh, đặt các nhãn liền nhau; còn điều kiện dạng khoảng thì vẫn dùng if. Các từ khóa của phần là câu lệnh switch, case, default, break và fall-through.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Khi lựa chọn dựa trên”; bước 2 khi đọc “Mỗi nhánh kết thúc”; bước 3 khi đọc “Khi nhiều giá trị”; bước 4 khi đọc “Các từ khóa của phần”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:57</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Hai chủ đề nâng cao là thuộc tính fallthrough của chuẩn C23, để ghi rõ một fall-through có chủ ý, và bảng tra cứu bằng mảng thay cho switch dài, như mảng tên tháng ở Chương 6. Bài tập mở rộng là viết máy tính bỏ túi đọc biểu thức dạng a, phép toán, b, dùng switch theo ký tự phép toán, và xử lý chia cho 0 cùng phép toán không hợp lệ bằng default.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:19</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Rẽ nhánh cho chương trình chọn đường đi, nhưng mỗi đường vẫn chỉ đi qua một lần. Phần tiếp theo mở nhóm vòng lặp, với câu lệnh while và for, in cả bảng nhiệt độ mà không chép một câu lệnh nhiều lần.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V20", "tieu_de": "Rẽ nhánh: câu lệnh switch", "giong": "vi-VN-NamMinhNeural", "tong": 392.17, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/582f9e0d7709a4a1.mp3", "dur": 9.0, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Khi", 1], [2.125, "cần", 1], [2.35, "so", 1], [2.538, "một", 1], [2.7, "biến", 1], [2.938, "với", 1], [3.05, "nhiều", 1], [3.263, "hằng", 1], [3.425, "số,", 1], [4.0, "chuỗi", 1], [4.287, "else-if", 1], [4.725, "dài", 1], [4.975, "và", 1], [5.088, "dễ", 1], [5.275, "sai:", 1], [5.838, "C", 1], [6.125, "có", 1], [6.237, "cách", 1], [6.4, "viết", 1], [6.625, "nào", 1], [6.825, "ngắn", 1], [7.062, "hơn", 1], [7.287, "cho", 1], [7.4, "trường", 1], [7.625, "hợp", 1], [7.8, "đó?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. In ngày theo kiểu văn bản pháp lý cần hai lựa chọn theo giá trị nguyên", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: King §5.3.\nHiện dần: bước 1 khi đọc “Bài toán của phần này”; bước 2 khi đọc “Viết bằng chuỗi else-if”; bước 3 khi đọc “Câu hỏi đặt ra”.", "start": 9.6, "audio": "audio/c74905220ea78cb6.mp3", "dur": 29.04, "words": [[0.1, "Bài", 0], [0.35, "toán", 0], [0.637, "của", 0], [0.738, "phần", 0], [0.938, "này", 0], [1.125, "lấy", 0], [1.3, "từ", 0], [1.45, "sách", 0], [1.663, "của", 0], [1.788, "King:", 0], [2.325, "in", 0], [2.525, "một", 0], [2.688, "ngày", 0], [2.862, "theo", 0], [3.025, "kiểu", 0], [3.25, "văn", 0], [3.438, "bản", 0], [3.638, "pháp", 0], [3.862, "lý", 0], [4.013, "tiếng", 0], [4.237, "Anh,", 0], [4.75, "như", 0], [5.013, "Dated", 0], [5.213, "this", 0], [5.487, "3rd", 0], [5.938, "day", 0], [6.175, "of", 0], [6.4, "June,", 0], [6.925, "2026.", 0], [9.312, "Chương", 1], [9.625, "trình", 1], [9.825, "phải", 1], [9.95, "chọn", 1], [10.175, "hậu", 1], [10.325, "tố", 1], [10.588, "st,", 1], [11.45, "nd,", 1], [12.238, "rd", 1], [12.65, "hay", 1], [12.825, "th", 1], [13.213, "theo", 1], [13.387, "ngày,", 1], [13.863, "và", 1], [14.062, "chọn", 1], [14.35, "tên", 1], [14.55, "tháng", 1], [14.787, "theo", 1], [14.95, "số", 1], [15.175, "tháng.", 1], [16.4, "Viết", 2], [16.688, "bằng", 2], [16.887, "chuỗi", 2], [17.163, "else-if", 2], [17.625, "thì", 2], [17.812, "riêng", 2], [18.038, "tên", 2], [18.25, "tháng", 2], [18.512, "đã", 2], [18.613, "cần", 2], [18.863, "mười", 2], [19.038, "hai", 2], [19.238, "nhánh,", 2], [19.8, "mỗi", 2], [20.012, "nhánh", 2], [20.25, "lặp", 2], [20.425, "lại", 2], [20.613, "month", 2], [20.9, "bằng", 2], [21.062, "một", 2], [21.2, "số,", 2], [21.788, "rất", 2], [22.012, "dễ", 2], [22.275, "gõ", 2], [22.488, "sai.", 2], [23.675, "Câu", 3], [23.875, "hỏi", 3], [24.113, "đặt", 3], [24.288, "ra", 3], [24.475, "là:", 3], [24.975, "rẽ", 3], [25.163, "nhánh", 3], [25.413, "theo", 3], [25.587, "giá", 3], [25.788, "trị", 3], [26.038, "của", 3], [26.15, "một", 3], [26.337, "biến", 3], [26.575, "nguyên", 3], [26.8, "thế", 3], [26.925, "nào", 3], [27.137, "cho", 3], [27.288, "gọn", 3], [27.587, "và", 3], [27.725, "ít", 3], [27.825, "sai?", 3]], "cues": [0.1, 16.4, 23.675], "lang": 0.6}, {"ten": "Slide 2. Câu lệnh switch: một biểu thức nguyên, nhiều nhãn case, một nhãn default", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: K&R §3.4.\nHiện dần: bước 1 khi đọc “Câu trả lời là”; bước 2 khi đọc “Nếu giá trị”; bước 3 khi đọc “Mỗi nhánh thường”.", "start": 39.24, "audio": "audio/99852e0e42567c12.mp3", "dur": 29.88, "words": [[0.1, "Câu", 0], [0.338, "trả", 0], [0.575, "lời", 0], [0.863, "là", 0], [1.05, "câu", 0], [1.262, "lệnh", 0], [1.5, "switch.", 0], [2.638, "Switch", 1], [2.938, "tính", 1], [3.2, "giá", 1], [3.388, "trị", 1], [3.625, "của", 1], [3.737, "một", 1], [3.913, "biểu", 1], [4.1, "thức", 1], [4.287, "nguyên,", 1], [4.825, "rồi", 1], [5.062, "nhảy", 1], [5.237, "thẳng", 1], [5.487, "tới", 1], [5.65, "nhãn", 1], [5.9, "case", 1], [6.15, "có", 1], [6.263, "hằng", 1], [6.463, "bằng", 1], [6.675, "giá", 1], [6.875, "trị", 1], [7.05, "đó,", 1], [7.575, "và", 1], [7.787, "chạy", 1], [8.012, "các", 1], [8.175, "câu", 1], [8.312, "lệnh", 1], [8.588, "từ", 1], [8.787, "nhãn", 1], [9.037, "đó", 1], [9.225, "trở", 1], [9.425, "đi.", 1], [10.525, "Nếu", 2], [10.963, "giá", 2], [11.137, "trị", 2], [11.387, "không", 2], [11.6, "khớp", 2], [11.825, "case", 2], [12.025, "nào,", 2], [12.45, "switch", 2], [12.762, "nhảy", 2], [12.988, "tới", 2], [13.2, "nhãn", 2], [13.463, "default.", 2], [14.75, "Mỗi", 3], [15.137, "nhánh", 3], [15.45, "thường", 3], [15.688, "kết", 3], [15.863, "thúc", 3], [16.062, "bằng", 3], [16.288, "câu", 3], [16.488, "lệnh", 3], [16.738, "break,", 3], [17.413, "để", 3], [17.613, "thoát", 3], [17.85, "khỏi", 3], [18.075, "switch.", 3], [19.212, "Thiếu", 4], [19.512, "break,", 4], [20.05, "chương", 4], [20.3, "trình", 4], [20.525, "không", 4], [20.75, "dừng", 4], [21.0, "ở", 4], [21.075, "cuối", 4], [21.275, "nhánh", 4], [21.575, "mà", 4], [21.725, "chạy", 4], [21.938, "tiếp", 4], [22.15, "các", 4], [22.3, "câu", 4], [22.45, "lệnh", 4], [22.712, "của", 4], [22.85, "case", 4], [23.062, "bên", 4], [23.25, "dưới,", 4], [23.812, "hiện", 4], [24.05, "tượng", 4], [24.312, "gọi", 4], [24.55, "là", 4], [24.663, "fall-through.", 4], [26.163, "Từ", 5], [26.4, "này", 5], [26.6, "các", 5], [26.788, "bạn", 5], [27.012, "sẽ", 5], [27.15, "gặp", 5], [27.387, "trong", 5], [27.6, "cảnh", 5], [27.837, "báo", 5], [28.087, "của", 5], [28.087, "GCC.", 5]], "cues": [0.1, 10.525, 14.75], "lang": 0.6}, {"ten": "Slide 3. switch nhảy tới case khớp, gộp nhiều nhãn, ra khỏi switch ở break", "loai": "slide", "slide": "S03", "dung": "Hình switch-nhay: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận.\nHiện dần: bước 1 khi đọc “Với day bằng 21”; bước 2 khi đọc “Switch nhảy thẳng”; bước 3 khi đọc “Câu lệnh in st”; bước 4 khi đọc “Gặp break”; bước 5 khi đọc “Cách viết các nhãn”.", "start": 69.72, "audio": "audio/3f124786d658a3fb.mp3", "dur": 32.62, "words": [[0.1, "Mình", 0], [0.487, "lần", 0], [0.725, "theo", 0], [0.9, "switch", 0], [1.125, "chọn", 0], [1.387, "hậu", 0], [1.587, "tố.", 0], [2.8, "Với", 1], [3.075, "day", 1], [3.312, "bằng", 1], [3.562, "21,", 1], [4.325, "trước", 1], [4.575, "hết", 1], [4.737, "switch", 1], [4.987, "tính", 1], [5.263, "giá", 1], [5.487, "trị", 1], [5.737, "của", 1], [5.888, "day.", 1], [7.025, "Switch", 2], [7.362, "nhảy", 2], [7.55, "thẳng", 2], [7.8, "tới", 2], [8.012, "dòng", 2], [8.25, "có", 2], [8.363, "nhãn", 2], [8.6, "case", 2], [8.863, "21,", 2], [9.637, "mà", 2], [9.9, "không", 2], [10.125, "xét", 2], [10.35, "lần", 2], [10.525, "lượt", 2], [10.738, "từng", 2], [10.95, "nhánh", 2], [11.225, "như", 2], [11.387, "chuỗi", 2], [11.65, "else-if.", 2], [12.95, "Dòng", 3], [13.225, "đó", 3], [13.425, "gộp", 3], [13.625, "ba", 3], [13.812, "nhãn", 3], [14.1, "case", 3], [14.35, "1,", 3], [14.8, "case", 3], [15.075, "21", 3], [15.637, "và", 3], [15.8, "case", 3], [16.062, "31,", 3], [16.85, "vì", 3], [17.075, "cả", 3], [17.238, "ba", 3], [17.413, "ngày", 3], [17.675, "đều", 3], [17.837, "dùng", 3], [18.05, "hậu", 3], [18.225, "tố", 3], [18.475, "st.", 3], [19.913, "Câu", 4], [20.137, "lệnh", 4], [20.413, "in", 4], [20.625, "st", 4], [21.288, "được", 4], [21.5, "thực", 4], [21.675, "hiện.", 4], [22.85, "Gặp", 5], [23.15, "break,", 5], [23.75, "chương", 5], [24.012, "trình", 5], [24.225, "ra", 5], [24.35, "khỏi", 5], [24.575, "switch,", 5], [25.038, "các", 5], [25.25, "case", 5], [25.475, "bên", 5], [25.7, "dưới", 5], [25.913, "không", 5], [26.137, "chạy.", 5], [27.3, "Cách", 6], [27.512, "viết", 6], [27.738, "các", 6], [27.925, "nhãn", 6], [28.137, "liền", 6], [28.3, "nhau", 6], [28.587, "như", 6], [28.8, "vậy", 6], [28.962, "giúp", 6], [29.2, "nhiều", 6], [29.413, "giá", 6], [29.625, "trị", 6], [29.825, "dùng", 6], [30.075, "chung", 6], [30.288, "một", 6], [30.475, "nhánh", 6], [30.75, "mà", 6], [30.925, "không", 6], [31.188, "lặp", 6], [31.35, "mã.", 6]], "cues": [2.8, 7.025, 19.913, 22.85, 27.3], "lang": 2.6}, {"ten": "Slide 4. Hai switch in ngày theo kiểu văn bản pháp lý", "loai": "slide", "slide": "S04", "dung": "Mã switch hậu tố phía trên, kết quả phía dưới; sau câu \"hậu tố của ngày 12\", dừng khoảng 2 giây. Switch tên tháng nằm trong src/date.c. King đọc dạng tháng/ngày/năm; bản này đọc ngày/tháng/năm (README ghi rõ). Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Chương trình đọc ngày”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 104.94, "audio": "audio/93979c352b3d9a94.mp3", "dur": 36.86, "words": [[0.1, "Chương", 0], [0.425, "trình", 0], [0.613, "đọc", 0], [0.787, "ngày,", 0], [1.275, "tháng,", 0], [1.8, "năm", 0], [2.075, "theo", 0], [2.225, "dạng", 0], [2.45, "ngày", 0], [2.638, "gạch", 0], [2.825, "chéo", 0], [3.062, "tháng", 0], [3.275, "gạch", 0], [3.462, "chéo", 0], [3.712, "năm,", 0], [4.225, "rồi", 0], [4.475, "dùng", 0], [4.688, "hai", 0], [4.85, "câu", 0], [5.013, "lệnh", 0], [5.213, "switch:", 0], [5.75, "một", 0], [5.95, "switch", 0], [6.15, "theo", 0], [6.325, "ngày", 0], [6.562, "cho", 0], [6.7, "hậu", 0], [6.875, "tố,", 0], [7.425, "một", 0], [7.625, "switch", 0], [7.825, "theo", 0], [7.987, "tháng", 0], [8.275, "cho", 0], [8.4, "tên", 0], [8.625, "tháng,", 0], [9.15, "như", 0], [9.387, "bản", 0], [9.65, "của", 0], [9.812, "King.", 0], [10.988, "Mình", 1], [11.387, "chạy", 1], [11.65, "với", 1], [11.762, "bốn", 1], [11.975, "ngày:", 1], [12.425, "mùng", 1], [12.836, "3", 1], [13.248, "tháng", 1], [13.659, "6,", 1], [14.07, "21", 1], [14.482, "tháng", 1], [14.893, "11,", 1], [15.304, "12", 1], [15.715, "tháng", 1], [16.127, "1", 1], [16.538, "và", 1], [16.688, "mùng", 1], [17.21, "2", 1], [17.731, "tháng", 1], [18.253, "9.", 1], [18.775, "Các", 2], [18.975, "bạn", 2], [19.2, "thử", 2], [19.425, "đoán", 2], [19.65, "hậu", 2], [19.837, "tố", 2], [20.1, "của", 2], [20.675, "ngày", 2], [21.25, "12.", 2], [21.825, "Kết", 3], [22.05, "quả", 3], [22.3, "cho", 3], [22.438, "thấy", 3], [22.637, "3rd,", 3], [23.512, "21st,", 3], [24.863, "2nd", 3], [25.488, "như", 3], [25.675, "mong", 3], [25.875, "đợi,", 3], [26.4, "còn", 3], [26.667, "ngày", 3], [26.933, "12", 3], [27.2, "không", 3], [27.387, "khớp", 3], [27.587, "case", 3], [27.8, "nào", 3], [28.012, "nên", 3], [28.25, "rơi", 3], [28.413, "vào", 3], [28.562, "default,", 3], [29.238, "in", 3], [29.45, "12th.", 3], [31.113, "Đây", 4], [31.4, "cũng", 4], [31.613, "là", 4], [31.738, "quy", 4], [31.913, "tắc", 4], [32.1, "tiếng", 4], [32.375, "Anh:", 4], [32.862, "11th,", 4], [33.975, "12th,", 4], [35.087, "13th.", 4]], "cues": [0.1, 21.825], "lang": 9.6}, {"ten": "Slide 5. Switch thứ hai chọn tên tháng; default bắt tháng không hợp lệ", "loai": "slide", "slide": "S05", "dung": "Mã phía trên (đã rút gọn: tháng 3 đến 11 nằm trong src/date.c), kết quả phía dưới; hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Switch thứ hai”; bước 2 khi đọc “Các bạn thử đoán”; bước 3 khi đọc “Nhánh default”.", "start": 151.4, "audio": "audio/bc75c9431120b76e.mp3", "dur": 36.48, "words": [[0.1, "Switch", 0], [0.425, "thứ", 0], [0.662, "hai", 0], [0.863, "chọn", 0], [1.137, "tên", 0], [1.387, "tháng", 0], [1.65, "theo", 0], [1.812, "số", 0], [2.038, "tháng.", 0], [3.25, "Mười", 1], [3.625, "hai", 1], [3.825, "nhánh,", 1], [4.325, "mỗi", 1], [4.537, "nhánh", 1], [4.775, "viết", 1], [4.938, "trên", 1], [5.088, "một", 1], [5.25, "dòng:", 1], [5.737, "nhãn", 1], [6.025, "case,", 1], [6.525, "lời", 1], [6.787, "gọi", 1], [7.013, "printf", 1], [7.562, "và", 1], [7.787, "break,", 1], [8.387, "nên", 1], [8.637, "người", 1], [8.838, "đọc", 1], [9.025, "nhìn", 1], [9.312, "là", 1], [9.438, "thấy", 1], [9.625, "tháng", 1], [9.838, "nào", 1], [10.037, "in", 1], [10.175, "tên", 1], [10.35, "nào,", 1], [10.838, "ngắn", 1], [11.1, "hơn", 1], [11.325, "hẳn", 1], [11.537, "mười", 1], [11.713, "hai", 1], [11.912, "nhánh", 1], [12.225, "else-if.", 1], [13.5, "Trên", 2], [13.825, "slide,", 2], [14.45, "mình", 2], [14.675, "rút", 2], [14.863, "gọn", 2], [15.137, "còn", 2], [15.375, "ba", 2], [15.575, "tháng", 2], [15.787, "đầu,", 2], [16.25, "cuối", 2], [16.525, "và", 2], [16.712, "nhánh", 2], [16.975, "default.", 2], [18.275, "Các", 3], [18.475, "bạn", 3], [18.675, "thử", 3], [18.85, "đoán:", 3], [19.387, "người", 3], [19.613, "dùng", 3], [19.837, "gõ", 3], [20.0, "nhầm", 3], [20.212, "ngày", 3], [20.425, "3", 3], [20.637, "tháng", 3], [20.85, "13", 3], [21.238, "thì", 3], [21.488, "chương", 3], [21.725, "trình", 3], [21.962, "in", 3], [22.125, "gì?", 3], [23.238, "Kết", 4], [23.462, "quả", 4], [23.7, "cho", 4], [23.837, "thấy", 4], [24.025, "hậu", 4], [24.188, "tố", 4], [24.5, "vẫn", 4], [24.7, "đúng", 4], [24.913, "là", 4], [25.05, "3rd,", 4], [25.988, "còn", 4], [26.25, "phần", 4], [26.488, "tên", 4], [26.7, "tháng", 4], [26.925, "in", 4], [27.125, "dấu", 4], [27.35, "hỏi", 4], [27.587, "kèm", 4], [27.863, "số", 4], [28.087, "13.", 4], [29.4, "Nhánh", 5], [29.712, "default", 5], [30.075, "bắt", 5], [30.275, "mọi", 5], [30.462, "giá", 5], [30.663, "trị", 5], [30.837, "ngoài", 5], [31.075, "1", 5], [31.262, "đến", 5], [31.462, "12,", 5], [32.188, "nên", 5], [32.438, "lỗi", 5], [32.625, "nhập", 5], [32.85, "hiện", 5], [33.1, "rõ", 5], [33.325, "trên", 5], [33.513, "kết", 5], [33.7, "quả", 5], [33.9, "thay", 5], [34.175, "vì", 5], [34.312, "bị", 5], [34.525, "in", 5], [34.725, "thành", 5], [34.925, "một", 5], [35.125, "tháng", 5], [35.288, "sai.", 5]], "cues": [0.1, 18.275, 29.4], "lang": 9.6}, {"ten": "Slide 6. switch theo ký tự phép toán: hằng '+' cũng là một số nguyên", "loai": "slide", "slide": "S06", "dung": "Mã phía trên (rút gọn: nhánh '-', '*' nằm trong src/calc.c), kết quả phía dưới; highlight case '+' khi đọc \"mã 43\", if (b == 0) khi đọc nhánh chia. Ghi nguồn: K&R §4.3 (máy tính, bản rút gọn). Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Biểu thức của switch”; bước 2 khi đọc “Mình chạy với bốn dòng nhập”.", "start": 197.48, "audio": "audio/92641a17da5038a8.mp3", "dur": 47.69, "words": [[0.1, "Biểu", 0], [0.375, "thức", 0], [0.575, "của", 0], [0.75, "switch", 0], [1.0, "phải", 0], [1.163, "có", 0], [1.288, "kiểu", 0], [1.488, "nguyên,", 0], [2.062, "và", 0], [2.237, "một", 0], [2.438, "ký", 0], [2.612, "tự", 0], [2.85, "trong", 0], [3.05, "C", 0], [3.312, "cũng", 0], [3.538, "là", 0], [3.663, "số", 0], [3.85, "nguyên.", 0], [5.075, "Hằng", 1], [5.338, "ký", 1], [5.537, "tự", 1], [5.737, "dấu", 1], [5.95, "cộng,", 1], [6.463, "viết", 1], [6.737, "trong", 1], [6.912, "cặp", 1], [7.112, "nháy", 1], [7.312, "đơn,", 1], [7.825, "mang", 1], [8.1, "mã", 1], [8.287, "43", 1], [8.812, "trong", 1], [9.025, "bảng", 1], [9.488, "ASCII,", 1], [9.95, "nên", 1], [10.188, "nó", 1], [10.325, "đứng", 1], [10.525, "được", 1], [10.637, "sau", 1], [10.863, "từ", 1], [11.088, "khóa", 1], [11.325, "case.", 1], [12.512, "Ví", 2], [12.787, "dụ", 2], [12.975, "thứ", 2], [13.225, "hai", 2], [13.425, "phỏng", 2], [13.675, "theo", 2], [13.838, "máy", 2], [14.0, "tính", 2], [14.262, "trong", 2], [14.438, "sách", 2], [14.662, "của", 2], [14.875, "Kernighan", 2], [15.562, "và", 2], [15.688, "Ritchie:", 2], [16.413, "chương", 2], [16.688, "trình", 2], [16.875, "đọc", 2], [17.038, "hai", 2], [17.238, "số", 2], [17.4, "nguyên", 2], [17.725, "với", 2], [17.812, "một", 2], [18.0, "ký", 2], [18.2, "tự", 2], [18.375, "phép", 2], [18.6, "toán", 2], [18.9, "ở", 2], [19.012, "giữa,", 2], [19.65, "rồi", 2], [19.925, "switch", 2], [20.175, "theo", 2], [20.337, "ký", 2], [20.587, "tự", 2], [20.775, "đó.", 2], [21.962, "Nhánh", 3], [22.288, "chia", 3], [22.525, "có", 3], [22.65, "thêm", 3], [22.837, "một", 3], [23.025, "câu", 3], [23.188, "lệnh", 3], [23.438, "if,", 3], [23.85, "vì", 3], [24.075, "chia", 3], [24.288, "một", 3], [24.438, "số", 3], [24.625, "nguyên", 3], [24.962, "cho", 3], [25.087, "0", 3], [25.312, "là", 3], [25.413, "hành", 3], [25.625, "vi", 3], [25.812, "không", 3], [26.025, "xác", 3], [26.225, "định.", 3], [27.337, "Mình", 4], [27.75, "chạy", 4], [28.025, "với", 4], [28.175, "bốn", 4], [28.462, "dòng", 4], [28.663, "nhập.", 4], [29.738, "7", 5], [30.038, "cộng", 5], [30.284, "2", 5], [30.529, "in", 5], [30.775, "9.", 5], [31.962, "7", 6], [32.25, "chia", 6], [32.458, "2", 6], [32.667, "in", 6], [32.875, "3,", 6], [33.362, "vì", 6], [33.612, "chia", 6], [33.875, "hai", 6], [34.062, "số", 6], [34.263, "nguyên", 6], [34.6, "thì", 6], [34.763, "bỏ", 6], [35.0, "phần", 6], [35.212, "lẻ.", 6], [36.45, "7", 7], [36.725, "chia", 7], [36.975, "0", 7], [37.188, "đi", 7], [37.3, "vào", 7], [37.45, "câu", 7], [37.663, "lệnh", 7], [37.95, "if", 7], [38.175, "và", 7], [38.45, "in", 7], [38.625, "division", 7], [39.2, "by", 7], [39.362, "zero.", 7], [40.625, "Còn", 8], [40.9, "dấu", 8], [41.1, "phần", 8], [41.312, "trăm", 8], [41.538, "của", 8], [41.663, "phép", 8], [41.875, "chia", 8], [42.1, "lấy", 8], [42.337, "dư", 8], [42.525, "không", 8], [42.725, "có", 8], [42.837, "nhãn", 8], [43.062, "case", 8], [43.288, "nào,", 8], [43.75, "nên", 8], [44.038, "chương", 8], [44.275, "trình", 8], [44.5, "rơi", 8], [44.663, "vào", 8], [44.8, "default", 8], [45.225, "và", 8], [45.375, "báo", 8], [45.625, "unknown", 8], [46.2, "operator.", 8]], "cues": [0.1, 27.337], "lang": 9.6}, {"ten": "Slide 7. Thiếu break: ngày 2 in thành 2ndrd", "loai": "slide", "slide": "S07", "dung": "Hình fall-through: bước 1 nhánh nd, bước 2 chạy tràn sang case 3; bước 3 ô kết luận. Cảnh báo và kết quả chạy thật: results/date-nobreak.txt.\nHiện dần: bước 1 khi đọc “Mình bỏ câu lệnh break”; bước 2 khi đọc “Với ngày 2”; bước 3 khi đọc “Từ ví dụ này”.", "start": 254.77, "audio": "audio/5d5826e2e23c26a9.mp3", "dur": 32.95, "words": [[0.1, "Mình", 0], [0.463, "bỏ", 0], [0.65, "câu", 0], [0.825, "lệnh", 0], [1.062, "break", 0], [1.413, "sau", 0], [1.688, "nhánh", 0], [2.0, "in", 0], [2.138, "nd", 0], [2.638, "rồi", 0], [2.888, "biên", 0], [3.163, "dịch", 0], [3.35, "lại.", 0], [4.306, "GCC", 1], [5.263, "với", 1], [5.412, "Wextra", 1], [5.787, "cảnh", 1], [6.037, "báo", 1], [6.213, "ngay:", 1], [6.7, "this", 1], [6.975, "statement", 1], [7.475, "may", 1], [7.65, "fall", 1], [7.9, "through,", 1], [8.512, "nghĩa", 1], [8.713, "là", 1], [8.887, "câu", 1], [9.062, "lệnh", 1], [9.275, "này", 1], [9.45, "có", 1], [9.575, "thể", 1], [9.738, "chạy", 1], [9.938, "tràn", 1], [10.175, "xuống", 1], [10.412, "case", 1], [10.6, "sau.", 1], [11.762, "Với", 2], [12.087, "ngày", 2], [12.413, "2,", 2], [12.738, "chương", 2], [12.988, "trình", 2], [13.25, "in", 2], [13.363, "nd,", 2], [14.075, "rồi", 2], [14.35, "vì", 2], [14.512, "không", 2], [14.738, "có", 2], [14.863, "break,", 2], [15.488, "chạy", 2], [15.7, "tiếp", 2], [15.912, "câu", 2], [16.062, "lệnh", 2], [16.312, "in", 2], [16.538, "rd", 2], [16.9, "của", 2], [17.087, "case", 2], [17.275, "3,", 2], [17.788, "nên", 2], [18.087, "dòng", 2], [18.325, "kết", 2], [18.512, "quả", 2], [18.788, "là", 2], [18.887, "Dated", 2], [19.05, "this", 2], [19.337, "2ndrd", 2], [20.038, "day", 2], [20.3, "of", 2], [20.413, "September.", 2], [21.9, "Từ", 3], [22.137, "ví", 3], [22.312, "dụ", 3], [22.5, "này", 3], [22.725, "có", 3], [22.863, "hai", 3], [23.038, "điều", 3], [23.163, "cần", 3], [23.375, "nhớ:", 3], [23.938, "mỗi", 3], [24.15, "nhánh", 3], [24.413, "của", 3], [24.55, "switch", 3], [24.775, "kết", 3], [24.975, "thúc", 3], [25.15, "bằng", 3], [25.363, "break,", 3], [25.975, "và", 3], [26.188, "switch", 3], [26.438, "chỉ", 3], [26.625, "so", 3], [26.812, "bằng", 3], [27.05, "với", 3], [27.15, "các", 3], [27.3, "hằng", 3], [27.488, "nguyên,", 3], [28.012, "nên", 3], [28.288, "điều", 3], [28.413, "kiện", 3], [28.663, "dạng", 3], [28.863, "khoảng,", 3], [29.45, "như", 3], [29.7, "điểm", 3], [29.95, "từ", 3], [30.137, "8", 3], [30.413, "đến", 3], [30.575, "10,", 3], [31.075, "vẫn", 3], [31.337, "phải", 3], [31.5, "viết", 3], [31.688, "bằng", 3], [31.913, "if.", 3]], "cues": [0.1, 11.762, 21.9], "lang": 2.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án C, các đáp án còn lại mờ đi.", "start": 290.32, "audio": "audio/4a842c20ca372804.mp3", "dur": 3.82, "words": [[0.812, "Ngày", 0], [0.812, "11", 0], [0.812, "là", 0], [0.95, "ngoại", 0], [1.2, "lệ", 0], [1.438, "của", 0], [1.587, "quy", 0], [1.775, "tắc", 0], [1.975, "hậu", 0], [2.212, "tố", 0], [2.438, "tiếng", 0], [2.675, "Anh.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/82b72c8c11bc2ba9.mp3", "dur2": 8.42, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.775, "C.", 0], [1.137, "Phương", 1], [1.45, "án", 1], [1.675, "A", 1], [1.837, "dễ", 1], [2.013, "được", 1], [2.175, "chọn", 1], [2.462, "vì", 1], [2.575, "11", 1], [2.938, "kết", 1], [3.075, "thúc", 1], [3.275, "bằng", 1], [3.487, "chữ", 1], [3.675, "số", 1], [3.862, "1,", 1], [4.362, "nhưng", 1], [4.625, "switch", 1], [4.812, "so", 1], [5.0, "bằng", 1], [5.213, "cả", 1], [5.388, "giá", 1], [5.55, "trị,", 1], [6.088, "nên", 1], [6.35, "11", 1], [6.763, "rơi", 1], [6.963, "vào", 1], [7.138, "default.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.", "start": 309.16, "audio": "audio/79b2378a03813ca2.mp3", "dur": 4.34, "words": [[0.1, "Tiếp", 0], [0.412, "theo,", 0], [0.912, "một", 0], [1.15, "break", 0], [1.538, "bị", 0], [1.75, "quên", 0], [2.062, "trong", 0], [2.275, "chính", 0], [2.5, "câu", 0], [2.675, "lệnh", 0], [2.913, "switch", 0], [3.112, "đó.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/84742291ef0299a0.mp3", "dur2": 10.68, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.1, "Phương", 1], [1.438, "án", 1], [1.625, "D", 1], [1.8, "dễ", 1], [2.0, "được", 1], [2.163, "chọn", 1], [2.462, "vì", 1], [2.587, "đây", 1], [2.763, "rõ", 1], [2.962, "ràng", 1], [3.175, "là", 1], [3.288, "lỗi,", 1], [3.888, "nhưng", 1], [4.15, "với", 1], [4.275, "C,", 1], [4.825, "thiếu", 1], [5.075, "break", 1], [5.5, "là", 1], [5.675, "hợp", 1], [5.862, "lệ:", 1], [6.45, "GCC", 1], [7.037, "chỉ", 1], [7.237, "cảnh", 1], [7.475, "báo,", 1], [7.987, "và", 1], [8.188, "chương", 1], [8.4, "trình", 1], [8.613, "chạy", 1], [8.787, "tràn", 1], [9.025, "xuống", 1], [9.275, "nhánh", 1], [9.488, "dưới.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Khi lựa chọn dựa trên”; bước 2 khi đọc “Mỗi nhánh kết thúc”; bước 3 khi đọc “Khi nhiều giá trị”; bước 4 khi đọc “Các từ khóa của phần”.", "start": 330.78, "audio": "audio/27098bae79577f90.mp3", "dur": 26.3, "words": [[0.1, "Khi", 0], [0.362, "lựa", 0], [0.525, "chọn", 0], [0.8, "dựa", 0], [1.0, "trên", 0], [1.163, "một", 0], [1.3, "giá", 0], [1.488, "trị", 0], [1.663, "nguyên,", 0], [2.163, "câu", 0], [2.375, "lệnh", 0], [2.587, "switch", 0], [2.812, "tính", 0], [3.038, "biểu", 0], [3.212, "thức", 0], [3.438, "rồi", 0], [3.65, "nhảy", 0], [3.85, "thẳng", 0], [4.1, "tới", 0], [4.263, "case", 0], [4.513, "có", 0], [4.625, "hằng", 0], [4.838, "bằng", 0], [5.05, "giá", 0], [5.237, "trị", 0], [5.412, "đó,", 0], [5.925, "hoặc", 0], [6.162, "tới", 0], [6.388, "default.", 0], [7.7, "Mỗi", 1], [8.088, "nhánh", 1], [8.338, "kết", 1], [8.525, "thúc", 1], [8.713, "bằng", 1], [8.925, "break;", 1], [9.537, "thiếu", 1], [9.825, "break", 1], [10.262, "thì", 1], [10.45, "chạy", 1], [10.637, "tràn", 1], [10.875, "xuống", 1], [11.1, "nhánh", 1], [11.312, "dưới,", 1], [11.863, "và", 1], [12.256, "GCC", 1], [12.65, "cảnh", 1], [12.9, "báo", 1], [13.088, "fall-through.", 1], [14.562, "Khi", 2], [14.838, "nhiều", 2], [15.062, "giá", 2], [15.262, "trị", 2], [15.463, "dùng", 2], [15.7, "chung", 2], [15.912, "một", 2], [16.1, "nhánh,", 2], [16.613, "đặt", 2], [16.825, "các", 2], [17.0, "nhãn", 2], [17.225, "liền", 2], [17.375, "nhau;", 2], [17.9, "còn", 2], [18.113, "điều", 2], [18.225, "kiện", 2], [18.488, "dạng", 2], [18.712, "khoảng", 2], [19.062, "thì", 2], [19.25, "vẫn", 2], [19.45, "dùng", 2], [19.7, "if.", 2], [20.725, "Các", 3], [20.925, "từ", 3], [21.075, "khóa", 3], [21.337, "của", 3], [21.475, "phần", 3], [21.75, "là", 3], [21.9, "câu", 3], [22.1, "lệnh", 3], [22.325, "switch,", 3], [22.85, "case,", 3], [23.363, "default,", 3], [24.125, "break", 3], [24.613, "và", 3], [24.825, "fall-through.", 3]], "cues": [0.1, 7.7, 14.562, 20.725], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 357.68, "audio": "audio/552f41e6a2e42fb0.mp3", "dur": 21.29, "words": [[0.1, "Hai", 0], [0.325, "chủ", 0], [0.537, "đề", 0], [0.7, "nâng", 0], [0.912, "cao", 0], [1.175, "là", 0], [1.288, "thuộc", 0], [1.475, "tính", 0], [1.7, "fallthrough", 0], [2.337, "của", 0], [2.513, "chuẩn", 0], [2.75, "C23,", 0], [3.725, "để", 0], [3.9, "ghi", 0], [4.075, "rõ", 0], [4.263, "một", 0], [4.438, "fall-through", 0], [5.025, "có", 0], [5.175, "chủ", 0], [5.412, "ý,", 0], [5.9, "và", 0], [6.125, "bảng", 0], [6.362, "tra", 0], [6.525, "cứu", 0], [6.8, "bằng", 0], [7.037, "mảng", 0], [7.263, "thay", 0], [7.438, "cho", 0], [7.562, "switch", 0], [7.775, "dài,", 0], [8.287, "như", 0], [8.537, "mảng", 0], [8.787, "tên", 0], [8.988, "tháng", 0], [9.287, "ở", 0], [9.375, "Chương", 0], [9.588, "6.", 0], [10.812, "Bài", 1], [11.05, "tập", 1], [11.262, "mở", 1], [11.45, "rộng", 1], [11.738, "là", 1], [11.9, "viết", 1], [12.1, "máy", 1], [12.238, "tính", 1], [12.5, "bỏ", 1], [12.713, "túi", 1], [12.925, "đọc", 1], [13.088, "biểu", 1], [13.275, "thức", 1], [13.463, "dạng", 1], [13.762, "a,", 1], [14.225, "phép", 1], [14.488, "toán,", 1], [15.025, "b,", 1], [15.588, "dùng", 1], [15.838, "switch", 1], [16.075, "theo", 1], [16.238, "ký", 1], [16.475, "tự", 1], [16.663, "phép", 1], [16.887, "toán,", 1], [17.438, "và", 1], [17.663, "xử", 1], [17.812, "lý", 1], [17.988, "chia", 1], [18.25, "cho", 1], [18.387, "0", 1], [18.587, "cùng", 1], [18.775, "phép", 1], [18.975, "toán", 1], [19.225, "không", 1], [19.438, "hợp", 1], [19.613, "lệ", 1], [19.788, "bằng", 1], [20.0, "default.", 1]], "cues": [0.1, 10.812], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 379.57, "audio": "audio/8d55246288f9eac5.mp3", "dur": 12.0, "words": [[0.1, "Rẽ", 0], [0.388, "nhánh", 0], [0.7, "cho", 0], [0.825, "chương", 0], [1.062, "trình", 0], [1.25, "chọn", 0], [1.5, "đường", 0], [1.688, "đi,", 0], [2.2, "nhưng", 0], [2.475, "mỗi", 0], [2.663, "đường", 0], [2.938, "vẫn", 0], [3.138, "chỉ", 0], [3.325, "đi", 0], [3.475, "qua", 0], [3.688, "một", 0], [3.875, "lần.", 0], [5.0, "Phần", 1], [5.275, "tiếp", 1], [5.513, "theo", 1], [5.7, "mở", 1], [5.9, "nhóm", 1], [6.213, "vòng", 1], [6.412, "lặp,", 1], [6.838, "với", 1], [7.05, "câu", 1], [7.237, "lệnh", 1], [7.487, "while", 1], [7.725, "và", 1], [7.862, "for,", 1], [8.45, "in", 1], [8.688, "cả", 1], [8.825, "bảng", 1], [9.037, "nhiệt", 1], [9.238, "độ", 1], [9.463, "mà", 1], [9.625, "không", 1], [9.85, "chép", 1], [10.075, "một", 1], [10.275, "câu", 1], [10.425, "lệnh", 1], [10.65, "nhiều", 1], [10.887, "lần.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Vòng lặp: câu lệnh while và for"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

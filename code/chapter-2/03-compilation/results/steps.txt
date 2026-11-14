@@ -1,0 +1,10 @@
+$ wc -l hello.c hello.i hello.s
+    7 hello.c
+ 1559 hello.i
+   29 hello.s
+ 1595 total
+$ ls -l hello.o hello.exe
+63710 hello.exe
+914 hello.o
+$ ./hello.exe
+hello, world

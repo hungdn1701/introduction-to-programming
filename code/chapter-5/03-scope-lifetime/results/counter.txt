@@ -1,0 +1,6 @@
+local : call 1
+local : call 1
+local : call 1
+static: call 1
+static: call 2
+static: call 3

@@ -1,0 +1,8 @@
+$ gcc -std=c17 -Wall -Wextra assign_bug.c -o assign_bug
+assign_bug.c: In function 'main':
+assign_bug.c:6:9: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+    6 |     if (year = 2000)
+      |         ^~~~
+$ ./assign_bug
+year is 2000
+year = 2000

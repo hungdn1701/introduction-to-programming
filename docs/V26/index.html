@@ -1,0 +1,475 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V26 — Hàm: truyền tham trị, phạm vi và thời gian sống của biến · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-5/03-scope-lifetime">Mã</a>
+<h1>V26 · Hàm: truyền tham trị, phạm vi và thời gian sống của biến</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 5</div><div class="ten">Hàm: truyền tham trị, phạm vi và thời gian sống của biến</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Hàm swap trông đúng nhưng không đổi được gì</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Hàm <code>swap(a, b)</code> đổi chỗ hai biến: ba câu lệnh qua biến tạm, như mọi sách dạy</li><li data-s="2">Biên dịch không cảnh báo, chạy không lỗi — nhưng <b>a, b ở main không đổi</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> hàm nhận được gì từ lời gọi, và biến trong hàm tồn tại ở đâu, đến bao giờ?</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Truyền tham trị, phạm vi và thời gian sống của biến</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Truyền tham trị</b>: tham số nhận <b>bản sao</b> giá trị của đối số</li><li data-s="2"><b>Phạm vi của biến</b>: vùng mã nhìn thấy tên biến — <b>biến cục bộ</b> trong hàm, <b>biến toàn cục</b> ngoài mọi hàm</li><li data-s="3"><b>Thời gian sống của biến</b>: từ lúc tạo đến lúc mất — cục bộ theo lời gọi, <code>static</code> và toàn cục suốt chương trình</li></ul></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Lời gọi swap(a, b) tạo khung hàm với bản sao của a, b</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Truyền tham trị: main có a bằng 1, b bằng 2; lời gọi swap(a, b) tạo khung của swap với x bằng 1, y bằng 2 là bản sao; swap đổi x, y thành 2, 1; swap kết thúc, khung bị gỡ, x và y mất; a, b vẫn là 1, 2.">
+  <defs>
+    <marker id="tt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="tt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="tt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="tt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="tt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="tt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- khung main -->
+  <g data-s="1">
+    <rect x="40" y="60" width="560" height="168" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="320" y="96" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">main</text>
+    <rect x="60" y="112" width="260.0" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="190" y="145.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">a</text>
+    <rect x="320.0" y="112" width="260.0" height="50" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="450" y="145.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="60" y="168" width="260.0" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="190" y="201.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">b</text>
+    <rect x="320.0" y="168" width="260.0" height="50" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="450" y="201.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+  </g>
+
+  <!-- gọi swap: chép giá trị -->
+  <g data-s="2">
+    <rect x="900" y="60" width="560" height="168" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1180" y="96" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">swap(int x, int y)</text>
+    <rect x="920" y="112" width="260.0" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1050" y="145.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">x</text>
+    <rect x="1180.0" y="112" width="260.0" height="50" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1310" y="145.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="920" y="168" width="260.0" height="50" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1050" y="201.28" text-anchor="middle" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">y</text>
+    <rect x="1180.0" y="168" width="260.0" height="50" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1310" y="201.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <line x1="602" y1="140" x2="896" y2="140" stroke="#1F5FA8" stroke-width="3" marker-end="url(#tt-data)"/>
+    <text x="749" y="124" text-anchor="middle" font-size="22" fill="#1F5FA8">chép giá trị</text>
+  </g>
+
+  <!-- swap đổi x, y -->
+  <g data-s="3">
+    <text x="1390" y="146" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">→ 2</text>
+    <text x="1390" y="202" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">→ 1</text>
+    <text x="1180" y="260" text-anchor="middle" font-size="22" fill="#22603F">đổi bản sao: x = 2, y = 1</text>
+  </g>
+
+  <!-- swap kết thúc -->
+  <g data-s="4">
+    <line x1="900" y1="60" x2="1460" y2="228" stroke="#BC2626" stroke-width="4"/>
+    <line x1="1460" y1="60" x2="900" y2="228" stroke="#BC2626" stroke-width="4"/>
+    <rect x="40" y="330" width="1420" height="90" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="750" y="383" text-anchor="middle" font-size="24" fill="#373D4E">swap kết thúc: khung bị gỡ, x, y mất — a, b của main vẫn là 1, 2</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Hàm chỉ đổi <b>bản sao</b> trong khung của nó; khung bị gỡ thì bản sao mất theo.</p></div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Biến cục bộ sinh ra theo lời gọi, biến static sống suốt chương trình</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 480" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Thời gian sống của biến theo trục thời gian chạy chương trình: biến cục bộ calls trong count_local được tạo mỗi lần gọi và mất khi hàm kết thúc, nên luôn bắt đầu từ 0; biến static calls trong count_static và biến toàn cục tồn tại suốt chương trình, giữ giá trị giữa các lần gọi.">
+  <defs>
+    <marker id="pv-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="pv-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="pv-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="pv-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="pv-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="pv-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- trục thời gian -->
+  <g data-s="1">
+    <line x1="260" y1="400" x2="1720" y2="400" stroke="#5B6478" stroke-width="3" marker-end="url(#pv-grey)"/>
+    <text x="1720" y="440" text-anchor="end" font-size="22" fill="#5B6478">thời gian chạy chương trình</text>
+  </g>
+
+  <!-- biến cục bộ -->
+  <g data-s="2">
+    <text x="40" y="105" text-anchor="start" font-size="24" fill="#051A53" font-weight="500">cục bộ</text>
+    <rect x="300" y="70" width="300" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="450" y="112" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">calls: 0 → 1</text>
+    <text x="450" y="165" text-anchor="middle" font-size="21" fill="#5B6478">lần gọi 1</text>
+    <rect x="770" y="70" width="300" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="920" y="112" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">calls: 0 → 1</text>
+    <text x="920" y="165" text-anchor="middle" font-size="21" fill="#5B6478">lần gọi 2</text>
+    <rect x="1240" y="70" width="300" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1390" y="112" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">calls: 0 → 1</text>
+    <text x="1390" y="165" text-anchor="middle" font-size="21" fill="#5B6478">lần gọi 3</text>
+  </g>
+
+  <!-- biến static -->
+  <g data-s="3">
+    <text x="40" y="255" text-anchor="start" font-size="24" fill="#22603F" font-weight="500">static</text>
+    <rect x="300" y="215" width="1400" height="70" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="450" y="260" text-anchor="middle" font-size="23" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">calls = 1</text>
+    <text x="920" y="260" text-anchor="middle" font-size="23" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">calls = 2</text>
+    <text x="1390" y="260" text-anchor="middle" font-size="23" fill="#22603F" font-family="Consolas, monospace" style="white-space:pre">calls = 3</text>
+    <text x="1000" y="320" text-anchor="middle" font-size="22" fill="#22603F">tồn tại suốt chương trình, giữ giá trị giữa các lần gọi (biến toàn cục cũng vậy)</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p><code>static</code> trong hàm: phạm vi vẫn là hàm đó, nhưng <b>thời gian sống</b> là cả chương trình.</p></div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>swap_wrong.c in x, y bên trong và a, b trước, sau lời gọi</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">void</span> <span class="hl-m">swap</span>(<span class="hl-k">int</span> x, <span class="hl-k">int</span> y)
+{
+    <span class="hl-k">int</span> temp = x;
+    x = y;
+    y = temp;
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">inside swap : x = %d, y = %d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, x, y);
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>before swap : a = 1, b = 2
+<span class="noi-bat">inside swap : x = 2, y = 1</span>
+<span class="noi-bat">after swap  : a = 1, b = 2</span></pre></div><ul class="y-nho"><li data-s="2">Bên trong: x, y <b>đã đổi</b>; sau lời gọi: a, b <b>vẫn là 1, 2</b></li></ul></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>counter.c: biến cục bộ in 1, 1, 1; biến static in 1, 2, 3</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">void</span> <span class="hl-m">count_static</span>(<span class="hl-k">void</span>)
+{
+    <span class="hl-k">static</span> <span class="hl-k">int</span> calls = <span class="hl-n">0</span>;
+    calls++;
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">static: call %d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, calls);
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>local : call 1
+local : call 1
+local : call 1
+static: call 1
+static: call 2
+static: call 3</pre></div><ul class="y-nho"><li data-s="2">Hai hàm chỉ khác nhau <b>một từ</b> <code>static</code></li><li data-s="3">Khởi tạo <code>= 0</code> của biến static chỉ chạy <b>một lần</b></li></ul></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>stars.c: dùng chung biến toàn cục i, main chỉ in một hàng thay vì ba</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> i;                          <span class="hl-c">/* global: every function sees and changes it */</span>
+<span class="hl-k">void</span> <span class="hl-m">print_stars_global</span>(<span class="hl-k">int</span> n)
+{
+    <span class="hl-k">for</span> (i = <span class="hl-n">0</span>; i &lt; n; i++)
+        <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">*</span><span class="hl-s">"</span>);
+    <span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">\n</span><span class="hl-s">"</span>);
+}
+<span class="hl-k">for</span> (i = <span class="hl-n">1</span>; i &lt;= <span class="hl-n">3</span>; i++)
+    <span class="hl-m">print_stars_global</span>(<span class="hl-n">4</span>);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra stars.c -o stars
+$ ./stars
+<span class="noi-bat">global i:</span>
+<span class="noi-bat">****</span>
+local i:
+****
+****
+****</pre></div><ul class="y-nho"><li data-s="2">Biến <b>toàn cục</b> i bị hàm sửa thành 4; mỗi vòng lặp có <b>i cục bộ</b> thì in đủ ba hàng</li></ul></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S08"><header><h1>Biến cục bộ không khởi tạo chứa giá trị rác</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> sum;
+<span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">1</span>; i &lt;= <span class="hl-n">3</span>; i++)
+    sum += i;
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra -O1 uninitialized.c -o uninitialized
+uninitialized.c: In function 'main':
+uninitialized.c:5:9: warning: 'sum' is used uninitialized [-Wuninitialized]
+    5 |     int sum;
+      |         ^~~</pre></div><ul class="y-nho"><li data-s="2">Biến cục bộ không khởi tạo chứa <b>giá trị rác</b>, không phải 0 (biến toàn cục, static thì bằng 0)</li><li data-s="3">Hạn chế <b>biến toàn cục</b>: hàm nào cũng sửa được, khó tìm chỗ gây lỗi</li></ul></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với a = 1, b = 2 và hàm void swap(int x, int y) đổi chỗ x, y, sau lời gọi swap(a, b) thì a, b bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>a = 2, b = 1.</div></div><div class="dung"><span>B</span><div>a = 1, b = 2.</div></div><div class=""><span>C</span><div>a = 2, b = 2.</div></div><div class=""><span>D</span><div>Không xác định, vì swap không có return.</div></div></div><div class="giai-thich">C truyền tham trị: x, y là bản sao của a, b trong khung hàm của swap; đổi x, y không ảnh hưởng a, b, và bản sao mất khi swap kết thúc. Hàm void không cần return.</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với a = 1, b = 2 và hàm void swap(int x, int y) đổi chỗ x, y, sau lời gọi swap(a, b) thì a, b bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>a = 2, b = 1.</div></div><div class="dung"><span>B</span><div>a = 1, b = 2.</div></div><div class=""><span>C</span><div>a = 2, b = 2.</div></div><div class=""><span>D</span><div>Không xác định, vì swap không có return.</div></div></div><div class="giai-thich">C truyền tham trị: x, y là bản sao của a, b trong khung hàm của swap; đổi x, y không ảnh hưởng a, b, và bản sao mất khi swap kết thúc. Hàm void không cần return.</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Hàm có biến static int n = 0; và câu lệnh n++; mỗi lần gọi. Ở lần gọi thứ ba, trước khi tăng, n bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>0, vì mỗi lần gọi n được khởi tạo lại bằng 0.</div></div><div class=""><span>B</span><div>3.</div></div><div class="dung"><span>C</span><div>2, vì hai lần gọi trước đã tăng n và biến static giữ giá trị giữa các lần gọi.</div></div><div class=""><span>D</span><div>Giá trị rác, vì n là biến trong hàm.</div></div></div><div class="giai-thich">Biến static được khởi tạo một lần và tồn tại suốt chương trình: sau lần gọi thứ nhất n = 1, sau lần thứ hai n = 2; lần thứ ba thấy n = 2 trước khi tăng thành 3.</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Hàm có biến static int n = 0; và câu lệnh n++; mỗi lần gọi. Ở lần gọi thứ ba, trước khi tăng, n bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>0, vì mỗi lần gọi n được khởi tạo lại bằng 0.</div></div><div class=""><span>B</span><div>3.</div></div><div class="dung"><span>C</span><div>2, vì hai lần gọi trước đã tăng n và biến static giữ giá trị giữa các lần gọi.</div></div><div class=""><span>D</span><div>Giá trị rác, vì n là biến trong hàm.</div></div></div><div class="giai-thich">Biến static được khởi tạo một lần và tồn tại suốt chương trình: sau lần gọi thứ nhất n = 1, sau lần thứ hai n = 2; lần thứ ba thấy n = 2 trước khi tăng thành 3.</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Truyền tham trị</b>: tham số là bản sao trong khung hàm; đổi tham số không đổi đối số</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Phạm vi của biến</b>: <b>biến cục bộ</b> trong hàm, <b>biến toàn cục</b> ngoài mọi hàm</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Thời gian sống của biến</b>: cục bộ theo lời gọi; <b>static</b> và toàn cục suốt chương trình</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>truyền tham trị</span><span>biến cục bộ</span><span>biến toàn cục</span><span>phạm vi của biến</span><span>thời gian sống của biến</span><span>static</span></div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Khối lệnh lồng nhau và biến cùng tên che biến ngoài (K&amp;R §4.8)</li><li>Biến extern dùng chung giữa nhiều tệp (K&amp;R §4.4)</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết hàm next_id() trả về 1, 2, 3… sau mỗi lần gọi bằng biến static; so sánh với bản dùng biến toàn cục và ghi một lỗi chỉ bản toàn cục mới mắc được.</p></div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Con trỏ: địa chỉ và truyền địa chỉ cho hàm</div></main><footer><span>Chương 5 · Tổ chức chương trình C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Các hàm tự viết ở phần trước đều chạy đúng, nhưng có những hàm trông đúng mà không làm được việc của mình. Khi gọi một hàm, hàm nhận được gì từ lời gọi, và các biến trong hàm tồn tại ở đâu, đến bao giờ?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:14</span>
+      <h3>Slide 1. Hàm swap trông đúng nhưng không đổi được gì</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Hàm `swap(a, b)` đổi chỗ hai biến: ba câu lệnh qua biến tạm, như mọi sách dạy</li><li>Biên dịch không cảnh báo, chạy không lỗi — nhưng **a, b ở main không đổi**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** hàm nhận được gì từ lời gọi, và biến trong hàm tồn tại ở đâu, đến bao giờ?</div></div>
+    <div class="kb-thoai"><p>Phần trước tách việc kiểm tra số nguyên tố thành hàm và mọi thứ chạy đúng. Bây giờ mình viết một hàm swap đổi chỗ hai biến, bằng ba câu lệnh quen thuộc qua một biến tạm. Biên dịch với Wall không có cảnh báo nào, chạy cũng không lỗi, nhưng hai biến a và b ở main vẫn giữ nguyên giá trị. Câu hỏi của phần này là: hàm nhận được gì từ lời gọi, và biến trong hàm tồn tại ở đâu, đến bao giờ?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Phần trước”; bước 2 khi đọc “Biên dịch với Wall”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:39</span>
+      <h3>Slide 2. Truyền tham trị, phạm vi và thời gian sống của biến</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Truyền tham trị**: tham số nhận **bản sao** giá trị của đối số</li><li>**Phạm vi của biến**: vùng mã nhìn thấy tên biến — **biến cục bộ** trong hàm, **biến toàn cục** ngoài mọi hàm</li><li>**Thời gian sống của biến**: từ lúc tạo đến lúc mất — cục bộ theo lời gọi, `static` và toàn cục suốt chương trình</li></ul></div>
+    <div class="kb-thoai"><p>Trong C, mọi đối số được truyền theo cách truyền tham trị, hay call by value: tham số của hàm nhận một bản sao giá trị của đối số, chứ không nhận chính biến của nơi gọi. Mỗi biến có một phạm vi, tức vùng mã nhìn thấy được tên biến. Biến cục bộ khai báo trong một hàm chỉ được nhìn thấy trong hàm đó; biến toàn cục khai báo ngoài mọi hàm thì hàm nào cũng thấy. Mỗi biến còn có một thời gian sống, từ lúc được tạo đến lúc mất. Biến cục bộ được tạo khi hàm được gọi và mất khi hàm kết thúc; biến khai báo với từ khóa static, cùng biến toàn cục, tồn tại suốt thời gian chạy chương trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: K&amp;R §1.8, §4.4, §4.6.
+Hiện dần: bước 1 khi đọc “Trong C”; bước 2 khi đọc “Mỗi biến có”; bước 3 khi đọc “Mỗi biến còn có”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:14</span>
+      <h3>Slide 3. Lời gọi swap(a, b) tạo khung hàm với bản sao của a, b</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Hàm chỉ đổi **bản sao** trong khung của nó; khung bị gỡ thì bản sao mất theo.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình vẽ bộ nhớ của lời gọi theo từng bước. Trước lời gọi, khung hàm của main, tức vùng nhớ chứa các biến cục bộ của nó, có a bằng 1 và b bằng 2. Lời gọi swap tạo một khung hàm mới cho swap, với hai tham số x và y; giá trị của a và b được chép vào đó, nên x bằng 1, y bằng 2. Bên trong swap, ba câu lệnh đổi chỗ x và y thành 2 và 1, đúng như mong muốn, nhưng chỉ trên bản sao. Khi swap kết thúc, khung của nó bị gỡ, x và y mất theo, còn a và b của main chưa từng bị chạm tới. Câu trả lời cho nửa đầu câu hỏi là: hàm nhận bản sao giá trị, không nhận chính biến.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình tham-tri-swap: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: K&amp;R §1.8.
+Hiện dần: bước 1 khi đọc “Trước lời gọi”; bước 2 khi đọc “Lời gọi swap”; bước 3 khi đọc “Bên trong swap”; bước 4 khi đọc “Khi swap kết thúc”; bước 5 khi đọc “Câu trả lời”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:56</span>
+      <h3>Slide 4. Biến cục bộ sinh ra theo lời gọi, biến static sống suốt chương trình</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>`static` trong hàm: phạm vi vẫn là hàm đó, nhưng **thời gian sống** là cả chương trình.</li></ul></div></div>
+    <div class="kb-thoai"><p>Nửa sau câu hỏi là biến trong hàm tồn tại đến bao giờ. Trục ngang của hình là thời gian chạy chương trình, với ba lần gọi cùng một hàm. Biến cục bộ calls được tạo mới ở mỗi lần gọi, khởi tạo bằng 0, tăng lên 1, rồi mất khi hàm kết thúc; lần gọi sau lại bắt đầu từ 0. Thêm từ khóa static trước khai báo, biến calls được tạo một lần khi chương trình bắt đầu và tồn tại đến khi chương trình kết thúc, nên giữ được giá trị giữa các lần gọi: 1, 2, 3. Như vậy, static thay đổi thời gian sống của biến, nhưng không thay đổi phạm vi: ngoài hàm vẫn không ai thấy tên calls.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình pham-vi: ba bước theo ba câu mốc đầu; bước 4 ô kết luận. Ghi nguồn: K&amp;R §4.6.
+Hiện dần: bước 1 khi đọc “Trục ngang”; bước 2 khi đọc “Biến cục bộ calls”; bước 3 khi đọc “Thêm từ khóa static”; bước 4 khi đọc “Như vậy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:34</span>
+      <h3>Slide 5. swap_wrong.c in x, y bên trong và a, b trước, sau lời gọi</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bên trong: x, y **đã đổi**; sau lời gọi: a, b **vẫn là 1, 2**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/swap_wrong.c</span><pre><code>void swap(int x, int y)
+{
+    int temp = x;
+    x = y;
+    y = temp;
+    printf(&quot;inside swap : x = %d, y = %d\n&quot;, x, y);
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Đến lượt chạy thật hai hình vừa vẽ. Đây là hàm swap mà Kernighan và Ritchie ghi chú là sai, có thêm một dòng in x và y ngay trước khi hàm kết thúc. Kết quả xác nhận hình khung hàm của swap: bên trong swap, x bằng 2 và y bằng 1, nghĩa là việc đổi chỗ đã xảy ra; sau lời gọi, a vẫn bằng 1, b vẫn bằng 2.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô hai dòng cuối. Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Đây là hàm swap”; bước 2 khi đọc “Kết quả xác nhận”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:04</span>
+      <h3>Slide 6. counter.c: biến cục bộ in 1, 1, 1; biến static in 1, 2, 3</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Hai hàm chỉ khác nhau **một từ** `static`</li><li>Khởi tạo `= 0` của biến static chỉ chạy **một lần**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/counter.c</span><pre><code>void count_static(void)
+{
+    static int calls = 0;
+    calls++;
+    printf(&quot;static: call %d\n&quot;, calls);
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Hình thời gian sống được kiểm chứng bằng chương trình counter, gồm hai hàm giống hệt nhau, chỉ khác một từ: count_local khai báo calls là biến cục bộ, count_static khai báo calls là biến static. Main gọi mỗi hàm ba lần. Các bạn để ý dòng static int calls bằng 0: phép khởi tạo này chỉ chạy một lần, khi chương trình bắt đầu, chứ không chạy lại ở mỗi lời gọi. Kết quả là ba dòng local đều in 1, còn ba dòng static in 1, 2, 3.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Hàm count_local nằm trong src/counter.c.
+Hiện dần: bước 1 khi đọc “Chương trình counter”; bước 2 khi đọc “Các bạn để ý”; bước 3 khi đọc “Kết quả là”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:42</span>
+      <h3>Slide 7. stars.c: dùng chung biến toàn cục i, main chỉ in một hàng thay vì ba</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Biến **toàn cục** i bị hàm sửa thành 4; mỗi vòng lặp có **i cục bộ** thì in đủ ba hàng</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/stars.c</span><pre><code>int i;                          /* global: every function sees and changes it */
+void print_stars_global(int n)
+{
+    for (i = 0; i &lt; n; i++)
+        printf(&quot;*&quot;);
+    printf(&quot;\n&quot;);
+}
+for (i = 1; i &lt;= 3; i++)
+    print_stars_global(4);</code></pre></div></div>
+    <div class="kb-thoai"><p>Còn phạm vi của biến thì kiểm chứng bằng chương trình stars. Bản thứ nhất khai báo một biến toàn cục i và dùng nó cho cả vòng lặp của main lẫn vòng lặp trong hàm print_stars_global. Main muốn in ba hàng, mỗi hàng bốn dấu sao. Các bạn đoán xem bản này in mấy hàng. Kết quả chỉ có một hàng. Ở lời gọi đầu tiên, vòng lặp trong hàm đưa i lên 4, nên khi quay về main, i tăng thành 5 và vòng lặp của main dừng ngay. Dòng biên dịch phía trên cho thấy GCC không cảnh báo gì, vì mã hoàn toàn hợp lệ. Bản thứ hai khai báo i ngay trong vòng lặp của hàm: hai biến cùng tên i nhưng khác phạm vi, nên hàm không chạm được tới biến của main, và chương trình in đủ ba hàng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên (biến toàn cục, hàm print_stars_global và vòng lặp của main; bản cục bộ print_stars_local nằm trong src/stars.c), kết quả phía dưới; sau câu &quot;in mấy hàng&quot;, dừng khoảng 2 giây; tô hai dòng của bản toàn cục. Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Còn phạm vi của biến”; bước 2 khi đọc “Kết quả chỉ có một hàng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:34</span>
+      <h3>Slide 8. Biến cục bộ không khởi tạo chứa giá trị rác</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Biến cục bộ không khởi tạo chứa **giá trị rác**, không phải 0 (biến toàn cục, static thì bằng 0)</li><li>Hạn chế **biến toàn cục**: hàm nào cũng sửa được, khó tìm chỗ gây lỗi</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/uninitialized.c</span><pre><code>int sum;
+for (int i = 1; i &lt;= 3; i++)
+    sum += i;</code></pre></div></div>
+    <div class="kb-thoai"><p>Vòng lặp này cộng 1, 2, 3 vào sum, nhưng sum chưa được khởi tạo. Biến cục bộ không khởi tạo chứa giá trị rác, tức những gì còn lại trong vùng nhớ đó, chứ không phải 0; chỉ biến toàn cục và biến static mới tự bằng 0. GCC với Wall và tối ưu O1 cảnh báo sum is used uninitialized. Lưu ý thứ hai, như chương trình stars vừa cho thấy, là hạn chế biến toàn cục: hàm nào cũng đọc và sửa được nó, nên trong một chương trình lớn, khi giá trị sai, rất khó tìm hàm nào đã gây ra. Còn hàm swap, muốn nó đổi được biến của nơi gọi thì phải truyền địa chỉ của biến, nội dung của phần tiếp theo.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Không có O1, GCC 13 không phát hiện trường hợp này.
+Hiện dần: bước 1 khi đọc “Vòng lặp này”; bước 2 khi đọc “Lưu ý thứ hai”; bước 3 khi đọc “Còn hàm swap”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:21</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Hàm swap sai được gọi với a bằng 1, b bằng 2.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Với a = 1, b = 2 và hàm void swap(int x, int y) đổi chỗ x, y, sau lời gọi swap(a, b) thì a, b bằng bao nhiêu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> a = 2, b = 1.</li>
+      <li><b>B.</b> a = 1, b = 2.</li>
+      <li><b>C.</b> a = 2, b = 2.</li>
+      <li><b>D.</b> Không xác định, vì swap không có return.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>C truyền tham trị: x, y là bản sao của a, b trong khung hàm của swap; đổi x, y không ảnh hưởng a, b, và bản sao mất khi swap kết thúc. Hàm void không cần return.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A là điều người viết mong đợi, nhưng swap chỉ đổi bản sao; phương án D sai vì hàm void không cần return.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:40</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, một biến static đếm số lần gọi.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Hàm có biến static int n = 0; và câu lệnh n++; mỗi lần gọi. Ở lần gọi thứ ba, trước khi tăng, n bằng bao nhiêu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 0, vì mỗi lần gọi n được khởi tạo lại bằng 0.</li>
+      <li><b>B.</b> 3.</li>
+      <li><b>C.</b> 2, vì hai lần gọi trước đã tăng n và biến static giữ giá trị giữa các lần gọi.</li>
+      <li><b>D.</b> Giá trị rác, vì n là biến trong hàm.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Biến static được khởi tạo một lần và tồn tại suốt chương trình: sau lần gọi thứ nhất n = 1, sau lần thứ hai n = 2; lần thứ ba thấy n = 2 trước khi tăng thành 3.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A đúng với biến cục bộ thường, không đúng với static: phép khởi tạo bằng 0 chỉ chạy một lần.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:58</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Truyền tham trị**: tham số là bản sao trong khung hàm; đổi tham số không đổi đối số</li><li>**Phạm vi của biến**: **biến cục bộ** trong hàm, **biến toàn cục** ngoài mọi hàm</li><li>**Thời gian sống của biến**: cục bộ theo lời gọi; **static** và toàn cục suốt chương trình</li></ul></div>
+    <div class="kb-thoai"><p>Hàm nhận bản sao giá trị của đối số, đặt trong khung hàm của nó, nên swap không đổi được a và b. Biến cục bộ chỉ được nhìn thấy trong hàm và sống theo từng lời gọi; biến toàn cục được mọi hàm nhìn thấy. Từ khóa static giữ phạm vi trong hàm nhưng kéo dài thời gian sống ra cả chương trình. Từ phần này, các bạn cần nắm các từ khóa: truyền tham trị, biến cục bộ, biến toàn cục, phạm vi của biến, thời gian sống của biến và static.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Hàm nhận bản sao”; bước 2 khi đọc “Biến cục bộ”; bước 3 khi đọc “Từ khóa static”; bước 4 khi đọc “các bạn cần nắm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:25</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Các bạn muốn đi xa hơn có thể đọc hai chủ đề: khối lệnh lồng nhau, nơi một biến cùng tên ở khối trong che biến ở khối ngoài, và biến extern dùng chung giữa nhiều tệp nguồn, theo sách của Kernighan và Ritchie. Bài tập mở rộng là viết hàm next_id trả về 1, 2, 3 sau mỗi lần gọi bằng một biến static, rồi viết lại bằng biến toàn cục, và chỉ ra một lỗi mà chỉ bản dùng biến toàn cục mới mắc được.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Các bạn muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:49</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Hàm swap không đổi được a và b vì chỉ nhận bản sao. Trong khi đó, scanf lại ghi được vào biến của main, nhờ dấu và đặt trước tên biến. Phần tiếp theo, về con trỏ, giải thích dấu và đó đưa cho scanf thứ gì, và sửa hàm swap cho đúng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V26", "tieu_de": "Hàm: truyền tham trị, phạm vi và thời gian sống của biến", "giong": "vi-VN-NamMinhNeural", "tong": 426.45, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/691bf8e247ecfb47.mp3", "dur": 14.11, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Các", 1], [2.05, "hàm", 1], [2.275, "tự", 1], [2.462, "viết", 1], [2.737, "ở", 1], [2.837, "phần", 1], [3.087, "trước", 1], [3.325, "đều", 1], [3.5, "chạy", 1], [3.725, "đúng,", 1], [4.237, "nhưng", 1], [4.513, "có", 1], [4.638, "những", 1], [4.85, "hàm", 1], [5.075, "trông", 1], [5.312, "đúng", 1], [5.562, "mà", 1], [5.725, "không", 1], [5.95, "làm", 1], [6.112, "được", 1], [6.237, "việc", 1], [6.425, "của", 1], [6.55, "mình.", 1], [7.675, "Khi", 2], [7.912, "gọi", 2], [8.1, "một", 2], [8.287, "hàm,", 2], [8.75, "hàm", 2], [8.95, "nhận", 2], [9.188, "được", 2], [9.325, "gì", 2], [9.512, "từ", 2], [9.688, "lời", 2], [9.875, "gọi,", 2], [10.412, "và", 2], [10.637, "các", 2], [10.838, "biến", 2], [11.1, "trong", 2], [11.262, "hàm", 2], [11.475, "tồn", 2], [11.725, "tại", 2], [11.938, "ở", 2], [12.062, "đâu,", 2], [12.562, "đến", 2], [12.812, "bao", 2], [12.963, "giờ?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Hàm swap trông đúng nhưng không đổi được gì", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Phần trước”; bước 2 khi đọc “Biên dịch với Wall”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 14.71, "audio": "audio/1d63703791d8a6b8.mp3", "dur": 23.83, "words": [[0.1, "Phần", 0], [0.412, "trước", 0], [0.6, "tách", 0], [0.775, "việc", 0], [0.988, "kiểm", 0], [1.212, "tra", 0], [1.413, "số", 0], [1.613, "nguyên", 0], [1.887, "tố", 0], [2.112, "thành", 0], [2.337, "hàm", 0], [2.612, "và", 0], [2.737, "mọi", 0], [2.95, "thứ", 0], [3.175, "chạy", 0], [3.388, "đúng.", 0], [4.537, "Bây", 1], [4.8, "giờ", 1], [4.975, "mình", 1], [5.175, "viết", 1], [5.35, "một", 1], [5.513, "hàm", 1], [5.713, "swap", 1], [5.938, "đổi", 1], [6.138, "chỗ", 1], [6.375, "hai", 1], [6.55, "biến,", 1], [7.075, "bằng", 1], [7.338, "ba", 1], [7.513, "câu", 1], [7.675, "lệnh", 1], [7.925, "quen", 1], [8.188, "thuộc", 1], [8.375, "qua", 1], [8.575, "một", 1], [8.762, "biến", 1], [8.963, "tạm.", 1], [10.162, "Biên", 2], [10.438, "dịch", 2], [10.613, "với", 2], [10.738, "Wall", 2], [10.975, "không", 2], [11.188, "có", 2], [11.287, "cảnh", 2], [11.512, "báo", 2], [11.7, "nào,", 2], [12.15, "chạy", 2], [12.387, "cũng", 2], [12.588, "không", 2], [12.775, "lỗi,", 2], [13.35, "nhưng", 2], [13.637, "hai", 2], [13.825, "biến", 2], [14.125, "a", 2], [14.375, "và", 2], [14.5, "b", 2], [14.787, "ở", 2], [14.938, "main", 2], [15.225, "vẫn", 2], [15.438, "giữ", 2], [15.613, "nguyên", 2], [15.9, "giá", 2], [16.062, "trị.", 2], [17.238, "Câu", 3], [17.45, "hỏi", 3], [17.675, "của", 3], [17.812, "phần", 3], [18.0, "này", 3], [18.15, "là:", 3], [18.625, "hàm", 3], [18.825, "nhận", 3], [19.062, "được", 3], [19.212, "gì", 3], [19.413, "từ", 3], [19.587, "lời", 3], [19.775, "gọi,", 3], [20.325, "và", 3], [20.55, "biến", 3], [20.837, "trong", 3], [21.0, "hàm", 3], [21.212, "tồn", 3], [21.462, "tại", 3], [21.675, "ở", 3], [21.8, "đâu,", 3], [22.288, "đến", 3], [22.525, "bao", 3], [22.675, "giờ?", 3]], "cues": [0.1, 10.162, 17.238], "lang": 0.6}, {"ten": "Slide 2. Truyền tham trị, phạm vi và thời gian sống của biến", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: K&R §1.8, §4.4, §4.6.\nHiện dần: bước 1 khi đọc “Trong C”; bước 2 khi đọc “Mỗi biến có”; bước 3 khi đọc “Mỗi biến còn có”.", "start": 39.14, "audio": "audio/b300ae758f4a092c.mp3", "dur": 34.9, "words": [[0.1, "Trong", 0], [0.4, "C,", 0], [0.9, "mọi", 0], [1.087, "đối", 0], [1.225, "số", 0], [1.462, "được", 0], [1.6, "truyền", 0], [1.837, "theo", 0], [1.975, "cách", 0], [2.163, "truyền", 0], [2.425, "tham", 0], [2.638, "trị,", 0], [3.2, "hay", 0], [3.425, "call", 0], [3.663, "by", 0], [3.788, "value:", 0], [4.487, "tham", 0], [4.725, "số", 0], [4.975, "của", 0], [5.112, "hàm", 0], [5.312, "nhận", 0], [5.588, "một", 0], [5.737, "bản", 0], [5.963, "sao", 0], [6.175, "giá", 0], [6.362, "trị", 0], [6.6, "của", 0], [6.725, "đối", 0], [6.875, "số,", 0], [7.463, "chứ", 0], [7.675, "không", 0], [7.9, "nhận", 0], [8.162, "chính", 0], [8.387, "biến", 0], [8.65, "của", 0], [8.775, "nơi", 0], [8.963, "gọi.", 0], [10.15, "Mỗi", 1], [10.537, "biến", 1], [10.8, "có", 1], [10.9, "một", 1], [11.062, "phạm", 1], [11.312, "vi,", 1], [11.838, "tức", 1], [12.025, "vùng", 1], [12.312, "mã", 1], [12.463, "nhìn", 1], [12.688, "thấy", 1], [12.912, "được", 1], [13.075, "tên", 1], [13.312, "biến.", 1], [14.475, "Biến", 2], [14.775, "cục", 2], [14.95, "bộ", 2], [15.137, "khai", 2], [15.325, "báo", 2], [15.588, "trong", 2], [15.738, "một", 2], [15.875, "hàm", 2], [16.113, "chỉ", 2], [16.25, "được", 2], [16.425, "nhìn", 2], [16.65, "thấy", 2], [16.863, "trong", 2], [17.038, "hàm", 2], [17.225, "đó;", 2], [17.788, "biến", 2], [18.038, "toàn", 2], [18.275, "cục", 2], [18.45, "khai", 2], [18.637, "báo", 2], [18.825, "ngoài", 2], [19.075, "mọi", 2], [19.288, "hàm", 2], [19.562, "thì", 2], [19.7, "hàm", 2], [19.913, "nào", 2], [20.113, "cũng", 2], [20.325, "thấy.", 2], [21.5, "Mỗi", 3], [21.9, "biến", 3], [22.2, "còn", 3], [22.438, "có", 3], [22.525, "một", 3], [22.712, "thời", 3], [22.863, "gian", 3], [23.075, "sống,", 3], [23.637, "từ", 3], [23.863, "lúc", 3], [24.05, "được", 3], [24.238, "tạo", 3], [24.525, "đến", 3], [24.738, "lúc", 3], [24.913, "mất.", 3], [25.975, "Biến", 4], [26.275, "cục", 4], [26.438, "bộ", 4], [26.65, "được", 4], [26.812, "tạo", 4], [27.025, "khi", 4], [27.175, "hàm", 4], [27.363, "được", 4], [27.5, "gọi", 4], [27.762, "và", 4], [27.875, "mất", 4], [28.075, "khi", 4], [28.3, "hàm", 4], [28.512, "kết", 4], [28.712, "thúc;", 4], [29.2, "biến", 4], [29.438, "khai", 4], [29.637, "báo", 4], [29.887, "với", 4], [30.0, "từ", 4], [30.175, "khóa", 4], [30.438, "static,", 4], [31.25, "cùng", 4], [31.5, "biến", 4], [31.712, "toàn", 4], [31.938, "cục,", 4], [32.388, "tồn", 4], [32.638, "tại", 4], [32.788, "suốt", 4], [32.962, "thời", 4], [33.1, "gian", 4], [33.35, "chạy", 4], [33.55, "chương", 4], [33.775, "trình.", 4]], "cues": [0.1, 10.15, 21.5], "lang": 0.6}, {"ten": "Slide 3. Lời gọi swap(a, b) tạo khung hàm với bản sao của a, b", "loai": "slide", "slide": "S03", "dung": "Hình tham-tri-swap: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: K&R §1.8.\nHiện dần: bước 1 khi đọc “Trước lời gọi”; bước 2 khi đọc “Lời gọi swap”; bước 3 khi đọc “Bên trong swap”; bước 4 khi đọc “Khi swap kết thúc”; bước 5 khi đọc “Câu trả lời”.", "start": 74.64, "audio": "audio/f757e2e239dedf0b.mp3", "dur": 39.41, "words": [[0.1, "Mình", 0], [0.525, "vẽ", 0], [0.65, "bộ", 0], [0.85, "nhớ", 0], [1.125, "của", 0], [1.275, "lời", 0], [1.55, "gọi", 0], [1.775, "theo", 0], [1.95, "từng", 0], [2.2, "bước.", 0], [3.312, "Trước", 1], [3.587, "lời", 1], [3.775, "gọi,", 1], [4.237, "khung", 1], [4.513, "hàm", 1], [4.737, "của", 1], [4.875, "main,", 1], [5.388, "tức", 1], [5.575, "vùng", 1], [5.812, "nhớ", 1], [6.088, "chứa", 1], [6.325, "các", 1], [6.487, "biến", 1], [6.725, "cục", 1], [6.9, "bộ", 1], [7.125, "của", 1], [7.275, "nó,", 1], [7.8, "có", 1], [7.975, "a", 1], [8.162, "bằng", 1], [8.387, "1", 1], [8.588, "và", 1], [8.775, "b", 1], [8.975, "bằng", 1], [9.2, "2.", 1], [10.363, "Lời", 2], [10.675, "gọi", 2], [10.9, "swap", 2], [11.1, "tạo", 2], [11.312, "một", 2], [11.5, "khung", 2], [11.713, "hàm", 2], [11.887, "mới", 2], [12.1, "cho", 2], [12.262, "swap,", 2], [12.787, "với", 2], [13.0, "hai", 2], [13.213, "tham", 2], [13.425, "số", 2], [13.662, "x", 2], [13.9, "và", 2], [14.137, "y;", 2], [14.675, "giá", 2], [14.912, "trị", 2], [15.15, "của", 2], [15.387, "a", 2], [15.637, "và", 2], [15.762, "b", 2], [15.963, "được", 2], [16.125, "chép", 2], [16.325, "vào", 2], [16.488, "đó,", 2], [17.038, "nên", 2], [17.363, "x", 2], [17.525, "bằng", 2], [17.75, "1,", 2], [18.15, "y", 2], [18.35, "bằng", 2], [18.587, "2.", 2], [19.75, "Bên", 3], [20.075, "trong", 3], [20.262, "swap,", 3], [20.75, "ba", 3], [20.988, "câu", 3], [21.163, "lệnh", 3], [21.387, "đổi", 3], [21.562, "chỗ", 3], [21.812, "x", 3], [22.025, "và", 3], [22.288, "y", 3], [22.475, "thành", 3], [22.688, "2", 3], [22.887, "và", 3], [23.0, "1,", 3], [23.5, "đúng", 3], [23.75, "như", 3], [23.925, "mong", 3], [24.125, "muốn,", 3], [24.625, "nhưng", 3], [24.925, "chỉ", 3], [25.125, "trên", 3], [25.325, "bản", 3], [25.512, "sao.", 3], [26.7, "Khi", 4], [27.012, "swap", 4], [27.275, "kết", 4], [27.45, "thúc,", 4], [27.85, "khung", 4], [28.1, "của", 4], [28.212, "nó", 4], [28.413, "bị", 4], [28.587, "gỡ,", 4], [29.2, "x", 4], [29.425, "và", 4], [29.7, "y", 4], [29.825, "mất", 4], [30.025, "theo,", 4], [30.55, "còn", 4], [30.863, "a", 4], [31.062, "và", 4], [31.175, "b", 4], [31.4, "của", 4], [31.512, "main", 4], [31.75, "chưa", 4], [31.962, "từng", 4], [32.212, "bị", 4], [32.35, "chạm", 4], [32.612, "tới.", 4], [33.8, "Câu", 5], [33.987, "trả", 5], [34.175, "lời", 5], [34.4, "cho", 5], [34.55, "nửa", 5], [34.75, "đầu", 5], [34.925, "câu", 5], [35.112, "hỏi", 5], [35.312, "là:", 5], [35.837, "hàm", 5], [36.062, "nhận", 5], [36.325, "bản", 5], [36.55, "sao", 5], [36.763, "giá", 5], [36.95, "trị,", 5], [37.475, "không", 5], [37.725, "nhận", 5], [38.0, "chính", 5], [38.225, "biến.", 5]], "cues": [3.312, 10.363, 19.75, 26.7, 33.8], "lang": 2.6}, {"ten": "Slide 4. Biến cục bộ sinh ra theo lời gọi, biến static sống suốt chương trình", "loai": "slide", "slide": "S04", "dung": "Hình pham-vi: ba bước theo ba câu mốc đầu; bước 4 ô kết luận. Ghi nguồn: K&R §4.6.\nHiện dần: bước 1 khi đọc “Trục ngang”; bước 2 khi đọc “Biến cục bộ calls”; bước 3 khi đọc “Thêm từ khóa static”; bước 4 khi đọc “Như vậy”.", "start": 116.65, "audio": "audio/d9d825e848ebd277.mp3", "dur": 34.78, "words": [[0.1, "Nửa", 0], [0.487, "sau", 0], [0.675, "câu", 0], [0.85, "hỏi", 0], [1.087, "là", 0], [1.212, "biến", 0], [1.5, "trong", 0], [1.663, "hàm", 0], [1.887, "tồn", 0], [2.175, "tại", 0], [2.388, "đến", 0], [2.6, "bao", 0], [2.763, "giờ.", 0], [3.913, "Trục", 1], [4.225, "ngang", 1], [4.463, "của", 1], [4.6, "hình", 1], [4.862, "là", 1], [5.037, "thời", 1], [5.213, "gian", 1], [5.463, "chạy", 1], [5.65, "chương", 1], [5.9, "trình,", 1], [6.375, "với", 1], [6.588, "ba", 1], [6.812, "lần", 1], [7.05, "gọi", 1], [7.25, "cùng", 1], [7.487, "một", 1], [7.638, "hàm.", 1], [8.775, "Biến", 2], [9.075, "cục", 2], [9.238, "bộ", 2], [9.438, "calls", 2], [9.887, "được", 2], [10.062, "tạo", 2], [10.262, "mới", 2], [10.512, "ở", 2], [10.625, "mỗi", 2], [10.825, "lần", 2], [11.025, "gọi,", 2], [11.537, "khởi", 2], [11.775, "tạo", 2], [12.0, "bằng", 2], [12.188, "0,", 2], [12.7, "tăng", 2], [12.912, "lên", 2], [13.1, "1,", 2], [13.55, "rồi", 2], [13.787, "mất", 2], [13.975, "khi", 2], [14.2, "hàm", 2], [14.412, "kết", 2], [14.6, "thúc;", 2], [15.025, "lần", 2], [15.287, "gọi", 2], [15.488, "sau", 2], [15.662, "lại", 2], [15.787, "bắt", 2], [15.963, "đầu", 2], [16.188, "từ", 2], [16.363, "0.", 2], [17.525, "Thêm", 3], [17.825, "từ", 3], [18.012, "khóa", 3], [18.262, "static", 3], [18.812, "trước", 3], [19.012, "khai", 3], [19.175, "báo,", 3], [19.7, "biến", 3], [19.938, "calls", 3], [20.375, "được", 3], [20.538, "tạo", 3], [20.738, "một", 3], [20.913, "lần", 3], [21.137, "khi", 3], [21.312, "chương", 3], [21.525, "trình", 3], [21.7, "bắt", 3], [21.863, "đầu", 3], [22.087, "và", 3], [22.2, "tồn", 3], [22.5, "tại", 3], [22.663, "đến", 3], [22.85, "khi", 3], [23.038, "chương", 3], [23.275, "trình", 3], [23.475, "kết", 3], [23.663, "thúc,", 3], [24.113, "nên", 3], [24.387, "giữ", 3], [24.587, "được", 3], [24.738, "giá", 3], [24.938, "trị", 3], [25.163, "giữa", 3], [25.337, "các", 3], [25.512, "lần", 3], [25.7, "gọi:", 3], [26.225, "1,", 3], [26.762, "2,", 3], [27.312, "3.", 3], [27.65, "Như", 4], [27.85, "vậy,", 4], [28.375, "static", 4], [28.887, "thay", 4], [29.05, "đổi", 4], [29.238, "thời", 4], [29.4, "gian", 4], [29.6, "sống", 4], [29.863, "của", 4], [29.988, "biến,", 4], [30.525, "nhưng", 4], [30.812, "không", 4], [31.025, "thay", 4], [31.15, "đổi", 4], [31.325, "phạm", 4], [31.575, "vi:", 4], [32.062, "ngoài", 4], [32.312, "hàm", 4], [32.587, "vẫn", 4], [32.763, "không", 4], [33.0, "ai", 4], [33.112, "thấy", 4], [33.3, "tên", 4], [33.525, "calls.", 4]], "cues": [3.913, 8.775, 17.525, 27.65], "lang": 2.6}, {"ten": "Slide 5. swap_wrong.c in x, y bên trong và a, b trước, sau lời gọi", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả phía dưới; tô hai dòng cuối. Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Đây là hàm swap”; bước 2 khi đọc “Kết quả xác nhận”.", "start": 154.03, "audio": "audio/671ac6082a24742d.mp3", "dur": 20.5, "words": [[0.1, "Đến", 0], [0.388, "lượt", 0], [0.588, "chạy", 0], [0.787, "thật", 0], [1.025, "hai", 0], [1.225, "hình", 0], [1.462, "vừa", 0], [1.65, "vẽ.", 0], [2.913, "Đây", 1], [3.175, "là", 1], [3.288, "hàm", 1], [3.487, "swap", 1], [3.763, "mà", 1], [4.025, "Kernighan", 1], [4.688, "và", 1], [4.812, "Ritchie", 1], [5.237, "ghi", 1], [5.4, "chú", 1], [5.662, "là", 1], [5.8, "sai,", 1], [6.375, "có", 1], [6.513, "thêm", 1], [6.713, "một", 1], [6.875, "dòng", 1], [7.15, "in", 1], [7.338, "x", 1], [7.525, "và", 1], [7.862, "y", 1], [8.012, "ngay", 1], [8.188, "trước", 1], [8.387, "khi", 1], [8.575, "hàm", 1], [8.812, "kết", 1], [9.012, "thúc.", 1], [10.062, "Kết", 2], [10.312, "quả", 2], [10.488, "xác", 2], [10.725, "nhận", 2], [10.95, "hình", 2], [11.125, "khung", 2], [11.35, "hàm", 2], [11.575, "của", 2], [11.713, "swap:", 2], [12.287, "bên", 2], [12.55, "trong", 2], [12.738, "swap,", 2], [13.262, "x", 2], [13.438, "bằng", 2], [13.688, "2", 2], [13.938, "và", 2], [14.1, "y", 2], [14.262, "bằng", 2], [14.475, "1,", 2], [14.912, "nghĩa", 2], [15.137, "là", 2], [15.262, "việc", 2], [15.45, "đổi", 2], [15.625, "chỗ", 2], [15.912, "đã", 2], [16.012, "xảy", 2], [16.238, "ra;", 2], [16.7, "sau", 2], [16.95, "lời", 2], [17.1, "gọi,", 2], [17.637, "a", 2], [17.837, "vẫn", 2], [18.038, "bằng", 2], [18.212, "1,", 2], [18.625, "b", 2], [18.887, "vẫn", 2], [19.113, "bằng", 2], [19.312, "2.", 2]], "cues": [2.913, 10.062], "lang": 9.6}, {"ten": "Slide 6. counter.c: biến cục bộ in 1, 1, 1; biến static in 1, 2, 3", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Hàm count_local nằm trong src/counter.c.\nHiện dần: bước 1 khi đọc “Chương trình counter”; bước 2 khi đọc “Các bạn để ý”; bước 3 khi đọc “Kết quả là”.", "start": 184.13, "audio": "audio/63ecedfd476d9500.mp3", "dur": 28.37, "words": [[0.1, "Hình", 0], [0.338, "thời", 0], [0.475, "gian", 0], [0.675, "sống", 0], [0.925, "được", 0], [1.05, "kiểm", 0], [1.25, "chứng", 0], [1.5, "bằng", 0], [1.7, "chương", 0], [1.913, "trình", 0], [2.1, "counter,", 0], [2.775, "gồm", 0], [3.087, "hai", 0], [3.288, "hàm", 0], [3.487, "giống", 0], [3.675, "hệt", 0], [3.85, "nhau,", 0], [4.35, "chỉ", 0], [4.525, "khác", 0], [4.75, "một", 0], [4.912, "từ:", 0], [5.425, "count_local", 0], [5.975, "khai", 0], [6.175, "báo", 0], [6.375, "calls", 0], [6.85, "là", 0], [7.013, "biến", 0], [7.237, "cục", 0], [7.4, "bộ,", 0], [7.912, "count_static", 0], [8.613, "khai", 0], [8.838, "báo", 0], [9.037, "calls", 0], [9.537, "là", 0], [9.713, "biến", 0], [9.975, "static.", 0], [11.325, "Main", 1], [11.775, "gọi", 1], [12.025, "mỗi", 1], [12.287, "hàm", 1], [12.55, "ba", 1], [12.775, "lần.", 1], [13.912, "Các", 2], [14.113, "bạn", 2], [14.35, "để", 2], [14.45, "ý", 2], [14.637, "dòng", 2], [14.863, "static", 2], [15.45, "int", 2], [15.625, "calls", 2], [16.062, "bằng", 2], [16.275, "0:", 2], [16.775, "phép", 2], [17.012, "khởi", 2], [17.2, "tạo", 2], [17.413, "này", 2], [17.6, "chỉ", 2], [17.8, "chạy", 2], [17.988, "một", 2], [18.175, "lần,", 2], [18.625, "khi", 2], [18.863, "chương", 2], [19.062, "trình", 2], [19.238, "bắt", 2], [19.387, "đầu,", 2], [19.837, "chứ", 2], [20.012, "không", 2], [20.225, "chạy", 2], [20.4, "lại", 2], [20.637, "ở", 2], [20.738, "mỗi", 2], [20.962, "lời", 2], [21.137, "gọi.", 2], [22.312, "Kết", 3], [22.538, "quả", 3], [22.788, "là", 3], [22.925, "ba", 3], [23.137, "dòng", 3], [23.387, "local", 3], [23.875, "đều", 3], [24.05, "in", 3], [24.212, "1,", 3], [24.675, "còn", 3], [24.925, "ba", 3], [25.1, "dòng", 3], [25.312, "static", 3], [25.875, "in", 3], [26.062, "1,", 3], [26.538, "2,", 3], [27.125, "3.", 3]], "cues": [1.7, 13.912, 22.312], "lang": 9.6}, {"ten": "Slide 7. stars.c: dùng chung biến toàn cục i, main chỉ in một hàng thay vì ba", "loai": "slide", "slide": "S07", "dung": "Mã phía trên (biến toàn cục, hàm print_stars_global và vòng lặp của main; bản cục bộ print_stars_local nằm trong src/stars.c), kết quả phía dưới; sau câu \"in mấy hàng\", dừng khoảng 2 giây; tô hai dòng của bản toàn cục. Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Còn phạm vi của biến”; bước 2 khi đọc “Kết quả chỉ có một hàng”.", "start": 222.1, "audio": "audio/bcbee4d2be3a78df.mp3", "dur": 42.36, "words": [[0.1, "Còn", 0], [0.362, "phạm", 0], [0.613, "vi", 0], [0.775, "của", 0], [0.925, "biến", 0], [1.225, "thì", 0], [1.413, "kiểm", 0], [1.663, "chứng", 0], [1.9, "bằng", 0], [2.1, "chương", 0], [2.35, "trình", 0], [2.562, "stars.", 0], [3.788, "Bản", 1], [4.05, "thứ", 1], [4.25, "nhất", 1], [4.463, "khai", 1], [4.713, "báo", 1], [4.95, "một", 1], [5.125, "biến", 1], [5.338, "toàn", 1], [5.588, "cục", 1], [5.85, "i", 1], [6.088, "và", 1], [6.225, "dùng", 1], [6.425, "nó", 1], [6.638, "cho", 1], [6.787, "cả", 1], [6.963, "vòng", 1], [7.188, "lặp", 1], [7.4, "của", 1], [7.5, "main", 1], [7.725, "lẫn", 1], [7.95, "vòng", 1], [8.137, "lặp", 1], [8.35, "trong", 1], [8.525, "hàm", 1], [8.75, "print_stars_global.", 1], [10.488, "Main", 2], [10.925, "muốn", 2], [11.162, "in", 2], [11.338, "ba", 2], [11.512, "hàng,", 2], [12.012, "mỗi", 2], [12.275, "hàng", 2], [12.537, "bốn", 2], [12.812, "dấu", 2], [13.012, "sao.", 2], [14.213, "Các", 3], [14.412, "bạn", 3], [14.637, "đoán", 3], [14.85, "xem", 3], [15.125, "bản", 3], [15.35, "này", 3], [15.6, "in", 3], [15.775, "mấy", 3], [15.975, "hàng.", 3], [17.137, "Kết", 4], [17.425, "quả", 4], [17.712, "chỉ", 4], [17.95, "có", 4], [18.075, "một", 4], [18.275, "hàng.", 4], [19.438, "Ở", 5], [19.6, "lời", 5], [19.812, "gọi", 5], [20.025, "đầu", 5], [20.2, "tiên,", 5], [20.738, "vòng", 5], [21.0, "lặp", 5], [21.212, "trong", 5], [21.375, "hàm", 5], [21.587, "đưa", 5], [21.8, "i", 5], [21.962, "lên", 5], [22.188, "4,", 5], [22.738, "nên", 5], [23.025, "khi", 5], [23.225, "quay", 5], [23.425, "về", 5], [23.562, "main,", 5], [24.075, "i", 5], [24.275, "tăng", 5], [24.5, "thành", 5], [24.712, "5", 5], [24.962, "và", 5], [25.087, "vòng", 5], [25.325, "lặp", 5], [25.55, "của", 5], [25.663, "main", 5], [25.887, "dừng", 5], [26.062, "ngay.", 5], [27.2, "Dòng", 6], [27.488, "biên", 6], [27.663, "dịch", 6], [27.812, "phía", 6], [28.062, "trên", 6], [28.288, "cho", 6], [28.425, "thấy", 6], [28.843, "GCC", 6], [29.262, "không", 6], [29.5, "cảnh", 6], [29.725, "báo", 6], [29.913, "gì,", 6], [30.413, "vì", 6], [30.663, "mã", 6], [30.85, "hoàn", 6], [31.087, "toàn", 6], [31.325, "hợp", 6], [31.5, "lệ.", 6], [32.65, "Bản", 7], [32.938, "thứ", 7], [33.15, "hai", 7], [33.325, "khai", 7], [33.538, "báo", 7], [33.812, "i", 7], [33.987, "ngay", 7], [34.188, "trong", 7], [34.375, "vòng", 7], [34.575, "lặp", 7], [34.75, "của", 7], [34.888, "hàm:", 7], [35.413, "hai", 7], [35.612, "biến", 7], [35.862, "cùng", 7], [36.062, "tên", 7], [36.35, "i", 7], [36.525, "nhưng", 7], [36.788, "khác", 7], [37.0, "phạm", 7], [37.237, "vi,", 7], [37.775, "nên", 7], [38.062, "hàm", 7], [38.312, "không", 7], [38.538, "chạm", 7], [38.788, "được", 7], [38.925, "tới", 7], [39.075, "biến", 7], [39.312, "của", 7], [39.425, "main,", 7], [39.938, "và", 7], [40.175, "chương", 7], [40.413, "trình", 7], [40.65, "in", 7], [40.812, "đủ", 7], [41.013, "ba", 7], [41.212, "hàng.", 7]], "cues": [0.1, 17.137], "lang": 9.6}, {"ten": "Slide 8. Biến cục bộ không khởi tạo chứa giá trị rác", "loai": "slide", "slide": "S08", "dung": "Mã phía trên, kết quả phía dưới; hai ý hiện lần lượt. Không có O1, GCC 13 không phát hiện trường hợp này.\nHiện dần: bước 1 khi đọc “Vòng lặp này”; bước 2 khi đọc “Lưu ý thứ hai”; bước 3 khi đọc “Còn hàm swap”.", "start": 274.06, "audio": "audio/9ec081335a2eaaa4.mp3", "dur": 38.26, "words": [[0.1, "Vòng", 0], [0.412, "lặp", 0], [0.588, "này", 0], [0.775, "cộng", 0], [1.038, "1,", 0], [1.525, "2,", 0], [2.112, "3", 0], [2.4, "vào", 0], [2.575, "sum,", 0], [3.175, "nhưng", 0], [3.475, "sum", 0], [3.775, "chưa", 0], [3.962, "được", 0], [4.1, "khởi", 0], [4.3, "tạo.", 0], [5.513, "Biến", 1], [5.8, "cục", 1], [5.963, "bộ", 1], [6.175, "không", 1], [6.388, "khởi", 1], [6.562, "tạo", 1], [6.8, "chứa", 1], [7.025, "giá", 1], [7.237, "trị", 1], [7.45, "rác,", 1], [7.912, "tức", 1], [8.125, "những", 1], [8.325, "gì", 1], [8.475, "còn", 1], [8.7, "lại", 1], [8.887, "trong", 1], [9.075, "vùng", 1], [9.25, "nhớ", 1], [9.475, "đó,", 1], [9.988, "chứ", 1], [10.2, "không", 1], [10.425, "phải", 1], [10.588, "0;", 1], [11.125, "chỉ", 1], [11.312, "biến", 1], [11.537, "toàn", 1], [11.775, "cục", 1], [11.988, "và", 1], [12.137, "biến", 1], [12.387, "static", 1], [12.988, "mới", 1], [13.175, "tự", 1], [13.375, "bằng", 1], [13.562, "0.", 1], [14.5, "GCC", 2], [15.438, "với", 2], [15.575, "Wall", 2], [15.85, "và", 2], [15.975, "tối", 2], [16.225, "ưu", 2], [16.475, "O1", 2], [16.85, "cảnh", 2], [17.062, "báo", 2], [17.25, "sum", 2], [17.512, "is", 2], [17.9, "used", 2], [18.462, "uninitialized.", 2], [20.1, "Lưu", 3], [20.375, "ý", 3], [20.575, "thứ", 3], [20.738, "hai,", 3], [21.25, "như", 3], [21.488, "chương", 3], [21.712, "trình", 3], [21.913, "stars", 3], [22.262, "vừa", 3], [22.425, "cho", 3], [22.587, "thấy,", 3], [23.137, "là", 3], [23.35, "hạn", 3], [23.587, "chế", 3], [23.775, "biến", 3], [24.0, "toàn", 3], [24.225, "cục:", 3], [24.725, "hàm", 3], [24.962, "nào", 3], [25.175, "cũng", 3], [25.375, "đọc", 3], [25.538, "và", 3], [25.7, "sửa", 3], [25.913, "được", 3], [26.075, "nó,", 3], [26.625, "nên", 3], [26.938, "trong", 3], [27.087, "một", 3], [27.238, "chương", 3], [27.45, "trình", 3], [27.65, "lớn,", 3], [28.163, "khi", 3], [28.387, "giá", 3], [28.587, "trị", 3], [28.762, "sai,", 3], [29.312, "rất", 3], [29.488, "khó", 3], [29.75, "tìm", 3], [29.988, "hàm", 3], [30.2, "nào", 3], [30.413, "đã", 3], [30.562, "gây", 3], [30.725, "ra.", 3], [31.837, "Còn", 4], [32.087, "hàm", 4], [32.263, "swap,", 4], [32.812, "muốn", 4], [33.038, "nó", 4], [33.188, "đổi", 4], [33.4, "được", 4], [33.562, "biến", 4], [33.825, "của", 4], [33.925, "nơi", 4], [34.125, "gọi", 4], [34.4, "thì", 4], [34.55, "phải", 4], [34.712, "truyền", 4], [34.925, "địa", 4], [35.087, "chỉ", 4], [35.362, "của", 4], [35.513, "biến,", 4], [36.038, "nội", 4], [36.312, "dung", 4], [36.55, "của", 4], [36.688, "phần", 4], [36.9, "tiếp", 4], [37.1, "theo.", 4]], "cues": [0.1, 20.1, 31.837], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 321.92, "audio": "audio/03c3cb641899991f.mp3", "dur": 3.98, "words": [[0.1, "Hàm", 0], [0.388, "swap", 0], [0.575, "sai", 0], [0.863, "được", 0], [1.012, "gọi", 0], [1.25, "với", 0], [1.438, "a", 0], [1.637, "bằng", 0], [1.863, "1,", 0], [2.275, "b", 0], [2.538, "bằng", 0], [2.775, "2.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/77fe2b26ae99296a.mp3", "dur2": 8.28, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.137, "Phương", 1], [1.462, "án", 1], [1.7, "A", 1], [1.975, "là", 1], [2.075, "điều", 1], [2.225, "người", 1], [2.425, "viết", 1], [2.625, "mong", 1], [2.8, "đợi,", 1], [3.325, "nhưng", 1], [3.6, "swap", 1], [3.85, "chỉ", 1], [4.013, "đổi", 1], [4.2, "bản", 1], [4.4, "sao;", 1], [4.938, "phương", 1], [5.225, "án", 1], [5.425, "D", 1], [5.588, "sai", 1], [5.888, "vì", 1], [6.037, "hàm", 1], [6.287, "void", 1], [6.487, "không", 1], [6.713, "cần", 1], [6.938, "return.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 340.78, "audio": "audio/396a109077edf324.mp3", "dur": 3.86, "words": [[0.1, "Tiếp", 0], [0.4, "theo,", 0], [0.925, "một", 0], [1.15, "biến", 0], [1.4, "static", 0], [1.95, "đếm", 0], [2.212, "số", 0], [2.462, "lần", 0], [2.675, "gọi.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/b3313f22c08fdc5c.mp3", "dur2": 7.58, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.762, "C.", 0], [1.137, "Phương", 1], [1.488, "án", 1], [1.738, "A", 1], [1.925, "đúng", 1], [2.138, "với", 1], [2.237, "biến", 1], [2.475, "cục", 1], [2.638, "bộ", 1], [2.837, "thường,", 1], [3.325, "không", 1], [3.6, "đúng", 1], [3.788, "với", 1], [3.938, "static:", 1], [4.725, "phép", 1], [4.975, "khởi", 1], [5.188, "tạo", 1], [5.45, "bằng", 1], [5.65, "0", 1], [5.888, "chỉ", 1], [6.062, "chạy", 1], [6.263, "một", 1], [6.45, "lần.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Hàm nhận bản sao”; bước 2 khi đọc “Biến cục bộ”; bước 3 khi đọc “Từ khóa static”; bước 4 khi đọc “các bạn cần nắm”.", "start": 358.82, "audio": "audio/1b690cfd457022c6.mp3", "dur": 26.18, "words": [[0.1, "Hàm", 0], [0.35, "nhận", 0], [0.588, "bản", 0], [0.8, "sao", 0], [0.988, "giá", 0], [1.15, "trị", 0], [1.387, "của", 0], [1.512, "đối", 0], [1.663, "số,", 0], [2.25, "đặt", 0], [2.5, "trong", 0], [2.663, "khung", 0], [2.875, "hàm", 0], [3.062, "của", 0], [3.188, "nó,", 0], [3.737, "nên", 0], [4.0, "swap", 0], [4.25, "không", 0], [4.487, "đổi", 0], [4.675, "được", 0], [4.938, "a", 0], [5.1, "và", 0], [5.213, "b.", 0], [5.625, "Biến", 1], [5.875, "cục", 1], [6.037, "bộ", 1], [6.263, "chỉ", 1], [6.4, "được", 1], [6.575, "nhìn", 1], [6.8, "thấy", 1], [7.0, "trong", 1], [7.213, "hàm", 1], [7.487, "và", 1], [7.6, "sống", 1], [7.825, "theo", 1], [7.95, "từng", 1], [8.162, "lời", 1], [8.312, "gọi;", 1], [8.863, "biến", 1], [9.113, "toàn", 1], [9.338, "cục", 1], [9.525, "được", 1], [9.7, "mọi", 1], [9.887, "hàm", 1], [10.1, "nhìn", 1], [10.3, "thấy.", 1], [11.5, "Từ", 2], [11.75, "khóa", 2], [12.025, "static", 2], [12.625, "giữ", 2], [12.812, "phạm", 2], [13.088, "vi", 2], [13.262, "trong", 2], [13.45, "hàm", 2], [13.7, "nhưng", 2], [13.963, "kéo", 2], [14.15, "dài", 2], [14.338, "thời", 2], [14.5, "gian", 2], [14.725, "sống", 2], [15.012, "ra", 2], [15.175, "cả", 2], [15.375, "chương", 2], [15.6, "trình.", 2], [16.688, "Từ", 3], [16.925, "phần", 3], [17.113, "này,", 3], [17.55, "các", 3], [17.712, "bạn", 3], [17.95, "cần", 3], [18.175, "nắm", 3], [18.387, "các", 3], [18.55, "từ", 3], [18.7, "khóa:", 3], [19.312, "truyền", 3], [19.6, "tham", 3], [19.837, "trị,", 3], [20.387, "biến", 3], [20.65, "cục", 3], [20.812, "bộ,", 3], [21.312, "biến", 3], [21.562, "toàn", 3], [21.8, "cục,", 3], [22.25, "phạm", 3], [22.55, "vi", 3], [22.725, "của", 3], [22.875, "biến,", 3], [23.413, "thời", 3], [23.613, "gian", 3], [23.812, "sống", 3], [24.087, "của", 3], [24.225, "biến", 3], [24.55, "và", 3], [24.738, "static.", 3]], "cues": [0.1, 5.625, 11.5, 17.55], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Các bạn muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 385.6, "audio": "audio/887f39e70c571547.mp3", "dur": 23.28, "words": [[0.1, "Các", 0], [0.3, "bạn", 0], [0.487, "muốn", 0], [0.65, "đi", 0], [0.738, "xa", 0], [1.012, "hơn", 0], [1.238, "có", 0], [1.337, "thể", 0], [1.488, "đọc", 0], [1.663, "hai", 0], [1.85, "chủ", 0], [2.062, "đề:", 0], [2.525, "khối", 0], [2.75, "lệnh", 0], [2.95, "lồng", 0], [3.138, "nhau,", 0], [3.663, "nơi", 0], [3.875, "một", 0], [4.037, "biến", 0], [4.275, "cùng", 0], [4.475, "tên", 0], [4.812, "ở", 0], [4.9, "khối", 0], [5.138, "trong", 0], [5.325, "che", 0], [5.5, "biến", 0], [5.812, "ở", 0], [5.9, "khối", 0], [6.088, "ngoài,", 0], [6.662, "và", 0], [6.862, "biến", 0], [7.188, "extern", 0], [7.6, "dùng", 0], [7.812, "chung", 0], [8.037, "giữa", 0], [8.213, "nhiều", 0], [8.412, "tệp", 0], [8.65, "nguồn,", 0], [9.175, "theo", 0], [9.387, "sách", 0], [9.613, "của", 0], [9.8, "Kernighan", 0], [10.45, "và", 0], [10.6, "Ritchie.", 0], [11.938, "Bài", 1], [12.175, "tập", 1], [12.387, "mở", 1], [12.562, "rộng", 1], [12.838, "là", 1], [12.975, "viết", 1], [13.162, "hàm", 1], [13.412, "next_id", 1], [13.975, "trả", 1], [14.262, "về", 1], [14.4, "1,", 1], [14.887, "2,", 1], [15.475, "3", 1], [15.725, "sau", 1], [15.938, "mỗi", 1], [16.1, "lần", 1], [16.312, "gọi", 1], [16.525, "bằng", 1], [16.688, "một", 1], [16.837, "biến", 1], [17.075, "static,", 1], [17.863, "rồi", 1], [18.113, "viết", 1], [18.312, "lại", 1], [18.488, "bằng", 1], [18.688, "biến", 1], [18.9, "toàn", 1], [19.113, "cục,", 1], [19.562, "và", 1], [19.762, "chỉ", 1], [19.95, "ra", 1], [20.062, "một", 1], [20.238, "lỗi", 1], [20.475, "mà", 1], [20.65, "chỉ", 1], [20.812, "bản", 1], [21.05, "dùng", 1], [21.25, "biến", 1], [21.475, "toàn", 1], [21.7, "cục", 1], [21.887, "mới", 1], [22.038, "mắc", 1], [22.212, "được.", 1]], "cues": [0.1, 11.938], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 409.48, "audio": "audio/6ceef08eab3b49c5.mp3", "dur": 16.37, "words": [[0.1, "Hàm", 0], [0.35, "swap", 0], [0.562, "không", 0], [0.8, "đổi", 0], [0.988, "được", 0], [1.275, "a", 0], [1.462, "và", 0], [1.613, "b", 0], [1.913, "vì", 0], [2.1, "chỉ", 0], [2.288, "nhận", 0], [2.55, "bản", 0], [2.75, "sao.", 0], [3.938, "Trong", 1], [4.213, "khi", 1], [4.338, "đó,", 1], [4.838, "scanf", 1], [5.487, "lại", 1], [5.7, "ghi", 1], [5.862, "được", 1], [6.013, "vào", 1], [6.188, "biến", 1], [6.438, "của", 1], [6.562, "main,", 1], [7.125, "nhờ", 1], [7.412, "dấu", 1], [7.737, "và", 1], [7.838, "đặt", 1], [8.0, "trước", 1], [8.213, "tên", 1], [8.438, "biến.", 1], [9.6, "Phần", 2], [9.875, "tiếp", 2], [10.075, "theo,", 2], [10.55, "về", 2], [10.762, "con", 2], [10.988, "trỏ,", 2], [11.525, "giải", 2], [11.725, "thích", 2], [11.925, "dấu", 2], [12.225, "và", 2], [12.35, "đó", 2], [12.588, "đưa", 2], [12.762, "cho", 2], [12.912, "scanf", 2], [13.4, "thứ", 2], [13.588, "gì,", 2], [14.088, "và", 2], [14.312, "sửa", 2], [14.55, "hàm", 2], [14.775, "swap", 2], [15.05, "cho", 2], [15.2, "đúng.", 2]], "cues": [], "lang": 0.6}], "video_sau": "Con trỏ: địa chỉ và truyền địa chỉ cho hàm"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

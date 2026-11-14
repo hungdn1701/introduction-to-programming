@@ -1,0 +1,7 @@
+$ gcc -std=c17 -Wall -Wextra abs_fabs.c -o abs_fabs
+abs_fabs.c: In function 'main':
+abs_fabs.c:11:30: warning: using integer absolute value function 'abs' when argument is of
+floating-point type 'double' [-Wabsolute-value]
+$ ./abs_fabs
+abs(x)  = 2
+fabs(x) = 2.7

@@ -1,0 +1,6 @@
+$ echo 2026 | ./numdigits
+The number has 4 digit(s).
+$ echo 0 | ./numdigits
+The number has 1 digit(s).
+$ echo 0 | ./numdigits_while
+The number has 0 digit(s).

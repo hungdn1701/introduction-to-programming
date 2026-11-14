@@ -1,0 +1,4 @@
+scores: 7 9 4 10 6
+max = 10, average = 7.20
+search 4: 2, search 8: -1
+after clear(scores, n): 0 0 0 0 0

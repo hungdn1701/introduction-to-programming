@@ -1,0 +1,4 @@
+$ gcc -std=c17 -Wall -Wextra comma_bug.c -o comma_bug
+comma_bug.c: In function 'main':
+comma_bug.c:11:28: warning: left-hand operand of comma expression has no effect [-Wunused-value]
+comma_bug.c:11:14: warning: format '%d' expects argument of type 'int', but argument 2 has type 'char *' [-Wformat=]

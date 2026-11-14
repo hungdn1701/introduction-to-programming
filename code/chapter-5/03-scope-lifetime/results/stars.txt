@@ -1,0 +1,8 @@
+$ gcc -std=c17 -Wall -Wextra stars.c -o stars
+$ ./stars
+global i:
+****
+local i:
+****
+****
+****

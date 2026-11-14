@@ -1,0 +1,9 @@
+rows     : 34 34 34 34
+columns  : 34 34 34 34
+diagonals: 34 34
+magic square: yes
+after swapping 3 and 2:
+rows     : 34 34 34 34
+columns  : 34 33 35 34
+diagonals: 34 34
+magic square: no

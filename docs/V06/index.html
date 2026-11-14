@@ -1,0 +1,431 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V06 — Hệ điều hành: tiến trình, bộ nhớ và hệ thống tệp · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-1/05-operating-system">Mã</a>
+<h1>V06 · Hệ điều hành: tiến trình, bộ nhớ và hệ thống tệp</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 1</div><div class="ten">Hệ điều hành: tiến trình, bộ nhớ và hệ thống tệp</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Vài nhân CPU, hàng trăm chương trình cùng chạy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Trình duyệt, trình soạn thảo, nhạc nền và hàng trăm chương trình khác <b>cùng chạy</b> trên vài nhân CPU</li><li data-s="2">Tắt máy rồi bật lại, <b>các tệp vẫn còn</b>, dù RAM đã mất hết nội dung</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> phần mềm nào chia CPU, RAM, ổ lưu trữ cho các chương trình, và nó làm việc đó thế nào?</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Hệ điều hành đứng giữa phần cứng và các chương trình</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Vị trí của hệ điều hành: phần cứng (CPU, bộ nhớ, thiết bị) ở dưới cùng; nhân hệ điều hành ngay trên, trực tiếp điều khiển phần cứng; các chương trình như trình duyệt, trình soạn thảo, cpu.exe ở trên cùng, gọi dịch vụ của hệ điều hành qua lời gọi hệ thống.">
+  <defs>
+    <marker id="hd-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="hd-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="hd-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="hd-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="hd-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="hd-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- phần cứng -->
+  <g data-s="1">
+    <rect x="40" y="380" width="1680" height="110" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="880" y="426.5" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">Phần cứng</text>
+    <text x="880" y="479.5" text-anchor="middle" font-size="23" fill="#373D4E">CPU, RAM, SSD, bàn phím, màn hình, card mạng</text>
+  </g>
+
+  <!-- nhân hệ điều hành -->
+  <g data-s="2">
+    <rect x="40" y="220" width="1680" height="120" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="880" y="271.5" text-anchor="middle" font-size="28" fill="#051A53" font-weight="500">Nhân hệ điều hành</text>
+    <text x="880" y="324.5" text-anchor="middle" font-size="23" fill="#373D4E">chạy tiến trình, cấp bộ nhớ, quản lý tệp, điều khiển vào ra</text>
+    <line x1="880" y1="342" x2="880" y2="376" stroke="#051A53" stroke-width="3" marker-start="url(#hd-navy)" marker-end="url(#hd-navy)"/>
+  </g>
+
+  <!-- chương trình và lời gọi hệ thống -->
+  <g data-s="3">
+    <rect x="40" y="40" width="390" height="100" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="235" y="99" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500">Trình duyệt</text>
+    <line x1="235" y1="142" x2="235" y2="216" stroke="#1F5FA8" stroke-width="3" marker-end="url(#hd-data)"/>
+    <rect x="470" y="40" width="390" height="100" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="665" y="99" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500">Trình soạn thảo</text>
+    <line x1="665" y1="142" x2="665" y2="216" stroke="#1F5FA8" stroke-width="3" marker-end="url(#hd-data)"/>
+    <rect x="900" y="40" width="390" height="100" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1095" y="99" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500">cpu.exe</text>
+    <line x1="1095" y1="142" x2="1095" y2="216" stroke="#1F5FA8" stroke-width="3" marker-end="url(#hd-data)"/>
+    <rect x="1330" y="40" width="390" height="100" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1525" y="99" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500">hello.exe</text>
+    <line x1="1525" y1="142" x2="1525" y2="216" stroke="#1F5FA8" stroke-width="3" marker-end="url(#hd-data)"/>
+    <text x="1716" y="190" text-anchor="end" font-size="22" fill="#1F5FA8">lời gọi hệ thống</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p><b>Hệ điều hành</b> quản lý phần cứng; chương trình xin dịch vụ qua <b>lời gọi hệ thống</b>, không tự điều khiển phần cứng.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Tiến trình là chương trình đang chạy; tệp là dữ liệu còn lại sau khi chạy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Tiến trình</b> (process): một chương trình đang chạy, cùng bộ nhớ, tệp đang mở và trạng thái CPU của nó</li><li data-s="2">Một tệp thực thi chạy hai lần là <b>hai tiến trình</b>, mỗi tiến trình bộ nhớ riêng</li><li data-s="3"><b>Hệ thống tệp</b> (file system): tổ chức bộ nhớ thứ cấp thành <b>tệp</b> và <b>thư mục</b>, chỉ tới bằng <b>đường dẫn</b></li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Từ xử lý theo lô đến điện thoại: hệ điều hành theo thời gian và theo loại máy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Xử lý theo lô</b> (thập niên 1950–1960): chạy lần lượt từng công việc, người dùng chờ kết quả</li><li data-s="2"><b>Chia sẻ thời gian</b> (từ thập niên 1960): nhiều người, nhiều chương trình dùng chung một máy cùng lúc</li><li data-s="3"><b>Máy tính cá nhân, máy chủ, di động, nhúng</b>: Windows, macOS, Linux, Android, iOS, hệ điều hành thời gian thực</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Chia sẻ thời gian: một nhân CPU luân phiên chạy các tiến trình</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Chia sẻ thời gian trên một nhân CPU: ba tiến trình A, B, C; trục thời gian chia thành các khoảng ngắn; nhân CPU lần lượt chạy A, B, C, A, B, C; mỗi tiến trình nhận khoảng một phần ba thời gian.">
+  <defs>
+    <marker id="ts-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ts-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ts-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ts-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ts-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ts-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- ba tiến trình -->
+  <g data-s="1">
+    <rect x="40" y="60" width="220" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="150" y="103.5" text-anchor="middle" font-size="25" fill="#051A53" font-weight="500">Tiến trình A</text>
+    <rect x="40" y="150" width="220" height="70" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="150" y="193.5" text-anchor="middle" font-size="25" fill="#123A6B" font-weight="500">Tiến trình B</text>
+    <rect x="40" y="240" width="220" height="70" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="150" y="283.5" text-anchor="middle" font-size="25" fill="#22603F" font-weight="500">Tiến trình C</text>
+  </g>
+
+  <!-- trục thời gian -->
+  <g data-s="2">
+    <line x1="300" y1="370" x2="1720" y2="370" stroke="#5B6478" stroke-width="3" marker-end="url(#ts-grey)"/>
+    <text x="1720" y="410" text-anchor="end" font-size="22" fill="#5B6478">thời gian</text>
+  </g>
+
+  <!-- nhân CPU luân phiên -->
+  <g data-s="3">
+    <rect x="300" y="62" width="110" height="66" rx="3" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <rect x="300" y="334" width="110" height="26" fill="#051A53"/>
+    <rect x="415" y="152" width="110" height="66" rx="3" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <rect x="415" y="334" width="110" height="26" fill="#1F5FA8"/>
+    <rect x="530" y="242" width="110" height="66" rx="3" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <rect x="530" y="334" width="110" height="26" fill="#2F855A"/>
+    <rect x="645" y="62" width="110" height="66" rx="3" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <rect x="645" y="334" width="110" height="26" fill="#051A53"/>
+    <rect x="760" y="152" width="110" height="66" rx="3" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <rect x="760" y="334" width="110" height="26" fill="#1F5FA8"/>
+    <rect x="875" y="242" width="110" height="66" rx="3" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <rect x="875" y="334" width="110" height="26" fill="#2F855A"/>
+    <rect x="990" y="62" width="110" height="66" rx="3" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <rect x="990" y="334" width="110" height="26" fill="#051A53"/>
+    <rect x="1105" y="152" width="110" height="66" rx="3" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <rect x="1105" y="334" width="110" height="26" fill="#1F5FA8"/>
+    <rect x="1220" y="242" width="110" height="66" rx="3" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <rect x="1220" y="334" width="110" height="26" fill="#2F855A"/>
+    <rect x="1335" y="62" width="110" height="66" rx="3" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <rect x="1335" y="334" width="110" height="26" fill="#051A53"/>
+    <rect x="1450" y="152" width="110" height="66" rx="3" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <rect x="1450" y="334" width="110" height="26" fill="#1F5FA8"/>
+    <rect x="1565" y="242" width="110" height="66" rx="3" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <rect x="1565" y="334" width="110" height="26" fill="#2F855A"/>
+    <text x="300" y="322" text-anchor="start" font-size="22" fill="#373D4E">nhân CPU 0</text>
+  </g>
+
+  <!-- kết quả đo -->
+  <g data-s="4">
+    <rect x="300" y="432" width="1420" height="70" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1010" y="475" text-anchor="middle" font-size="24" fill="#373D4E">mỗi tiến trình nhận khoảng một phần ba thời gian của nhân CPU 0</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Hệ điều hành <b>cắt thời gian thành khoảng ngắn</b> và luân phiên giao nhân CPU cho từng tiến trình.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Ba tiến trình chung một nhân: mỗi tiến trình được khoảng một phần ba</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">PowerShell</span>$p = <span class="hl-t">Start-Process</span> -FilePath out\cpu.exe -ArgumentList $n, 4 -NoNewWindow -PassThru `
+     -RedirectStandardOutput <span class="hl-s">"</span><span class="hl-s">results\</span><span class="hl-s">$</span><span class="hl-s">tag-</span><span class="hl-s">$</span><span class="hl-s">n.txt</span><span class="hl-s">"</span>
+<span class="hl-k">if</span> ($pin) { $p.<span class="hl-t">ProcessorAffinity</span> = 1 }
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>million loops per second       s1       s2       s3       s4
+<span class="noi-bat">A alone, core 0               596      601      590      590</span>
+<span class="noi-bat">A with B, C on core 0         211      200      198      202</span>
+<span class="noi-bat">B with A, C on core 0         204      173      190      210</span>
+<span class="noi-bat">C with A, B on core 0         206      193      190      210</span>
+A with B, C, all cores        544      574      565      565
+
+logical processors: 8, running processes: 341</pre></div><ul class="y-nho"><li data-s="2">Máy biên soạn: <b>8 bộ xử lý logic, 341 tiến trình</b> — luôn nhiều tiến trình hơn số nhân</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>Chương trình không tự điều khiển phần cứng</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">In ra màn hình, đọc bàn phím, ghi tệp: mọi việc vào ra đều <b>đi qua hệ điều hành</b> bằng lời gọi hệ thống</li><li data-s="2">Chương trình C gọi hàm của <b>thư viện chuẩn</b>, thư viện chuẩn gọi hệ điều hành thay cho chương trình</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Ba bản cpu cùng chạy trên một nhân CPU và đều in kết quả mỗi giây. Điều gì làm chúng có vẻ chạy cùng lúc?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Nhân CPU tự tách thành ba nhân nhỏ hơn.</div></div><div class="dung"><span>B</span><div>Hệ điều hành luân phiên giao nhân CPU cho từng tiến trình trong những khoảng thời gian ngắn.</div></div><div class=""><span>C</span><div>Mỗi bản chạy xong một giây rồi mới đến bản sau.</div></div><div class=""><span>D</span><div>Ba bản dùng chung một vùng bộ nhớ nên chạy như một chương trình.</div></div></div><div class="giai-thich">Đó là chia sẻ thời gian: hệ điều hành cắt thời gian thành khoảng vài mili giây và luân phiên giao nhân cho từng tiến trình, nên mỗi bản nhận khoảng một phần ba thời gian. Phương án C sai vì các khoảng ngắn hơn một giây rất nhiều, nên cả ba đều in mỗi giây.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Ba bản cpu cùng chạy trên một nhân CPU và đều in kết quả mỗi giây. Điều gì làm chúng có vẻ chạy cùng lúc?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Nhân CPU tự tách thành ba nhân nhỏ hơn.</div></div><div class="dung"><span>B</span><div>Hệ điều hành luân phiên giao nhân CPU cho từng tiến trình trong những khoảng thời gian ngắn.</div></div><div class=""><span>C</span><div>Mỗi bản chạy xong một giây rồi mới đến bản sau.</div></div><div class=""><span>D</span><div>Ba bản dùng chung một vùng bộ nhớ nên chạy như một chương trình.</div></div></div><div class="giai-thich">Đó là chia sẻ thời gian: hệ điều hành cắt thời gian thành khoảng vài mili giây và luân phiên giao nhân cho từng tiến trình, nên mỗi bản nhận khoảng một phần ba thời gian. Phương án C sai vì các khoảng ngắn hơn một giây rất nhiều, nên cả ba đều in mỗi giây.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chạy cùng một tệp thực thi cpu.exe ba lần. Điều nào đúng?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Có một tiến trình, vì chỉ có một tệp thực thi.</div></div><div class=""><span>B</span><div>Có ba tiến trình, và chúng dùng chung các biến trong bộ nhớ.</div></div><div class="dung"><span>C</span><div>Có ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng.</div></div><div class=""><span>D</span><div>Có ba tệp thực thi được tạo ra trên đĩa.</div></div></div><div class="giai-thich">Tiến trình là chương trình đang chạy cùng bộ nhớ của nó. Ba lần chạy là ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng, không dùng chung biến; tệp thực thi trên đĩa vẫn chỉ có một.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chạy cùng một tệp thực thi cpu.exe ba lần. Điều nào đúng?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Có một tiến trình, vì chỉ có một tệp thực thi.</div></div><div class=""><span>B</span><div>Có ba tiến trình, và chúng dùng chung các biến trong bộ nhớ.</div></div><div class="dung"><span>C</span><div>Có ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng.</div></div><div class=""><span>D</span><div>Có ba tệp thực thi được tạo ra trên đĩa.</div></div></div><div class="giai-thich">Tiến trình là chương trình đang chạy cùng bộ nhớ của nó. Ba lần chạy là ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng, không dùng chung biến; tệp thực thi trên đĩa vẫn chỉ có một.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Hệ điều hành</b> quản lý phần cứng; <b>nhân</b> điều khiển trực tiếp, chương trình dùng lời gọi hệ thống</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Tiến trình</b> là chương trình đang chạy; <b>chia sẻ thời gian</b> cho nhiều tiến trình dùng chung CPU</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Hệ thống tệp</b> giữ dữ liệu trên bộ nhớ thứ cấp thành <b>tệp</b>, <b>thư mục</b>, chỉ tới bằng <b>đường dẫn</b></div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>hệ điều hành</span><span>nhân hệ điều hành</span><span>tiến trình</span><span>chia sẻ thời gian</span><span>hệ thống tệp</span><span>tệp</span><span>thư mục</span><span>đường dẫn</span></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Bộ nhớ ảo: mỗi tiến trình có không gian địa chỉ riêng (mem.c của OSTEP)</li><li>Lập lịch CPU: hệ điều hành chọn tiến trình nào chạy tiếp</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Mở Task Manager (hoặc lệnh tasklist, ps) khi chạy ba bản cpu.c; ghi mã tiến trình, mức dùng CPU của mỗi bản, rồi dừng từng bản bằng taskkill và quan sát đầu ra.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TKC"><header><h1>Tổng kết chương 1</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Phần cứng</b>: kiến trúc von Neumann; CPU lặp chu trình lệnh; phân cấp bộ nhớ và tính cục bộ</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Dữ liệu</b>: mọi thứ là bit — hệ nhị phân, hệ thập lục phân, mã hóa ký tự <span style="white-space:nowrap">UTF-8</span></div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Hệ điều hành</b>: tiến trình, chia sẻ thời gian, hệ thống tệp, lời gọi hệ thống</div></div></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Thuật toán: từ bài toán đến lưu đồ và mã giả</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Máy chỉ có vài nhân CPU mà chạy cùng lúc hàng trăm chương trình: phần mềm nào làm việc đó, và làm thế nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:09</span>
+      <h3>Slide 1. Vài nhân CPU, hàng trăm chương trình cùng chạy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Trình duyệt, trình soạn thảo, nhạc nền và hàng trăm chương trình khác **cùng chạy** trên vài nhân CPU</li><li>Tắt máy rồi bật lại, **các tệp vẫn còn**, dù RAM đã mất hết nội dung</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** phần mềm nào chia CPU, RAM, ổ lưu trữ cho các chương trình, và nó làm việc đó thế nào?</div></div>
+    <div class="kb-thoai"><p>Trên máy của các bạn lúc này có trình duyệt, trình soạn thảo, có thể cả nhạc nền, cùng hàng trăm chương trình chạy ngầm, trong khi CPU chỉ có vài nhân. Ngoài ra, ở phần về phân cấp bộ nhớ, các bạn đã biết RAM mất nội dung khi tắt nguồn, vậy mà tắt máy rồi bật lại, các tệp vẫn còn nguyên. Câu hỏi của phần này là: phần mềm nào chia CPU, RAM, ổ lưu trữ cho các chương trình, và nó làm việc đó thế nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Trên máy của các bạn”; bước 2 khi đọc “Ngoài ra”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:35</span>
+      <h3>Slide 2. Hệ điều hành đứng giữa phần cứng và các chương trình</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Hệ điều hành** quản lý phần cứng; chương trình xin dịch vụ qua **lời gọi hệ thống**, không tự điều khiển phần cứng.</li></ul></div></div>
+    <div class="kb-thoai"><p>Phần mềm đó là hệ điều hành, hay operating system. Dưới cùng là phần cứng mà các bạn đã biết: CPU, RAM, ổ SSD, bàn phím, màn hình. Ngay trên phần cứng là nhân hệ điều hành, hay kernel, phần lõi chạy với quyền đặc biệt và là phần duy nhất trực tiếp điều khiển phần cứng. Nhân chạy các chương trình, cấp bộ nhớ, quản lý tệp và điều khiển thiết bị vào ra. Các chương trình nằm trên cùng, như trình duyệt, trình soạn thảo, hay chương trình hello mà các bạn sẽ viết ở Chương 4. Khi cần in ra màn hình hay ghi một tệp, chương trình không tự làm, mà gửi yêu cầu cho nhân qua lời gọi hệ thống, hay system call. Như vậy, hệ điều hành đứng giữa phần cứng và mọi chương trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình vi-tri-hdh: bước 1 phần cứng, bước 2 nhân, bước 3 các chương trình và mũi tên lời gọi hệ thống; bước 4 ô kết luận.
+Hiện dần: bước 1 khi đọc “Dưới cùng là phần cứng”; bước 2 khi đọc “Ngay trên phần cứng là nhân”; bước 3 khi đọc “Các chương trình nằm trên cùng”; bước 4 khi đọc “Như vậy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:21</span>
+      <h3>Slide 3. Tiến trình là chương trình đang chạy; tệp là dữ liệu còn lại sau khi chạy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Tiến trình** (process): một chương trình đang chạy, cùng bộ nhớ, tệp đang mở và trạng thái CPU của nó</li><li>Một tệp thực thi chạy hai lần là **hai tiến trình**, mỗi tiến trình bộ nhớ riêng</li><li>**Hệ thống tệp** (file system): tổ chức bộ nhớ thứ cấp thành **tệp** và **thư mục**, chỉ tới bằng **đường dẫn**</li></ul></div>
+    <div class="kb-thoai"><p>Hệ điều hành làm việc với hai khái niệm các bạn sẽ gặp suốt môn học. Khái niệm thứ nhất là tiến trình, hay process: một chương trình đang chạy, cùng vùng bộ nhớ, các tệp đang mở và trạng thái CPU của nó. Chạy cùng một tệp thực thi hai lần thì có hai tiến trình, mỗi tiến trình một vùng bộ nhớ riêng, không dùng chung biến với nhau. Khái niệm thứ hai là hệ thống tệp, hay file system: phần của hệ điều hành tổ chức dữ liệu trên bộ nhớ thứ cấp thành các tệp có tên, xếp trong các thư mục. Mỗi tệp được chỉ tới bằng một đường dẫn, chẳng hạn bắt đầu từ ổ C, qua thư mục Users và các thư mục con, rồi đến tên tệp. Tệp chính là cách dữ liệu còn lại sau khi chương trình kết thúc và máy tắt.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ý thứ ba có thể kèm cây thư mục rút gọn của thư mục mã V06 (code/v06-operating-system/src/cpu.c).
+Hiện dần: bước 1 khi đọc “Hệ điều hành làm việc với hai khái niệm”; bước 2 khi đọc “Chạy cùng một tệp”; bước 3 khi đọc “Khái niệm thứ hai”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:03</span>
+      <h3>Slide 4. Từ xử lý theo lô đến điện thoại: hệ điều hành theo thời gian và theo loại máy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Xử lý theo lô** (thập niên 1950–1960): chạy lần lượt từng công việc, người dùng chờ kết quả</li><li>**Chia sẻ thời gian** (từ thập niên 1960): nhiều người, nhiều chương trình dùng chung một máy cùng lúc</li><li>**Máy tính cá nhân, máy chủ, di động, nhúng**: Windows, macOS, Linux, Android, iOS, hệ điều hành thời gian thực</li></ul></div>
+    <div class="kb-thoai"><p>Hệ điều hành ra đời từ thập niên 1950, khi máy tính còn rất đắt. Hệ thống xử lý theo lô chạy lần lượt từng công việc, và người dùng nộp chương trình rồi chờ kết quả. Bước ngoặt tiếp theo, từ thập niên 1960, là chia sẻ thời gian, hay time sharing: nhiều người, nhiều chương trình dùng chung một máy cùng lúc. Ngày nay, mỗi loại máy trong vườn thú máy tính có loại hệ điều hành riêng. Máy tính cá nhân dùng Windows, macOS hay Linux, phần lớn máy chủ dùng Linux, điện thoại dùng Android và iOS, còn thiết bị nhúng dùng hệ điều hành thời gian thực. Trên máy nào, việc đầu tiên của hệ điều hành vẫn là chia CPU cho các tiến trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt như một dòng thời gian. Ghi nguồn: Tanenbaum &amp; Bos, Modern Operating Systems, ch. 1.
+Hiện dần: bước 1 khi đọc “Hệ điều hành ra đời”; bước 2 khi đọc “Bước ngoặt tiếp theo”; bước 3 khi đọc “Ngày nay”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:44</span>
+      <h3>Slide 5. Chia sẻ thời gian: một nhân CPU luân phiên chạy các tiến trình</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Hệ điều hành **cắt thời gian thành khoảng ngắn** và luân phiên giao nhân CPU cho từng tiến trình.</li></ul></div></div>
+    <div class="kb-thoai"><p>Còn hệ điều hành chia CPU thế nào? Giả sử có ba tiến trình A, B, C, nhưng chỉ có một nhân CPU. Hệ điều hành chia thời gian thành những khoảng rất ngắn, cỡ vài mili giây. Trong mỗi khoảng, nhân CPU chạy một tiến trình, hết khoảng thì hệ điều hành dừng tiến trình đó, lưu trạng thái, rồi giao nhân cho tiến trình kế tiếp: A, B, C, rồi lại A. Mỗi tiến trình nhận khoảng một phần ba thời gian, và vì các khoảng rất ngắn, người dùng thấy cả ba cùng chạy. Cách làm này chính là chia sẻ thời gian.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình chia-se-thoi-gian: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: OSTEP, ch. 2.
+Hiện dần: bước 1 khi đọc “Giả sử có ba tiến trình”; bước 2 khi đọc “Hệ điều hành chia thời gian”; bước 3 khi đọc “Trong mỗi khoảng”; bước 4 khi đọc “Mỗi tiến trình”; bước 5 khi đọc “Cách làm này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:21</span>
+      <h3>Slide 6. Ba tiến trình chung một nhân: mỗi tiến trình được khoảng một phần ba</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Máy biên soạn: **8 bộ xử lý logic, 341 tiến trình** — luôn nhiều tiến trình hơn số nhân</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">run.ps1</span><pre><code>$p = Start-Process -FilePath out\cpu.exe -ArgumentList $n, 4 -NoNewWindow -PassThru `
+     -RedirectStandardOutput &quot;results\$tag-$n.txt&quot;
+if ($pin) { $p.ProcessorAffinity = 1 }</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình kiểm chứng bằng chương trình cpu, viết lại theo ví dụ đầu tiên trong sách hệ điều hành của vợ chồng Arpaci-Dusseau. Chương trình chỉ quay vòng trên CPU, và mỗi giây in xem nó chạy được bao nhiêu triệu vòng. Mình chạy chương trình bằng PowerShell, với thuộc tính chọn nhân ProcessorAffinity bằng 1, tức dãy bit chỉ bật bit 0, để buộc tiến trình chỉ chạy trên nhân số 0. Mỗi bản nhận tên A, B hoặc C và chạy bốn giây. Trước hết chạy một bản, rồi chạy ba bản A, B, C cùng lúc trên cùng nhân đó. Các bạn đoán xem mỗi bản còn được bao nhiêu vòng mỗi giây? Kết quả cho thấy một mình, A chạy khoảng 595 triệu vòng mỗi giây. Khi chung nhân với B và C, mỗi bản chỉ còn khoảng 200 triệu, đúng một phần ba. Còn khi cho ba bản dùng mọi nhân, mỗi bản lại được gần 570 triệu. Trên máy biên soạn có tám bộ xử lý logic nhưng có tới 341 tiến trình, nên hệ điều hành luôn phải chia sẻ thời gian.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới. Sau câu &quot;mỗi bản còn được bao nhiêu vòng mỗi giây?&quot;, dừng khoảng 2 giây rồi mới hiện khung kết quả; tô bốn dòng A alone và ba dòng chung core 0. Kết quả chạy ngày 13/11/2026 (Intel Core i5-8400H, 4 nhân, 8 bộ xử lý logic; Windows 11; GCC 13.2). Mã src/cpu.c không lên slide ở chương này.
+Hiện dần: bước 1 khi đọc “Kết quả cho thấy”; bước 2 khi đọc “Trên máy biên soạn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:30</span>
+      <h3>Slide 7. Chương trình không tự điều khiển phần cứng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>In ra màn hình, đọc bàn phím, ghi tệp: mọi việc vào ra đều **đi qua hệ điều hành** bằng lời gọi hệ thống</li><li>Chương trình C gọi hàm của **thư viện chuẩn**, thư viện chuẩn gọi hệ điều hành thay cho chương trình</li></ul></div>
+    <div class="kb-thoai"><p>Từ đây có một hệ quả cho người lập trình: chương trình không tự điều khiển phần cứng. In ra màn hình, đọc bàn phím hay ghi một tệp, việc nào cũng đi qua hệ điều hành bằng lời gọi hệ thống. Ở Chương 4, chương trình C đầu tiên in một dòng chữ bằng hàm printf; hàm này thuộc thư viện chuẩn, và chính thư viện chuẩn gọi hệ điều hành thay cho chương trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Từ đây có một hệ quả”; bước 2 khi đọc “Ở Chương 4”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:51</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Thí nghiệm với chương trình cpu để lại một câu hỏi.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Ba bản cpu cùng chạy trên một nhân CPU và đều in kết quả mỗi giây. Điều gì làm chúng có vẻ chạy cùng lúc?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Nhân CPU tự tách thành ba nhân nhỏ hơn.</li>
+      <li><b>B.</b> Hệ điều hành luân phiên giao nhân CPU cho từng tiến trình trong những khoảng thời gian ngắn.</li>
+      <li><b>C.</b> Mỗi bản chạy xong một giây rồi mới đến bản sau.</li>
+      <li><b>D.</b> Ba bản dùng chung một vùng bộ nhớ nên chạy như một chương trình.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Đó là chia sẻ thời gian: hệ điều hành cắt thời gian thành khoảng vài mili giây và luân phiên giao nhân cho từng tiến trình, nên mỗi bản nhận khoảng một phần ba thời gian. Phương án C sai vì các khoảng ngắn hơn một giây rất nhiều, nên cả ba đều in mỗi giây.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án C dễ được chọn vì nó cũng là luân phiên, nhưng với khoảng một giây thì mỗi bản phải chờ hai giây giữa hai lần in. Thực tế các khoảng chỉ vài mili giây, nên cả ba đều in đều đặn mỗi giây.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:14</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo phân biệt tệp thực thi với tiến trình.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Chạy cùng một tệp thực thi cpu.exe ba lần. Điều nào đúng?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Có một tiến trình, vì chỉ có một tệp thực thi.</li>
+      <li><b>B.</b> Có ba tiến trình, và chúng dùng chung các biến trong bộ nhớ.</li>
+      <li><b>C.</b> Có ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng.</li>
+      <li><b>D.</b> Có ba tệp thực thi được tạo ra trên đĩa.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Tiến trình là chương trình đang chạy cùng bộ nhớ của nó. Ba lần chạy là ba tiến trình, mỗi tiến trình một vùng bộ nhớ riêng, không dùng chung biến; tệp thực thi trên đĩa vẫn chỉ có một.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A nhầm tiến trình với tệp thực thi: tệp chỉ có một, nhưng mỗi lần chạy là một tiến trình riêng, với bộ nhớ riêng.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:33</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Hệ điều hành** quản lý phần cứng; **nhân** điều khiển trực tiếp, chương trình dùng lời gọi hệ thống</li><li>**Tiến trình** là chương trình đang chạy; **chia sẻ thời gian** cho nhiều tiến trình dùng chung CPU</li><li>**Hệ thống tệp** giữ dữ liệu trên bộ nhớ thứ cấp thành **tệp**, **thư mục**, chỉ tới bằng **đường dẫn**</li></ul></div>
+    <div class="kb-thoai"><p>Đứng giữa phần cứng và các chương trình là hệ điều hành: nhân trực tiếp điều khiển phần cứng, còn chương trình xin dịch vụ qua lời gọi hệ thống. Hệ điều hành chia CPU cho các tiến trình bằng chia sẻ thời gian, như thí nghiệm với chương trình cpu đã đo. Còn dữ liệu được giữ lại nhờ hệ thống tệp, tổ chức bộ nhớ thứ cấp thành tệp và thư mục. Từ phần này, các bạn cần nắm các từ khóa: hệ điều hành, nhân hệ điều hành, tiến trình, chia sẻ thời gian, hệ thống tệp, tệp, thư mục và đường dẫn.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Đứng giữa phần cứng”; bước 2 khi đọc “Hệ điều hành chia CPU”; bước 3 khi đọc “Còn dữ liệu”; bước 4 khi đọc “các bạn cần nắm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:04</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Các bạn muốn đi xa hơn có thể đọc hai chủ đề: bộ nhớ ảo, cách mỗi tiến trình có một không gian địa chỉ riêng, và lập lịch CPU, cách hệ điều hành chọn tiến trình chạy tiếp. Cả hai đều có trong cuốn sách của Arpaci-Dusseau, đọc miễn phí trên mạng. Bài tập mở rộng là chạy ba bản chương trình cpu, mở Task Manager hoặc lệnh tasklist để xem ba tiến trình cùng mã tiến trình của chúng, rồi dừng từng bản và quan sát kết quả.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Các bạn muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:30</span>
+      <h3>Tổng kết chương</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Phần cứng**: kiến trúc von Neumann; CPU lặp chu trình lệnh; phân cấp bộ nhớ và tính cục bộ</li><li>**Dữ liệu**: mọi thứ là bit — hệ nhị phân, hệ thập lục phân, mã hóa ký tự UTF-8</li><li>**Hệ điều hành**: tiến trình, chia sẻ thời gian, hệ thống tệp, lời gọi hệ thống</li></ul></div>
+    <div class="kb-thoai"><p>Chương 1 khép lại với ba ý. Nhóm phần cứng trả lời chương trình chạy trên cái gì: máy tính tổ chức theo kiến trúc von Neumann, CPU lặp chu trình lệnh trên các lệnh máy, còn phân cấp bộ nhớ và tính cục bộ giúp CPU không phải chờ RAM. Nhóm dữ liệu trả lời mọi thứ được lưu thế nào: tất cả là bit, số theo hệ nhị phân, viết gọn bằng hệ thập lục phân, chữ qua mã hóa ký tự như UTF-8. Nhóm hệ điều hành trả lời ai điều phối: hệ điều hành chạy các tiến trình bằng chia sẻ thời gian, giữ dữ liệu trong hệ thống tệp, và phục vụ chương trình qua lời gọi hệ thống.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Infographic tổng kết chương: ba thẻ hiện lần lượt theo lời đọc.
+Hiện dần: bước 1 khi đọc “Chương 1 khép lại”; bước 2 khi đọc “Nhóm dữ liệu”; bước 3 khi đọc “Nhóm hệ điều hành”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">7:04</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Máy tính đã sẵn sàng, nhưng chương trình chạy trên nó phải do ai đó viết ra từ một bài toán. Chương 2 bắt đầu từ bước đầu tiên đó, với phần về thuật toán: từ bài toán đến lưu đồ và mã giả.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Tổng kết chương mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V06", "tieu_de": "Hệ điều hành: tiến trình, bộ nhớ và hệ thống tệp", "giong": "vi-VN-NamMinhNeural", "tong": 437.31, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/1adccf5f7354ee95.mp3", "dur": 8.64, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Máy", 1], [2.237, "chỉ", 1], [2.4, "có", 1], [2.538, "vài", 1], [2.712, "nhân", 1], [3.156, "CPU", 1], [3.6, "mà", 1], [3.763, "chạy", 1], [3.975, "cùng", 1], [4.2, "lúc", 1], [4.375, "hàng", 1], [4.612, "trăm", 1], [4.825, "chương", 1], [5.05, "trình:", 1], [5.513, "phần", 1], [5.725, "mềm", 1], [5.925, "nào", 1], [6.112, "làm", 1], [6.287, "việc", 1], [6.45, "đó,", 1], [6.95, "và", 1], [7.138, "làm", 1], [7.35, "thế", 1], [7.487, "nào?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Vài nhân CPU, hàng trăm chương trình cùng chạy", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Trên máy của các bạn”; bước 2 khi đọc “Ngoài ra”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 9.24, "audio": "audio/8ebff168c06093a1.mp3", "dur": 25.34, "words": [[0.1, "Trên", 0], [0.412, "máy", 0], [0.625, "của", 0], [0.75, "các", 0], [0.9, "bạn", 0], [1.087, "lúc", 0], [1.275, "này", 0], [1.475, "có", 0], [1.613, "trình", 0], [1.825, "duyệt,", 0], [2.325, "trình", 0], [2.55, "soạn", 0], [2.812, "thảo,", 0], [3.388, "có", 0], [3.525, "thể", 0], [3.7, "cả", 0], [3.875, "nhạc", 0], [4.112, "nền,", 0], [4.575, "cùng", 0], [4.85, "hàng", 0], [5.05, "trăm", 0], [5.237, "chương", 0], [5.425, "trình", 0], [5.625, "chạy", 0], [5.812, "ngầm,", 0], [6.338, "trong", 0], [6.6, "khi", 0], [7.043, "CPU", 0], [7.487, "chỉ", 0], [7.688, "có", 0], [7.825, "vài", 0], [8.012, "nhân.", 0], [9.175, "Ngoài", 1], [9.45, "ra,", 1], [9.925, "ở", 1], [10.088, "phần", 1], [10.35, "về", 1], [10.463, "phân", 1], [10.662, "cấp", 1], [10.812, "bộ", 1], [11.0, "nhớ,", 1], [11.55, "các", 1], [11.738, "bạn", 1], [11.988, "đã", 1], [12.075, "biết", 1], [12.312, "RAM", 1], [12.512, "mất", 1], [12.688, "nội", 1], [12.9, "dung", 1], [13.125, "khi", 1], [13.3, "tắt", 1], [13.5, "nguồn,", 1], [14.037, "vậy", 1], [14.338, "mà", 1], [14.5, "tắt", 1], [14.713, "máy", 1], [14.912, "rồi", 1], [15.025, "bật", 1], [15.213, "lại,", 1], [15.738, "các", 1], [15.9, "tệp", 1], [16.137, "vẫn", 1], [16.35, "còn", 1], [16.562, "nguyên.", 1], [17.738, "Câu", 2], [17.925, "hỏi", 2], [18.15, "của", 2], [18.288, "phần", 2], [18.475, "này", 2], [18.625, "là:", 2], [19.1, "phần", 2], [19.3, "mềm", 2], [19.512, "nào", 2], [19.725, "chia", 2], [20.325, "CPU,", 2], [20.925, "RAM,", 2], [21.512, "ổ", 2], [21.712, "lưu", 2], [21.9, "trữ", 2], [22.188, "cho", 2], [22.312, "các", 2], [22.475, "chương", 2], [22.712, "trình,", 2], [23.163, "và", 2], [23.375, "nó", 2], [23.5, "làm", 2], [23.675, "việc", 2], [23.837, "đó", 2], [24.05, "thế", 2], [24.175, "nào?", 2]], "cues": [0.1, 9.175, 17.738], "lang": 0.6}, {"ten": "Slide 2. Hệ điều hành đứng giữa phần cứng và các chương trình", "loai": "slide", "slide": "S02", "dung": "Hình vi-tri-hdh: bước 1 phần cứng, bước 2 nhân, bước 3 các chương trình và mũi tên lời gọi hệ thống; bước 4 ô kết luận.\nHiện dần: bước 1 khi đọc “Dưới cùng là phần cứng”; bước 2 khi đọc “Ngay trên phần cứng là nhân”; bước 3 khi đọc “Các chương trình nằm trên cùng”; bước 4 khi đọc “Như vậy”.", "start": 35.18, "audio": "audio/c8265ee2406e7311.mp3", "dur": 43.63, "words": [[0.1, "Phần", 0], [0.388, "mềm", 0], [0.6, "đó", 0], [0.787, "là", 0], [0.9, "hệ", 0], [1.087, "điều", 0], [1.275, "hành,", 0], [1.788, "hay", 0], [2.075, "operating", 0], [2.6, "system.", 0], [3.987, "Dưới", 1], [4.287, "cùng", 1], [4.537, "là", 1], [4.65, "phần", 1], [4.888, "cứng", 1], [5.15, "mà", 1], [5.275, "các", 1], [5.463, "bạn", 1], [5.688, "đã", 1], [5.8, "biết:", 1], [6.625, "CPU,", 1], [7.45, "RAM,", 1], [8.037, "ổ", 1], [8.6, "SSD,", 1], [9.162, "bàn", 1], [9.412, "phím,", 1], [9.95, "màn", 1], [10.213, "hình.", 1], [11.312, "Ngay", 2], [11.675, "trên", 2], [11.887, "phần", 2], [12.113, "cứng", 2], [12.387, "là", 2], [12.525, "nhân", 2], [12.75, "hệ", 2], [12.925, "điều", 2], [13.088, "hành,", 2], [13.588, "hay", 2], [13.8, "kernel,", 2], [14.575, "phần", 2], [14.787, "lõi", 2], [14.963, "chạy", 2], [15.2, "với", 2], [15.312, "quyền", 2], [15.55, "đặc", 2], [15.7, "biệt", 2], [15.963, "và", 2], [16.1, "là", 2], [16.225, "phần", 2], [16.475, "duy", 2], [16.6, "nhất", 2], [16.8, "trực", 2], [17.0, "tiếp", 2], [17.2, "điều", 2], [17.375, "khiển", 2], [17.637, "phần", 2], [17.837, "cứng.", 2], [19.012, "Nhân", 3], [19.325, "chạy", 3], [19.55, "các", 3], [19.725, "chương", 3], [19.95, "trình,", 3], [20.45, "cấp", 3], [20.613, "bộ", 3], [20.812, "nhớ,", 3], [21.387, "quản", 3], [21.663, "lý", 3], [21.837, "tệp", 3], [22.163, "và", 3], [22.312, "điều", 3], [22.475, "khiển", 3], [22.725, "thiết", 3], [22.913, "bị", 3], [23.1, "vào", 3], [23.288, "ra.", 3], [24.413, "Các", 4], [24.613, "chương", 4], [24.85, "trình", 4], [25.075, "nằm", 4], [25.262, "trên", 4], [25.462, "cùng,", 4], [25.938, "như", 4], [26.163, "trình", 4], [26.4, "duyệt,", 4], [26.887, "trình", 4], [27.125, "soạn", 4], [27.375, "thảo,", 4], [27.975, "hay", 4], [28.175, "chương", 4], [28.413, "trình", 4], [28.613, "hello", 4], [29.025, "mà", 4], [29.188, "các", 4], [29.375, "bạn", 4], [29.613, "sẽ", 4], [29.762, "viết", 4], [30.025, "ở", 4], [30.137, "Chương", 4], [30.387, "4.", 4], [31.575, "Khi", 5], [31.85, "cần", 5], [32.138, "in", 5], [32.312, "ra", 5], [32.438, "màn", 5], [32.625, "hình", 5], [32.825, "hay", 5], [32.975, "ghi", 5], [33.1, "một", 5], [33.288, "tệp,", 5], [33.775, "chương", 5], [34.025, "trình", 5], [34.225, "không", 5], [34.438, "tự", 5], [34.612, "làm,", 5], [35.125, "mà", 5], [35.375, "gửi", 5], [35.638, "yêu", 5], [35.8, "cầu", 5], [36.05, "cho", 5], [36.175, "nhân", 5], [36.4, "qua", 5], [36.6, "lời", 5], [36.775, "gọi", 5], [37.0, "hệ", 5], [37.15, "thống,", 5], [37.712, "hay", 5], [37.925, "system", 5], [38.4, "call.", 5], [39.562, "Như", 6], [39.812, "vậy,", 6], [40.288, "hệ", 6], [40.487, "điều", 6], [40.65, "hành", 6], [40.862, "đứng", 6], [41.112, "giữa", 6], [41.3, "phần", 6], [41.575, "cứng", 6], [41.875, "và", 6], [41.987, "mọi", 6], [42.225, "chương", 6], [42.5, "trình.", 6]], "cues": [3.987, 11.312, 24.413, 39.562], "lang": 2.6}, {"ten": "Slide 3. Tiến trình là chương trình đang chạy; tệp là dữ liệu còn lại sau khi chạy", "loai": "slide", "slide": "S03", "dung": "Ba ý hiện lần lượt. Ý thứ ba có thể kèm cây thư mục rút gọn của thư mục mã V06 (code/v06-operating-system/src/cpu.c).\nHiện dần: bước 1 khi đọc “Hệ điều hành làm việc với hai khái niệm”; bước 2 khi đọc “Chạy cùng một tệp”; bước 3 khi đọc “Khái niệm thứ hai”.", "start": 81.41, "audio": "audio/ea563a97c249ed53.mp3", "dur": 41.83, "words": [[0.1, "Hệ", 0], [0.35, "điều", 0], [0.5, "hành", 0], [0.725, "làm", 0], [0.925, "việc", 0], [1.15, "với", 0], [1.275, "hai", 0], [1.45, "khái", 0], [1.675, "niệm", 0], [1.925, "các", 0], [2.1, "bạn", 0], [2.362, "sẽ", 0], [2.525, "gặp", 0], [2.7, "suốt", 0], [2.975, "môn", 0], [3.188, "học.", 0], [4.225, "Khái", 1], [4.5, "niệm", 1], [4.713, "thứ", 1], [4.888, "nhất", 1], [5.15, "là", 1], [5.338, "tiến", 1], [5.612, "trình,", 1], [6.112, "hay", 1], [6.312, "process:", 1], [7.112, "một", 1], [7.338, "chương", 1], [7.55, "trình", 1], [7.737, "đang", 1], [7.925, "chạy,", 1], [8.463, "cùng", 1], [8.662, "vùng", 1], [8.85, "bộ", 1], [9.037, "nhớ,", 1], [9.588, "các", 1], [9.775, "tệp", 1], [9.988, "đang", 1], [10.188, "mở", 1], [10.438, "và", 1], [10.575, "trạng", 1], [10.825, "thái", 1], [11.269, "CPU", 1], [11.713, "của", 1], [11.863, "nó.", 1], [13.075, "Chạy", 2], [13.363, "cùng", 2], [13.575, "một", 2], [13.75, "tệp", 2], [13.95, "thực", 2], [14.125, "thi", 2], [14.3, "hai", 2], [14.488, "lần", 2], [14.762, "thì", 2], [14.925, "có", 2], [15.062, "hai", 2], [15.238, "tiến", 2], [15.5, "trình,", 2], [16.0, "mỗi", 2], [16.212, "tiến", 2], [16.438, "trình", 2], [16.625, "một", 2], [16.788, "vùng", 2], [17.0, "bộ", 2], [17.2, "nhớ", 2], [17.425, "riêng,", 2], [17.925, "không", 2], [18.175, "dùng", 2], [18.413, "chung", 2], [18.637, "biến", 2], [18.863, "với", 2], [18.975, "nhau.", 2], [20.15, "Khái", 3], [20.413, "niệm", 3], [20.637, "thứ", 3], [20.837, "hai", 3], [21.1, "là", 3], [21.212, "hệ", 3], [21.387, "thống", 3], [21.6, "tệp,", 3], [22.075, "hay", 3], [22.262, "file", 3], [22.462, "system:", 3], [23.212, "phần", 3], [23.488, "của", 3], [23.625, "hệ", 3], [23.788, "điều", 3], [23.938, "hành", 3], [24.15, "tổ", 3], [24.325, "chức", 3], [24.538, "dữ", 3], [24.712, "liệu", 3], [24.975, "trên", 3], [25.15, "bộ", 3], [25.325, "nhớ", 3], [25.562, "thứ", 3], [25.725, "cấp", 3], [25.962, "thành", 3], [26.2, "các", 3], [26.375, "tệp", 3], [26.587, "có", 3], [26.725, "tên,", 3], [27.225, "xếp", 3], [27.55, "trong", 3], [27.738, "các", 3], [27.9, "thư", 3], [28.05, "mục.", 3], [29.137, "Mỗi", 4], [29.525, "tệp", 4], [29.775, "được", 4], [29.95, "chỉ", 4], [30.125, "tới", 4], [30.363, "bằng", 4], [30.562, "một", 4], [30.712, "đường", 4], [30.925, "dẫn,", 4], [31.462, "chẳng", 4], [31.7, "hạn", 4], [31.925, "bắt", 4], [32.075, "đầu", 4], [32.275, "từ", 4], [32.487, "ổ", 4], [32.638, "C,", 4], [33.237, "qua", 4], [33.438, "thư", 4], [33.625, "mục", 4], [33.925, "Users", 4], [34.325, "và", 4], [34.45, "các", 4], [34.638, "thư", 4], [34.775, "mục", 4], [34.987, "con,", 4], [35.475, "rồi", 4], [35.763, "đến", 4], [35.987, "tên", 4], [36.225, "tệp.", 4], [37.312, "Tệp", 5], [37.638, "chính", 5], [37.875, "là", 5], [38.013, "cách", 5], [38.212, "dữ", 5], [38.375, "liệu", 5], [38.6, "còn", 5], [38.85, "lại", 5], [39.087, "sau", 5], [39.25, "khi", 5], [39.413, "chương", 5], [39.65, "trình", 5], [39.888, "kết", 5], [40.087, "thúc", 5], [40.312, "và", 5], [40.55, "máy", 5], [40.763, "tắt.", 5]], "cues": [0.1, 13.075, 20.15], "lang": 0.6}, {"ten": "Slide 4. Từ xử lý theo lô đến điện thoại: hệ điều hành theo thời gian và theo loại máy", "loai": "slide", "slide": "S04", "dung": "Ba ý hiện lần lượt như một dòng thời gian. Ghi nguồn: Tanenbaum & Bos, Modern Operating Systems, ch. 1.\nHiện dần: bước 1 khi đọc “Hệ điều hành ra đời”; bước 2 khi đọc “Bước ngoặt tiếp theo”; bước 3 khi đọc “Ngày nay”.", "start": 123.84, "audio": "audio/3cee9a1f9afc0915.mp3", "dur": 40.46, "words": [[0.1, "Hệ", 0], [0.338, "điều", 0], [0.487, "hành", 0], [0.7, "ra", 0], [0.838, "đời", 0], [1.062, "từ", 0], [1.238, "thập", 0], [1.438, "niên", 0], [1.675, "1950,", 0], [3.163, "khi", 0], [3.413, "máy", 0], [3.575, "tính", 0], [3.85, "còn", 0], [4.1, "rất", 0], [4.275, "đắt.", 0], [5.338, "Hệ", 1], [5.562, "thống", 1], [5.787, "xử", 1], [5.975, "lý", 1], [6.213, "theo", 1], [6.4, "lô", 1], [6.612, "chạy", 1], [6.825, "lần", 1], [7.013, "lượt", 1], [7.25, "từng", 1], [7.438, "công", 1], [7.662, "việc,", 1], [8.1, "và", 1], [8.287, "người", 1], [8.475, "dùng", 1], [8.65, "nộp", 1], [8.863, "chương", 1], [9.088, "trình", 1], [9.325, "rồi", 1], [9.5, "chờ", 1], [9.738, "kết", 1], [9.95, "quả.", 1], [11.225, "Bước", 2], [11.512, "ngoặt", 2], [11.713, "tiếp", 2], [11.887, "theo,", 2], [12.4, "từ", 2], [12.55, "thập", 2], [12.738, "niên", 2], [12.95, "1960,", 2], [14.463, "là", 2], [14.7, "chia", 2], [14.912, "sẻ", 2], [15.125, "thời", 2], [15.287, "gian,", 2], [15.838, "hay", 2], [16.038, "time", 2], [16.288, "sharing:", 2], [17.038, "nhiều", 2], [17.288, "người,", 2], [17.8, "nhiều", 2], [18.05, "chương", 2], [18.25, "trình", 2], [18.438, "dùng", 2], [18.663, "chung", 2], [18.875, "một", 2], [19.025, "máy", 2], [19.212, "cùng", 2], [19.438, "lúc.", 2], [20.488, "Ngày", 3], [20.85, "nay,", 3], [21.288, "mỗi", 3], [21.462, "loại", 3], [21.637, "máy", 3], [21.875, "trong", 3], [22.062, "vườn", 3], [22.262, "thú", 3], [22.438, "máy", 3], [22.625, "tính", 3], [22.887, "có", 3], [23.0, "loại", 3], [23.212, "hệ", 3], [23.438, "điều", 3], [23.625, "hành", 3], [23.812, "riêng.", 3], [24.962, "Máy", 4], [25.325, "tính", 4], [25.575, "cá", 4], [25.75, "nhân", 4], [26.012, "dùng", 4], [26.238, "Windows,", 4], [26.962, "macOS", 4], [27.625, "hay", 4], [27.762, "Linux,", 4], [28.363, "phần", 4], [28.587, "lớn", 4], [28.812, "máy", 4], [28.975, "chủ", 4], [29.163, "dùng", 4], [29.375, "Linux,", 4], [30.0, "điện", 4], [30.225, "thoại", 4], [30.413, "dùng", 4], [30.675, "Android", 4], [31.125, "và", 4], [31.325, "iOS,", 4], [32.225, "còn", 4], [32.438, "thiết", 4], [32.612, "bị", 4], [32.75, "nhúng", 4], [33.013, "dùng", 4], [33.2, "hệ", 4], [33.35, "điều", 4], [33.513, "hành", 4], [33.712, "thời", 4], [33.85, "gian", 4], [34.075, "thực.", 4], [35.112, "Trên", 5], [35.425, "máy", 5], [35.587, "nào,", 5], [36.05, "việc", 5], [36.25, "đầu", 5], [36.45, "tiên", 5], [36.7, "của", 5], [36.825, "hệ", 5], [37.0, "điều", 5], [37.163, "hành", 5], [37.425, "vẫn", 5], [37.612, "là", 5], [37.737, "chia", 5], [38.231, "CPU", 5], [38.725, "cho", 5], [38.875, "các", 5], [39.1, "tiến", 5], [39.35, "trình.", 5]], "cues": [0.1, 11.225, 20.488], "lang": 0.6}, {"ten": "Slide 5. Chia sẻ thời gian: một nhân CPU luân phiên chạy các tiến trình", "loai": "slide", "slide": "S05", "dung": "Hình chia-se-thoi-gian: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: OSTEP, ch. 2.\nHiện dần: bước 1 khi đọc “Giả sử có ba tiến trình”; bước 2 khi đọc “Hệ điều hành chia thời gian”; bước 3 khi đọc “Trong mỗi khoảng”; bước 4 khi đọc “Mỗi tiến trình”; bước 5 khi đọc “Cách làm này”.", "start": 164.9, "audio": "audio/c7f1c00e41203535.mp3", "dur": 33.65, "words": [[0.1, "Còn", 0], [0.425, "hệ", 0], [0.65, "điều", 0], [0.812, "hành", 0], [1.05, "chia", 0], [1.5, "CPU", 0], [1.95, "thế", 0], [2.062, "nào?", 0], [3.212, "Giả", 1], [3.5, "sử", 1], [3.763, "có", 1], [3.888, "ba", 1], [4.062, "tiến", 1], [4.35, "trình", 1], [4.625, "A,", 1], [5.1, "B,", 1], [5.675, "C,", 1], [6.325, "nhưng", 1], [6.625, "chỉ", 1], [6.825, "có", 1], [6.925, "một", 1], [7.112, "nhân", 1], [8.018, "CPU.", 1], [8.925, "Hệ", 2], [9.162, "điều", 2], [9.325, "hành", 2], [9.562, "chia", 2], [9.762, "thời", 2], [9.925, "gian", 2], [10.162, "thành", 2], [10.387, "những", 2], [10.588, "khoảng", 2], [10.838, "rất", 2], [11.025, "ngắn,", 2], [11.537, "cỡ", 2], [11.825, "vài", 2], [12.075, "mili", 2], [12.45, "giây.", 2], [13.6, "Trong", 3], [13.9, "mỗi", 3], [14.05, "khoảng,", 3], [14.625, "nhân", 3], [15.107, "CPU", 3], [15.588, "chạy", 3], [15.762, "một", 3], [15.95, "tiến", 3], [16.188, "trình,", 3], [16.663, "hết", 3], [16.837, "khoảng", 3], [17.163, "thì", 3], [17.312, "hệ", 3], [17.462, "điều", 3], [17.625, "hành", 3], [17.85, "dừng", 3], [18.075, "tiến", 3], [18.312, "trình", 3], [18.488, "đó,", 3], [19.0, "lưu", 3], [19.225, "trạng", 3], [19.475, "thái,", 3], [20.038, "rồi", 3], [20.288, "giao", 3], [20.5, "nhân", 3], [20.738, "cho", 3], [20.85, "tiến", 3], [21.1, "trình", 3], [21.275, "kế", 3], [21.462, "tiếp:", 3], [22.012, "A,", 3], [22.525, "B,", 3], [23.1, "C,", 3], [23.725, "rồi", 3], [23.988, "lại", 3], [24.212, "A.", 3], [24.538, "Mỗi", 4], [24.75, "tiến", 4], [24.988, "trình", 4], [25.163, "nhận", 4], [25.413, "khoảng", 4], [25.663, "một", 4], [25.812, "phần", 4], [26.038, "ba", 4], [26.212, "thời", 4], [26.387, "gian,", 4], [26.9, "và", 4], [27.137, "vì", 4], [27.275, "các", 4], [27.438, "khoảng", 4], [27.688, "rất", 4], [27.863, "ngắn,", 4], [28.387, "người", 4], [28.587, "dùng", 4], [28.8, "thấy", 4], [28.975, "cả", 4], [29.125, "ba", 4], [29.312, "cùng", 4], [29.538, "chạy.", 4], [30.7, "Cách", 5], [30.938, "làm", 5], [31.163, "này", 5], [31.35, "chính", 5], [31.6, "là", 5], [31.75, "chia", 5], [31.988, "sẻ", 5], [32.263, "thời", 5], [32.438, "gian.", 5]], "cues": [3.212, 8.925, 13.6, 24.538, 30.7], "lang": 2.6}, {"ten": "Slide 6. Ba tiến trình chung một nhân: mỗi tiến trình được khoảng một phần ba", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới. Sau câu \"mỗi bản còn được bao nhiêu vòng mỗi giây?\", dừng khoảng 2 giây rồi mới hiện khung kết quả; tô bốn dòng A alone và ba dòng chung core 0. Kết quả chạy ngày 13/11/2026 (Intel Core i5-8400H, 4 nhân, 8 bộ xử lý logic; Windows 11; GCC 13.2). Mã src/cpu.c không lên slide ở chương này.\nHiện dần: bước 1 khi đọc “Kết quả cho thấy”; bước 2 khi đọc “Trên máy biên soạn”.", "start": 201.15, "audio": "audio/9115db50c403b7ae.mp3", "dur": 59.69, "words": [[0.1, "Mình", 0], [0.487, "kiểm", 0], [0.738, "chứng", 0], [0.975, "bằng", 0], [1.163, "chương", 0], [1.387, "trình", 0], [1.575, "cpu,", 0], [2.375, "viết", 0], [2.65, "lại", 0], [2.825, "theo", 0], [2.987, "ví", 0], [3.163, "dụ", 0], [3.362, "đầu", 0], [3.538, "tiên", 0], [3.825, "trong", 0], [3.987, "sách", 0], [4.162, "hệ", 0], [4.338, "điều", 0], [4.525, "hành", 0], [4.763, "của", 0], [4.9, "vợ", 0], [5.062, "chồng", 0], [5.4, "Arpaci-Dusseau.", 0], [7.237, "Chương", 1], [7.537, "trình", 1], [7.763, "chỉ", 1], [7.912, "quay", 1], [8.075, "vòng", 1], [8.312, "trên", 1], [8.881, "CPU,", 1], [9.45, "và", 1], [9.637, "mỗi", 1], [9.863, "giây", 1], [10.05, "in", 1], [10.238, "xem", 1], [10.675, "nó", 1], [10.838, "chạy", 1], [11.025, "được", 1], [11.188, "bao", 1], [11.387, "nhiêu", 1], [11.588, "triệu", 1], [11.812, "vòng.", 1], [12.925, "Mình", 2], [13.287, "chạy", 2], [13.475, "chương", 2], [13.675, "trình", 2], [13.85, "bằng", 2], [14.05, "PowerShell,", 2], [14.925, "với", 2], [15.1, "thuộc", 2], [15.312, "tính", 2], [15.525, "chọn", 2], [15.738, "nhân", 2], [15.963, "ProcessorAffinity", 2], [17.35, "bằng", 2], [17.587, "1,", 2], [18.0, "tức", 2], [18.212, "dãy", 2], [18.425, "bit", 2], [18.65, "chỉ", 2], [18.863, "bật", 2], [19.062, "bit", 2], [19.238, "0,", 2], [19.725, "để", 2], [19.9, "buộc", 2], [20.1, "tiến", 2], [20.312, "trình", 2], [20.525, "chỉ", 2], [20.7, "chạy", 2], [20.95, "trên", 2], [21.125, "nhân", 2], [21.325, "số", 2], [21.55, "0.", 2], [22.712, "Mỗi", 3], [23.087, "bản", 3], [23.3, "nhận", 3], [23.538, "tên", 3], [23.875, "A,", 3], [24.325, "B", 3], [24.613, "hoặc", 3], [24.887, "C", 3], [25.188, "và", 3], [25.325, "chạy", 3], [25.538, "bốn", 3], [25.788, "giây.", 3], [26.913, "Trước", 4], [27.188, "hết", 4], [27.375, "chạy", 4], [27.55, "một", 4], [27.725, "bản,", 4], [28.25, "rồi", 4], [28.512, "chạy", 4], [28.738, "ba", 4], [28.938, "bản", 4], [29.262, "A,", 4], [29.738, "B,", 4], [30.288, "C", 4], [30.562, "cùng", 4], [30.812, "lúc", 4], [31.0, "trên", 4], [31.25, "cùng", 4], [31.475, "nhân", 4], [31.688, "đó.", 4], [32.875, "Các", 5], [33.075, "bạn", 5], [33.3, "đoán", 5], [33.513, "xem", 5], [33.75, "mỗi", 5], [33.95, "bản", 5], [34.237, "còn", 5], [34.438, "được", 5], [34.587, "bao", 5], [34.763, "nhiêu", 5], [35.0, "vòng", 5], [35.188, "mỗi", 5], [35.388, "giây?", 5], [36.525, "Kết", 6], [36.775, "quả", 6], [37.013, "cho", 6], [37.163, "thấy", 6], [37.337, "một", 6], [37.538, "mình,", 6], [38.0, "A", 6], [38.225, "chạy", 6], [38.425, "khoảng", 6], [38.75, "595", 6], [39.663, "triệu", 6], [39.913, "vòng", 6], [40.112, "mỗi", 6], [40.312, "giây.", 6], [41.438, "Khi", 7], [41.712, "chung", 7], [41.913, "nhân", 7], [42.163, "với", 7], [42.263, "B", 7], [42.487, "và", 7], [42.638, "C,", 7], [43.25, "mỗi", 7], [43.462, "bản", 7], [43.712, "chỉ", 7], [43.875, "còn", 7], [44.1, "khoảng", 7], [44.35, "200", 7], [44.75, "triệu,", 7], [45.288, "đúng", 7], [45.538, "một", 7], [45.675, "phần", 7], [45.888, "ba.", 7], [47.025, "Còn", 8], [47.275, "khi", 8], [47.462, "cho", 8], [47.6, "ba", 8], [47.788, "bản", 8], [48.013, "dùng", 8], [48.2, "mọi", 8], [48.388, "nhân,", 8], [48.9, "mỗi", 8], [49.125, "bản", 8], [49.362, "lại", 8], [49.538, "được", 8], [49.7, "gần", 8], [50.013, "570", 8], [50.763, "triệu.", 8], [51.95, "Trên", 9], [52.263, "máy", 9], [52.388, "biên", 9], [52.6, "soạn", 9], [52.888, "có", 9], [53.0, "tám", 9], [53.237, "bộ", 9], [53.4, "xử", 9], [53.575, "lý", 9], [53.788, "logic", 9], [54.3, "nhưng", 9], [54.55, "có", 9], [54.675, "tới", 9], [54.862, "341", 9], [55.85, "tiến", 9], [56.125, "trình,", 9], [56.638, "nên", 9], [56.938, "hệ", 9], [57.138, "điều", 9], [57.288, "hành", 9], [57.525, "luôn", 9], [57.737, "phải", 9], [57.913, "chia", 9], [58.112, "sẻ", 9], [58.337, "thời", 9], [58.5, "gian.", 9]], "cues": [36.525, 51.95], "lang": 9.6}, {"ten": "Slide 7. Chương trình không tự điều khiển phần cứng", "loai": "slide", "slide": "S07", "dung": "Hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Từ đây có một hệ quả”; bước 2 khi đọc “Ở Chương 4”.", "start": 270.44, "audio": "audio/688237ccaf704895.mp3", "dur": 20.33, "words": [[0.1, "Từ", 0], [0.375, "đây", 0], [0.575, "có", 0], [0.675, "một", 0], [0.838, "hệ", 0], [1.0, "quả", 0], [1.3, "cho", 0], [1.425, "người", 0], [1.613, "lập", 0], [1.812, "trình:", 0], [2.312, "chương", 0], [2.612, "trình", 0], [2.85, "không", 0], [3.075, "tự", 0], [3.263, "điều", 0], [3.438, "khiển", 0], [3.712, "phần", 0], [3.925, "cứng.", 0], [5.1, "In", 1], [5.4, "ra", 1], [5.537, "màn", 1], [5.737, "hình,", 1], [6.162, "đọc", 1], [6.362, "bàn", 1], [6.562, "phím", 1], [6.862, "hay", 1], [7.025, "ghi", 1], [7.15, "một", 1], [7.362, "tệp,", 1], [7.838, "việc", 1], [8.075, "nào", 1], [8.3, "cũng", 1], [8.475, "đi", 1], [8.575, "qua", 1], [8.75, "hệ", 1], [8.938, "điều", 1], [9.113, "hành", 1], [9.35, "bằng", 1], [9.562, "lời", 1], [9.775, "gọi", 1], [10.0, "hệ", 1], [10.15, "thống.", 1], [11.35, "Ở", 2], [11.55, "Chương", 2], [11.8, "4,", 2], [12.3, "chương", 2], [12.55, "trình", 2], [12.75, "C", 2], [12.938, "đầu", 2], [13.1, "tiên", 2], [13.35, "in", 2], [13.537, "một", 2], [13.688, "dòng", 2], [13.925, "chữ", 2], [14.15, "bằng", 2], [14.363, "hàm", 2], [14.575, "printf;", 2], [15.4, "hàm", 2], [15.625, "này", 2], [15.787, "thuộc", 2], [15.988, "thư", 2], [16.137, "viện", 2], [16.337, "chuẩn,", 2], [16.875, "và", 2], [17.062, "chính", 2], [17.262, "thư", 2], [17.4, "viện", 2], [17.613, "chuẩn", 2], [17.863, "gọi", 2], [18.075, "hệ", 2], [18.25, "điều", 2], [18.425, "hành", 2], [18.65, "thay", 2], [18.85, "cho", 2], [18.988, "chương", 2], [19.225, "trình.", 2]], "cues": [0.1, 11.35], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 291.37, "audio": "audio/0f996d64045c992b.mp3", "dur": 3.74, "words": [[0.1, "Thí", 0], [0.287, "nghiệm", 0], [0.588, "với", 0], [0.713, "chương", 0], [0.963, "trình", 0], [1.188, "cpu", 0], [1.762, "để", 0], [1.913, "lại", 0], [2.1, "một", 0], [2.325, "câu", 0], [2.487, "hỏi.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/fd26aeadf7e69ed1.mp3", "dur2": 12.94, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.775, "B.", 0], [1.137, "Phương", 1], [1.462, "án", 1], [1.625, "C", 1], [1.837, "dễ", 1], [2.025, "được", 1], [2.188, "chọn", 1], [2.475, "vì", 1], [2.587, "nó", 1], [2.775, "cũng", 1], [2.962, "là", 1], [3.062, "luân", 1], [3.25, "phiên,", 1], [3.775, "nhưng", 1], [4.05, "với", 1], [4.15, "khoảng", 1], [4.412, "một", 1], [4.588, "giây", 1], [4.825, "thì", 1], [5.0, "mỗi", 1], [5.2, "bản", 1], [5.438, "phải", 1], [5.588, "chờ", 1], [5.825, "hai", 1], [6.037, "giây", 1], [6.237, "giữa", 1], [6.463, "hai", 1], [6.675, "lần", 1], [6.875, "in.", 1], [7.987, "Thực", 2], [8.225, "tế", 2], [8.438, "các", 2], [8.6, "khoảng", 2], [8.9, "chỉ", 2], [9.075, "vài", 2], [9.262, "mili", 2], [9.588, "giây,", 2], [10.15, "nên", 2], [10.45, "cả", 2], [10.625, "ba", 2], [10.838, "đều", 2], [11.037, "in", 2], [11.25, "đều", 2], [11.387, "đặn", 2], [11.6, "mỗi", 2], [11.8, "giây.", 2]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 314.65, "audio": "audio/4d1aff0cfec3d74e.mp3", "dur": 3.38, "words": [[0.1, "Câu", 0], [0.35, "tiếp", 0], [0.625, "theo", 0], [0.812, "phân", 0], [1.012, "biệt", 0], [1.2, "tệp", 0], [1.45, "thực", 0], [1.637, "thi", 0], [1.875, "với", 0], [2.0, "tiến", 0], [2.25, "trình.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/d8077027c5f1c8c3.mp3", "dur2": 8.57, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.688, "là", 0], [0.787, "C.", 0], [1.113, "Phương", 1], [1.462, "án", 1], [1.712, "A", 1], [2.0, "nhầm", 1], [2.288, "tiến", 1], [2.538, "trình", 1], [2.75, "với", 1], [2.85, "tệp", 1], [3.087, "thực", 1], [3.237, "thi:", 1], [3.788, "tệp", 1], [4.025, "chỉ", 1], [4.188, "có", 1], [4.287, "một,", 1], [4.763, "nhưng", 1], [5.013, "mỗi", 1], [5.15, "lần", 1], [5.362, "chạy", 1], [5.612, "là", 1], [5.7, "một", 1], [5.888, "tiến", 1], [6.112, "trình", 1], [6.3, "riêng,", 1], [6.763, "với", 1], [6.95, "bộ", 1], [7.162, "nhớ", 1], [7.4, "riêng.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Đứng giữa phần cứng”; bước 2 khi đọc “Hệ điều hành chia CPU”; bước 3 khi đọc “Còn dữ liệu”; bước 4 khi đọc “các bạn cần nắm”.", "start": 333.2, "audio": "audio/f991b2d95d994a82.mp3", "dur": 30.41, "words": [[0.1, "Đứng", 0], [0.412, "giữa", 0], [0.6, "phần", 0], [0.85, "cứng", 0], [1.15, "và", 0], [1.25, "các", 0], [1.425, "chương", 0], [1.65, "trình", 0], [1.9, "là", 0], [2.025, "hệ", 0], [2.2, "điều", 0], [2.362, "hành:", 0], [2.862, "nhân", 0], [3.15, "trực", 0], [3.35, "tiếp", 0], [3.538, "điều", 0], [3.7, "khiển", 0], [3.95, "phần", 0], [4.15, "cứng,", 0], [4.688, "còn", 0], [4.963, "chương", 0], [5.162, "trình", 0], [5.35, "xin", 0], [5.55, "dịch", 0], [5.7, "vụ", 0], [5.9, "qua", 0], [6.15, "lời", 0], [6.362, "gọi", 0], [6.575, "hệ", 0], [6.725, "thống.", 0], [7.925, "Hệ", 1], [8.162, "điều", 1], [8.312, "hành", 1], [8.525, "chia", 1], [8.994, "CPU", 1], [9.463, "cho", 1], [9.6, "các", 1], [9.787, "tiến", 1], [10.037, "trình", 1], [10.262, "bằng", 1], [10.475, "chia", 1], [10.688, "sẻ", 1], [10.887, "thời", 1], [11.05, "gian,", 1], [11.575, "như", 1], [11.825, "thí", 1], [11.975, "nghiệm", 1], [12.262, "với", 1], [12.375, "chương", 1], [12.588, "trình", 1], [12.812, "cpu", 1], [13.425, "đã", 1], [13.6, "đo.", 1], [14.725, "Còn", 2], [15.0, "dữ", 2], [15.15, "liệu", 2], [15.375, "được", 2], [15.525, "giữ", 2], [15.75, "lại", 2], [15.975, "nhờ", 2], [16.212, "hệ", 2], [16.375, "thống", 2], [16.6, "tệp,", 2], [17.1, "tổ", 2], [17.262, "chức", 2], [17.45, "bộ", 2], [17.637, "nhớ", 2], [17.9, "thứ", 2], [18.087, "cấp", 2], [18.325, "thành", 2], [18.55, "tệp", 2], [18.8, "và", 2], [18.962, "thư", 2], [19.163, "mục.", 2], [20.25, "Từ", 3], [20.5, "phần", 3], [20.688, "này,", 3], [21.125, "các", 3], [21.288, "bạn", 3], [21.525, "cần", 3], [21.762, "nắm", 3], [21.975, "các", 3], [22.137, "từ", 3], [22.288, "khóa:", 3], [22.9, "hệ", 3], [23.1, "điều", 3], [23.288, "hành,", 3], [23.775, "nhân", 3], [24.038, "hệ", 3], [24.225, "điều", 3], [24.413, "hành,", 3], [24.925, "tiến", 3], [25.15, "trình,", 3], [25.625, "chia", 3], [25.875, "sẻ", 3], [26.1, "thời", 3], [26.275, "gian,", 3], [26.825, "hệ", 3], [27.025, "thống", 3], [27.262, "tệp,", 3], [27.8, "tệp,", 3], [28.3, "thư", 3], [28.5, "mục", 3], [28.762, "và", 3], [28.925, "đường", 3], [29.163, "dẫn.", 3]], "cues": [0.1, 7.925, 14.725, 21.125], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Các bạn muốn đi xa hơn”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 364.21, "audio": "audio/fd2a28de1be332e1.mp3", "dur": 26.04, "words": [[0.1, "Các", 0], [0.3, "bạn", 0], [0.5, "muốn", 0], [0.675, "đi", 0], [0.775, "xa", 0], [1.05, "hơn", 0], [1.288, "có", 0], [1.387, "thể", 0], [1.538, "đọc", 0], [1.7, "hai", 0], [1.887, "chủ", 0], [2.112, "đề:", 0], [2.587, "bộ", 0], [2.837, "nhớ", 0], [3.075, "ảo,", 0], [3.638, "cách", 0], [3.825, "mỗi", 0], [3.987, "tiến", 0], [4.237, "trình", 0], [4.45, "có", 0], [4.55, "một", 0], [4.725, "không", 0], [4.938, "gian", 0], [5.112, "địa", 0], [5.275, "chỉ", 0], [5.513, "riêng,", 0], [6.025, "và", 0], [6.225, "lập", 0], [6.425, "lịch", 0], [6.981, "CPU,", 0], [7.537, "cách", 0], [7.7, "hệ", 0], [7.888, "điều", 0], [8.037, "hành", 0], [8.238, "chọn", 0], [8.512, "tiến", 0], [8.762, "trình", 0], [8.963, "chạy", 0], [9.162, "tiếp.", 0], [10.275, "Cả", 1], [10.475, "hai", 1], [10.775, "đều", 1], [10.9, "có", 1], [11.05, "trong", 1], [11.25, "cuốn", 1], [11.438, "sách", 1], [11.65, "của", 1], [11.95, "Arpaci-Dusseau,", 1], [13.275, "đọc", 1], [13.512, "miễn", 1], [13.725, "phí", 1], [13.95, "trên", 1], [14.15, "mạng.", 1], [15.325, "Bài", 2], [15.562, "tập", 2], [15.775, "mở", 2], [15.963, "rộng", 2], [16.238, "là", 2], [16.387, "chạy", 2], [16.613, "ba", 2], [16.762, "bản", 2], [16.988, "chương", 2], [17.2, "trình", 2], [17.4, "cpu,", 2], [18.212, "mở", 2], [18.438, "Task", 2], [18.712, "Manager", 2], [19.275, "hoặc", 2], [19.613, "lệnh", 2], [19.837, "tasklist", 2], [20.575, "để", 2], [20.75, "xem", 2], [21.038, "ba", 2], [21.188, "tiến", 2], [21.438, "trình", 2], [21.65, "cùng", 2], [21.85, "mã", 2], [21.988, "tiến", 2], [22.225, "trình", 2], [22.413, "của", 2], [22.55, "chúng,", 2], [23.087, "rồi", 2], [23.3, "dừng", 2], [23.512, "từng", 2], [23.712, "bản", 2], [24.025, "và", 2], [24.15, "quan", 2], [24.375, "sát", 2], [24.6, "kết", 2], [24.762, "quả.", 2]], "cues": [0.1, 15.325], "lang": 0.6}, {"ten": "Tổng kết chương", "loai": "ket-chuong", "slide": "TKC", "dung": "Infographic tổng kết chương: ba thẻ hiện lần lượt theo lời đọc.\nHiện dần: bước 1 khi đọc “Chương 1 khép lại”; bước 2 khi đọc “Nhóm dữ liệu”; bước 3 khi đọc “Nhóm hệ điều hành”.", "start": 390.85, "audio": "audio/f70af49d4feed30c.mp3", "dur": 33.0, "words": [[0.1, "Chương", 0], [0.388, "1", 0], [0.512, "khép", 0], [0.75, "lại", 0], [0.963, "với", 0], [1.075, "ba", 0], [1.288, "ý.", 0], [1.75, "Nhóm", 1], [2.062, "phần", 1], [2.288, "cứng", 1], [2.525, "trả", 1], [2.688, "lời", 1], [2.875, "chương", 1], [3.112, "trình", 1], [3.312, "chạy", 1], [3.513, "trên", 1], [3.688, "cái", 1], [3.85, "gì:", 1], [4.375, "máy", 1], [4.562, "tính", 1], [4.775, "tổ", 1], [4.95, "chức", 1], [5.15, "theo", 1], [5.3, "kiến", 1], [5.562, "trúc", 1], [5.737, "von", 1], [5.95, "Neumann,", 1], [6.625, "CPU", 1], [7.3, "lặp", 1], [7.525, "chu", 1], [7.7, "trình", 1], [7.9, "lệnh", 1], [8.162, "trên", 1], [8.338, "các", 1], [8.5, "lệnh", 1], [8.675, "máy,", 1], [9.2, "còn", 1], [9.463, "phân", 1], [9.65, "cấp", 1], [9.787, "bộ", 1], [9.963, "nhớ", 1], [10.275, "và", 1], [10.4, "tính", 1], [10.613, "cục", 1], [10.762, "bộ", 1], [10.975, "giúp", 1], [11.4, "CPU", 1], [11.825, "không", 1], [12.062, "phải", 1], [12.225, "chờ", 1], [12.45, "RAM.", 1], [13.588, "Nhóm", 2], [13.963, "dữ", 2], [14.113, "liệu", 2], [14.325, "trả", 2], [14.537, "lời", 2], [14.762, "mọi", 2], [14.938, "thứ", 2], [15.15, "được", 2], [15.312, "lưu", 2], [15.488, "thế", 2], [15.6, "nào:", 2], [16.075, "tất", 2], [16.262, "cả", 2], [16.488, "là", 2], [16.613, "bit,", 2], [17.062, "số", 2], [17.312, "theo", 2], [17.475, "hệ", 2], [17.637, "nhị", 2], [17.85, "phân,", 2], [18.337, "viết", 2], [18.562, "gọn", 2], [18.825, "bằng", 2], [19.0, "hệ", 2], [19.137, "thập", 2], [19.325, "lục", 2], [19.488, "phân,", 2], [20.025, "chữ", 2], [20.262, "qua", 2], [20.45, "mã", 2], [20.637, "hóa", 2], [20.837, "ký", 2], [21.05, "tự", 2], [21.288, "như", 2], [22.344, "UTF-8.", 2], [23.4, "Nhóm", 3], [23.75, "hệ", 3], [23.925, "điều", 3], [24.075, "hành", 3], [24.275, "trả", 3], [24.438, "lời", 3], [24.675, "ai", 3], [24.875, "điều", 3], [25.025, "phối:", 3], [25.625, "hệ", 3], [25.812, "điều", 3], [25.95, "hành", 3], [26.175, "chạy", 3], [26.375, "các", 3], [26.55, "tiến", 3], [26.8, "trình", 3], [27.025, "bằng", 3], [27.238, "chia", 3], [27.45, "sẻ", 3], [27.663, "thời", 3], [27.825, "gian,", 3], [28.35, "giữ", 3], [28.562, "dữ", 3], [28.738, "liệu", 3], [28.975, "trong", 3], [29.15, "hệ", 3], [29.288, "thống", 3], [29.5, "tệp,", 3], [29.975, "và", 3], [30.175, "phục", 3], [30.363, "vụ", 3], [30.562, "chương", 3], [30.8, "trình", 3], [31.012, "qua", 3], [31.212, "lời", 3], [31.425, "gọi", 3], [31.637, "hệ", 3], [31.788, "thống.", 3]], "cues": [0.1, 13.588, 23.4], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Tổng kết chương mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 424.45, "audio": "audio/a92774a028c8e489.mp3", "dur": 12.26, "words": [[0.1, "Máy", 0], [0.487, "tính", 0], [0.762, "đã", 0], [0.863, "sẵn", 0], [1.075, "sàng,", 0], [1.587, "nhưng", 0], [1.9, "chương", 0], [2.125, "trình", 0], [2.325, "chạy", 0], [2.538, "trên", 0], [2.712, "nó", 0], [2.925, "phải", 0], [3.112, "do", 0], [3.3, "ai", 0], [3.462, "đó", 0], [3.663, "viết", 0], [3.862, "ra", 0], [4.05, "từ", 0], [4.225, "một", 0], [4.425, "bài", 0], [4.6, "toán.", 0], [5.825, "Chương", 1], [6.175, "2", 1], [6.362, "bắt", 1], [6.525, "đầu", 1], [6.75, "từ", 1], [6.9, "bước", 1], [7.1, "đầu", 1], [7.263, "tiên", 1], [7.5, "đó,", 1], [7.987, "với", 1], [8.175, "phần", 1], [8.425, "về", 1], [8.537, "thuật", 1], [8.762, "toán:", 1], [9.312, "từ", 1], [9.525, "bài", 1], [9.688, "toán", 1], [10.0, "đến", 1], [10.213, "lưu", 1], [10.375, "đồ", 1], [10.613, "và", 1], [10.738, "mã", 1], [10.95, "giả.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Thuật toán: từ bài toán đến lưu đồ và mã giả"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

@@ -1,0 +1,4 @@
+x = 5, address of x = 00000091E65FFA3C
+px = 00000091E65FFA3C, *px = 5
+address of px = 00000091E65FFA30
+after *px = 7: x = 7

@@ -1,0 +1,9 @@
+case 1: x =  23, still looping after 100 rounds  STUCK
+case 2: x =   1, expected  0, got  0, 4 rounds  OK
+case 3: x =  99, still looping after 100 rounds  STUCK
+case 4: x =  24, still looping after 100 rounds  STUCK
+case 5: x =   0, expected -1, got -1, 4 rounds  OK
+case 6: x = 100, still looping after 100 rounds  STUCK
+case 7: x =  19, expected  7, got  7, 1 rounds  OK
+case 8: x =  30, expected 10, got 10, 2 rounds  OK
+case 9: x =  56, expected 12, got 12, 3 rounds  OK

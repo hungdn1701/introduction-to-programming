@@ -1,0 +1,481 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V36 — Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-6/07-strings">Mã</a>
+<h1>V36 · Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 6</div><div class="ten">Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Văn bản có độ dài thay đổi, và một lỗ hổng của cả Internet</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Họ tên, địa chỉ, câu trả lời của người dùng: văn bản có <b>độ dài thay đổi</b></li><li data-s="2">Tháng 11 năm 1988, <b>sâu Morris</b> lây khắp Internet nhờ một lời gọi đọc chuỗi trong chương trình fingerd</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> văn bản được lưu thế nào, hàm biết chuỗi dài bao nhiêu bằng cách nào, và đọc chuỗi sai cách nguy hiểm ra sao?</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Chuỗi ký tự là mảng char kết thúc bằng '\0'</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Chuỗi ký tự</b>: mảng <code>char</code> chứa các ký tự, theo sau là <b>ký tự kết thúc chuỗi</b> <code>'\0'</code> (giá trị 0)</li><li data-s="2">Hằng chuỗi <code>"hello"</code> tự có <code>'\0'</code> ở cuối; in bằng <code>%s</code></li><li data-s="3"><b>string.h</b>: <code>strlen</code>, <code>strcpy</code>, <code>strcmp</code>, <code>strcat</code>; đọc một dòng bằng <b>fgets</b></li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>"hello" trong mảng char s[10]</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 480" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Chuỗi hello trong mảng char s[10]: năm ô đầu chứa h, e, l, l, o; ô thứ sáu chứa ký tự kết thúc chuỗi, giá trị 0; bốn ô còn lại không thuộc chuỗi; strlen đếm ký tự đến khi gặp ký tự kết thúc, được 5, còn sizeof(s) là 10.">
+  <defs>
+    <marker id="cm-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="cm-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="cm-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="cm-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="cm-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="cm-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- năm ký tự -->
+  <g data-s="1">
+    <rect x="80" y="90" width="150" height="76" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="155" y="137.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;h&#x27;</text>
+    <text x="155" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[0]</text>
+    <rect x="230" y="90" width="150" height="76" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="305" y="137.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;e&#x27;</text>
+    <text x="305" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[1]</text>
+    <rect x="380" y="90" width="150" height="76" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="455" y="137.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;l&#x27;</text>
+    <text x="455" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[2]</text>
+    <rect x="530" y="90" width="150" height="76" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="605" y="137.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;l&#x27;</text>
+    <text x="605" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[3]</text>
+    <rect x="680" y="90" width="150" height="76" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="755" y="137.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;o&#x27;</text>
+    <text x="755" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[4]</text>
+    <text x="80" y="60" text-anchor="start" font-size="24" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">char s[10] = &quot;hello&quot;;</text>
+  </g>
+
+  <!-- ký tự kết thúc chuỗi -->
+  <g data-s="2">
+    <rect x="830" y="90" width="150" height="76" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="905" y="137.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">&#x27;\0&#x27;</text>
+    <text x="905" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[5]</text>
+    <text x="905" y="240" text-anchor="middle" font-size="22" fill="#22603F">giá trị 0</text>
+  </g>
+
+  <!-- phần còn lại -->
+  <g data-s="3">
+    <rect x="980" y="90" width="150" height="76" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1055" y="137.36" text-anchor="middle" font-size="26" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="1055" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[6]</text>
+    <rect x="1130" y="90" width="150" height="76" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1205" y="137.36" text-anchor="middle" font-size="26" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="1205" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[7]</text>
+    <rect x="1280" y="90" width="150" height="76" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1355" y="137.36" text-anchor="middle" font-size="26" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="1355" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[8]</text>
+    <rect x="1430" y="90" width="150" height="76" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1505" y="137.36" text-anchor="middle" font-size="26" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="1505" y="200" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">[9]</text>
+    <text x="1280" y="240" text-anchor="middle" font-size="22" fill="#5B6478">không thuộc chuỗi</text>
+  </g>
+
+  <!-- strlen và sizeof -->
+  <g data-s="4">
+    <line x1="80" y1="290" x2="826" y2="290" stroke="#2F855A" stroke-width="3" marker-end="url(#cm-ok)"/>
+    <text x="453" y="325" text-anchor="middle" font-size="22" fill="#2F855A">strlen đếm đến &#x27;\0&#x27;: 5</text>
+    <rect x="80" y="360" width="1500" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="830" y="407.5" text-anchor="middle" font-size="23" fill="#373D4E">strlen(s) = 5, sizeof(s) = 10 — chuỗi n ký tự cần mảng n + 1 phần tử</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Độ dài chuỗi <b>không lưu ở đâu cả</b>: hàm phải đếm đến <code>'\0'</code>.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>strcpy không biết kích thước mảng đích</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 380" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Tràn bộ đệm khi chạy overflow.c: mảng name 10 byte ở địa chỉ …BD2, biến balance 4 byte ngay sau ở …BDC chứa 100; strcpy chép 15 byte của Nguyen Van Anh và ký tự kết thúc: 10 byte đầu vào name, byte 10 đến 13 là dấu cách, A, n, h đè lên balance, thành 1752056096.">
+  <defs>
+    <marker id="tb-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="tb-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="tb-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="tb-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="tb-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="tb-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- name và balance kề nhau -->
+  <g data-s="1">
+    <text x="80" y="50" text-anchor="start" font-size="23" fill="#123A6B" font-weight="500">name[10] ở …BD2</text>
+    <text x="1080" y="50" text-anchor="start" font-size="23" fill="#6B4E06" font-weight="500">balance ở …BDC</text>
+    <rect x="80" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="180" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="280" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="380" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="480" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="580" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="680" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="780" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="880" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="980" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <rect x="1080" y="70" width="400" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1280" y="115.08" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">100</text>
+  </g>
+
+  <!-- strcpy 15 byte -->
+  <g data-s="2">
+    <rect x="80" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="130" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;N&#x27;</text>
+    <rect x="180" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="230" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;g&#x27;</text>
+    <rect x="280" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="330" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;u&#x27;</text>
+    <rect x="380" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="430" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;y&#x27;</text>
+    <rect x="480" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="530" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;e&#x27;</text>
+    <rect x="580" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="630" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;n&#x27;</text>
+    <rect x="680" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="730" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27; &#x27;</text>
+    <rect x="780" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="830" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;V&#x27;</text>
+    <rect x="880" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="930" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;a&#x27;</text>
+    <rect x="980" y="70" width="100" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="1030" y="112.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">&#x27;n&#x27;</text>
+    <text x="80" y="180" text-anchor="start" font-size="23" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">strcpy(name, &quot;Nguyen Van Anh&quot;);  14 ký tự + &#x27;\0&#x27; = 15 byte</text>
+  </g>
+
+  <!-- đè lên balance -->
+  <g data-s="3">
+    <line x1="1080" y1="70" x2="1480" y2="140" stroke="#BC2626" stroke-width="4"/>
+    <text x="1080" y="230" text-anchor="start" font-size="21" fill="#9B1C1C">byte 10–14 của chuỗi ghi vào đây:</text>
+    <rect x="1080" y="240" width="100" height="70" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="1130" y="282.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">&#x27; &#x27;</text>
+    <rect x="1180" y="240" width="100" height="70" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="1230" y="282.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">&#x27;A&#x27;</text>
+    <rect x="1280" y="240" width="100" height="70" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="1330" y="282.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">&#x27;n&#x27;</text>
+    <rect x="1380" y="240" width="100" height="70" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="1430" y="282.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">&#x27;h&#x27;</text>
+    <rect x="1480" y="240" width="100" height="70" fill="#FBEAEA" stroke="#BC2626" stroke-width="2"/>
+    <text x="1530" y="282.92" text-anchor="middle" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">&#x27;\0&#x27;</text>
+    <rect x="1080" y="320" width="600" height="50" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1380" y="352" text-anchor="middle" font-size="22" fill="#373D4E">balance đọc như int: 1752056096</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p><b>Tràn bộ đệm</b>: ghi quá cuối mảng, đè lên dữ liệu bên cạnh — không có thông báo nào.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>strings.c: strlen 5, sizeof 10; fgets giữ ký tự xuống dòng</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> <span class="hl-m">my_strlen</span>(<span class="hl-k">const</span> <span class="hl-k">char</span> s[])
+{
+    <span class="hl-k">int</span> i = <span class="hl-n">0</span>;
+    <span class="hl-k">while</span> (s[i] != <span class="hl-s">'</span><span class="hl-s">\0</span><span class="hl-s">'</span>)
+        ++i;
+    <span class="hl-k">return</span> i;
+}
+<span class="hl-k">char</span> s[<span class="hl-n">10</span>] = <span class="hl-s">"</span><span class="hl-s">hello</span><span class="hl-s">"</span>;
+<span class="hl-m">strcpy</span>(t, s);
+<span class="hl-m">strcat</span>(t, <span class="hl-s">"</span><span class="hl-s">, world</span><span class="hl-s">"</span>);
+<span class="hl-k">if</span> (<span class="hl-m">fgets</span>(line, <span class="hl-k">sizeof</span>(line), stdin) == <span class="hl-t">NULL</span>)
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ echo 'Dang Ngoc Hung' | ./strings
+strlen(s) = 5, sizeof(s) = 10, my_strlen(s) = 5
+strcmp("apple", "banana") = -1
+t = "hello, world", strlen(t) = 12
+<span class="noi-bat">fgets read 15 characters: [Dang Ngoc Hung</span>
+<span class="noi-bat">]</span>
+without the newline: [Dang Ngoc Hung]</pre></div><ul class="y-nho"><li data-s="2">fgets đọc <b>cả ký tự xuống dòng</b> (15 ký tự): bỏ nó trước khi dùng</li><li data-s="3">strcmp trả <b>số âm</b> khi chuỗi thứ nhất đứng trước theo thứ tự từ điển</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>overflow.c: GCC cảnh báo, balance đổi từ 100 thành 1752056096</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> balance = <span class="hl-n">100</span>;
+<span class="hl-k">char</span> name[<span class="hl-n">10</span>];
+<span class="hl-m">strcpy</span>(name, <span class="hl-s">"</span><span class="hl-s">Nguyen Van Anh</span><span class="hl-s">"</span>);       <span class="hl-c">/* 15 bytes into 10 */</span>
+<span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">name = %s, balance = %d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, name, balance);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra overflow.c -o overflow
+overflow.c: In function 'main':
+<span class="noi-bat">overflow.c:13:5: warning: '__builtin_memcpy' writing 15 bytes into a region of size 10</span>
+overflows the destination [-Wstringop-overflow=]
+overflow.c:10:10: note: destination object 'name' of size 10
+$ ./overflow
+&amp;name = 00000089EE1FFBD2, &amp;balance = 00000089EE1FFBDC
+<span class="noi-bat">name = Nguyen Van Anh, balance = 1752056096</span></pre></div><ul class="y-nho"><li data-s="2">Hằng chuỗi: GCC đếm được và cảnh báo; chuỗi <b>nhập từ người dùng</b> thì không ai cảnh báo</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>gets đã bị bỏ khỏi C11: dùng fgets</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-k">char</span> line[<span class="hl-n">10</span>];
+<span class="hl-m">gets</span>(line);                <span class="hl-c">/* removed from C11: no size limit */</span>
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra gets_demo.c -o gets_demo
+gets_demo.c: In function 'main':
+<span class="noi-bat">gets_demo.c:6:5: warning: call to 'gets' declared with attribute warning: Using gets() is</span>
+always unsafe - use fgets() instead [-Wattribute-warning]
+$ echo 'a line much longer than ten characters' | ./gets_demo
+<span class="noi-bat">[exit code 139: Segmentation fault]</span></pre></div><ul class="y-nho"><li data-s="2"><b>gets</b> không nhận kích thước mảng: luôn có thể tràn bộ đệm</li><li data-s="3">Dùng <code>fgets(line, sizeof(line), stdin)</code>; mảng chứa chuỗi n ký tự cần <b>n + 1</b> phần tử</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với char s[] = "Ha Noi";, sizeof(s) và strlen(s) bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>sizeof(s) = 6, strlen(s) = 6.</div></div><div class="dung"><span>B</span><div>sizeof(s) = 7, strlen(s) = 6.</div></div><div class=""><span>C</span><div>sizeof(s) = 6, strlen(s) = 7.</div></div><div class=""><span>D</span><div>sizeof(s) = 10, strlen(s) = 6.</div></div></div><div class="giai-thich">"Ha Noi" có 6 ký tự (kể cả dấu cách); mảng không ghi kích thước được cấp đủ cho 6 ký tự và '\0', nên sizeof là 7; strlen đếm đến '\0', được 6.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với char s[] = "Ha Noi";, sizeof(s) và strlen(s) bằng bao nhiêu?</div></div><div class="lua-chon"><div class=""><span>A</span><div>sizeof(s) = 6, strlen(s) = 6.</div></div><div class="dung"><span>B</span><div>sizeof(s) = 7, strlen(s) = 6.</div></div><div class=""><span>C</span><div>sizeof(s) = 6, strlen(s) = 7.</div></div><div class=""><span>D</span><div>sizeof(s) = 10, strlen(s) = 6.</div></div></div><div class="giai-thich">"Ha Noi" có 6 ký tự (kể cả dấu cách); mảng không ghi kích thước được cấp đủ cho 6 ký tự và '\0', nên sizeof là 7; strlen đếm đến '\0', được 6.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao gets bị bỏ khỏi chuẩn C11, còn fgets thì không?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì gets chậm hơn fgets.</div></div><div class=""><span>B</span><div>Vì gets không đọc được dấu cách.</div></div><div class=""><span>C</span><div>Vì fgets mới hơn gets.</div></div><div class="dung"><span>D</span><div>Vì gets không nhận kích thước mảng nên luôn có thể tràn bộ đệm; fgets dừng khi đủ kích thước.</div></div></div><div class="giai-thich">gets(line) không biết line dài bao nhiêu; dòng dài hơn mảng ghi đè vùng nhớ bên cạnh (sâu Morris 1988). fgets(line, n, stdin) đọc tối đa n − 1 ký tự và thêm '\0'.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao gets bị bỏ khỏi chuẩn C11, còn fgets thì không?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì gets chậm hơn fgets.</div></div><div class=""><span>B</span><div>Vì gets không đọc được dấu cách.</div></div><div class=""><span>C</span><div>Vì fgets mới hơn gets.</div></div><div class="dung"><span>D</span><div>Vì gets không nhận kích thước mảng nên luôn có thể tràn bộ đệm; fgets dừng khi đủ kích thước.</div></div></div><div class="giai-thich">gets(line) không biết line dài bao nhiêu; dòng dài hơn mảng ghi đè vùng nhớ bên cạnh (sâu Morris 1988). fgets(line, n, stdin) đọc tối đa n − 1 ký tự và thêm '\0'.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Chuỗi ký tự</b>: mảng char kết thúc bằng <b>ký tự kết thúc chuỗi</b> <code>'\0'</code>; chuỗi n ký tự cần n + 1 phần tử</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>string.h</b>: <b>strlen</b>, <b>strcpy</b>, <b>strcmp</b>, strcat; đọc dòng bằng <b>fgets</b> (bỏ ký tự xuống dòng)</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Tràn bộ đệm</b>: strcpy, gets ghi quá cuối mảng; C11 đã bỏ gets</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>chuỗi ký tự</span><span>ký tự kết thúc chuỗi</span><span>string.h</span><span>strlen</span><span>strcpy</span><span>strcmp</span><span>fgets</span><span>tràn bộ đệm</span></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>strncpy, snprintf và lý do strncpy không luôn thêm ký tự kết thúc</li><li>Chuỗi và con trỏ: char *p = "hello" khác char s[] = "hello" (K&amp;R §5.5)</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết lại strcpy và strcat của K&amp;R bằng chỉ số mảng; viết hàm đọc một dòng bằng fgets, bỏ ký tự xuống dòng cuối và trả về độ dài; kiểm thử với dòng rỗng và dòng dài hơn mảng.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Chuỗi ký tự: xử lý ký tự và mật mã Caesar</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Từ phần này, dữ liệu là văn bản: họ tên, địa chỉ, câu trả lời của người dùng. C không có kiểu chuỗi riêng, vậy văn bản được lưu thế nào, và hàm biết chuỗi dài bao nhiêu bằng cách nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:14</span>
+      <h3>Slide 1. Văn bản có độ dài thay đổi, và một lỗ hổng của cả Internet</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Họ tên, địa chỉ, câu trả lời của người dùng: văn bản có **độ dài thay đổi**</li><li>Tháng 11 năm 1988, **sâu Morris** lây khắp Internet nhờ một lời gọi đọc chuỗi trong chương trình fingerd</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** văn bản được lưu thế nào, hàm biết chuỗi dài bao nhiêu bằng cách nào, và đọc chuỗi sai cách nguy hiểm ra sao?</div></div>
+    <div class="kb-thoai"><p>Chương trình nào cũng làm việc với văn bản: họ tên, địa chỉ, câu trả lời của người dùng, mỗi cái một độ dài khác nhau. C không có kiểu chuỗi riêng như nhiều ngôn ngữ sau này. Năm 1988, sâu Morris lây sang hàng nghìn máy trên Internet, và một trong các cách nó dùng là gửi một dòng quá dài cho chương trình fingerd, vốn đọc chuỗi bằng một hàm không kiểm tra độ dài. Câu hỏi của phần này là: văn bản được lưu thế nào, hàm biết chuỗi dài bao nhiêu bằng cách nào, và đọc chuỗi sai cách nguy hiểm ra sao?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Spafford (1988).
+Hiện dần: bước 1 khi đọc “Chương trình nào”; bước 2 khi đọc “Năm 1988”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:45</span>
+      <h3>Slide 2. Chuỗi ký tự là mảng char kết thúc bằng &#x27;\0&#x27;</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Chuỗi ký tự**: mảng `char` chứa các ký tự, theo sau là **ký tự kết thúc chuỗi** `&#x27;\0&#x27;` (giá trị 0)</li><li>Hằng chuỗi `&quot;hello&quot;` tự có `&#x27;\0&#x27;` ở cuối; in bằng `%s`</li><li>**string.h**: `strlen`, `strcpy`, `strcmp`, `strcat`; đọc một dòng bằng **fgets**</li></ul></div>
+    <div class="kb-thoai"><p>Câu trả lời của C là một quy ước: chuỗi ký tự là một mảng char chứa các ký tự, theo sau là ký tự kết thúc chuỗi, hay null character, viết là gạch chéo ngược không, có giá trị bằng 0. Hằng chuỗi viết trong dấu nháy kép, như hello, được trình biên dịch tự thêm ký tự kết thúc ở cuối, và printf in chuỗi bằng đặc tả phần trăm s. Thư viện chuẩn có tệp header string.h với các hàm strlen đo độ dài, strcpy chép, strcmp so sánh, strcat nối chuỗi; còn fgets của stdio.h đọc một dòng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: K&amp;R §1.9.
+Hiện dần: bước 1 khi đọc “Câu trả lời của C”; bước 2 khi đọc “Hằng chuỗi”; bước 3 khi đọc “Thư viện chuẩn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:17</span>
+      <h3>Slide 3. &quot;hello&quot; trong mảng char s[10]</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Độ dài chuỗi **không lưu ở đâu cả**: hàm phải đếm đến `&#x27;\0&#x27;`.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình vẽ khai báo char s mười bằng hello. Năm ô đầu chứa năm ký tự h, e, l, l, o. Ô thứ sáu, s năm, chứa ký tự kết thúc chuỗi. Bốn ô còn lại thuộc mảng nhưng không thuộc chuỗi; giá trị của chúng không ảnh hưởng gì. Hàm strlen bắt đầu từ s không và đếm cho đến khi gặp ký tự kết thúc, được 5, trong khi sizeof s là 10, kích thước của cả mảng. Hệ quả là chuỗi n ký tự cần mảng ít nhất n cộng 1 phần tử, và hàm nào xử lý chuỗi cũng phải dựa vào ký tự kết thúc.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình chuoi-mang: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: K&amp;R §2.3.
+Hiện dần: bước 1 khi đọc “Năm ô đầu”; bước 2 khi đọc “Ô thứ sáu”; bước 3 khi đọc “Bốn ô còn lại”; bước 4 khi đọc “Hàm strlen”; bước 5 khi đọc “Hệ quả”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:53</span>
+      <h3>Slide 4. strcpy không biết kích thước mảng đích</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Tràn bộ đệm**: ghi quá cuối mảng, đè lên dữ liệu bên cạnh — không có thông báo nào.</li></ul></div></div>
+    <div class="kb-thoai"><p>Ký tự kết thúc cho biết chuỗi nguồn dài bao nhiêu, nhưng không ai cho strcpy biết mảng đích dài bao nhiêu. Mình vẽ lại lần chạy thật của chương trình overflow. Trước lời gọi, mảng name mười byte nằm ngay trước biến balance bốn byte, đang chứa 100. Lời gọi strcpy chép chuỗi Nguyen Van Anh, mười bốn ký tự cộng ký tự kết thúc, tức mười lăm byte; mười byte đầu vừa mảng name. Bốn byte tiếp theo là dấu cách, A, n, h ghi đè lên balance, và đọc như một số int thì balance thành 1752056096. Bài học là strcpy chỉ an toàn khi chính các bạn đã bảo đảm mảng đích đủ chỗ, kể cả cho ký tự kết thúc.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình tran-bo-dem: ba bước theo ba câu mốc đầu; bước 4 ô kết luận. Địa chỉ lấy từ results/overflow.txt.
+Hiện dần: bước 1 khi đọc “Trước lời gọi”; bước 2 khi đọc “Lời gọi strcpy”; bước 3 khi đọc “Bốn byte tiếp theo”; bước 4 khi đọc “Bài học”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:37</span>
+      <h3>Slide 5. strings.c: strlen 5, sizeof 10; fgets giữ ký tự xuống dòng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>fgets đọc **cả ký tự xuống dòng** (15 ký tự): bỏ nó trước khi dùng</li><li>strcmp trả **số âm** khi chuỗi thứ nhất đứng trước theo thứ tự từ điển</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/strings.c</span><pre><code>int my_strlen(const char s[])
+{
+    int i = 0;
+    while (s[i] != &#x27;\0&#x27;)
+        ++i;
+    return i;
+}
+char s[10] = &quot;hello&quot;;
+strcpy(t, s);
+strcat(t, &quot;, world&quot;);
+if (fgets(line, sizeof(line), stdin) == NULL)</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm my_strlen là strlen trong sách của Kernighan và Ritchie: một vòng while đếm đến ký tự kết thúc. Kết quả: strlen và my_strlen cùng cho 5, sizeof cho 10; strcpy chép hello sang t, strcat nối thêm dấu phẩy và world, được chuỗi mười hai ký tự. Dòng đọc bằng fgets có một điểm cần để ý: nhập Dang Ngoc Hung, mười bốn ký tự, nhưng fgets đọc mười lăm, vì giữ cả ký tự xuống dòng. Vì vậy dấu ngoặc vuông đóng bị đẩy xuống dòng sau, và chương trình phải bỏ ký tự đó trước khi dùng. Hàm strcmp trả số âm, vì apple đứng trước banana theo thứ tự từ điển.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô hai dòng của fgets; hai ý hiện lần lượt. Đoạn bỏ ký tự xuống dòng nằm trong src/strings.c. Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Dòng đọc bằng fgets”; bước 3 khi đọc “Hàm strcmp”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:24</span>
+      <h3>Slide 6. overflow.c: GCC cảnh báo, balance đổi từ 100 thành 1752056096</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Hằng chuỗi: GCC đếm được và cảnh báo; chuỗi **nhập từ người dùng** thì không ai cảnh báo</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/overflow.c</span><pre><code>int balance = 100;
+char name[10];
+strcpy(name, &quot;Nguyen Van Anh&quot;);       /* 15 bytes into 10 */
+printf(&quot;name = %s, balance = %d\n&quot;, name, balance);</code></pre></div></div>
+    <div class="kb-thoai"><p>Chương trình overflow là đúng ví dụ trong hình. Kết quả: GCC cảnh báo strcpy ghi mười lăm byte vào vùng mười byte; chạy thì địa chỉ của name và balance cách nhau đúng mười byte, và balance đổi từ 100 thành 1752056096. Ở đây GCC cứu được vì chuỗi nguồn là hằng, đếm được lúc biên dịch. Khi chuỗi đến từ người dùng, như dòng gửi tới fingerd năm 1988, không trình biên dịch nào biết trước độ dài của nó.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng balance. Quan sát trên máy biên soạn với -O0; bố trí biến có thể khác ở trình biên dịch khác.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Ở đây GCC”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:02</span>
+      <h3>Slide 7. gets đã bị bỏ khỏi C11: dùng fgets</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**gets** không nhận kích thước mảng: luôn có thể tràn bộ đệm</li><li>Dùng `fgets(line, sizeof(line), stdin)`; mảng chứa chuỗi n ký tự cần **n + 1** phần tử</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/gets_demo.c</span><pre><code>char line[10];
+gets(line);                /* removed from C11: no size limit */</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm gets đọc một dòng vào mảng mà không nhận kích thước mảng, nên dòng dài hơn mảng luôn tràn ra ngoài; chính hàm này là lối vào của sâu Morris qua fingerd. Chuẩn C11 đã bỏ gets khỏi ngôn ngữ. Kết quả trên máy biên soạn: GCC bản MinGW cảnh báo Using gets() is always unsafe, use fgets() instead; nhập một dòng ba mươi tám ký tự vào mảng mười phần tử, chương trình bị hệ điều hành dừng. Lời khuyên là luôn đọc dòng bằng fgets với kích thước mảng, và nhớ rằng chuỗi n ký tự cần mảng n cộng 1 phần tử.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng mã thoát; hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Chuẩn C11”; bước 2 khi đọc “Kết quả trên máy”; bước 3 khi đọc “Lời khuyên”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:44</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Chuỗi Ha Noi không dấu được đo bằng hai cách.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Với char s[] = &quot;Ha Noi&quot;;, sizeof(s) và strlen(s) bằng bao nhiêu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> sizeof(s) = 6, strlen(s) = 6.</li>
+      <li><b>B.</b> sizeof(s) = 7, strlen(s) = 6.</li>
+      <li><b>C.</b> sizeof(s) = 6, strlen(s) = 7.</li>
+      <li><b>D.</b> sizeof(s) = 10, strlen(s) = 6.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>&quot;Ha Noi&quot; có 6 ký tự (kể cả dấu cách); mảng không ghi kích thước được cấp đủ cho 6 ký tự và &#x27;\0&#x27;, nên sizeof là 7; strlen đếm đến &#x27;\0&#x27;, được 6.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A quên ký tự kết thúc chuỗi mà trình biên dịch tự thêm vào mảng.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:00</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo quay lại hàm gets.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Vì sao gets bị bỏ khỏi chuẩn C11, còn fgets thì không?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Vì gets chậm hơn fgets.</li>
+      <li><b>B.</b> Vì gets không đọc được dấu cách.</li>
+      <li><b>C.</b> Vì fgets mới hơn gets.</li>
+      <li><b>D.</b> Vì gets không nhận kích thước mảng nên luôn có thể tràn bộ đệm; fgets dừng khi đủ kích thước.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: D</b> — <span>gets(line) không biết line dài bao nhiêu; dòng dài hơn mảng ghi đè vùng nhớ bên cạnh (sâu Morris 1988). fgets(line, n, stdin) đọc tối đa n − 1 ký tự và thêm &#x27;\0&#x27;.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là D. Phương án B dễ được chọn khi nhầm gets với scanf phần trăm s, vốn dừng ở dấu cách; gets đọc cả dòng, vấn đề là không giới hạn độ dài.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án D.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:18</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Chuỗi ký tự**: mảng char kết thúc bằng **ký tự kết thúc chuỗi** `&#x27;\0&#x27;`; chuỗi n ký tự cần n + 1 phần tử</li><li>**string.h**: **strlen**, **strcpy**, **strcmp**, strcat; đọc dòng bằng **fgets** (bỏ ký tự xuống dòng)</li><li>**Tràn bộ đệm**: strcpy, gets ghi quá cuối mảng; C11 đã bỏ gets</li></ul></div>
+    <div class="kb-thoai"><p>Văn bản trong C là chuỗi, một mảng char kết thúc bằng ký tự có giá trị 0, và hàm biết độ dài bằng cách đếm đến ký tự đó. Các hàm của string.h như strlen, strcpy, strcmp đều dựa trên quy ước này; dòng đọc bằng fgets giữ cả ký tự xuống dòng. Và nguy hiểm nằm ở chỗ không hàm nào biết mảng đích dài bao nhiêu: ghi quá cuối mảng là tràn bộ đệm, hay buffer overflow. Từ phần này, các bạn cần nắm các từ khóa: chuỗi ký tự, ký tự kết thúc chuỗi, string.h, strlen, strcpy, strcmp, fgets và tràn bộ đệm.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Văn bản trong C là chuỗi”; bước 2 khi đọc “Các hàm của string.h”; bước 3 khi đọc “Và nguy hiểm”; bước 4 khi đọc “các bạn cần nắm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:55</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Hai chủ đề nâng cao. Chủ đề thứ nhất là các hàm có giới hạn độ dài như strncpy, snprintf, và lý do strncpy không phải lúc nào cũng thêm ký tự kết thúc. Chủ đề thứ hai là chuỗi với con trỏ: char sao p bằng hello khác char s ngoặc vuông bằng hello thế nào. Bài tập mở rộng là viết lại strcpy và strcat bằng chỉ số mảng, rồi viết hàm đọc một dòng bằng fgets, bỏ ký tự xuống dòng cuối và trả về độ dài; kiểm thử với dòng rỗng và dòng dài hơn mảng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:25</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chuỗi là mảng ký tự, và mỗi ký tự là một số. Phần tiếp theo tính toán trên chính những con số đó: mã hóa thư theo cách của Julius Caesar, và chuẩn hóa một họ tên.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V36", "tieu_de": "Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi", "giong": "vi-VN-NamMinhNeural", "tong": 397.89, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/c7531f325d76cd8c.mp3", "dur": 14.18, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Từ", 1], [2.112, "phần", 1], [2.312, "này,", 1], [2.712, "dữ", 1], [2.938, "liệu", 1], [3.212, "là", 1], [3.388, "văn", 1], [3.6, "bản:", 1], [4.162, "họ", 1], [4.4, "tên,", 1], [4.975, "địa", 1], [5.213, "chỉ,", 1], [5.875, "câu", 1], [6.05, "trả", 1], [6.263, "lời", 1], [6.513, "của", 1], [6.65, "người", 1], [6.862, "dùng.", 1], [8.012, "C", 2], [8.35, "không", 2], [8.575, "có", 2], [8.675, "kiểu", 2], [8.863, "chuỗi", 2], [9.088, "riêng,", 2], [9.588, "vậy", 2], [9.825, "văn", 2], [10.012, "bản", 2], [10.25, "được", 2], [10.4, "lưu", 2], [10.575, "thế", 2], [10.688, "nào,", 2], [11.15, "và", 2], [11.35, "hàm", 2], [11.562, "biết", 2], [11.762, "chuỗi", 2], [11.95, "dài", 2], [12.225, "bao", 2], [12.425, "nhiêu", 2], [12.637, "bằng", 2], [12.838, "cách", 2], [13.025, "nào?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Văn bản có độ dài thay đổi, và một lỗ hổng của cả Internet", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Spafford (1988).\nHiện dần: bước 1 khi đọc “Chương trình nào”; bước 2 khi đọc “Năm 1988”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 14.78, "audio": "audio/c31e52913b0c2e3e.mp3", "dur": 30.31, "words": [[0.1, "Chương", 0], [0.4, "trình", 0], [0.588, "nào", 0], [0.787, "cũng", 0], [0.963, "làm", 0], [1.137, "việc", 0], [1.312, "với", 0], [1.425, "văn", 0], [1.613, "bản:", 0], [2.175, "họ", 0], [2.4, "tên,", 0], [2.962, "địa", 0], [3.188, "chỉ,", 0], [3.825, "câu", 0], [4.0, "trả", 0], [4.2, "lời", 0], [4.425, "của", 0], [4.575, "người", 0], [4.775, "dùng,", 0], [5.275, "mỗi", 0], [5.513, "cái", 0], [5.662, "một", 0], [5.825, "độ", 0], [6.025, "dài", 0], [6.25, "khác", 0], [6.5, "nhau.", 0], [7.638, "C", 1], [8.012, "không", 1], [8.238, "có", 1], [8.338, "kiểu", 1], [8.537, "chuỗi", 1], [8.775, "riêng", 1], [9.012, "như", 1], [9.213, "nhiều", 1], [9.438, "ngôn", 1], [9.688, "ngữ", 1], [9.912, "sau", 1], [10.125, "này.", 1], [11.2, "Năm", 2], [11.525, "1988,", 2], [13.15, "sâu", 2], [13.412, "Morris", 2], [13.863, "lây", 2], [14.125, "sang", 2], [14.375, "hàng", 2], [14.525, "nghìn", 2], [14.713, "máy", 2], [14.9, "trên", 2], [15.175, "Internet,", 2], [15.912, "và", 2], [16.075, "một", 2], [16.275, "trong", 2], [16.425, "các", 2], [16.562, "cách", 2], [16.712, "nó", 2], [16.887, "dùng", 2], [17.163, "là", 2], [17.3, "gửi", 2], [17.488, "một", 2], [17.7, "dòng", 2], [17.95, "quá", 2], [18.15, "dài", 2], [18.4, "cho", 2], [18.525, "chương", 2], [18.738, "trình", 2], [18.913, "fingerd,", 2], [19.6, "vốn", 2], [19.837, "đọc", 2], [20.012, "chuỗi", 2], [20.275, "bằng", 2], [20.45, "một", 2], [20.587, "hàm", 2], [20.812, "không", 2], [21.025, "kiểm", 2], [21.25, "tra", 2], [21.387, "độ", 2], [21.575, "dài.", 2], [22.712, "Câu", 3], [22.9, "hỏi", 3], [23.125, "của", 3], [23.262, "phần", 3], [23.45, "này", 3], [23.587, "là:", 3], [24.05, "văn", 3], [24.288, "bản", 3], [24.538, "được", 3], [24.688, "lưu", 3], [24.863, "thế", 3], [24.988, "nào,", 3], [25.475, "hàm", 3], [25.7, "biết", 3], [25.9, "chuỗi", 3], [26.062, "dài", 3], [26.325, "bao", 3], [26.538, "nhiêu", 3], [26.75, "bằng", 3], [26.962, "cách", 3], [27.163, "nào,", 3], [27.613, "và", 3], [27.788, "đọc", 3], [27.975, "chuỗi", 3], [28.163, "sai", 3], [28.375, "cách", 3], [28.575, "nguy", 3], [28.762, "hiểm", 3], [29.0, "ra", 3], [29.125, "sao?", 3]], "cues": [0.1, 11.2, 22.712], "lang": 0.6}, {"ten": "Slide 2. Chuỗi ký tự là mảng char kết thúc bằng '\\0'", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: K&R §1.9.\nHiện dần: bước 1 khi đọc “Câu trả lời của C”; bước 2 khi đọc “Hằng chuỗi”; bước 3 khi đọc “Thư viện chuẩn”.", "start": 45.69, "audio": "audio/2fc9abb6fbd783ef.mp3", "dur": 31.13, "words": [[0.1, "Câu", 0], [0.287, "trả", 0], [0.475, "lời", 0], [0.688, "của", 0], [0.825, "C", 0], [1.087, "là", 0], [1.175, "một", 0], [1.375, "quy", 0], [1.575, "ước:", 0], [2.013, "chuỗi", 0], [2.212, "ký", 0], [2.413, "tự", 0], [2.663, "là", 0], [2.775, "một", 0], [2.975, "mảng", 0], [3.2, "char", 0], [3.425, "chứa", 0], [3.663, "các", 0], [3.825, "ký", 0], [3.987, "tự,", 0], [4.525, "theo", 0], [4.713, "sau", 0], [4.95, "là", 0], [5.05, "ký", 0], [5.275, "tự", 0], [5.487, "kết", 0], [5.688, "thúc", 0], [5.838, "chuỗi,", 0], [6.475, "hay", 0], [6.675, "null", 0], [6.9, "character,", 0], [7.825, "viết", 0], [8.1, "là", 0], [8.238, "gạch", 0], [8.412, "chéo", 0], [8.637, "ngược", 0], [8.838, "không,", 0], [9.3, "có", 0], [9.45, "giá", 0], [9.613, "trị", 0], [9.825, "bằng", 0], [10.012, "0.", 0], [11.162, "Hằng", 1], [11.425, "chuỗi", 1], [11.588, "viết", 1], [11.812, "trong", 1], [12.0, "dấu", 1], [12.2, "nháy", 1], [12.4, "kép,", 1], [12.912, "như", 1], [13.162, "hello,", 1], [13.787, "được", 1], [13.988, "trình", 1], [14.15, "biên", 1], [14.338, "dịch", 1], [14.512, "tự", 1], [14.7, "thêm", 1], [14.925, "ký", 1], [15.137, "tự", 1], [15.338, "kết", 1], [15.537, "thúc", 1], [15.762, "ở", 1], [15.863, "cuối,", 1], [16.425, "và", 1], [16.65, "printf", 1], [17.238, "in", 1], [17.45, "chuỗi", 1], [17.725, "bằng", 1], [17.938, "đặc", 1], [18.087, "tả", 1], [18.275, "phần", 1], [18.5, "trăm", 1], [18.738, "s.", 1], [19.0, "Thư", 2], [19.188, "viện", 2], [19.413, "chuẩn", 2], [19.663, "có", 2], [19.775, "tệp", 2], [20.0, "header", 2], [20.35, "string.h", 2], [21.163, "với", 2], [21.325, "các", 2], [21.488, "hàm", 2], [21.875, "strlen", 2], [22.262, "đo", 2], [22.387, "độ", 2], [22.575, "dài,", 2], [23.194, "strcpy", 2], [23.812, "chép,", 2], [24.488, "strcmp", 2], [25.163, "so", 2], [25.337, "sánh,", 2], [25.944, "strcat", 2], [26.55, "nối", 2], [26.725, "chuỗi;", 2], [27.363, "còn", 2], [27.625, "fgets", 2], [28.05, "của", 2], [28.857, "stdio.h", 2], [29.663, "đọc", 2], [29.825, "một", 2], [29.988, "dòng.", 2]], "cues": [0.1, 11.162, 19.0], "lang": 0.6}, {"ten": "Slide 3. \"hello\" trong mảng char s[10]", "loai": "slide", "slide": "S03", "dung": "Hình chuoi-mang: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: K&R §2.3.\nHiện dần: bước 1 khi đọc “Năm ô đầu”; bước 2 khi đọc “Ô thứ sáu”; bước 3 khi đọc “Bốn ô còn lại”; bước 4 khi đọc “Hàm strlen”; bước 5 khi đọc “Hệ quả”.", "start": 77.42, "audio": "audio/3d391791e90e0d1e.mp3", "dur": 33.91, "words": [[0.1, "Mình", 0], [0.537, "vẽ", 0], [0.675, "khai", 0], [0.912, "báo", 0], [1.15, "char", 0], [1.413, "s", 0], [1.65, "mười", 0], [1.863, "bằng", 0], [2.112, "hello.", 0], [3.413, "Năm", 1], [3.862, "ô", 1], [4.013, "đầu", 1], [4.237, "chứa", 1], [4.45, "năm", 1], [4.662, "ký", 1], [4.9, "tự", 1], [5.125, "h,", 1], [5.612, "e,", 1], [6.15, "l,", 1], [6.838, "l,", 1], [7.525, "o.", 1], [7.862, "Ô", 2], [8.037, "thứ", 2], [8.213, "sáu,", 2], [8.838, "s", 2], [9.05, "năm,", 2], [9.537, "chứa", 2], [9.8, "ký", 2], [10.05, "tự", 2], [10.287, "kết", 2], [10.5, "thúc", 2], [10.675, "chuỗi.", 2], [11.963, "Bốn", 3], [12.312, "ô", 3], [12.463, "còn", 3], [12.688, "lại", 3], [12.863, "thuộc", 3], [13.075, "mảng", 3], [13.363, "nhưng", 3], [13.6, "không", 3], [13.825, "thuộc", 3], [14.012, "chuỗi;", 3], [14.625, "giá", 3], [14.887, "trị", 3], [15.125, "của", 3], [15.262, "chúng", 3], [15.55, "không", 3], [15.787, "ảnh", 3], [15.963, "hưởng", 3], [16.188, "gì.", 3], [17.312, "Hàm", 4], [17.694, "strlen", 4], [18.075, "bắt", 4], [18.225, "đầu", 4], [18.425, "từ", 4], [18.65, "s", 4], [18.8, "không", 4], [19.1, "và", 4], [19.225, "đếm", 4], [19.488, "cho", 4], [19.613, "đến", 4], [19.788, "khi", 4], [19.95, "gặp", 4], [20.137, "ký", 4], [20.35, "tự", 4], [20.55, "kết", 4], [20.775, "thúc,", 4], [21.225, "được", 4], [21.438, "5,", 4], [21.925, "trong", 4], [22.175, "khi", 4], [22.387, "sizeof", 4], [23.087, "s", 4], [23.275, "là", 4], [23.512, "10,", 4], [24.025, "kích", 4], [24.2, "thước", 4], [24.425, "của", 4], [24.587, "cả", 4], [24.788, "mảng.", 4], [26.05, "Hệ", 5], [26.288, "quả", 5], [26.575, "là", 5], [26.7, "chuỗi", 5], [26.938, "n", 5], [27.312, "ký", 5], [27.562, "tự", 5], [27.75, "cần", 5], [27.988, "mảng", 5], [28.225, "ít", 5], [28.387, "nhất", 5], [28.637, "n", 5], [29.038, "cộng", 5], [29.312, "1", 5], [29.462, "phần", 5], [29.663, "tử,", 5], [30.25, "và", 5], [30.425, "hàm", 5], [30.637, "nào", 5], [30.825, "xử", 5], [30.975, "lý", 5], [31.163, "chuỗi", 5], [31.475, "cũng", 5], [31.663, "phải", 5], [31.825, "dựa", 5], [32.05, "vào", 5], [32.2, "ký", 5], [32.425, "tự", 5], [32.638, "kết", 5], [32.85, "thúc.", 5]], "cues": [3.413, 7.862, 11.963, 17.312, 26.05], "lang": 2.6}, {"ten": "Slide 4. strcpy không biết kích thước mảng đích", "loai": "slide", "slide": "S04", "dung": "Hình tran-bo-dem: ba bước theo ba câu mốc đầu; bước 4 ô kết luận. Địa chỉ lấy từ results/overflow.txt.\nHiện dần: bước 1 khi đọc “Trước lời gọi”; bước 2 khi đọc “Lời gọi strcpy”; bước 3 khi đọc “Bốn byte tiếp theo”; bước 4 khi đọc “Bài học”.", "start": 113.93, "audio": "audio/75c88a5c3900912a.mp3", "dur": 40.68, "words": [[0.1, "Ký", 0], [0.438, "tự", 0], [0.675, "kết", 0], [0.887, "thúc", 0], [1.087, "cho", 0], [1.212, "biết", 0], [1.425, "chuỗi", 0], [1.587, "nguồn", 0], [1.837, "dài", 0], [2.013, "bao", 0], [2.2, "nhiêu,", 0], [2.737, "nhưng", 0], [3.05, "không", 0], [3.337, "ai", 0], [3.462, "cho", 0], [3.843, "strcpy", 0], [4.225, "biết", 0], [4.475, "mảng", 0], [4.8, "đích", 0], [5.0, "dài", 0], [5.25, "bao", 0], [5.45, "nhiêu.", 0], [6.588, "Mình", 1], [7.013, "vẽ", 1], [7.138, "lại", 1], [7.325, "lần", 1], [7.562, "chạy", 1], [7.775, "thật", 1], [8.0, "của", 1], [8.162, "chương", 1], [8.438, "trình", 1], [8.713, "overflow.", 1], [10.062, "Trước", 2], [10.338, "lời", 2], [10.512, "gọi,", 2], [11.0, "mảng", 2], [11.262, "name", 2], [11.425, "mười", 2], [11.625, "byte", 2], [11.887, "nằm", 2], [12.075, "ngay", 2], [12.275, "trước", 2], [12.488, "biến", 2], [12.762, "balance", 2], [13.262, "bốn", 2], [13.55, "byte,", 2], [14.062, "đang", 2], [14.338, "chứa", 2], [14.588, "100.", 2], [15.988, "Lời", 3], [16.288, "gọi", 3], [16.769, "strcpy", 3], [17.25, "chép", 3], [17.512, "chuỗi", 3], [17.7, "Nguyen", 3], [17.975, "Van", 3], [18.175, "Anh,", 3], [18.625, "mười", 3], [18.825, "bốn", 3], [19.062, "ký", 3], [19.288, "tự", 3], [19.475, "cộng", 3], [19.725, "ký", 3], [19.95, "tự", 3], [20.163, "kết", 3], [20.387, "thúc,", 3], [20.837, "tức", 3], [21.038, "mười", 3], [21.25, "lăm", 3], [21.462, "byte;", 3], [21.962, "mười", 3], [22.188, "byte", 3], [22.387, "đầu", 3], [22.6, "vừa", 3], [22.762, "mảng", 3], [23.025, "name.", 3], [24.163, "Bốn", 4], [24.462, "byte", 4], [24.613, "tiếp", 4], [24.837, "theo", 4], [25.062, "là", 4], [25.188, "dấu", 4], [25.425, "cách,", 4], [25.9, "A,", 4], [26.45, "n,", 4], [27.137, "h", 4], [27.387, "ghi", 4], [27.562, "đè", 4], [27.688, "lên", 4], [27.95, "balance,", 4], [28.663, "và", 4], [28.837, "đọc", 4], [29.05, "như", 4], [29.2, "một", 4], [29.35, "số", 4], [29.587, "int", 4], [29.825, "thì", 4], [29.988, "balance", 4], [30.488, "thành", 4], [30.725, "1752056096.", 4], [33.8, "Bài", 5], [34.062, "học", 5], [34.275, "là", 5], [34.731, "strcpy", 5], [35.188, "chỉ", 5], [35.413, "an", 5], [35.6, "toàn", 5], [35.875, "khi", 5], [36.038, "chính", 5], [36.237, "các", 5], [36.4, "bạn", 5], [36.663, "đã", 5], [36.763, "bảo", 5], [36.987, "đảm", 5], [37.2, "mảng", 5], [37.413, "đích", 5], [37.562, "đủ", 5], [37.75, "chỗ,", 5], [38.388, "kể", 5], [38.562, "cả", 5], [38.8, "cho", 5], [38.95, "ký", 5], [39.175, "tự", 5], [39.388, "kết", 5], [39.612, "thúc.", 5]], "cues": [10.062, 15.988, 24.163, 33.8], "lang": 2.6}, {"ten": "Slide 5. strings.c: strlen 5, sizeof 10; fgets giữ ký tự xuống dòng", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả phía dưới; tô hai dòng của fgets; hai ý hiện lần lượt. Đoạn bỏ ký tự xuống dòng nằm trong src/strings.c. Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Dòng đọc bằng fgets”; bước 3 khi đọc “Hàm strcmp”.", "start": 157.21, "audio": "audio/97ff10218937ab04.mp3", "dur": 37.75, "words": [[0.1, "Hàm", 0], [0.375, "my_strlen", 0], [0.912, "là", 0], [1.268, "strlen", 0], [1.625, "trong", 0], [1.8, "sách", 0], [2.013, "của", 0], [2.275, "Kernighan", 0], [2.95, "và", 0], [3.075, "Ritchie:", 0], [3.812, "một", 0], [4.025, "vòng", 0], [4.237, "while", 0], [4.45, "đếm", 0], [4.662, "đến", 0], [4.85, "ký", 0], [5.062, "tự", 0], [5.3, "kết", 0], [5.513, "thúc.", 0], [6.575, "Kết", 1], [6.775, "quả:", 1], [7.369, "strlen", 1], [7.963, "và", 1], [8.088, "my_strlen", 1], [8.6, "cùng", 1], [8.825, "cho", 1], [9.0, "5,", 1], [9.463, "sizeof", 1], [10.1, "cho", 1], [10.25, "10;", 1], [10.9, "strcpy", 1], [11.55, "chép", 1], [11.8, "hello", 1], [12.137, "sang", 1], [12.412, "t,", 1], [13.0, "strcat", 1], [13.588, "nối", 1], [13.775, "thêm", 1], [14.012, "dấu", 1], [14.238, "phẩy", 1], [14.537, "và", 1], [14.675, "world,", 1], [15.188, "được", 1], [15.4, "chuỗi", 1], [15.6, "mười", 1], [15.812, "hai", 1], [15.988, "ký", 1], [16.2, "tự.", 1], [17.375, "Dòng", 2], [17.688, "đọc", 2], [17.837, "bằng", 2], [18.075, "fgets", 2], [18.462, "có", 2], [18.562, "một", 2], [18.725, "điểm", 2], [18.95, "cần", 2], [19.163, "để", 2], [19.288, "ý:", 2], [19.8, "nhập", 2], [20.062, "Dang", 2], [20.325, "Ngoc", 2], [20.512, "Hung,", 2], [21.038, "mười", 2], [21.25, "bốn", 2], [21.5, "ký", 2], [21.688, "tự,", 2], [22.25, "nhưng", 2], [22.55, "fgets", 2], [22.925, "đọc", 2], [23.1, "mười", 2], [23.325, "lăm,", 2], [23.812, "vì", 2], [24.05, "giữ", 2], [24.262, "cả", 2], [24.438, "ký", 2], [24.663, "tự", 2], [24.875, "xuống", 2], [25.137, "dòng.", 2], [26.262, "Vì", 3], [26.562, "vậy", 3], [26.75, "dấu", 3], [26.975, "ngoặc", 3], [27.2, "vuông", 3], [27.488, "đóng", 3], [27.725, "bị", 3], [27.85, "đẩy", 3], [28.038, "xuống", 3], [28.3, "dòng", 3], [28.488, "sau,", 3], [29.038, "và", 3], [29.25, "chương", 3], [29.488, "trình", 3], [29.712, "phải", 3], [29.837, "bỏ", 3], [30.038, "ký", 3], [30.288, "tự", 3], [30.5, "đó", 3], [30.725, "trước", 3], [30.925, "khi", 3], [31.075, "dùng.", 3], [32.212, "Hàm", 4], [32.675, "strcmp", 4], [33.138, "trả", 4], [33.362, "số", 4], [33.575, "âm,", 4], [34.062, "vì", 4], [34.325, "apple", 4], [34.763, "đứng", 4], [34.975, "trước", 4], [35.188, "banana", 4], [35.712, "theo", 4], [35.9, "thứ", 4], [36.062, "tự", 4], [36.3, "từ", 4], [36.525, "điển.", 4]], "cues": [6.575, 17.375, 32.212], "lang": 9.6}, {"ten": "Slide 6. overflow.c: GCC cảnh báo, balance đổi từ 100 thành 1752056096", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng balance. Quan sát trên máy biên soạn với -O0; bố trí biến có thể khác ở trình biên dịch khác.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Ở đây GCC”.", "start": 204.56, "audio": "audio/23cd1026658b064d.mp3", "dur": 28.1, "words": [[0.1, "Chương", 0], [0.425, "trình", 0], [0.725, "overflow", 0], [1.212, "là", 0], [1.4, "đúng", 0], [1.637, "ví", 0], [1.812, "dụ", 0], [2.038, "trong", 0], [2.263, "hình.", 0], [3.362, "Kết", 1], [3.562, "quả:", 1], [4.168, "GCC", 1], [4.775, "cảnh", 1], [5.0, "báo", 1], [5.482, "strcpy", 1], [5.963, "ghi", 1], [6.15, "mười", 1], [6.362, "lăm", 1], [6.612, "byte", 1], [6.8, "vào", 1], [6.925, "vùng", 1], [7.1, "mười", 1], [7.275, "byte;", 1], [7.787, "chạy", 1], [7.987, "thì", 1], [8.125, "địa", 1], [8.275, "chỉ", 1], [8.525, "của", 1], [8.65, "name", 1], [8.925, "và", 1], [9.062, "balance", 1], [9.537, "cách", 1], [9.762, "nhau", 1], [9.975, "đúng", 1], [10.162, "mười", 1], [10.3, "byte,", 1], [10.8, "và", 1], [11.075, "balance", 1], [11.588, "đổi", 1], [11.838, "từ", 1], [11.975, "100", 1], [12.4, "thành", 1], [12.575, "1752056096.", 1], [15.613, "Ở", 2], [15.812, "đây", 2], [16.2, "GCC", 2], [16.587, "cứu", 2], [16.875, "được", 2], [17.062, "vì", 2], [17.225, "chuỗi", 2], [17.413, "nguồn", 2], [17.675, "là", 2], [17.8, "hằng,", 2], [18.325, "đếm", 2], [18.625, "được", 2], [18.775, "lúc", 2], [18.962, "biên", 2], [19.188, "dịch.", 2], [20.225, "Khi", 3], [20.488, "chuỗi", 3], [20.75, "đến", 3], [20.962, "từ", 3], [21.1, "người", 3], [21.288, "dùng,", 3], [21.762, "như", 3], [22.038, "dòng", 3], [22.262, "gửi", 3], [22.45, "tới", 3], [22.637, "fingerd", 3], [23.396, "năm", 3], [24.154, "1988,", 3], [24.913, "không", 3], [25.163, "trình", 3], [25.363, "biên", 3], [25.55, "dịch", 3], [25.725, "nào", 3], [25.913, "biết", 3], [26.125, "trước", 3], [26.325, "độ", 3], [26.512, "dài", 3], [26.762, "của", 3], [26.9, "nó.", 3]], "cues": [3.362, 15.613], "lang": 9.6}, {"ten": "Slide 7. gets đã bị bỏ khỏi C11: dùng fgets", "loai": "slide", "slide": "S07", "dung": "Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng mã thoát; hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Chuẩn C11”; bước 2 khi đọc “Kết quả trên máy”; bước 3 khi đọc “Lời khuyên”.", "start": 242.26, "audio": "audio/5762b3615f860a9e.mp3", "dur": 32.69, "words": [[0.1, "Hàm", 0], [0.375, "gets", 0], [0.575, "đọc", 0], [0.75, "một", 0], [0.912, "dòng", 0], [1.163, "vào", 0], [1.3, "mảng", 0], [1.625, "mà", 0], [1.762, "không", 0], [1.962, "nhận", 0], [2.188, "kích", 0], [2.375, "thước", 0], [2.562, "mảng,", 0], [3.112, "nên", 0], [3.413, "dòng", 0], [3.638, "dài", 0], [3.837, "hơn", 0], [4.025, "mảng", 0], [4.275, "luôn", 0], [4.438, "tràn", 0], [4.662, "ra", 0], [4.8, "ngoài;", 0], [5.362, "chính", 0], [5.55, "hàm", 0], [5.75, "này", 0], [5.95, "là", 0], [6.088, "lối", 0], [6.312, "vào", 0], [6.5, "của", 0], [6.638, "sâu", 0], [6.85, "Morris", 0], [7.237, "qua", 0], [7.487, "fingerd.", 0], [8.812, "Chuẩn", 1], [9.262, "C11", 1], [9.713, "đã", 1], [9.887, "bỏ", 1], [10.113, "gets", 1], [10.325, "khỏi", 1], [10.55, "ngôn", 1], [10.8, "ngữ.", 1], [12.012, "Kết", 2], [12.238, "quả", 2], [12.475, "trên", 2], [12.65, "máy", 2], [12.8, "biên", 2], [12.988, "soạn:", 2], [13.562, "GCC", 2], [14.137, "bản", 2], [14.363, "MinGW", 2], [15.35, "cảnh", 2], [15.6, "báo", 2], [15.825, "Using", 2], [16.212, "gets()", 2], [16.688, "is", 2], [17.113, "always", 2], [17.462, "unsafe,", 2], [18.262, "use", 2], [18.688, "fgets()", 2], [19.413, "instead;", 2], [20.175, "nhập", 2], [20.387, "một", 2], [20.562, "dòng", 2], [20.825, "ba", 2], [20.975, "mươi", 2], [21.087, "tám", 2], [21.363, "ký", 2], [21.538, "tự", 2], [21.762, "vào", 2], [21.913, "mảng", 2], [22.163, "mười", 2], [22.3, "phần", 2], [22.512, "tử,", 2], [23.087, "chương", 2], [23.325, "trình", 2], [23.538, "bị", 2], [23.688, "hệ", 2], [23.887, "điều", 2], [24.062, "hành", 2], [24.238, "dừng.", 2], [25.337, "Lời", 3], [25.65, "khuyên", 3], [25.962, "là", 3], [26.062, "luôn", 3], [26.25, "đọc", 3], [26.4, "dòng", 3], [26.637, "bằng", 3], [26.875, "fgets", 3], [27.25, "với", 3], [27.35, "kích", 3], [27.55, "thước", 3], [27.738, "mảng,", 3], [28.288, "và", 3], [28.475, "nhớ", 3], [28.675, "rằng", 3], [28.887, "chuỗi", 3], [29.125, "n", 3], [29.525, "ký", 3], [29.775, "tự", 3], [29.962, "cần", 3], [30.212, "mảng", 3], [30.475, "n", 3], [30.812, "cộng", 3], [31.1, "1", 3], [31.25, "phần", 3], [31.462, "tử.", 3]], "cues": [8.812, 12.012, 25.337], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 284.55, "audio": "audio/a4e63465f906b9fa.mp3", "dur": 3.26, "words": [[0.1, "Chuỗi", 0], [0.4, "Ha", 0], [0.588, "Noi", 0], [0.825, "không", 0], [1.087, "dấu", 0], [1.337, "được", 0], [1.512, "đo", 0], [1.738, "bằng", 0], [1.988, "hai", 0], [2.175, "cách.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/57e45ac03b1fb004.mp3", "dur2": 5.83, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.65, "là", 0], [0.75, "B.", 0], [1.125, "Phương", 1], [1.475, "án", 1], [1.725, "A", 1], [1.863, "quên", 1], [2.1, "ký", 1], [2.325, "tự", 1], [2.55, "kết", 1], [2.75, "thúc", 1], [2.925, "chuỗi", 1], [3.188, "mà", 1], [3.35, "trình", 1], [3.587, "biên", 1], [3.8, "dịch", 1], [3.975, "tự", 1], [4.175, "thêm", 1], [4.45, "vào", 1], [4.588, "mảng.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án D.", "start": 300.24, "audio": "audio/8c694d6f03dd3549.mp3", "dur": 2.59, "words": [[0.1, "Câu", 0], [0.388, "tiếp", 0], [0.637, "theo", 0], [0.8, "quay", 0], [1.05, "lại", 0], [1.275, "hàm", 0], [1.488, "gets.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/c62ed7884ae30005.mp3", "dur2": 9.43, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.787, "D.", 0], [1.15, "Phương", 1], [1.488, "án", 1], [1.663, "B", 1], [1.812, "dễ", 1], [2.025, "được", 1], [2.188, "chọn", 1], [2.45, "khi", 1], [2.6, "nhầm", 1], [2.862, "gets", 1], [3.075, "với", 1], [3.188, "scanf", 1], [3.638, "phần", 1], [3.875, "trăm", 1], [4.125, "s,", 1], [4.55, "vốn", 1], [4.812, "dừng", 1], [5.062, "ở", 1], [5.15, "dấu", 1], [5.362, "cách;", 1], [5.838, "gets", 1], [6.075, "đọc", 1], [6.25, "cả", 1], [6.412, "dòng,", 1], [6.912, "vấn", 1], [7.15, "đề", 1], [7.362, "là", 1], [7.475, "không", 1], [7.713, "giới", 1], [7.875, "hạn", 1], [8.1, "độ", 1], [8.275, "dài.", 1]], "dap_an": "D", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Văn bản trong C là chuỗi”; bước 2 khi đọc “Các hàm của string.h”; bước 3 khi đọc “Và nguy hiểm”; bước 4 khi đọc “các bạn cần nắm”.", "start": 318.86, "audio": "audio/e5babd5ca31f99ad.mp3", "dur": 35.95, "words": [[0.1, "Văn", 0], [0.375, "bản", 0], [0.65, "trong", 0], [0.838, "C", 0], [1.062, "là", 0], [1.188, "chuỗi,", 0], [1.788, "một", 0], [2.0, "mảng", 0], [2.237, "char", 0], [2.45, "kết", 0], [2.638, "thúc", 0], [2.837, "bằng", 0], [3.05, "ký", 0], [3.263, "tự", 0], [3.475, "có", 0], [3.612, "giá", 0], [3.8, "trị", 0], [3.987, "0,", 0], [4.513, "và", 0], [4.713, "hàm", 0], [4.938, "biết", 0], [5.112, "độ", 0], [5.287, "dài", 0], [5.562, "bằng", 0], [5.763, "cách", 0], [5.963, "đếm", 0], [6.213, "đến", 0], [6.4, "ký", 0], [6.638, "tự", 0], [6.838, "đó.", 0], [8.025, "Các", 1], [8.225, "hàm", 1], [8.488, "của", 1], [8.625, "string.h", 1], [9.35, "như", 1], [9.353, "strlen,", 1], [9.355, "strcpy,", 1], [9.358, "strcmp", 1], [9.361, "đều", 1], [9.364, "dựa", 1], [9.366, "trên", 1], [9.369, "quy", 1], [9.372, "ước", 1], [9.375, "này;", 1], [9.377, "dòng", 1], [9.38, "đọc", 1], [9.383, "bằng", 1], [9.386, "fgets", 1], [9.388, "giữ", 1], [9.391, "cả", 1], [9.394, "ký", 1], [9.396, "tự", 1], [9.399, "xuống", 1], [9.402, "dòng.", 1], [9.405, "Và", 2], [9.407, "nguy", 2], [9.41, "hiểm", 2], [9.413, "nằm", 2], [9.416, "ở", 2], [9.418, "chỗ", 2], [9.421, "không", 2], [9.424, "hàm", 2], [9.427, "nào", 2], [9.429, "biết", 2], [9.432, "mảng", 2], [9.435, "đích", 2], [9.438, "dài", 2], [9.44, "bao", 2], [9.443, "nhiêu:", 2], [9.446, "ghi", 2], [9.448, "quá", 2], [9.451, "cuối", 2], [9.454, "mảng", 2], [9.457, "là", 2], [9.459, "tràn", 2], [9.462, "bộ", 2], [9.465, "đệm,", 2], [9.468, "hay", 2], [9.47, "buffer", 2], [9.473, "overflow.", 2], [9.476, "Từ", 3], [9.479, "phần", 3], [9.481, "này,", 3], [9.484, "các", 3], [9.487, "bạn", 3], [9.489, "cần", 3], [9.492, "nắm", 3], [9.495, "các", 3], [9.498, "từ", 3], [9.5, "khóa:", 3], [9.503, "chuỗi", 3], [9.506, "ký", 3], [9.509, "tự,", 3], [9.511, "ký", 3], [9.514, "tự", 3], [9.517, "kết", 3], [9.52, "thúc", 3], [9.522, "chuỗi,", 3], [9.525, "string.h,", 3], [9.525, "strlen,", 3], [9.525, "strcpy,", 3], [9.525, "strcmp,", 3], [9.525, "fgets", 3], [9.525, "và", 3], [9.525, "tràn", 3], [9.525, "bộ", 3], [9.525, "đệm.", 3]], "cues": [0.1, 8.025, 9.405, 9.484], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 355.41, "audio": "audio/c41bc2392f4c7fd1.mp3", "dur": 29.74, "words": [[0.1, "Hai", 0], [0.35, "chủ", 0], [0.662, "đề", 0], [0.863, "nâng", 0], [1.113, "cao.", 0], [2.3, "Chủ", 1], [2.538, "đề", 1], [2.688, "thứ", 1], [2.85, "nhất", 1], [3.112, "là", 1], [3.337, "các", 1], [3.513, "hàm", 1], [3.763, "có", 1], [3.888, "giới", 1], [4.037, "hạn", 1], [4.237, "độ", 1], [4.4, "dài", 1], [4.675, "như", 1], [5.425, "strncpy,", 1], [6.175, "snprintf,", 1], [7.037, "và", 1], [7.225, "lý", 1], [7.438, "do", 1], [8.019, "strncpy", 1], [8.6, "không", 1], [8.85, "phải", 1], [8.975, "lúc", 1], [9.175, "nào", 1], [9.4, "cũng", 1], [9.588, "thêm", 1], [9.8, "ký", 1], [10.025, "tự", 1], [10.238, "kết", 1], [10.45, "thúc.", 1], [11.5, "Chủ", 2], [11.738, "đề", 2], [11.9, "thứ", 2], [12.1, "hai", 2], [12.35, "là", 2], [12.45, "chuỗi", 2], [12.675, "với", 2], [12.787, "con", 2], [13.0, "trỏ:", 2], [13.6, "char", 2], [13.838, "sao", 2], [14.05, "p", 2], [14.287, "bằng", 2], [14.525, "hello", 2], [14.838, "khác", 2], [15.113, "char", 2], [15.312, "s", 2], [15.562, "ngoặc", 2], [15.787, "vuông", 2], [16.025, "bằng", 2], [16.25, "hello", 2], [16.6, "thế", 2], [16.738, "nào.", 2], [17.863, "Bài", 3], [18.1, "tập", 3], [18.312, "mở", 3], [18.488, "rộng", 3], [18.775, "là", 3], [18.925, "viết", 3], [19.125, "lại", 3], [19.606, "strcpy", 3], [20.087, "và", 3], [20.45, "strcat", 3], [20.812, "bằng", 3], [21.025, "chỉ", 3], [21.212, "số", 3], [21.413, "mảng,", 3], [22.0, "rồi", 3], [22.25, "viết", 3], [22.438, "hàm", 3], [22.637, "đọc", 3], [22.788, "một", 3], [22.938, "dòng", 3], [23.2, "bằng", 3], [23.45, "fgets,", 3], [24.062, "bỏ", 3], [24.288, "ký", 3], [24.5, "tự", 3], [24.675, "xuống", 3], [24.938, "dòng", 3], [25.15, "cuối", 3], [25.4, "và", 3], [25.538, "trả", 3], [25.788, "về", 3], [25.913, "độ", 3], [26.113, "dài;", 3], [26.637, "kiểm", 3], [26.887, "thử", 3], [27.113, "với", 3], [27.238, "dòng", 3], [27.475, "rỗng", 3], [27.762, "và", 3], [27.875, "dòng", 3], [28.113, "dài", 3], [28.312, "hơn", 3], [28.5, "mảng.", 3]], "cues": [0.1, 17.863], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 385.75, "audio": "audio/f1f6e92426694489.mp3", "dur": 11.54, "words": [[0.1, "Chuỗi", 0], [0.412, "là", 0], [0.55, "mảng", 0], [0.825, "ký", 0], [1.012, "tự,", 0], [1.538, "và", 0], [1.775, "mỗi", 0], [2.0, "ký", 0], [2.212, "tự", 0], [2.5, "là", 0], [2.663, "một", 0], [2.85, "số.", 0], [4.1, "Phần", 1], [4.388, "tiếp", 1], [4.638, "theo", 1], [4.8, "tính", 1], [5.025, "toán", 1], [5.287, "trên", 1], [5.463, "chính", 1], [5.675, "những", 1], [5.862, "con", 1], [6.05, "số", 1], [6.25, "đó:", 1], [6.775, "mã", 1], [6.987, "hóa", 1], [7.237, "thư", 1], [7.4, "theo", 1], [7.55, "cách", 1], [7.763, "của", 1], [8.012, "Julius", 1], [8.512, "Caesar,", 1], [9.262, "và", 1], [9.488, "chuẩn", 1], [9.738, "hóa", 1], [9.975, "một", 1], [10.162, "họ", 1], [10.338, "tên.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Chuỗi ký tự: xử lý ký tự và mật mã Caesar"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

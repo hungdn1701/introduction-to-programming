@@ -1,0 +1,465 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V16 — Chương trình C: biến, kiểu dữ liệu và kích thước · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-4/02-types">Mã</a>
+<h1>V16 · Chương trình C: biến, kiểu dữ liệu và kích thước</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 4</div><div class="ten">Chương trình C: biến, kiểu dữ liệu và kích thước</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Đổi 100 độ F sang độ C: cùng công thức, hai kết quả</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Công thức: C = 5 / 9 × (F − 32); với F = 100, đáp số là <b>37,78 độ C</b></li><li data-s="2">Viết bằng C với số nguyên: <code>5 / 9 * (fahr - 32)</code> cho <b>0</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> chương trình giữ giá trị ở đâu, và vì sao kiểu của giá trị làm phép tính đổi kết quả?</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Biến là vùng nhớ có tên và có kiểu</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 500" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Biến trong bộ nhớ: khai báo int fahr cấp 4 byte có tên fahr; câu lệnh gán fahr = 100 ghi giá trị 100 vào 4 byte đó; khai báo double celsius cấp 8 byte; gán celsius bằng 37.777778.">
+  <defs>
+    <marker id="bn-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="bn-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="bn-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="bn-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="bn-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="bn-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+    <text x="40" y="50" text-anchor="start" font-size="24" fill="#6B4E06" font-weight="500">Bộ nhớ (mỗi ô một byte)</text>
+
+  <!-- khai báo int fahr -->
+  <g data-s="1">
+    <rect x="40" y="70" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="85" y="114.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="130" y="70" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="175" y="114.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="220" y="70" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="265" y="114.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="310" y="70" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="355" y="114.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="220" y="175" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">int fahr: 4 byte</text>
+    <rect x="1000" y="40" width="700" height="74" rx="4" fill="#1E1E2E"/>
+    <text x="1024" y="80" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">int fahr;</text>
+  </g>
+
+  <!-- gán 100 -->
+  <g data-s="2">
+    <rect x="40" y="70" width="360" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="3"/>
+    <text x="220" y="115" text-anchor="middle" font-size="30" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">100</text>
+    <rect x="1000" y="140" width="700" height="74" rx="4" fill="#1E1E2E"/>
+    <text x="1024" y="180" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">fahr = 100;</text>
+  </g>
+
+  <!-- khai báo double celsius -->
+  <g data-s="3">
+    <rect x="40" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="85" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="130" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="175" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="220" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="265" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="310" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="355" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="400" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="445" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="490" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="535" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="580" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="625" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <rect x="670" y="260" width="90" height="70" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="715" y="290" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">?</text>
+    <text x="400" y="365" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">double celsius: 8 byte</text>
+    <rect x="1000" y="240" width="700" height="74" rx="4" fill="#1E1E2E"/>
+    <text x="1024" y="280" text-anchor="start" font-size="26" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">double celsius;</text>
+  </g>
+
+  <!-- gán giá trị thực -->
+  <g data-s="4">
+    <rect x="40" y="260" width="720" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="3"/>
+    <text x="400" y="322" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">37.777778</text>
+    <rect x="1000" y="340" width="700" height="74" rx="4" fill="#1E1E2E"/>
+    <text x="1024" y="380" text-anchor="start" font-size="24" fill="#E6E9F0" font-family="Consolas, monospace" style="white-space:pre">celsius = 5.0 / 9.0 * (fahr - 32);</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p><b>Khai báo</b> cấp vùng nhớ theo kiểu; <b>phép gán</b> ghi giá trị vào đó; <b>khởi tạo</b> là gán ngay khi khai báo.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Kiểu dữ liệu quyết định kích thước, khoảng giá trị và phép toán</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Các kiểu cơ bản với GCC trên máy 64 bit: char 1 byte, một ký tự; int 4 byte, từ âm 2 147 483 648 đến 2 147 483 647; double 8 byte, số thực khoảng 15 đến 16 chữ số có nghĩa. Tràn số: 50000 nhân 50000 bằng 2 500 000 000, vượt INT_MAX nên không chứa được trong int.">
+  <defs>
+    <marker id="kc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="kc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="kc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="kc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="kc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="kc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Kiểu -->
+  <g data-s="1">
+    <rect x="40" y="30" width="220" height="80" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="150" y="78.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500">Kiểu</text>
+    <rect x="260" y="30" width="240" height="80" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="380" y="78.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500">Kích thước</text>
+    <rect x="500" y="30" width="760" height="80" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="880" y="78.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500">Giá trị</text>
+    <rect x="1260" y="30" width="420" height="80" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1470" y="78.28" text-anchor="middle" font-size="23" fill="#373D4E" font-weight="500">Ví dụ</text>
+  </g>
+
+  <!-- char -->
+  <g data-s="1">
+    <rect x="40" y="110" width="220" height="80" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="150" y="158.64" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">char</text>
+    <rect x="260" y="110" width="240" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="380" y="158.64" text-anchor="middle" font-size="24" fill="#6B4E06">1 byte</text>
+    <rect x="500" y="110" width="760" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="880" y="158.64" text-anchor="middle" font-size="24" fill="#6B4E06">một ký tự (mã 0–127 cho ASCII)</text>
+    <rect x="1260" y="110" width="420" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1470" y="158.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">&#x27;A&#x27;</text>
+  </g>
+
+  <!-- int -->
+  <g data-s="2">
+    <rect x="40" y="190" width="220" height="80" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="150" y="238.64" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">int</text>
+    <rect x="260" y="190" width="240" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="380" y="238.64" text-anchor="middle" font-size="24" fill="#6B4E06">4 byte</text>
+    <rect x="500" y="190" width="760" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="880" y="238.64" text-anchor="middle" font-size="24" fill="#6B4E06">−2 147 483 648 … 2 147 483 647</text>
+    <rect x="1260" y="190" width="420" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1470" y="238.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">2026</text>
+  </g>
+
+  <!-- double -->
+  <g data-s="3">
+    <rect x="40" y="270" width="220" height="80" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="150" y="318.64" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">double</text>
+    <rect x="260" y="270" width="240" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="380" y="318.64" text-anchor="middle" font-size="24" fill="#6B4E06">8 byte</text>
+    <rect x="500" y="270" width="760" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="880" y="318.64" text-anchor="middle" font-size="24" fill="#6B4E06">số thực, ≈ 15–16 chữ số có nghĩa</text>
+    <rect x="1260" y="270" width="420" height="80" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1470" y="318.64" text-anchor="middle" font-size="24" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">37.777778</text>
+  </g>
+
+  <!-- tràn số -->
+  <g data-s="4">
+    <rect x="40" y="380" width="1640" height="150" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="860" y="445.5" text-anchor="middle" font-size="26" fill="#9B1C1C" font-weight="500">Tràn số: 50000 * 50000 = 2 500 000 000 &gt; INT_MAX = 2 147 483 647</text>
+    <text x="860" y="498.5" text-anchor="middle" font-size="23" fill="#373D4E">kết quả không chứa được trong int; với số nguyên có dấu, đây là hành vi không xác định</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Với hai số nguyên, <code>/</code> là <b>chia lấy phần nguyên</b>: <code>5 / 9</code> bằng 0.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>5 / 9 bằng 0 vì cả hai toán hạng là số nguyên</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> fahr = <span class="hl-n">100</span>;
+
+<span class="hl-k">int</span> celsius_int = <span class="hl-n">5</span> / <span class="hl-n">9</span> * (fahr - <span class="hl-n">32</span>);          <span class="hl-c">/* integer division: 5/9 is 0 */</span>
+<span class="hl-k">double</span> celsius = <span class="hl-n">5.0</span> / <span class="hl-n">9.0</span> * (fahr - <span class="hl-n">32</span>);       <span class="hl-c">/* floating point */</span>
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>5 / 9         = 0
+integer   : 100 F = 0 C
+floating  : 100 F = 37.777778 C</pre></div><ul class="y-nho"><li data-s="2">Viết <code>5.0 / 9.0</code> thì phép chia là chia số thực: <b>37.777778</b></li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Nhân trước, chia sau cùng: phép tính số nguyên cho 37 thay vì 0</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> c1 = <span class="hl-n">5</span> / <span class="hl-n">9</span> * (fahr - <span class="hl-n">32</span>);          <span class="hl-c">/* 5 / 9 is 0 first */</span>
+<span class="hl-k">int</span> c2 = <span class="hl-n">5</span> * (fahr - <span class="hl-n">32</span>) / <span class="hl-n">9</span>;          <span class="hl-c">/* K&amp;R 1.2: divide last */</span>
+<span class="hl-k">double</span> c3 = <span class="hl-n">5.0</span> / <span class="hl-n">9.0</span> * (fahr - <span class="hl-n">32</span>);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>fahr   5/9*(f-32)   5*(f-32)/9   5.0/9.0*(f-32)
+<span class="noi-bat"> 100            0           37        37.777778</span>
+<span class="noi-bat">   0            0          -17       -17.777778</span></pre></div><ul class="y-nho"><li data-s="2">Chia nguyên <b>sau cùng</b> chỉ mất phần lẻ của kết quả; C bỏ phần lẻ <b>về phía 0</b>: −17, không phải −18</li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>sizeof cho số byte của mỗi kiểu; INT_MAX là giới hạn của int</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> size_char = <span class="hl-k">sizeof</span>(<span class="hl-k">char</span>);
+<span class="hl-k">int</span> size_int = <span class="hl-k">sizeof</span>(<span class="hl-k">int</span>);
+<span class="hl-k">int</span> size_double = <span class="hl-k">sizeof</span>(<span class="hl-k">double</span>);
+<span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">INT_MAX = %d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, <span class="hl-t">INT_MAX</span>);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>sizeof(char)   = 1 byte
+sizeof(int)    = 4 bytes
+sizeof(double) = 8 bytes
+INT_MIN = -2147483648
+INT_MAX = 2147483647</pre></div><ul class="y-nho"><li data-s="2"><code>INT_MAX</code> khai báo trong <code>limits.h</code>: với int 4 byte, <b>INT_MAX = 2 147 483 647</b></li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>50000 nhân 50000 tràn int: GCC cảnh báo, kết quả âm</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> x = <span class="hl-n">50000</span> * <span class="hl-n">50000</span>;
+<span class="hl-k">long</span> <span class="hl-k">long</span> y = <span class="hl-n">50000L</span><span class="hl-t">L</span> * <span class="hl-n">50000</span>;
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ gcc -std=c17 -Wall -Wextra overflow.c -o overflow
+overflow.c: In function 'main':
+<span class="noi-bat">overflow.c:8:19: warning: integer overflow in expression of type 'int' results in '-1794967296' [-Woverflow]</span>
+    8 |     int x = 50000 * 50000;
+      |                   ^
+$ ./overflow
+int       : -1794967296
+<span class="noi-bat">long long : 2500000000</span></pre></div><ul class="y-nho"><li data-s="2">Tràn số nguyên có dấu là <b>hành vi không xác định</b>: số âm chỉ là điều xảy ra trên máy này</li><li data-s="3">Giá trị có thể vượt hai tỉ thì dùng kiểu rộng hơn: <b>long long</b> (8 byte)</li></ul></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với int fahr = 212; biểu thức 5 / 9 * (fahr - 32) cho giá trị nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>100, vì 212 độ F là 100 độ C.</div></div><div class="dung"><span>B</span><div>0, vì 5 / 9 là phép chia hai số nguyên, bằng 0.</div></div><div class=""><span>C</span><div>100.0</div></div><div class=""><span>D</span><div>Lỗi biên dịch vì thiếu kiểu double.</div></div></div><div class="giai-thich">Biểu thức tính từ trái sang: 5 / 9 trước. Hai toán hạng đều là int nên phép chia lấy phần nguyên, được 0; nhân 0 với 180 vẫn bằng 0. Muốn ra 100, viết 5 * (fahr - 32) / 9 hoặc dùng 5.0 / 9.0.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Với int fahr = 212; biểu thức 5 / 9 * (fahr - 32) cho giá trị nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>100, vì 212 độ F là 100 độ C.</div></div><div class="dung"><span>B</span><div>0, vì 5 / 9 là phép chia hai số nguyên, bằng 0.</div></div><div class=""><span>C</span><div>100.0</div></div><div class=""><span>D</span><div>Lỗi biên dịch vì thiếu kiểu double.</div></div></div><div class="giai-thich">Biểu thức tính từ trái sang: 5 / 9 trước. Hai toán hạng đều là int nên phép chia lấy phần nguyên, được 0; nhân 0 với 180 vẫn bằng 0. Muốn ra 100, viết 5 * (fahr - 32) / 9 hoặc dùng 5.0 / 9.0.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trên máy biên soạn sizeof(int) bằng 4. Biến int chứa được giá trị nào sau đây?</div></div><div class="lua-chon"><div class=""><span>A</span><div>3 000 000 000</div></div><div class=""><span>B</span><div>4 294 967 296</div></div><div class="dung"><span>C</span><div>−2 000 000 000</div></div><div class=""><span>D</span><div>2 500 000 000</div></div></div><div class="giai-thich">int 4 byte có khoảng từ INT_MIN = −2 147 483 648 đến INT_MAX = 2 147 483 647. Chỉ −2 000 000 000 nằm trong khoảng này; ba giá trị còn lại vượt INT_MAX.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trên máy biên soạn sizeof(int) bằng 4. Biến int chứa được giá trị nào sau đây?</div></div><div class="lua-chon"><div class=""><span>A</span><div>3 000 000 000</div></div><div class=""><span>B</span><div>4 294 967 296</div></div><div class="dung"><span>C</span><div>−2 000 000 000</div></div><div class=""><span>D</span><div>2 500 000 000</div></div></div><div class="giai-thich">int 4 byte có khoảng từ INT_MIN = −2 147 483 648 đến INT_MAX = 2 147 483 647. Chỉ −2 000 000 000 nằm trong khoảng này; ba giá trị còn lại vượt INT_MAX.</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Biến</b> là vùng nhớ có tên, có kiểu: <b>khai báo</b>, gán, <b>khởi tạo</b></div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Kiểu dữ liệu</b> quyết định kích thước (<code>sizeof</code>), khoảng giá trị và phép toán: <code>5 / 9</code> bằng 0 với <b>int</b>, đúng với <b>double</b></div></div><div class="the" data-s="3"><span class="so">3</span><div>Vượt khoảng là <b>tràn số</b>: hành vi không xác định với số nguyên có dấu; chọn kiểu đủ rộng</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>biến</span><span>khai báo</span><span>khởi tạo</span><span>kiểu dữ liệu</span><span>int</span><span>double</span><span>char</span><span>sizeof</span><span>tràn số</span></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Số thực dấu phẩy động: vì sao 0.1 + 0.2 khác 0.3 (Goldberg, What Every Computer Scientist Should Know About <span style="white-space:nowrap">Floating-Point</span> Arithmetic)</li><li>Sự cố Ariane 5 (1996): đổi số thực 64 bit sang số nguyên 16 bit bị tràn</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết chương trình đổi một nhiệt độ từ độ C sang độ F (F = C × 9 / 5 + 32) với cả hai cách viết số nguyên và số thực; so sánh kết quả với C = 37 và giải thích chỗ khác nhau.</p></div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Chương trình C: toán tử và biểu thức</div></main><footer><span>Chương 4 · Ngôn ngữ lập trình C cơ bản</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Phần này trả lời câu hỏi: chương trình nhớ giá trị để tính toán ở đâu, và vì sao cùng một công thức mà 5 chia 9 cho 0, còn 5.0 chia 9.0 cho đúng kết quả?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:12</span>
+      <h3>Slide 1. Đổi 100 độ F sang độ C: cùng công thức, hai kết quả</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Công thức: C = 5 / 9 × (F − 32); với F = 100, đáp số là **37,78 độ C**</li><li>Viết bằng C với số nguyên: `5 / 9 * (fahr - 32)` cho **0**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** chương trình giữ giá trị ở đâu, và vì sao kiểu của giá trị làm phép tính đổi kết quả?</div></div>
+    <div class="kb-thoai"><p>Bài toán đầu tiên của phần này cũng là ví dụ thứ hai trong sách của Kernighan và Ritchie: đổi nhiệt độ từ độ Fahrenheit sang độ Celsius. Công thức quen thuộc là lấy 5 chia 9, nhân với hiệu của F và 32; với 100 độ F, đáp số khoảng 37,78 độ C. Thế nhưng nếu viết đúng công thức đó bằng C với các số nguyên, chương trình in ra 0. Câu hỏi của phần này là: chương trình giữ giá trị ở đâu, và vì sao kiểu của giá trị lại làm phép tính đổi kết quả?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: K&amp;R §1.2.
+Hiện dần: bước 1 khi đọc “Bài toán đầu tiên”; bước 2 khi đọc “Thế nhưng”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:41</span>
+      <h3>Slide 2. Biến là vùng nhớ có tên và có kiểu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Khai báo** cấp vùng nhớ theo kiểu; **phép gán** ghi giá trị vào đó; **khởi tạo** là gán ngay khi khai báo.</li></ul></div></div>
+    <div class="kb-thoai"><p>Trả lời vế đầu: giá trị nằm trong biến, hay variable, một vùng nhớ có tên và có kiểu. Câu lệnh int fahr là một khai báo: nó yêu cầu cấp bốn byte trong bộ nhớ, đặt tên là fahr, và quy định bốn byte đó chứa một số nguyên. Lúc này nội dung bốn byte chưa xác định. Câu lệnh gán fahr bằng 100 ghi giá trị 100 vào vùng nhớ đó. Câu lệnh double celsius khai báo một biến khác, kiểu số thực, chiếm tám byte. Phép gán thứ hai tính công thức và ghi kết quả vào celsius. Ba thao tác cần phân biệt là khai báo, gán, và khởi tạo, tức gán giá trị đầu ngay trong câu khai báo, như int lower bằng 0.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình bien-bo-nho: bốn bước theo bốn câu mốc đầu (khai báo, gán, khai báo, gán); bước 5 ô kết luận.
+Hiện dần: bước 1 khi đọc “Câu lệnh int fahr”; bước 2 khi đọc “Câu lệnh gán”; bước 3 khi đọc “Câu lệnh double celsius”; bước 4 khi đọc “Phép gán thứ hai”; bước 5 khi đọc “Ba thao tác”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:23</span>
+      <h3>Slide 3. Kiểu dữ liệu quyết định kích thước, khoảng giá trị và phép toán</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Với hai số nguyên, `/` là **chia lấy phần nguyên**: `5 / 9` bằng 0.</li></ul></div></div>
+    <div class="kb-thoai"><p>Kiểu dữ liệu, hay data type, quy định biến chiếm bao nhiêu byte, nhận khoảng giá trị nào và phép toán nào áp dụng được. Ba kiểu cơ bản các bạn dùng nhiều nhất là char, int và double. Kiểu char chiếm một byte, chứa mã của một ký tự. Kiểu int chiếm bốn byte trên máy biên soạn, chứa số nguyên từ khoảng âm hai tỉ một trăm bốn mươi bảy triệu đến dương hai tỉ một trăm bốn mươi bảy triệu. Kiểu double chiếm tám byte, chứa số thực với khoảng mười lăm đến mười sáu chữ số có nghĩa. Giá trị vượt khoảng của kiểu thì không chứa được, gọi là tràn số, hay overflow. Kiểu còn quyết định phép toán: khi cả hai toán hạng là số nguyên, phép chia lấy phần nguyên và bỏ phần lẻ, nên 5 chia 9 bằng 0. Đây chính là lý do của kết quả 0 ở đầu phần.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình kieu-co-ban: hàng tiêu đề và char, rồi int, double; bước 4 dòng tràn số; bước 5 ô kết luận. Kích thước theo GCC trên Windows 64 bit; chuẩn C chỉ quy định kích thước tối thiểu (C17 §5.2.4.2.1).
+Hiện dần: bước 1 khi đọc “Ba kiểu cơ bản”; bước 2 khi đọc “Kiểu int”; bước 3 khi đọc “Kiểu double”; bước 4 khi đọc “Giá trị vượt khoảng”; bước 5 khi đọc “Kiểu còn quyết định”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:12</span>
+      <h3>Slide 4. 5 / 9 bằng 0 vì cả hai toán hạng là số nguyên</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Viết `5.0 / 9.0` thì phép chia là chia số thực: **37.777778**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/temperature.c</span><pre><code>int fahr = 100;
+
+int celsius_int = 5 / 9 * (fahr - 32);          /* integer division: 5/9 is 0 */
+double celsius = 5.0 / 9.0 * (fahr - 32);       /* floating point */</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình chạy chương trình đổi nhiệt độ, viết theo ví dụ của sách. Biến fahr được khởi tạo bằng 100. Biến celsius int tính theo công thức với toàn số nguyên, còn biến celsius kiểu double tính với 5.0 chia 9.0, hai hằng số thực. Các bạn thử đoán trước giá trị của hai biến. Kết quả cho thấy 5 chia 9 bằng 0, nên celsius int bằng 0 nhân 68, tức 0. Còn khi một toán hạng là số thực, phép chia là chia số thực, và celsius bằng 37 phẩy 777778, đúng như tính tay. Hàm printf in số nguyên bằng phần trăm d, in số thực bằng phần trăm f.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; sau câu &quot;đoán trước giá trị&quot;, dừng khoảng 2 giây. Highlight hai dòng tính theo lời đọc. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0).
+Hiện dần: bước 1 khi đọc “Mình chạy chương trình đổi nhiệt độ”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:01</span>
+      <h3>Slide 5. Nhân trước, chia sau cùng: phép tính số nguyên cho 37 thay vì 0</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Chia nguyên **sau cùng** chỉ mất phần lẻ của kết quả; C bỏ phần lẻ **về phía 0**: −17, không phải −18</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/divide_last.c</span><pre><code>int c1 = 5 / 9 * (fahr - 32);          /* 5 / 9 is 0 first */
+int c2 = 5 * (fahr - 32) / 9;          /* K&amp;R 1.2: divide last */
+double c3 = 5.0 / 9.0 * (fahr - 32);</code></pre></div></div>
+    <div class="kb-thoai"><p>Vẫn tính bằng số nguyên mà có kết quả dùng được thì sao? Kernighan và Ritchie viết bản đầu của chương trình đúng theo cách đó: nhân với 5 trước, chia cho 9 sau cùng. Phép chia nguyên khi đó chỉ bỏ phần lẻ của kết quả cuối, chứ không biến một thừa số thành 0. Mình chạy ba cách viết với 100 độ F và với 0 độ F. Các bạn đoán xem cách thứ hai cho bao nhiêu với 0 độ F. Kết quả: với 100 độ F, cách thứ hai cho 37, gần với 37,78. Với 0 độ F, nó cho âm 17, trong khi giá trị đúng là âm 17,78. Âm 17 chứ không phải âm 18, vì từ chuẩn C99, phép chia nguyên bỏ phần lẻ về phía 0. Như vậy, trên số nguyên, thứ tự các phép toán làm đổi kết quả, dù trong toán học hai công thức chỉ là một.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên (khối fahr = 0 lặp lại ba dòng này, nằm trong src/divide_last.c), kết quả phía dưới; sau câu &quot;bao nhiêu với 0 độ F&quot;, dừng khoảng 2 giây; tô cột 5*(f-32)/9. Ghi nguồn: K&amp;R §1.2; C17 §6.5.5. Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Vẫn tính bằng số nguyên”; bước 2 khi đọc “Kết quả: với 100 độ F”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:59</span>
+      <h3>Slide 6. sizeof cho số byte của mỗi kiểu; INT_MAX là giới hạn của int</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>`INT_MAX` khai báo trong `limits.h`: với int 4 byte, **INT_MAX = 2 147 483 647**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/sizes.c</span><pre><code>int size_char = sizeof(char);
+int size_int = sizeof(int);
+int size_double = sizeof(double);
+printf(&quot;INT_MAX = %d\n&quot;, INT_MAX);</code></pre></div></div>
+    <div class="kb-thoai"><p>Muốn biết một kiểu chiếm bao nhiêu byte trên máy đang dùng, các bạn dùng toán tử sizeof. Còn giới hạn của kiểu int nằm trong tệp header limits.h, với hai hằng INT_MIN và INT_MAX. Kết quả trên máy biên soạn: char một byte, int bốn byte, double tám byte, và INT_MAX bằng hai tỉ một trăm bốn mươi bảy triệu bốn trăm tám mươi ba nghìn sáu trăm bốn mươi bảy, tức hai mũ ba mươi mốt trừ một. Con số này cần nhớ, vì mọi phép tính với int vượt qua nó đều sai.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới. Chương trình lưu sizeof vào biến int rồi in bằng %d, vì GCC bản MinGW cảnh báo nhầm với %zu trên Windows (README của mã ghi rõ).
+Hiện dần: bước 1 khi đọc “Muốn biết một kiểu chiếm bao nhiêu byte”; bước 2 khi đọc “Kết quả trên máy biên soạn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:37</span>
+      <h3>Slide 7. 50000 nhân 50000 tràn int: GCC cảnh báo, kết quả âm</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Tràn số nguyên có dấu là **hành vi không xác định**: số âm chỉ là điều xảy ra trên máy này</li><li>Giá trị có thể vượt hai tỉ thì dùng kiểu rộng hơn: **long long** (8 byte)</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/overflow.c</span><pre><code>int x = 50000 * 50000;
+long long y = 50000LL * 50000;</code></pre></div></div>
+    <div class="kb-thoai"><p>Ví dụ này lấy từ chương đầu về biểu diễn số của cuốn Computer Systems của Bryant và O&#x27;Hallaron: 50000 nhân 50000 bằng hai tỉ rưỡi, lớn hơn INT_MAX. Khi biên dịch, GCC đã cảnh báo integer overflow, và khi chạy, biến int x in ra một số âm. Trong C, tràn số nguyên có dấu là hành vi không xác định: số âm kia chỉ là điều xảy ra trên máy này, với trình biên dịch này, không được dựa vào. Cách tránh là chọn kiểu đủ rộng ngay từ đầu: kiểu long long chiếm tám byte, và phép nhân viết với hậu tố LL cho đúng hai tỉ rưỡi. Đây cũng chính là lỗi của bài nộp dùng int ở phần về chấm bài tự động.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng int : -1794967296; hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Ví dụ này”; bước 2 khi đọc “Trong C”; bước 3 khi đọc “Cách tránh”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:25</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Ví dụ đổi nhiệt độ quay lại, với 212 độ F.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Với int fahr = 212; biểu thức 5 / 9 * (fahr - 32) cho giá trị nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 100, vì 212 độ F là 100 độ C.</li>
+      <li><b>B.</b> 0, vì 5 / 9 là phép chia hai số nguyên, bằng 0.</li>
+      <li><b>C.</b> 100.0</li>
+      <li><b>D.</b> Lỗi biên dịch vì thiếu kiểu double.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Biểu thức tính từ trái sang: 5 / 9 trước. Hai toán hạng đều là int nên phép chia lấy phần nguyên, được 0; nhân 0 với 180 vẫn bằng 0. Muốn ra 100, viết 5 * (fahr - 32) / 9 hoặc dùng 5.0 / 9.0.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A là kết quả toán học đúng, nên dễ được chọn, nhưng C tính 5 chia 9 trước, và với hai số nguyên thì được 0.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:45</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, các bạn chọn giá trị vừa với một biến int bốn byte.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Trên máy biên soạn sizeof(int) bằng 4. Biến int chứa được giá trị nào sau đây?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 3 000 000 000</li>
+      <li><b>B.</b> 4 294 967 296</li>
+      <li><b>C.</b> −2 000 000 000</li>
+      <li><b>D.</b> 2 500 000 000</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>int 4 byte có khoảng từ INT_MIN = −2 147 483 648 đến INT_MAX = 2 147 483 647. Chỉ −2 000 000 000 nằm trong khoảng này; ba giá trị còn lại vượt INT_MAX.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án D dễ được chọn vì hai tỉ rưỡi chỉ hơi lớn hơn hai tỉ, nhưng nó đã vượt INT_MAX, đúng như ví dụ 50000 nhân 50000.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:05</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Biến** là vùng nhớ có tên, có kiểu: **khai báo**, gán, **khởi tạo**</li><li>**Kiểu dữ liệu** quyết định kích thước (`sizeof`), khoảng giá trị và phép toán: `5 / 9` bằng 0 với **int**, đúng với **double**</li><li>Vượt khoảng là **tràn số**: hành vi không xác định với số nguyên có dấu; chọn kiểu đủ rộng</li></ul></div>
+    <div class="kb-thoai"><p>Chương trình giữ giá trị trong biến, một vùng nhớ có tên và có kiểu, tạo ra bằng khai báo và nhận giá trị bằng phép gán hay khởi tạo. Kiểu của biến quyết định kích thước, khoảng giá trị và cả phép toán: với hai số int, 5 chia 9 bằng 0, với double thì đúng. Giá trị vượt khoảng của kiểu là tràn số, và với số nguyên có dấu thì kết quả không xác định. Từ phần này, các bạn cần nắm các từ khóa: biến, khai báo, khởi tạo, kiểu dữ liệu, int, double, char, sizeof và tràn số.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Chương trình giữ giá trị”; bước 2 khi đọc “Kiểu của biến”; bước 3 khi đọc “Giá trị vượt khoảng”; bước 4 khi đọc “các bạn cần nắm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:38</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chủ đề nâng cao thứ nhất là vì sao 0.1 cộng 0.2 khác 0.3 với số thực dấu phẩy động, theo bài viết của Goldberg. Chủ đề thứ hai là sự cố tên lửa Ariane 5 năm 1996, khi một số thực 64 bit đổi sang số nguyên 16 bit bị tràn. Bài tập mở rộng là viết chương trình đổi độ C sang độ F theo hai cách, số nguyên và số thực, rồi so sánh kết quả với 37 độ C.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Chủ đề nâng cao thứ nhất”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">7:04</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Biến đã có, nhưng mới chỉ có phép chia gây bất ngờ. Phần tiếp theo, về toán tử và biểu thức, viết quy tắc năm nhuận thành một biểu thức C đúng cho mọi năm.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V16", "tieu_de": "Chương trình C: biến, kiểu dữ liệu và kích thước", "giong": "vi-VN-NamMinhNeural", "tong": 435.06, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/41aa751307d3ddbd.mp3", "dur": 11.9, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Phần", 1], [2.087, "này", 1], [2.25, "trả", 1], [2.413, "lời", 1], [2.562, "câu", 1], [2.737, "hỏi:", 1], [3.288, "chương", 1], [3.538, "trình", 1], [3.712, "nhớ", 1], [3.95, "giá", 1], [4.125, "trị", 1], [4.375, "để", 1], [4.487, "tính", 1], [4.7, "toán", 1], [4.963, "ở", 1], [5.062, "đâu,", 1], [5.537, "và", 1], [5.737, "vì", 1], [5.9, "sao", 1], [6.1, "cùng", 1], [6.287, "một", 1], [6.438, "công", 1], [6.6, "thức", 1], [6.812, "mà", 1], [7.075, "5", 1], [7.3, "chia", 1], [7.487, "9", 1], [7.737, "cho", 1], [7.85, "0,", 1], [8.35, "còn", 1], [8.6, "5.0", 1], [9.262, "chia", 1], [9.425, "9.0", 1], [10.175, "cho", 1], [10.287, "đúng", 1], [10.463, "kết", 1], [10.625, "quả?", 1]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Đổi 100 độ F sang độ C: cùng công thức, hai kết quả", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: K&R §1.2.\nHiện dần: bước 1 khi đọc “Bài toán đầu tiên”; bước 2 khi đọc “Thế nhưng”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 12.5, "audio": "audio/67d21ca995804c6b.mp3", "dur": 28.06, "words": [[0.1, "Bài", 0], [0.35, "toán", 0], [0.6, "đầu", 0], [0.75, "tiên", 0], [1.025, "của", 0], [1.137, "phần", 0], [1.337, "này", 0], [1.538, "cũng", 0], [1.725, "là", 0], [1.837, "ví", 0], [2.025, "dụ", 0], [2.225, "thứ", 0], [2.413, "hai", 0], [2.625, "trong", 0], [2.812, "sách", 0], [3.025, "của", 0], [3.275, "Kernighan", 0], [3.95, "và", 0], [4.088, "Ritchie:", 0], [4.825, "đổi", 0], [5.025, "nhiệt", 0], [5.225, "độ", 0], [5.438, "từ", 0], [5.612, "độ", 0], [5.825, "Fahrenheit", 0], [6.425, "sang", 0], [6.725, "độ", 0], [6.912, "Celsius.", 0], [8.312, "Công", 1], [8.588, "thức", 1], [8.738, "quen", 1], [8.988, "thuộc", 1], [9.188, "là", 1], [9.375, "lấy", 1], [9.562, "5", 1], [9.762, "chia", 1], [9.963, "9,", 1], [10.475, "nhân", 1], [10.762, "với", 1], [10.875, "hiệu", 1], [11.075, "của", 1], [11.275, "F", 1], [11.512, "và", 1], [11.713, "32;", 1], [12.55, "với", 1], [12.713, "100", 1], [13.125, "độ", 1], [13.325, "F,", 1], [13.762, "đáp", 1], [13.95, "số", 1], [14.225, "khoảng", 1], [14.537, "37,78", 1], [15.637, "độ", 1], [15.775, "C.", 1], [16.163, "Thế", 2], [16.35, "nhưng", 2], [16.562, "nếu", 2], [16.712, "viết", 2], [16.9, "đúng", 2], [17.137, "công", 2], [17.312, "thức", 2], [17.462, "đó", 2], [17.688, "bằng", 2], [17.913, "C", 2], [18.163, "với", 2], [18.275, "các", 2], [18.425, "số", 2], [18.613, "nguyên,", 2], [19.175, "chương", 2], [19.438, "trình", 2], [19.712, "in", 2], [19.875, "ra", 2], [20.025, "0.", 2], [21.188, "Câu", 3], [21.375, "hỏi", 3], [21.6, "của", 3], [21.738, "phần", 3], [21.925, "này", 3], [22.062, "là:", 3], [22.538, "chương", 3], [22.775, "trình", 3], [22.988, "giữ", 3], [23.15, "giá", 3], [23.325, "trị", 3], [23.55, "ở", 3], [23.663, "đâu,", 3], [24.137, "và", 3], [24.337, "vì", 3], [24.488, "sao", 3], [24.712, "kiểu", 3], [24.988, "của", 3], [25.113, "giá", 3], [25.275, "trị", 3], [25.525, "lại", 3], [25.75, "làm", 3], [25.95, "phép", 3], [26.175, "tính", 3], [26.4, "đổi", 3], [26.562, "kết", 3], [26.775, "quả?", 3]], "cues": [0.1, 16.163, 21.188], "lang": 0.6}, {"ten": "Slide 2. Biến là vùng nhớ có tên và có kiểu", "loai": "slide", "slide": "S02", "dung": "Hình bien-bo-nho: bốn bước theo bốn câu mốc đầu (khai báo, gán, khai báo, gán); bước 5 ô kết luận.\nHiện dần: bước 1 khi đọc “Câu lệnh int fahr”; bước 2 khi đọc “Câu lệnh gán”; bước 3 khi đọc “Câu lệnh double celsius”; bước 4 khi đọc “Phép gán thứ hai”; bước 5 khi đọc “Ba thao tác”.", "start": 41.16, "audio": "audio/720ebfe43c7c84c3.mp3", "dur": 40.1, "words": [[0.1, "Trả", 0], [0.375, "lời", 0], [0.588, "vế", 0], [0.725, "đầu:", 0], [1.175, "giá", 0], [1.425, "trị", 0], [1.663, "nằm", 0], [1.887, "trong", 0], [2.1, "biến,", 0], [2.638, "hay", 0], [2.888, "variable,", 0], [3.7, "một", 0], [3.913, "vùng", 0], [4.125, "nhớ", 0], [4.375, "có", 0], [4.5, "tên", 0], [4.8, "và", 0], [4.925, "có", 0], [5.075, "kiểu.", 0], [6.35, "Câu", 1], [6.55, "lệnh", 1], [6.838, "int", 1], [7.0, "fahr", 1], [7.287, "là", 1], [7.388, "một", 1], [7.575, "khai", 1], [7.75, "báo:", 1], [8.3, "nó", 1], [8.575, "yêu", 1], [8.738, "cầu", 1], [8.975, "cấp", 1], [9.175, "bốn", 1], [9.425, "byte", 1], [9.625, "trong", 1], [9.8, "bộ", 1], [9.988, "nhớ,", 1], [10.537, "đặt", 1], [10.775, "tên", 1], [11.0, "là", 1], [11.125, "fahr,", 1], [11.675, "và", 1], [11.9, "quy", 1], [12.075, "định", 1], [12.287, "bốn", 1], [12.525, "byte", 1], [12.675, "đó", 1], [12.887, "chứa", 1], [13.15, "một", 1], [13.338, "số", 1], [13.537, "nguyên.", 1], [14.775, "Lúc", 2], [15.05, "này", 2], [15.275, "nội", 2], [15.525, "dung", 2], [15.762, "bốn", 2], [16.012, "byte", 2], [16.238, "chưa", 2], [16.438, "xác", 2], [16.675, "định.", 2], [17.812, "Câu", 3], [18.0, "lệnh", 3], [18.262, "gán", 3], [18.475, "fahr", 3], [18.775, "bằng", 3], [18.962, "100", 3], [19.375, "ghi", 3], [19.512, "giá", 3], [19.712, "trị", 3], [19.938, "100", 3], [20.438, "vào", 3], [20.562, "vùng", 3], [20.775, "nhớ", 3], [21.0, "đó.", 3], [22.188, "Câu", 4], [22.387, "lệnh", 4], [22.65, "double", 4], [22.988, "celsius", 4], [23.562, "khai", 4], [23.837, "báo", 4], [24.087, "một", 4], [24.275, "biến", 4], [24.488, "khác,", 4], [24.962, "kiểu", 4], [25.163, "số", 4], [25.387, "thực,", 4], [25.863, "chiếm", 4], [26.125, "tám", 4], [26.4, "byte.", 4], [27.525, "Phép", 5], [27.887, "gán", 5], [28.15, "thứ", 5], [28.387, "hai", 5], [28.575, "tính", 5], [28.825, "công", 5], [29.025, "thức", 5], [29.25, "và", 5], [29.45, "ghi", 5], [29.65, "kết", 5], [29.863, "quả", 5], [30.15, "vào", 5], [30.3, "celsius.", 5], [31.688, "Ba", 6], [31.938, "thao", 6], [32.125, "tác", 6], [32.362, "cần", 6], [32.562, "phân", 6], [32.763, "biệt", 6], [32.95, "là", 6], [33.112, "khai", 6], [33.337, "báo,", 6], [33.913, "gán,", 6], [34.5, "và", 6], [34.7, "khởi", 6], [34.913, "tạo,", 6], [35.475, "tức", 6], [35.675, "gán", 6], [35.95, "giá", 6], [36.125, "trị", 6], [36.325, "đầu", 6], [36.55, "ngay", 6], [36.775, "trong", 6], [36.975, "câu", 6], [37.125, "khai", 6], [37.288, "báo,", 6], [37.825, "như", 6], [38.125, "int", 6], [38.312, "lower", 6], [38.712, "bằng", 6], [38.95, "0.", 6]], "cues": [6.35, 17.812, 22.188, 27.525, 31.688], "lang": 2.6}, {"ten": "Slide 3. Kiểu dữ liệu quyết định kích thước, khoảng giá trị và phép toán", "loai": "slide", "slide": "S03", "dung": "Hình kieu-co-ban: hàng tiêu đề và char, rồi int, double; bước 4 dòng tràn số; bước 5 ô kết luận. Kích thước theo GCC trên Windows 64 bit; chuẩn C chỉ quy định kích thước tối thiểu (C17 §5.2.4.2.1).\nHiện dần: bước 1 khi đọc “Ba kiểu cơ bản”; bước 2 khi đọc “Kiểu int”; bước 3 khi đọc “Kiểu double”; bước 4 khi đọc “Giá trị vượt khoảng”; bước 5 khi đọc “Kiểu còn quyết định”.", "start": 83.86, "audio": "audio/502e7586f15a77da.mp3", "dur": 46.22, "words": [[0.1, "Kiểu", 0], [0.362, "dữ", 0], [0.562, "liệu,", 0], [1.05, "hay", 0], [1.262, "data", 0], [1.625, "type,", 0], [2.163, "quy", 0], [2.312, "định", 0], [2.525, "biến", 0], [2.75, "chiếm", 0], [3.038, "bao", 0], [3.212, "nhiêu", 0], [3.388, "byte,", 0], [3.9, "nhận", 0], [4.162, "khoảng", 0], [4.412, "giá", 0], [4.588, "trị", 0], [4.787, "nào", 0], [5.05, "và", 0], [5.175, "phép", 0], [5.4, "toán", 0], [5.65, "nào", 0], [5.862, "áp", 0], [6.025, "dụng", 0], [6.263, "được.", 0], [7.3, "Ba", 1], [7.55, "kiểu", 1], [7.787, "cơ", 1], [7.925, "bản", 1], [8.162, "các", 1], [8.3, "bạn", 1], [8.5, "dùng", 1], [8.675, "nhiều", 1], [8.887, "nhất", 1], [9.125, "là", 1], [9.363, "char,", 1], [9.975, "int", 1], [10.225, "và", 1], [10.4, "double.", 1], [11.7, "Kiểu", 2], [11.963, "char", 2], [12.213, "chiếm", 2], [12.488, "một", 2], [12.65, "byte,", 2], [13.15, "chứa", 2], [13.387, "mã", 2], [13.688, "của", 2], [13.812, "một", 2], [14.012, "ký", 2], [14.213, "tự.", 2], [15.387, "Kiểu", 3], [15.675, "int", 3], [15.9, "chiếm", 3], [16.163, "bốn", 3], [16.363, "byte", 3], [16.55, "trên", 3], [16.738, "máy", 3], [16.887, "biên", 3], [17.075, "soạn,", 3], [17.613, "chứa", 3], [17.8, "số", 3], [17.975, "nguyên", 3], [18.288, "từ", 3], [18.438, "khoảng", 3], [18.712, "âm", 3], [18.887, "hai", 3], [19.087, "tỉ", 3], [19.262, "một", 3], [19.462, "trăm", 3], [19.725, "bốn", 3], [19.925, "mươi", 3], [19.988, "bảy", 3], [20.188, "triệu", 3], [20.462, "đến", 3], [20.663, "dương", 3], [20.887, "hai", 3], [21.075, "tỉ", 3], [21.262, "một", 3], [21.475, "trăm", 3], [21.75, "bốn", 3], [21.95, "mươi", 3], [22.012, "bảy", 3], [22.2, "triệu.", 3], [23.363, "Kiểu", 4], [23.65, "double", 4], [24.087, "chiếm", 4], [24.4, "tám", 4], [24.65, "byte,", 4], [25.125, "chứa", 4], [25.363, "số", 4], [25.587, "thực", 4], [25.8, "với", 4], [25.9, "khoảng", 4], [26.163, "mười", 4], [26.337, "lăm", 4], [26.637, "đến", 4], [26.825, "mười", 4], [26.988, "sáu", 4], [27.275, "chữ", 4], [27.475, "số", 4], [27.738, "có", 4], [27.863, "nghĩa.", 4], [29.113, "Giá", 5], [29.438, "trị", 5], [29.675, "vượt", 5], [29.85, "khoảng", 5], [30.125, "của", 5], [30.262, "kiểu", 5], [30.587, "thì", 5], [30.762, "không", 5], [30.988, "chứa", 5], [31.212, "được,", 5], [31.675, "gọi", 5], [31.962, "là", 5], [32.087, "tràn", 5], [32.325, "số,", 5], [32.95, "hay", 5], [33.212, "overflow.", 5], [34.675, "Kiểu", 6], [34.938, "còn", 6], [35.138, "quyết", 6], [35.3, "định", 6], [35.487, "phép", 6], [35.688, "toán:", 6], [36.2, "khi", 6], [36.45, "cả", 6], [36.625, "hai", 6], [36.812, "toán", 6], [37.062, "hạng", 6], [37.312, "là", 6], [37.45, "số", 6], [37.663, "nguyên,", 6], [38.225, "phép", 6], [38.513, "chia", 6], [38.712, "lấy", 6], [38.9, "phần", 6], [39.138, "nguyên", 6], [39.425, "và", 6], [39.55, "bỏ", 6], [39.763, "phần", 6], [39.962, "lẻ,", 6], [40.525, "nên", 6], [40.812, "5", 6], [40.987, "chia", 6], [41.188, "9", 6], [41.45, "bằng", 6], [41.612, "0.", 6], [42.763, "Đây", 7], [43.025, "chính", 7], [43.3, "là", 7], [43.438, "lý", 7], [43.638, "do", 7], [43.875, "của", 7], [44.025, "kết", 7], [44.225, "quả", 7], [44.5, "0", 7], [44.8, "ở", 7], [44.9, "đầu", 7], [45.075, "phần.", 7]], "cues": [7.3, 15.387, 23.363, 29.113, 34.675], "lang": 2.6}, {"ten": "Slide 4. 5 / 9 bằng 0 vì cả hai toán hạng là số nguyên", "loai": "slide", "slide": "S04", "dung": "Mã phía trên, kết quả phía dưới; sau câu \"đoán trước giá trị\", dừng khoảng 2 giây. Highlight hai dòng tính theo lời đọc. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0).\nHiện dần: bước 1 khi đọc “Mình chạy chương trình đổi nhiệt độ”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 132.68, "audio": "audio/4b747e7ce0ec164c.mp3", "dur": 39.55, "words": [[0.1, "Mình", 0], [0.5, "chạy", 0], [0.713, "chương", 0], [0.938, "trình", 0], [1.137, "đổi", 0], [1.325, "nhiệt", 0], [1.538, "độ,", 0], [2.013, "viết", 0], [2.288, "theo", 0], [2.475, "ví", 0], [2.675, "dụ", 0], [2.9, "của", 0], [3.05, "sách.", 0], [4.15, "Biến", 1], [4.45, "fahr", 1], [4.7, "được", 1], [4.838, "khởi", 1], [5.037, "tạo", 1], [5.338, "bằng", 1], [5.562, "100.", 1], [6.9, "Biến", 2], [7.225, "celsius", 2], [7.838, "int", 2], [8.025, "tính", 2], [8.287, "theo", 2], [8.45, "công", 2], [8.662, "thức", 2], [8.85, "với", 2], [9.0, "toàn", 2], [9.225, "số", 2], [9.412, "nguyên,", 2], [9.975, "còn", 2], [10.2, "biến", 2], [10.425, "celsius", 2], [10.963, "kiểu", 2], [11.213, "double", 2], [11.5, "tính", 2], [11.8, "với", 2], [11.912, "5.0", 2], [12.637, "chia", 2], [12.812, "9.0,", 2], [13.725, "hai", 2], [13.925, "hằng", 2], [14.113, "số", 2], [14.338, "thực.", 2], [15.412, "Các", 3], [15.613, "bạn", 3], [15.838, "thử", 3], [16.038, "đoán", 3], [16.312, "trước", 3], [16.562, "giá", 3], [16.788, "trị", 3], [17.05, "của", 3], [17.188, "hai", 3], [17.375, "biến.", 3], [18.575, "Kết", 4], [18.85, "quả", 4], [19.125, "cho", 4], [19.275, "thấy", 4], [19.475, "5", 4], [19.688, "chia", 4], [19.875, "9", 4], [20.125, "bằng", 4], [20.288, "0,", 4], [20.788, "nên", 4], [21.075, "celsius", 4], [21.75, "int", 4], [22.0, "bằng", 4], [22.238, "0", 4], [22.438, "nhân", 4], [22.65, "68,", 4], [23.562, "tức", 4], [23.762, "0.", 4], [24.925, "Còn", 5], [25.175, "khi", 5], [25.35, "một", 5], [25.525, "toán", 5], [25.725, "hạng", 5], [25.975, "là", 5], [26.113, "số", 5], [26.337, "thực,", 5], [26.8, "phép", 5], [27.062, "chia", 5], [27.337, "là", 5], [27.462, "chia", 5], [27.675, "số", 5], [27.875, "thực,", 5], [28.363, "và", 5], [28.613, "celsius", 5], [29.238, "bằng", 5], [29.488, "37", 5], [30.012, "phẩy", 5], [30.2, "777778,", 5], [32.638, "đúng", 5], [32.888, "như", 5], [33.038, "tính", 5], [33.263, "tay.", 5], [34.375, "Hàm", 6], [34.688, "printf", 6], [35.3, "in", 6], [35.462, "số", 6], [35.675, "nguyên", 6], [36.013, "bằng", 6], [36.212, "phần", 6], [36.425, "trăm", 6], [36.612, "d,", 6], [37.15, "in", 6], [37.362, "số", 6], [37.625, "thực", 6], [37.837, "bằng", 6], [38.062, "phần", 6], [38.275, "trăm", 6], [38.5, "f.", 6]], "cues": [0.1, 18.575], "lang": 9.6}, {"ten": "Slide 5. Nhân trước, chia sau cùng: phép tính số nguyên cho 37 thay vì 0", "loai": "slide", "slide": "S05", "dung": "Mã phía trên (khối fahr = 0 lặp lại ba dòng này, nằm trong src/divide_last.c), kết quả phía dưới; sau câu \"bao nhiêu với 0 độ F\", dừng khoảng 2 giây; tô cột 5*(f-32)/9. Ghi nguồn: K&R §1.2; C17 §6.5.5. Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Vẫn tính bằng số nguyên”; bước 2 khi đọc “Kết quả: với 100 độ F”.", "start": 181.83, "audio": "audio/e2fb3979662100eb.mp3", "dur": 48.29, "words": [[0.1, "Vẫn", 0], [0.412, "tính", 0], [0.662, "bằng", 0], [0.838, "số", 0], [1.05, "nguyên", 0], [1.488, "mà", 0], [1.712, "có", 0], [1.863, "kết", 0], [2.05, "quả", 0], [2.25, "dùng", 0], [2.462, "được", 0], [2.65, "thì", 0], [2.775, "sao?", 0], [3.95, "Kernighan", 1], [4.675, "và", 1], [4.812, "Ritchie", 1], [5.263, "viết", 1], [5.45, "bản", 1], [5.662, "đầu", 1], [5.862, "của", 1], [6.0, "chương", 1], [6.225, "trình", 1], [6.45, "đúng", 1], [6.638, "theo", 1], [6.763, "cách", 1], [6.963, "đó:", 1], [7.55, "nhân", 1], [7.838, "với", 1], [7.95, "5", 1], [8.162, "trước,", 1], [8.637, "chia", 1], [8.938, "cho", 1], [9.113, "9", 1], [9.387, "sau", 1], [9.613, "cùng.", 1], [10.75, "Phép", 2], [11.05, "chia", 2], [11.25, "nguyên", 2], [11.55, "khi", 2], [11.7, "đó", 2], [11.887, "chỉ", 2], [12.075, "bỏ", 2], [12.3, "phần", 2], [12.55, "lẻ", 2], [12.8, "của", 2], [12.95, "kết", 2], [13.15, "quả", 2], [13.338, "cuối,", 2], [13.887, "chứ", 2], [14.137, "không", 2], [14.412, "biến", 2], [14.637, "một", 2], [14.825, "thừa", 2], [15.0, "số", 2], [15.25, "thành", 2], [15.438, "0.", 2], [16.587, "Mình", 3], [16.988, "chạy", 3], [17.2, "ba", 3], [17.363, "cách", 3], [17.562, "viết", 3], [17.775, "với", 3], [17.9, "100", 3], [18.312, "độ", 3], [18.5, "F", 3], [18.775, "và", 3], [18.975, "với", 3], [19.087, "0", 3], [19.288, "độ", 3], [19.475, "F.", 3], [19.775, "Các", 4], [19.988, "bạn", 4], [20.188, "đoán", 4], [20.4, "xem", 4], [20.65, "cách", 4], [20.837, "thứ", 4], [21.0, "hai", 4], [21.225, "cho", 4], [21.363, "bao", 4], [21.55, "nhiêu", 4], [21.8, "với", 4], [21.913, "0", 4], [22.1, "độ", 4], [22.288, "F.", 4], [22.475, "Kết", 5], [22.688, "quả:", 5], [23.288, "với", 5], [23.475, "100", 5], [23.925, "độ", 5], [24.125, "F,", 5], [24.562, "cách", 5], [24.75, "thứ", 5], [24.925, "hai", 5], [25.137, "cho", 5], [25.288, "37,", 5], [26.137, "gần", 5], [26.4, "với", 5], [26.525, "37,78.", 5], [28.625, "Với", 6], [28.875, "0", 6], [29.113, "độ", 6], [29.312, "F,", 6], [29.762, "nó", 6], [30.038, "cho", 6], [30.238, "âm", 6], [30.4, "17,", 6], [31.15, "trong", 6], [31.387, "khi", 6], [31.562, "giá", 6], [31.775, "trị", 6], [31.962, "đúng", 6], [32.212, "là", 6], [32.438, "âm", 6], [32.587, "17,78.", 6], [34.675, "Âm", 7], [34.875, "17", 7], [35.312, "chứ", 7], [35.475, "không", 7], [35.675, "phải", 7], [35.862, "âm", 7], [36.013, "18,", 7], [36.75, "vì", 7], [36.975, "từ", 7], [37.175, "chuẩn", 7], [37.743, "C99,", 7], [38.312, "phép", 7], [38.6, "chia", 7], [38.837, "nguyên", 7], [39.1, "bỏ", 7], [39.325, "phần", 7], [39.562, "lẻ", 7], [39.837, "về", 7], [39.987, "phía", 7], [40.163, "0.", 7], [41.325, "Như", 8], [41.587, "vậy,", 8], [42.087, "trên", 8], [42.325, "số", 8], [42.55, "nguyên,", 8], [43.125, "thứ", 8], [43.325, "tự", 8], [43.55, "các", 8], [43.725, "phép", 8], [43.95, "toán", 8], [44.225, "làm", 8], [44.388, "đổi", 8], [44.562, "kết", 8], [44.775, "quả,", 8], [45.388, "dù", 8], [45.663, "trong", 8], [45.875, "toán", 8], [46.075, "học", 8], [46.263, "hai", 8], [46.462, "công", 8], [46.663, "thức", 8], [46.85, "chỉ", 8], [47.05, "là", 8], [47.188, "một.", 8]], "cues": [0.1, 22.475], "lang": 9.6}, {"ten": "Slide 6. sizeof cho số byte của mỗi kiểu; INT_MAX là giới hạn của int", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới. Chương trình lưu sizeof vào biến int rồi in bằng %d, vì GCC bản MinGW cảnh báo nhầm với %zu trên Windows (README của mã ghi rõ).\nHiện dần: bước 1 khi đọc “Muốn biết một kiểu chiếm bao nhiêu byte”; bước 2 khi đọc “Kết quả trên máy biên soạn”.", "start": 239.72, "audio": "audio/3c35ee0866e00203.mp3", "dur": 28.03, "words": [[0.1, "Muốn", 0], [0.487, "biết", 0], [0.713, "một", 0], [0.912, "kiểu", 0], [1.113, "chiếm", 0], [1.387, "bao", 0], [1.562, "nhiêu", 0], [1.75, "byte", 0], [1.975, "trên", 0], [2.15, "máy", 0], [2.337, "đang", 0], [2.538, "dùng,", 0], [3.013, "các", 0], [3.2, "bạn", 0], [3.413, "dùng", 0], [3.625, "toán", 0], [3.875, "tử", 0], [4.1, "sizeof.", 0], [5.575, "Còn", 1], [5.838, "giới", 1], [6.013, "hạn", 1], [6.237, "của", 1], [6.362, "kiểu", 1], [6.612, "int", 1], [6.888, "nằm", 1], [7.088, "trong", 1], [7.287, "tệp", 1], [7.525, "header", 1], [7.862, "limits.h,", 1], [8.912, "với", 1], [9.137, "hai", 1], [9.363, "hằng", 1], [9.6, "INT_MIN", 1], [10.037, "và", 1], [10.225, "INT_MAX.", 1], [11.463, "Kết", 2], [11.688, "quả", 2], [11.912, "trên", 2], [12.1, "máy", 2], [12.275, "biên", 2], [12.475, "soạn:", 2], [13.025, "char", 2], [13.25, "một", 2], [13.438, "byte,", 2], [13.938, "int", 2], [14.15, "bốn", 2], [14.375, "byte,", 2], [14.85, "double", 2], [15.238, "tám", 2], [15.512, "byte,", 2], [15.975, "và", 2], [16.262, "INT_MAX", 2], [16.65, "bằng", 2], [16.875, "hai", 2], [17.062, "tỉ", 2], [17.238, "một", 2], [17.45, "trăm", 2], [17.725, "bốn", 2], [17.913, "mươi", 2], [17.975, "bảy", 2], [18.175, "triệu", 2], [18.387, "bốn", 2], [18.65, "trăm", 2], [18.875, "tám", 2], [19.087, "mươi", 2], [19.15, "ba", 2], [19.325, "nghìn", 2], [19.587, "sáu", 2], [19.812, "trăm", 2], [20.038, "bốn", 2], [20.212, "mươi", 2], [20.288, "bảy,", 2], [20.863, "tức", 2], [21.05, "hai", 2], [21.288, "mũ", 2], [21.55, "ba", 2], [21.738, "mươi", 2], [21.85, "mốt", 2], [22.087, "trừ", 2], [22.275, "một.", 2], [23.363, "Con", 3], [23.6, "số", 3], [23.788, "này", 3], [23.938, "cần", 3], [24.15, "nhớ,", 3], [24.675, "vì", 3], [24.887, "mọi", 3], [25.1, "phép", 3], [25.337, "tính", 3], [25.587, "với", 3], [25.75, "int", 3], [25.988, "vượt", 3], [26.2, "qua", 3], [26.387, "nó", 3], [26.65, "đều", 3], [26.812, "sai.", 3]], "cues": [0.1, 11.463], "lang": 9.6}, {"ten": "Slide 7. 50000 nhân 50000 tràn int: GCC cảnh báo, kết quả âm", "loai": "slide", "slide": "S07", "dung": "Mã phía trên, kết quả phía dưới; tô dòng cảnh báo và dòng int : -1794967296; hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Ví dụ này”; bước 2 khi đọc “Trong C”; bước 3 khi đọc “Cách tránh”.", "start": 277.35, "audio": "audio/7f98281479d5d93c.mp3", "dur": 38.11, "words": [[0.1, "Ví", 0], [0.35, "dụ", 0], [0.525, "này", 0], [0.762, "lấy", 0], [0.925, "từ", 0], [1.087, "chương", 0], [1.337, "đầu", 0], [1.525, "về", 0], [1.663, "biểu", 0], [1.85, "diễn", 0], [2.062, "số", 0], [2.337, "của", 0], [2.5, "cuốn", 0], [2.763, "Computer", 0], [3.212, "Systems", 0], [3.725, "của", 0], [3.95, "Bryant", 0], [4.438, "và", 0], [4.612, "O'Hallaron:", 0], [5.55, "50000", 0], [6.112, "nhân", 0], [6.375, "50000", 0], [6.888, "bằng", 0], [7.088, "hai", 0], [7.263, "tỉ", 0], [7.463, "rưỡi,", 0], [8.05, "lớn", 0], [8.338, "hơn", 0], [8.6, "INT_MAX.", 0], [9.85, "Khi", 1], [10.075, "biên", 1], [10.262, "dịch,", 1], [10.806, "GCC", 1], [11.35, "đã", 1], [11.45, "cảnh", 1], [11.688, "báo", 1], [11.938, "integer", 1], [12.412, "overflow,", 1], [13.213, "và", 1], [13.438, "khi", 1], [13.625, "chạy,", 1], [14.188, "biến", 1], [14.475, "int", 1], [14.762, "x", 1], [14.975, "in", 1], [15.225, "ra", 1], [15.35, "một", 1], [15.537, "số", 1], [15.775, "âm.", 1], [16.9, "Trong", 2], [17.2, "C,", 2], [17.738, "tràn", 2], [17.95, "số", 2], [18.163, "nguyên", 2], [18.462, "có", 2], [18.575, "dấu", 2], [18.837, "là", 2], [18.95, "hành", 2], [19.163, "vi", 2], [19.337, "không", 2], [19.55, "xác", 2], [19.75, "định:", 2], [20.212, "số", 2], [20.475, "âm", 2], [20.663, "kia", 2], [20.9, "chỉ", 2], [21.075, "là", 2], [21.188, "điều", 2], [21.35, "xảy", 2], [21.575, "ra", 2], [21.75, "trên", 2], [21.925, "máy", 2], [22.087, "này,", 2], [22.538, "với", 2], [22.712, "trình", 2], [22.95, "biên", 2], [23.163, "dịch", 2], [23.337, "này,", 2], [23.762, "không", 2], [24.012, "được", 2], [24.15, "dựa", 2], [24.375, "vào.", 2], [25.512, "Cách", 3], [25.738, "tránh", 3], [26.038, "là", 3], [26.15, "chọn", 3], [26.425, "kiểu", 3], [26.625, "đủ", 3], [26.825, "rộng", 3], [27.05, "ngay", 3], [27.238, "từ", 3], [27.425, "đầu:", 3], [27.875, "kiểu", 3], [28.062, "long", 3], [28.3, "long", 3], [28.525, "chiếm", 3], [28.8, "tám", 3], [29.038, "byte,", 3], [29.512, "và", 3], [29.775, "phép", 3], [30.012, "nhân", 3], [30.225, "viết", 3], [30.425, "với", 3], [30.562, "hậu", 3], [30.75, "tố", 3], [31.137, "LL", 3], [31.525, "cho", 3], [31.688, "đúng", 3], [31.887, "hai", 3], [32.087, "tỉ", 3], [32.312, "rưỡi.", 3], [33.55, "Đây", 4], [33.837, "cũng", 4], [34.062, "chính", 4], [34.3, "là", 4], [34.438, "lỗi", 4], [34.7, "của", 4], [34.837, "bài", 4], [35.038, "nộp", 4], [35.263, "dùng", 4], [35.562, "int", 4], [35.875, "ở", 4], [35.938, "phần", 4], [36.2, "về", 4], [36.337, "chấm", 4], [36.575, "bài", 4], [36.737, "tự", 4], [36.925, "động.", 4]], "cues": [0.1, 16.9, 25.512], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 325.06, "audio": "audio/d6654034ff46cc50.mp3", "dur": 4.37, "words": [[0.1, "Ví", 0], [0.4, "dụ", 0], [0.6, "đổi", 0], [0.812, "nhiệt", 0], [1.012, "độ", 0], [1.212, "quay", 0], [1.425, "lại,", 0], [1.95, "với", 0], [2.2, "212", 0], [3.087, "độ", 0], [3.3, "F.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/d16180581d9048fc.mp3", "dur2": 8.98, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.688, "là", 0], [0.8, "B.", 0], [1.163, "Phương", 1], [1.488, "án", 1], [1.725, "A", 1], [1.975, "là", 1], [2.075, "kết", 1], [2.288, "quả", 1], [2.475, "toán", 1], [2.712, "học", 1], [2.888, "đúng,", 1], [3.362, "nên", 1], [3.663, "dễ", 1], [3.875, "được", 1], [4.05, "chọn,", 1], [4.588, "nhưng", 1], [4.888, "C", 1], [5.088, "tính", 1], [5.338, "5", 1], [5.5, "chia", 1], [5.713, "9", 1], [5.963, "trước,", 1], [6.425, "và", 1], [6.7, "với", 1], [6.825, "hai", 1], [7.0, "số", 1], [7.2, "nguyên", 1], [7.537, "thì", 1], [7.675, "được", 1], [7.825, "0.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 345.01, "audio": "audio/f5f6fe255e19d388.mp3", "dur": 4.39, "words": [[0.1, "Tiếp", 0], [0.4, "theo,", 0], [0.925, "các", 0], [1.087, "bạn", 0], [1.3, "chọn", 0], [1.538, "giá", 0], [1.712, "trị", 0], [1.962, "vừa", 0], [2.212, "với", 0], [2.325, "một", 0], [2.513, "biến", 0], [2.8, "int", 0], [3.013, "bốn", 0], [3.237, "byte.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/1b90d4803955ab4a.mp3", "dur2": 9.31, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.787, "C.", 0], [1.163, "Phương", 1], [1.488, "án", 1], [1.675, "D", 1], [1.85, "dễ", 1], [2.038, "được", 1], [2.212, "chọn", 1], [2.513, "vì", 1], [2.625, "hai", 1], [2.788, "tỉ", 1], [2.987, "rưỡi", 1], [3.25, "chỉ", 1], [3.462, "hơi", 1], [3.65, "lớn", 1], [3.913, "hơn", 1], [4.112, "hai", 1], [4.275, "tỉ,", 1], [4.875, "nhưng", 1], [5.138, "nó", 1], [5.325, "đã", 1], [5.438, "vượt", 1], [5.688, "INT_MAX,", 1], [6.325, "đúng", 1], [6.55, "như", 1], [6.713, "ví", 1], [6.875, "dụ", 1], [7.112, "50000", 1], [7.638, "nhân", 1], [7.925, "50000.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Chương trình giữ giá trị”; bước 2 khi đọc “Kiểu của biến”; bước 3 khi đọc “Giá trị vượt khoảng”; bước 4 khi đọc “các bạn cần nắm”.", "start": 365.31, "audio": "audio/34e5bf5bef53075b.mp3", "dur": 32.45, "words": [[0.1, "Chương", 0], [0.412, "trình", 0], [0.613, "giữ", 0], [0.775, "giá", 0], [0.963, "trị", 0], [1.188, "trong", 0], [1.4, "biến,", 0], [1.9, "một", 0], [2.1, "vùng", 0], [2.312, "nhớ", 0], [2.55, "có", 0], [2.663, "tên", 0], [2.962, "và", 0], [3.062, "có", 0], [3.212, "kiểu,", 0], [3.825, "tạo", 0], [4.075, "ra", 0], [4.237, "bằng", 0], [4.425, "khai", 0], [4.625, "báo", 0], [4.912, "và", 0], [5.05, "nhận", 0], [5.275, "giá", 0], [5.463, "trị", 0], [5.688, "bằng", 0], [5.875, "phép", 0], [6.1, "gán", 0], [6.362, "hay", 0], [6.525, "khởi", 0], [6.75, "tạo.", 0], [7.963, "Kiểu", 1], [8.238, "của", 1], [8.4, "biến", 1], [8.662, "quyết", 1], [8.838, "định", 1], [9.05, "kích", 1], [9.25, "thước,", 1], [9.713, "khoảng", 1], [10.012, "giá", 1], [10.175, "trị", 1], [10.45, "và", 1], [10.575, "cả", 1], [10.775, "phép", 1], [10.988, "toán:", 1], [11.55, "với", 1], [11.762, "hai", 1], [11.975, "số", 1], [12.238, "int,", 1], [12.738, "5", 1], [13.037, "chia", 1], [13.238, "9", 1], [13.5, "bằng", 1], [13.662, "0,", 1], [14.175, "với", 1], [14.4, "double", 1], [14.9, "thì", 1], [15.125, "đúng.", 1], [16.3, "Giá", 2], [16.625, "trị", 2], [16.863, "vượt", 2], [17.038, "khoảng", 2], [17.312, "của", 2], [17.45, "kiểu", 2], [17.7, "là", 2], [17.85, "tràn", 2], [18.087, "số,", 2], [18.688, "và", 2], [18.962, "với", 2], [19.075, "số", 2], [19.275, "nguyên", 2], [19.575, "có", 2], [19.688, "dấu", 2], [20.0, "thì", 2], [20.188, "kết", 2], [20.413, "quả", 2], [20.65, "không", 2], [20.875, "xác", 2], [21.087, "định.", 2], [22.2, "Từ", 3], [22.45, "phần", 3], [22.637, "này,", 3], [23.062, "các", 3], [23.225, "bạn", 3], [23.462, "cần", 3], [23.7, "nắm", 3], [23.913, "các", 3], [24.075, "từ", 3], [24.238, "khóa:", 3], [24.9, "biến,", 3], [25.488, "khai", 3], [25.725, "báo,", 3], [26.262, "khởi", 3], [26.525, "tạo,", 3], [27.113, "kiểu", 3], [27.35, "dữ", 3], [27.562, "liệu,", 3], [28.137, "int,", 3], [28.637, "double,", 3], [29.475, "char,", 3], [30.1, "sizeof", 3], [30.775, "và", 3], [30.962, "tràn", 3], [31.212, "số.", 3]], "cues": [0.1, 7.963, 16.3, 23.062], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Chủ đề nâng cao thứ nhất”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 398.36, "audio": "audio/10a375a3ae471975.mp3", "dur": 25.13, "words": [[0.1, "Chủ", 0], [0.35, "đề", 0], [0.537, "nâng", 0], [0.775, "cao", 0], [1.0, "thứ", 0], [1.163, "nhất", 0], [1.438, "là", 0], [1.688, "vì", 0], [1.837, "sao", 0], [2.087, "0.1", 0], [2.7, "cộng", 0], [2.925, "0.2", 0], [3.525, "khác", 0], [3.775, "0.3", 0], [4.45, "với", 0], [4.562, "số", 0], [4.775, "thực", 0], [4.95, "dấu", 0], [5.188, "phẩy", 0], [5.388, "động,", 0], [5.912, "theo", 0], [6.125, "bài", 0], [6.287, "viết", 0], [6.525, "của", 0], [6.713, "Goldberg.", 0], [8.025, "Chủ", 1], [8.262, "đề", 1], [8.425, "thứ", 1], [8.613, "hai", 1], [8.863, "là", 1], [8.963, "sự", 1], [9.137, "cố", 1], [9.338, "tên", 1], [9.537, "lửa", 1], [9.775, "Ariane", 1], [10.512, "5", 1], [11.25, "năm", 1], [11.988, "1996,", 1], [12.725, "khi", 1], [12.925, "một", 1], [13.088, "số", 1], [13.3, "thực", 1], [13.475, "64", 1], [14.0, "bit", 1], [14.188, "đổi", 1], [14.412, "sang", 1], [14.675, "số", 1], [14.863, "nguyên", 1], [15.088, "16", 1], [15.55, "bit", 1], [15.75, "bị", 1], [15.912, "tràn.", 1], [17.062, "Bài", 2], [17.3, "tập", 2], [17.512, "mở", 2], [17.7, "rộng", 2], [17.988, "là", 2], [18.125, "viết", 2], [18.3, "chương", 2], [18.5, "trình", 2], [18.688, "đổi", 2], [18.863, "độ", 2], [19.062, "C", 2], [19.262, "sang", 2], [19.512, "độ", 2], [19.712, "F", 2], [19.9, "theo", 2], [20.075, "hai", 2], [20.238, "cách,", 2], [20.663, "số", 2], [20.887, "nguyên", 2], [21.238, "và", 2], [21.35, "số", 2], [21.575, "thực,", 2], [22.05, "rồi", 2], [22.337, "so", 2], [22.512, "sánh", 2], [22.738, "kết", 2], [22.913, "quả", 2], [23.175, "với", 2], [23.3, "37", 2], [23.8, "độ", 2], [23.962, "C.", 2]], "cues": [0.1, 17.062], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 424.09, "audio": "audio/e54e96499ab869ca.mp3", "dur": 10.37, "words": [[0.1, "Biến", 0], [0.425, "đã", 0], [0.562, "có,", 0], [1.125, "nhưng", 0], [1.387, "mới", 0], [1.65, "chỉ", 0], [1.837, "có", 0], [1.962, "phép", 0], [2.225, "chia", 0], [2.475, "gây", 0], [2.663, "bất", 0], [2.913, "ngờ.", 0], [4.037, "Phần", 1], [4.338, "tiếp", 1], [4.55, "theo,", 1], [5.025, "về", 1], [5.25, "toán", 1], [5.513, "tử", 1], [5.75, "và", 1], [5.888, "biểu", 1], [6.088, "thức,", 1], [6.55, "viết", 1], [6.825, "quy", 1], [6.987, "tắc", 1], [7.213, "năm", 1], [7.438, "nhuận", 1], [7.713, "thành", 1], [7.888, "một", 1], [8.037, "biểu", 1], [8.225, "thức", 1], [8.387, "C", 1], [8.637, "đúng", 1], [8.875, "cho", 1], [9.025, "mọi", 1], [9.238, "năm.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Chương trình C: toán tử và biểu thức"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

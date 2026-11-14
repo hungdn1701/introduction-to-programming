@@ -1,0 +1,5 @@
+$ gcc -std=c17 -Wall -Wextra -O1 uninitialized.c -o uninitialized
+uninitialized.c: In function 'main':
+uninitialized.c:5:9: warning: 'sum' is used uninitialized [-Wuninitialized]
+    5 |     int sum;
+      |         ^~~

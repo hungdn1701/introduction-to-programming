@@ -1,0 +1,4 @@
+$ echo 1071 462 | ./gcd_goto
+gcd = 21
+$ echo 1071 462 | ./gcd_while
+gcd = 21

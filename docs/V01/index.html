@@ -1,0 +1,300 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V01 — Giới thiệu học phần Nhập môn Tin học và Lập trình · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a>
+<h1>V01 · Giới thiệu học phần Nhập môn Tin học và Lập trình</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình</div><div class="ten">Giới thiệu học phần Nhập môn Tin học và Lập trình</div><div class="gv">TS. Đặng Ngọc Hùng</div><div class="slogan">The best way to learn is to teach, and the best way to teach is to build.</div></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Máy tính chỉ thực hiện đúng các bước chương trình chỉ ra</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Từ bài toán đến máy tính thực hiện: bài toán tìm ước chung lớn nhất của 1071 và 462; thuật toán Euclid gồm các bước rõ ràng; chương trình C diễn đạt các bước đó; trình biên dịch dịch sang mã máy và máy tính thực hiện đúng từng lệnh, in 21.">
+  <defs>
+    <marker id="bt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="bt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="bt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="bt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="bt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="bt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Bài toán -->
+  <g data-s="1">
+    <rect x="40" y="60" width="380" height="300" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="230" y="201.5" text-anchor="middle" font-size="27" fill="#373D4E" font-weight="500">Bài toán</text>
+    <text x="230" y="253.5" text-anchor="middle" font-size="22" fill="#373D4E">ƯCLN của 1071 và 462?</text>
+  </g>
+
+  <!-- Thuật toán -->
+  <g data-s="2">
+    <rect x="470" y="60" width="380" height="300" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="660" y="182.5" text-anchor="middle" font-size="27" fill="#051A53" font-weight="500">Thuật toán</text>
+    <text x="660" y="234.5" text-anchor="middle" font-size="22" fill="#373D4E">Euclid: chia lấy dư</text>
+    <text x="660" y="272.5" text-anchor="middle" font-size="22" fill="#373D4E">đến khi số dư bằng 0</text>
+    <line x1="422" y1="210" x2="466" y2="210" stroke="#051A53" stroke-width="3" marker-end="url(#bt-navy)"/>
+  </g>
+
+  <!-- Chương trình C -->
+  <g data-s="3">
+    <rect x="900" y="60" width="380" height="300" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="1090" y="144.5" text-anchor="middle" font-size="27" fill="#123A6B" font-weight="500">Chương trình C</text>
+    <text x="1090" y="196.5" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">while (n != 0) {</text>
+    <text x="1090" y="234.5" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">    r = m % n;</text>
+    <text x="1090" y="272.5" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">    m = n; n = r;</text>
+    <text x="1090" y="310.5" text-anchor="middle" font-size="22" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">}</text>
+    <line x1="852" y1="210" x2="896" y2="210" stroke="#051A53" stroke-width="3" marker-end="url(#bt-navy)"/>
+  </g>
+
+  <!-- Máy tính -->
+  <g data-s="4">
+    <rect x="1330" y="60" width="380" height="300" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1520" y="163.5" text-anchor="middle" font-size="27" fill="#22603F" font-weight="500">Máy tính</text>
+    <text x="1520" y="215.5" text-anchor="middle" font-size="22" fill="#373D4E">biên dịch → mã máy</text>
+    <text x="1520" y="253.5" text-anchor="middle" font-size="22" fill="#373D4E">thực hiện từng lệnh:</text>
+    <text x="1520" y="291.5" text-anchor="middle" font-size="22" fill="#373D4E">in 21</text>
+    <line x1="1282" y1="210" x2="1326" y2="210" stroke="#051A53" stroke-width="3" marker-end="url(#bt-navy)"/>
+    <rect x="40" y="400" width="1680" height="90" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="880" y="453" text-anchor="middle" font-size="24" fill="#373D4E">Máy tính chỉ thực hiện đúng các bước chương trình chỉ ra; lập trình là diễn đạt lời giải thành các bước đó</text>
+  </g>
+</svg></figure></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Nền tảng cho mọi vai trò nghề</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Lập trình viên phần mềm</b>: biến, rẽ nhánh, vòng lặp, hàm, mảng — có trong mọi ngôn ngữ; đọc thông báo lỗi, kiểm thử</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Kỹ sư hệ thống nhúng, IoT</b>: C là ngôn ngữ chính của vi điều khiển; bộ nhớ, địa chỉ, con trỏ</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Kỹ sư dữ liệu, AI</b>: thuật toán và độ phức tạp — vì sao chương trình chạy chậm khi dữ liệu lớn</div></div><div class="the" data-s="4"><span class="so">4</span><div><b>An toàn thông tin</b>: cách chương trình dùng bộ nhớ; tràn bộ đệm, như sâu Morris năm 1988</div></div></div></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Sáu chương, từ máy tính đến chương trình C hoàn chỉnh</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 600" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Sáu chương của học phần: ba chương đầu về máy tính, lập trình và trình biên dịch, các ngôn ngữ lập trình, khoảng một phần ba thời lượng; ba chương sau về ngôn ngữ C: C cơ bản, tổ chức chương trình bằng hàm, các cấu trúc dữ liệu cơ bản.">
+  <defs>
+    <marker id="sc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="sc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="sc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="sc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="sc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="sc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Chương 1 -->
+  <g data-s="1">
+    <rect x="40" y="30" width="540" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="310" y="102" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">Chương 1. Cơ bản về máy tính</text>
+    <text x="310" y="153" text-anchor="middle" font-size="21" fill="#373D4E">von Neumann, chu trình lệnh, bộ nhớ,</text>
+    <text x="310" y="190" text-anchor="middle" font-size="21" fill="#373D4E">nhị phân, hệ điều hành</text>
+  </g>
+
+  <!-- Chương 2 -->
+  <g data-s="2">
+    <rect x="610" y="30" width="540" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="880" y="102" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">Chương 2. Lập trình và trình biên dịch</text>
+    <text x="880" y="153" text-anchor="middle" font-size="21" fill="#373D4E">thuật toán, độ phức tạp,</text>
+    <text x="880" y="190" text-anchor="middle" font-size="21" fill="#373D4E">biên dịch, kiểm thử</text>
+  </g>
+
+  <!-- Chương 3 -->
+  <g data-s="3">
+    <rect x="1180" y="30" width="540" height="200" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1450" y="102" text-anchor="middle" font-size="24" fill="#051A53" font-weight="500">Chương 3. Các ngôn ngữ lập trình</text>
+    <text x="1450" y="153" text-anchor="middle" font-size="21" fill="#373D4E">mã máy đến bậc cao, các mô hình lập trình,</text>
+    <text x="1450" y="190" text-anchor="middle" font-size="21" fill="#373D4E">thư viện</text>
+  </g>
+
+  <!-- Chương 4 -->
+  <g data-s="4">
+    <rect x="40" y="280" width="540" height="200" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="310" y="352" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500">Chương 4. C cơ bản</text>
+    <text x="310" y="403" text-anchor="middle" font-size="21" fill="#373D4E">biến, kiểu, toán tử,</text>
+    <text x="310" y="440" text-anchor="middle" font-size="21" fill="#373D4E">vào ra, rẽ nhánh, vòng lặp</text>
+  </g>
+
+  <!-- Chương 5 -->
+  <g data-s="5">
+    <rect x="610" y="280" width="540" height="200" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="880" y="352" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500">Chương 5. Tổ chức chương trình C</text>
+    <text x="880" y="403" text-anchor="middle" font-size="21" fill="#373D4E">hàm, tham trị, con trỏ,</text>
+    <text x="880" y="440" text-anchor="middle" font-size="21" fill="#373D4E">đệ quy, thiết kế từ trên xuống</text>
+  </g>
+
+  <!-- Chương 6 -->
+  <g data-s="6">
+    <rect x="1180" y="280" width="540" height="200" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1450" y="352" text-anchor="middle" font-size="24" fill="#22603F" font-weight="500">Chương 6. Cấu trúc dữ liệu cơ bản</text>
+    <text x="1450" y="403" text-anchor="middle" font-size="21" fill="#373D4E">mảng, sắp xếp, tìm kiếm,</text>
+    <text x="1450" y="440" text-anchor="middle" font-size="21" fill="#373D4E">ma trận, chuỗi, cấu trúc</text>
+    <text x="860" y="545" text-anchor="middle" font-size="23" fill="#5B6478">Chương 1–3: máy tính và lập trình (khoảng 1/3)    ·    Chương 4–6: ngôn ngữ C (khoảng 2/3)</text>
+  </g>
+</svg></figure></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Cách học và cách đánh giá</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 480" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Cách học mỗi phần: xem bài giảng; gõ lại và chạy mã đi kèm với gcc -std=c17 -Wall -Wextra; sửa thử, thêm ca biên, đọc cảnh báo của trình biên dịch; nộp lên hệ thống chấm, nhận AC hoặc WA và sửa tiếp.">
+  <defs>
+    <marker id="ch-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="ch-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="ch-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="ch-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="ch-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="ch-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Xem bài giảng -->
+  <g data-s="1">
+    <rect x="40" y="60" width="380" height="220" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="230" y="141.5" text-anchor="middle" font-size="25" fill="#373D4E" font-weight="500">Xem bài giảng</text>
+    <text x="230" y="193.5" text-anchor="middle" font-size="22" fill="#373D4E">câu hỏi của phần,</text>
+    <text x="230" y="231.5" text-anchor="middle" font-size="22" fill="#373D4E">cơ chế, mã, lưu ý</text>
+  </g>
+
+  <!-- Gõ lại, chạy mã -->
+  <g data-s="2">
+    <rect x="470" y="60" width="380" height="220" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="660" y="141.5" text-anchor="middle" font-size="25" fill="#123A6B" font-weight="500">Gõ lại, chạy mã</text>
+    <text x="660" y="193.5" text-anchor="middle" font-size="22" fill="#373D4E">gcc -std=c17</text>
+    <text x="660" y="231.5" text-anchor="middle" font-size="22" fill="#373D4E">-Wall -Wextra</text>
+    <line x1="422" y1="170" x2="466" y2="170" stroke="#051A53" stroke-width="3" marker-end="url(#ch-navy)"/>
+  </g>
+
+  <!-- Sửa, thử ca biên -->
+  <g data-s="3">
+    <rect x="900" y="60" width="380" height="220" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="1090" y="141.5" text-anchor="middle" font-size="25" fill="#6B4E06" font-weight="500">Sửa, thử ca biên</text>
+    <text x="1090" y="193.5" text-anchor="middle" font-size="22" fill="#373D4E">đọc cảnh báo,</text>
+    <text x="1090" y="231.5" text-anchor="middle" font-size="22" fill="#373D4E">đổi đầu vào</text>
+    <line x1="852" y1="170" x2="896" y2="170" stroke="#051A53" stroke-width="3" marker-end="url(#ch-navy)"/>
+  </g>
+
+  <!-- Nộp lên hệ thống chấm -->
+  <g data-s="4">
+    <rect x="1330" y="60" width="380" height="220" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1520" y="141.5" text-anchor="middle" font-size="25" fill="#22603F" font-weight="500">Nộp lên hệ thống chấm</text>
+    <text x="1520" y="193.5" text-anchor="middle" font-size="22" fill="#373D4E">AC hay WA:</text>
+    <text x="1520" y="231.5" text-anchor="middle" font-size="22" fill="#373D4E">sửa đến khi đúng</text>
+    <line x1="1282" y1="170" x2="1326" y2="170" stroke="#051A53" stroke-width="3" marker-end="url(#ch-navy)"/>
+    <path d="M1610,282 L1610,340 L230,340 L230,284" fill="none" stroke="#5B6478" stroke-width="3" marker-end="url(#ch-grey)"/>
+    <text x="920" y="372" text-anchor="middle" font-size="23" fill="#5B6478">bài sau lặp lại vòng này; thi hết học phần là thực hành lập trình trên máy</text>
+  </g>
+</svg></figure></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Phần cứng: phân loại máy tính và kiến trúc von Neumann</div></main><footer><span>Nhập môn Tin học và Lập trình · Giới thiệu học phần Nhập môn Tin học và Lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Mình là Đặng Ngọc Hùng, giảng viên Khoa Công nghệ Thông tin 1, Học viện Công nghệ Bưu chính Viễn thông. Chào mừng các bạn đến với học phần Nhập môn Tin học và Lập trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề. Slide tiêu đề có slogan tiếng Anh dưới tên giảng viên; slogan chỉ hiện, không đọc, không thuyết minh.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:12</span>
+      <h3>Slide 1. Máy tính chỉ thực hiện đúng các bước chương trình chỉ ra</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Mình bắt đầu bằng luận điểm của cả học phần: máy tính không tự hiểu bài toán. Nó chỉ thực hiện đúng các bước mà chương trình chỉ ra, và lập trình là diễn đạt lời giải thành các bước đó. Bắt đầu từ một bài toán nhỏ: tìm ước chung lớn nhất của 1071 và 462. Một thuật toán cho bài toán này đã có từ hơn hai nghìn năm trước, thuật toán Euclid, và Knuth mở đầu bộ sách The Art of Computer Programming bằng chính nó. Thuật toán lặp lại phép chia lấy dư cho đến khi số dư bằng 0, và số chia ở lần chia cuối cùng là ước chung lớn nhất. Chương trình C diễn đạt các bước đó bằng một vòng lặp while và vài phép gán. Hệ thống biên dịch dịch chương trình sang mã máy, và máy tính thực hiện đúng từng lệnh, in ra 21. Học phần này đi qua đủ bốn bước của hình: hiểu máy tính, viết thuật toán, viết chương trình C, và hiểu chương trình được dịch và chạy ra sao.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình tu-bai-toan: bốn bước hiện lần lượt theo lời đọc. Ghi nguồn: Knuth, TAOCP vol. 1, §1.1.
+Hiện dần: bước 1 khi đọc “Bắt đầu từ một bài toán”; bước 2 khi đọc “Một thuật toán”; bước 3 khi đọc “Chương trình C”; bước 4 khi đọc “Hệ thống biên dịch”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:07</span>
+      <h3>Slide 2. Nền tảng cho mọi vai trò nghề</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Lập trình viên phần mềm**: biến, rẽ nhánh, vòng lặp, hàm, mảng — có trong mọi ngôn ngữ; đọc thông báo lỗi, kiểm thử</li><li>**Kỹ sư hệ thống nhúng, IoT**: C là ngôn ngữ chính của vi điều khiển; bộ nhớ, địa chỉ, con trỏ</li><li>**Kỹ sư dữ liệu, AI**: thuật toán và độ phức tạp — vì sao chương trình chạy chậm khi dữ liệu lớn</li><li>**An toàn thông tin**: cách chương trình dùng bộ nhớ; tràn bộ đệm, như sâu Morris năm 1988</li></ul></div>
+    <div class="kb-thoai"><p>Mọi phần mềm, từ ứng dụng web đến thiết bị nhúng, đều chạy trên máy tính theo cách đó, nên học phần là nền tảng cho mọi vai trò trong nghề. Lập trình viên phần mềm, dù viết Java, Python hay JavaScript, đều dùng biến, rẽ nhánh, vòng lặp, hàm và mảng như trong C, cùng thói quen đọc thông báo lỗi và kiểm thử. Kỹ sư hệ thống nhúng và IoT dùng trực tiếp C, ngôn ngữ chính của vi điều khiển, với bộ nhớ, địa chỉ và con trỏ. Kỹ sư dữ liệu và AI cần thuật toán và độ phức tạp tính toán, để biết vì sao chương trình chạy chậm khi dữ liệu lớn. Người làm an toàn thông tin cần hiểu chương trình dùng bộ nhớ thế nào, vì nhiều lỗ hổng, như tràn bộ đệm mà sâu Morris khai thác năm 1988, sinh ra từ đó.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Infographic bốn thẻ, hiện lần lượt theo lời đọc. Danh sách vai trò do agent đề xuất, chờ giảng viên duyệt.
+Hiện dần: bước 1 khi đọc “Lập trình viên phần mềm”; bước 2 khi đọc “Kỹ sư hệ thống nhúng”; bước 3 khi đọc “Kỹ sư dữ liệu”; bước 4 khi đọc “Người làm an toàn thông tin”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:53</span>
+      <h3>Slide 3. Sáu chương, từ máy tính đến chương trình C hoàn chỉnh</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Để xây nền tảng đó, học phần đi qua sáu chương. Chương 1 mở chiếc máy tính ra xem: kiến trúc von Neumann, chu trình lệnh, bộ nhớ, dữ liệu nhị phân và hệ điều hành. Chương 2 đi từ bài toán đến chương trình: thuật toán, độ phức tạp, trình biên dịch và kiểm thử. Chương 3 đặt C vào bản đồ các ngôn ngữ lập trình, từ mã máy đến ngôn ngữ bậc cao. Ba chương này chiếm khoảng một phần ba thời lượng. Chương 4 viết những chương trình C đầu tiên, với biến, vào ra, rẽ nhánh và vòng lặp. Chương 5 tổ chức chương trình bằng hàm, con trỏ cơ bản và đệ quy. Chương 6 gom dữ liệu bằng mảng, chuỗi ký tự và cấu trúc, kết thúc bằng một chương trình quản lý hoàn chỉnh.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình sau-chuong: sáu thẻ hiện lần lượt theo lời đọc.
+Hiện dần: bước 1 khi đọc “Chương 1 mở”; bước 2 khi đọc “Chương 2 đi”; bước 3 khi đọc “Chương 3 đặt”; bước 4 khi đọc “Chương 4 viết”; bước 5 khi đọc “Chương 5 tổ chức”; bước 6 khi đọc “Chương 6 gom”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:39</span>
+      <h3>Slide 4. Cách học và cách đánh giá</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Lập trình chỉ học được bằng cách viết chương trình, nên mỗi phần đi theo một vòng bốn bước. Ở từng phần, các bạn xem bài giảng: câu hỏi của phần, cơ chế, mã và lưu ý. Sau đó, gõ lại mã đi kèm học liệu và chạy bằng GCC với các tùy chọn cảnh báo, thay vì chỉ đọc. Rồi các bạn sửa thử, đổi đầu vào, thêm ca kiểm thử ở giá trị biên, và đọc kỹ từng cảnh báo: khác với lỗi, cảnh báo không chặn biên dịch, nhưng thường báo trước một lỗi khi chạy. Cuối cùng, nộp bài lên hệ thống chấm và sửa cho đến khi đạt. Về đánh giá, kết quả học phần gồm chuyên cần, bài tập trắc nghiệm, bài kiểm tra thực hành, và bài thi hết học phần là thực hành lập trình trên máy. Tỷ lệ điểm và cách cài đặt GCC, VS Code có trong Tài liệu học phần.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình cach-hoc: bốn bước hiện lần lượt theo lời đọc. Thành phần đánh giá theo đề cương CTK2025, mục 4.
+Hiện dần: bước 1 khi đọc “Ở từng phần”; bước 2 khi đọc “Sau đó”; bước 3 khi đọc “Rồi các bạn”; bước 4 khi đọc “Cuối cùng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:27</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Học phần đi từ chiếc máy tính đến một chương trình C hoàn chỉnh, và mỗi chương xây trên chương trước, vì vậy các bạn nên học theo thứ tự. Phần đầu tiên của Chương 1 bắt đầu từ câu hỏi: những chiếc máy rất khác nhau, từ điện thoại đến siêu máy tính, có chung cách tổ chức nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Cách học và cách đánh giá mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V01", "tieu_de": "Giới thiệu học phần Nhập môn Tin học và Lập trình", "giong": "vi-VN-NamMinhNeural", "tong": 223.63, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề. Slide tiêu đề có slogan tiếng Anh dưới tên giảng viên; slogan chỉ hiện, không đọc, không thuyết minh.", "start": 0.0, "audio": "audio/41dda064d5fe92c8.mp3", "dur": 11.78, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Mình", 1], [2.25, "là", 1], [2.45, "Đặng", 1], [2.675, "Ngọc", 1], [2.875, "Hùng,", 1], [3.337, "giảng", 1], [3.612, "viên", 1], [3.812, "Khoa", 1], [3.987, "Công", 1], [4.162, "nghệ", 1], [4.35, "Thông", 1], [4.562, "tin", 1], [4.75, "1,", 1], [5.2, "Học", 1], [5.388, "viện", 1], [5.625, "Công", 1], [5.838, "nghệ", 1], [6.05, "Bưu", 1], [6.25, "chính", 1], [6.525, "Viễn", 1], [6.713, "thông.", 1], [7.862, "Chào", 2], [8.137, "mừng", 2], [8.338, "các", 2], [8.5, "bạn", 2], [8.725, "đến", 2], [8.938, "với", 2], [9.037, "học", 2], [9.213, "phần", 2], [9.438, "Nhập", 2], [9.675, "môn", 2], [9.887, "Tin", 2], [10.1, "học", 2], [10.287, "và", 2], [10.438, "Lập", 2], [10.637, "trình.", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Máy tính chỉ thực hiện đúng các bước chương trình chỉ ra", "loai": "slide", "slide": "S01", "dung": "Hình tu-bai-toan: bốn bước hiện lần lượt theo lời đọc. Ghi nguồn: Knuth, TAOCP vol. 1, §1.1.\nHiện dần: bước 1 khi đọc “Bắt đầu từ một bài toán”; bước 2 khi đọc “Một thuật toán”; bước 3 khi đọc “Chương trình C”; bước 4 khi đọc “Hệ thống biên dịch”.", "start": 12.38, "audio": "audio/5c741c9049be59c1.mp3", "dur": 52.61, "words": [[0.1, "Mình", 0], [0.475, "bắt", 0], [0.637, "đầu", 0], [0.838, "bằng", 0], [1.025, "luận", 0], [1.25, "điểm", 0], [1.512, "của", 0], [1.675, "cả", 0], [1.837, "học", 0], [2.025, "phần:", 0], [2.587, "máy", 0], [2.812, "tính", 0], [3.087, "không", 0], [3.337, "tự", 0], [3.525, "hiểu", 0], [3.725, "bài", 0], [3.9, "toán.", 0], [5.138, "Nó", 1], [5.562, "chỉ", 1], [5.737, "thực", 1], [5.9, "hiện", 1], [6.15, "đúng", 1], [6.338, "các", 1], [6.513, "bước", 1], [6.763, "mà", 1], [6.95, "chương", 1], [7.175, "trình", 1], [7.362, "chỉ", 1], [7.562, "ra,", 1], [8.062, "và", 1], [8.25, "lập", 1], [8.45, "trình", 1], [8.725, "là", 1], [8.925, "diễn", 1], [9.162, "đạt", 1], [9.338, "lời", 1], [9.537, "giải", 1], [9.787, "thành", 1], [10.025, "các", 1], [10.213, "bước", 1], [10.387, "đó.", 1], [11.575, "Bắt", 2], [11.812, "đầu", 2], [12.037, "từ", 2], [12.175, "một", 2], [12.35, "bài", 2], [12.512, "toán", 2], [12.75, "nhỏ:", 2], [13.35, "tìm", 2], [13.625, "ước", 2], [13.762, "chung", 2], [13.963, "lớn", 2], [14.2, "nhất", 2], [14.4, "của", 2], [14.512, "1071", 2], [15.963, "và", 2], [16.175, "462.", 2], [18.125, "Một", 3], [18.475, "thuật", 3], [18.637, "toán", 3], [18.9, "cho", 3], [19.012, "bài", 3], [19.163, "toán", 3], [19.413, "này", 3], [19.625, "đã", 3], [19.738, "có", 3], [19.863, "từ", 3], [20.062, "hơn", 3], [20.3, "hai", 3], [20.462, "nghìn", 3], [20.688, "năm", 3], [20.875, "trước,", 3], [21.375, "thuật", 3], [21.575, "toán", 3], [21.875, "Euclid,", 3], [22.425, "và", 3], [22.625, "Knuth", 3], [22.85, "mở", 3], [23.05, "đầu", 3], [23.2, "bộ", 3], [23.387, "sách", 3], [23.613, "The", 3], [23.788, "Art", 3], [24.038, "of", 3], [24.225, "Computer", 3], [24.688, "Programming", 3], [25.275, "bằng", 3], [25.525, "chính", 3], [25.75, "nó.", 3], [26.925, "Thuật", 4], [27.188, "toán", 4], [27.413, "lặp", 4], [27.575, "lại", 4], [27.75, "phép", 4], [27.988, "chia", 4], [28.212, "lấy", 4], [28.413, "dư", 4], [28.625, "cho", 4], [28.762, "đến", 4], [28.95, "khi", 4], [29.15, "số", 4], [29.425, "dư", 4], [29.587, "bằng", 4], [29.775, "0,", 4], [30.275, "và", 4], [30.475, "số", 4], [30.663, "chia", 4], [30.962, "ở", 4], [31.075, "lần", 4], [31.3, "chia", 4], [31.5, "cuối", 4], [31.688, "cùng", 4], [31.988, "là", 4], [32.188, "ước", 4], [32.325, "chung", 4], [32.538, "lớn", 4], [32.75, "nhất.", 4], [33.8, "Chương", 5], [34.125, "trình", 5], [34.325, "C", 5], [34.538, "diễn", 5], [34.75, "đạt", 5], [34.925, "các", 5], [35.087, "bước", 5], [35.263, "đó", 5], [35.525, "bằng", 5], [35.725, "một", 5], [35.888, "vòng", 5], [36.112, "lặp", 5], [36.337, "while", 5], [36.575, "và", 5], [36.712, "vài", 5], [36.888, "phép", 5], [37.112, "gán.", 5], [38.3, "Hệ", 6], [38.525, "thống", 6], [38.763, "biên", 6], [38.938, "dịch", 6], [39.087, "dịch", 6], [39.3, "chương", 6], [39.562, "trình", 6], [39.775, "sang", 6], [40.013, "mã", 6], [40.163, "máy,", 6], [40.7, "và", 6], [40.9, "máy", 6], [41.062, "tính", 6], [41.288, "thực", 6], [41.438, "hiện", 6], [41.675, "đúng", 6], [41.875, "từng", 6], [42.062, "lệnh,", 6], [42.55, "in", 6], [42.8, "ra", 6], [43.013, "21.", 6], [44.425, "Học", 7], [44.65, "phần", 7], [44.837, "này", 7], [45.038, "đi", 7], [45.175, "qua", 7], [45.362, "đủ", 7], [45.55, "bốn", 7], [45.788, "bước", 7], [45.975, "của", 7], [46.112, "hình:", 7], [46.612, "hiểu", 7], [46.812, "máy", 7], [46.987, "tính,", 7], [47.5, "viết", 7], [47.737, "thuật", 7], [47.938, "toán,", 7], [48.487, "viết", 7], [48.725, "chương", 7], [48.938, "trình", 7], [49.112, "C,", 7], [49.7, "và", 7], [49.9, "hiểu", 7], [50.1, "chương", 7], [50.325, "trình", 7], [50.525, "được", 7], [50.663, "dịch", 7], [50.875, "và", 7], [51.025, "chạy", 7], [51.288, "ra", 7], [51.413, "sao.", 7]], "cues": [11.575, 18.125, 33.8, 38.3], "lang": 2.6}, {"ten": "Slide 2. Nền tảng cho mọi vai trò nghề", "loai": "slide", "slide": "S02", "dung": "Infographic bốn thẻ, hiện lần lượt theo lời đọc. Danh sách vai trò do agent đề xuất, chờ giảng viên duyệt.\nHiện dần: bước 1 khi đọc “Lập trình viên phần mềm”; bước 2 khi đọc “Kỹ sư hệ thống nhúng”; bước 3 khi đọc “Kỹ sư dữ liệu”; bước 4 khi đọc “Người làm an toàn thông tin”.", "start": 67.59, "audio": "audio/63d941e0c14f2ee8.mp3", "dur": 45.02, "words": [[0.1, "Mọi", 0], [0.463, "phần", 0], [0.675, "mềm,", 0], [1.15, "từ", 0], [1.375, "ứng", 0], [1.538, "dụng", 0], [1.75, "web", 0], [1.988, "đến", 0], [2.212, "thiết", 0], [2.388, "bị", 0], [2.55, "nhúng,", 0], [3.062, "đều", 0], [3.288, "chạy", 0], [3.5, "trên", 0], [3.675, "máy", 0], [3.825, "tính", 0], [4.075, "theo", 0], [4.213, "cách", 0], [4.388, "đó,", 0], [4.938, "nên", 0], [5.213, "học", 0], [5.412, "phần", 0], [5.675, "là", 0], [5.8, "nền", 0], [6.025, "tảng", 0], [6.312, "cho", 0], [6.425, "mọi", 0], [6.638, "vai", 0], [6.812, "trò", 0], [7.075, "trong", 0], [7.25, "nghề.", 0], [8.375, "Lập", 1], [8.713, "trình", 1], [8.887, "viên", 1], [9.062, "phần", 1], [9.238, "mềm,", 1], [9.7, "dù", 1], [9.938, "viết", 1], [10.125, "Java,", 1], [10.85, "Python", 1], [11.287, "hay", 1], [11.463, "JavaScript,", 1], [12.425, "đều", 1], [12.637, "dùng", 1], [12.887, "biến,", 1], [13.412, "rẽ", 1], [13.65, "nhánh,", 1], [14.175, "vòng", 1], [14.45, "lặp,", 1], [14.9, "hàm", 1], [15.2, "và", 1], [15.312, "mảng", 1], [15.6, "như", 1], [15.775, "trong", 1], [15.938, "C,", 1], [16.5, "cùng", 1], [16.725, "thói", 1], [16.887, "quen", 1], [17.113, "đọc", 1], [17.275, "thông", 1], [17.462, "báo", 1], [17.65, "lỗi", 1], [17.913, "và", 1], [18.062, "kiểm", 1], [18.312, "thử.", 1], [19.538, "Kỹ", 2], [19.775, "sư", 2], [19.975, "hệ", 2], [20.137, "thống", 2], [20.363, "nhúng", 2], [20.663, "và", 2], [20.863, "IoT", 2], [21.438, "dùng", 2], [21.712, "trực", 2], [21.925, "tiếp", 2], [22.062, "C,", 2], [22.663, "ngôn", 2], [22.9, "ngữ", 2], [23.113, "chính", 2], [23.375, "của", 2], [23.512, "vi", 2], [23.65, "điều", 2], [23.825, "khiển,", 2], [24.4, "với", 2], [24.6, "bộ", 2], [24.825, "nhớ,", 2], [25.387, "địa", 2], [25.613, "chỉ", 2], [25.925, "và", 2], [26.075, "con", 2], [26.312, "trỏ.", 2], [27.562, "Kỹ", 3], [27.762, "sư", 3], [27.95, "dữ", 3], [28.137, "liệu", 3], [28.4, "và", 3], [28.812, "AI", 3], [29.038, "cần", 3], [29.25, "thuật", 3], [29.45, "toán", 3], [29.762, "và", 3], [29.863, "độ", 3], [30.038, "phức", 3], [30.238, "tạp", 3], [30.462, "tính", 3], [30.688, "toán,", 3], [31.25, "để", 3], [31.425, "biết", 3], [31.7, "vì", 3], [31.887, "sao", 3], [32.112, "chương", 3], [32.3, "trình", 3], [32.513, "chạy", 3], [32.688, "chậm", 3], [32.95, "khi", 3], [33.125, "dữ", 3], [33.3, "liệu", 3], [33.525, "lớn.", 3], [34.725, "Người", 4], [34.987, "làm", 4], [35.237, "an", 4], [35.388, "toàn", 4], [35.612, "thông", 4], [35.8, "tin", 4], [36.05, "cần", 4], [36.25, "hiểu", 4], [36.413, "chương", 4], [36.625, "trình", 4], [36.825, "dùng", 4], [37.013, "bộ", 4], [37.188, "nhớ", 4], [37.425, "thế", 4], [37.538, "nào,", 4], [38.013, "vì", 4], [38.212, "nhiều", 4], [38.425, "lỗ", 4], [38.65, "hổng,", 4], [39.212, "như", 4], [39.475, "tràn", 4], [39.712, "bộ", 4], [39.888, "đệm", 4], [40.15, "mà", 4], [40.325, "sâu", 4], [40.562, "Morris", 4], [40.938, "khai", 4], [41.175, "thác", 4], [41.85, "năm", 4], [42.525, "1988,", 4], [43.2, "sinh", 4], [43.487, "ra", 4], [43.638, "từ", 4], [43.837, "đó.", 4]], "cues": [8.375, 19.538, 27.562, 34.725], "lang": 0.6}, {"ten": "Slide 3. Sáu chương, từ máy tính đến chương trình C hoàn chỉnh", "loai": "slide", "slide": "S03", "dung": "Hình sau-chuong: sáu thẻ hiện lần lượt theo lời đọc.\nHiện dần: bước 1 khi đọc “Chương 1 mở”; bước 2 khi đọc “Chương 2 đi”; bước 3 khi đọc “Chương 3 đặt”; bước 4 khi đọc “Chương 4 viết”; bước 5 khi đọc “Chương 5 tổ chức”; bước 6 khi đọc “Chương 6 gom”.", "start": 113.21, "audio": "audio/dd393b5cf1edf782.mp3", "dur": 43.51, "words": [[0.1, "Để", 0], [0.325, "xây", 0], [0.525, "nền", 0], [0.75, "tảng", 0], [1.0, "đó,", 0], [1.512, "học", 0], [1.738, "phần", 0], [2.013, "đi", 0], [2.175, "qua", 0], [2.388, "sáu", 0], [2.625, "chương.", 0], [3.837, "Chương", 1], [4.15, "1", 1], [4.3, "mở", 1], [4.475, "chiếc", 1], [4.7, "máy", 1], [4.85, "tính", 1], [5.088, "ra", 1], [5.213, "xem:", 1], [5.787, "kiến", 1], [5.987, "trúc", 1], [6.175, "von", 1], [6.388, "Neumann,", 1], [7.037, "chu", 1], [7.275, "trình", 1], [7.513, "lệnh,", 1], [8.0, "bộ", 1], [8.25, "nhớ,", 1], [8.825, "dữ", 1], [9.037, "liệu", 1], [9.275, "nhị", 1], [9.5, "phân", 1], [9.8, "và", 1], [9.95, "hệ", 1], [10.15, "điều", 1], [10.325, "hành.", 1], [11.425, "Chương", 2], [11.825, "2", 2], [12.012, "đi", 2], [12.137, "từ", 2], [12.325, "bài", 2], [12.488, "toán", 2], [12.787, "đến", 2], [12.975, "chương", 2], [13.225, "trình:", 2], [13.75, "thuật", 2], [13.975, "toán,", 2], [14.512, "độ", 2], [14.75, "phức", 2], [14.95, "tạp,", 2], [15.475, "trình", 2], [15.725, "biên", 2], [15.95, "dịch", 2], [16.137, "và", 2], [16.275, "kiểm", 2], [16.525, "thử.", 2], [17.762, "Chương", 3], [18.125, "3", 3], [18.288, "đặt", 3], [18.45, "C", 3], [18.712, "vào", 3], [18.825, "bản", 3], [19.062, "đồ", 3], [19.262, "các", 3], [19.462, "ngôn", 3], [19.637, "ngữ", 3], [19.85, "lập", 3], [20.05, "trình,", 3], [20.538, "từ", 3], [20.775, "mã", 3], [20.962, "máy", 3], [21.212, "đến", 3], [21.413, "ngôn", 3], [21.613, "ngữ", 3], [21.837, "bậc", 3], [22.025, "cao.", 3], [23.2, "Ba", 4], [23.488, "chương", 4], [23.762, "này", 4], [23.975, "chiếm", 4], [24.212, "khoảng", 4], [24.488, "một", 4], [24.65, "phần", 4], [24.887, "ba", 4], [25.087, "thời", 4], [25.275, "lượng.", 4], [26.45, "Chương", 5], [26.837, "4", 5], [27.075, "viết", 5], [27.275, "những", 5], [27.488, "chương", 5], [27.725, "trình", 5], [27.938, "C", 5], [28.125, "đầu", 5], [28.3, "tiên,", 5], [28.85, "với", 5], [29.075, "biến,", 5], [29.625, "vào", 5], [29.9, "ra,", 5], [30.425, "rẽ", 5], [30.65, "nhánh", 5], [30.988, "và", 5], [31.137, "vòng", 5], [31.375, "lặp.", 5], [32.413, "Chương", 6], [32.775, "5", 6], [32.975, "tổ", 6], [33.15, "chức", 6], [33.35, "chương", 6], [33.6, "trình", 6], [33.812, "bằng", 6], [34.0, "hàm,", 6], [34.487, "con", 6], [34.775, "trỏ", 6], [35.025, "cơ", 6], [35.188, "bản", 6], [35.5, "và", 6], [35.65, "đệ", 6], [35.812, "quy.", 6], [37.0, "Chương", 7], [37.362, "6", 7], [37.65, "gom", 7], [37.862, "dữ", 7], [38.025, "liệu", 7], [38.237, "bằng", 7], [38.438, "mảng,", 7], [38.962, "chuỗi", 7], [39.163, "ký", 7], [39.388, "tự", 7], [39.65, "và", 7], [39.775, "cấu", 7], [40.013, "trúc,", 7], [40.475, "kết", 7], [40.675, "thúc", 7], [40.888, "bằng", 7], [41.075, "một", 7], [41.237, "chương", 7], [41.462, "trình", 7], [41.688, "quản", 7], [41.913, "lý", 7], [42.087, "hoàn", 7], [42.3, "chỉnh.", 7]], "cues": [3.837, 11.425, 17.762, 26.45, 32.413, 37.0], "lang": 2.6}, {"ten": "Slide 4. Cách học và cách đánh giá", "loai": "slide", "slide": "S04", "dung": "Hình cach-hoc: bốn bước hiện lần lượt theo lời đọc. Thành phần đánh giá theo đề cương CTK2025, mục 4.\nHiện dần: bước 1 khi đọc “Ở từng phần”; bước 2 khi đọc “Sau đó”; bước 3 khi đọc “Rồi các bạn”; bước 4 khi đọc “Cuối cùng”.", "start": 159.32, "audio": "audio/c387183f2bd76407.mp3", "dur": 45.65, "words": [[0.1, "Lập", 0], [0.45, "trình", 0], [0.662, "chỉ", 0], [0.8, "học", 0], [0.988, "được", 0], [1.163, "bằng", 0], [1.363, "cách", 0], [1.55, "viết", 0], [1.738, "chương", 0], [1.962, "trình,", 0], [2.475, "nên", 0], [2.763, "mỗi", 0], [2.962, "phần", 0], [3.212, "đi", 0], [3.325, "theo", 0], [3.475, "một", 0], [3.663, "vòng", 0], [3.913, "bốn", 0], [4.138, "bước.", 0], [5.225, "Ở", 1], [5.425, "từng", 1], [5.662, "phần,", 1], [6.138, "các", 1], [6.3, "bạn", 1], [6.487, "xem", 1], [6.725, "bài", 1], [6.875, "giảng:", 1], [7.45, "câu", 1], [7.65, "hỏi", 1], [7.862, "của", 1], [8.012, "phần,", 1], [8.5, "cơ", 1], [8.662, "chế,", 1], [9.262, "mã", 1], [9.6, "và", 1], [9.75, "lưu", 1], [9.988, "ý.", 1], [10.25, "Sau", 2], [10.537, "đó,", 2], [11.05, "gõ", 2], [11.262, "lại", 2], [11.45, "mã", 2], [11.675, "đi", 2], [11.8, "kèm", 2], [12.05, "học", 2], [12.213, "liệu", 2], [12.463, "và", 2], [12.588, "chạy", 2], [12.787, "bằng", 2], [13.225, "GCC", 2], [13.662, "với", 2], [13.775, "các", 2], [13.95, "tùy", 2], [14.15, "chọn", 2], [14.425, "cảnh", 2], [14.637, "báo,", 2], [15.162, "thay", 2], [15.363, "vì", 2], [15.525, "chỉ", 2], [15.75, "đọc.", 2], [16.812, "Rồi", 3], [17.163, "các", 3], [17.337, "bạn", 3], [17.512, "sửa", 3], [17.712, "thử,", 3], [18.225, "đổi", 3], [18.45, "đầu", 3], [18.637, "vào,", 3], [19.137, "thêm", 3], [19.4, "ca", 3], [19.55, "kiểm", 3], [19.788, "thử", 3], [20.025, "ở", 3], [20.163, "giá", 3], [20.363, "trị", 3], [20.562, "biên,", 3], [21.062, "và", 3], [21.238, "đọc", 3], [21.413, "kỹ", 3], [21.637, "từng", 3], [21.863, "cảnh", 3], [22.087, "báo:", 3], [22.637, "khác", 3], [22.887, "với", 3], [23.0, "lỗi,", 3], [23.613, "cảnh", 3], [23.825, "báo", 3], [24.025, "không", 3], [24.262, "chặn", 3], [24.475, "biên", 3], [24.65, "dịch,", 3], [25.087, "nhưng", 3], [25.387, "thường", 3], [25.6, "báo", 3], [25.8, "trước", 3], [26.012, "một", 3], [26.175, "lỗi", 3], [26.4, "khi", 3], [26.562, "chạy.", 3], [27.75, "Cuối", 4], [27.988, "cùng,", 4], [28.488, "nộp", 4], [28.712, "bài", 4], [28.913, "lên", 4], [29.113, "hệ", 4], [29.288, "thống", 4], [29.525, "chấm", 4], [29.837, "và", 4], [29.962, "sửa", 4], [30.275, "cho", 4], [30.438, "đến", 4], [30.637, "khi", 4], [30.812, "đạt.", 4], [31.887, "Về", 5], [32.175, "đánh", 5], [32.375, "giá,", 5], [32.925, "kết", 5], [33.138, "quả", 5], [33.312, "học", 5], [33.5, "phần", 5], [33.737, "gồm", 5], [33.962, "chuyên", 5], [34.2, "cần,", 5], [34.675, "bài", 5], [34.9, "tập", 5], [35.112, "trắc", 5], [35.275, "nghiệm,", 5], [35.788, "bài", 5], [36.0, "kiểm", 5], [36.237, "tra", 5], [36.4, "thực", 5], [36.562, "hành,", 5], [37.013, "và", 5], [37.2, "bài", 5], [37.35, "thi", 5], [37.575, "hết", 5], [37.725, "học", 5], [37.888, "phần", 5], [38.2, "là", 5], [38.337, "thực", 5], [38.513, "hành", 5], [38.7, "lập", 5], [38.913, "trình", 5], [39.125, "trên", 5], [39.312, "máy.", 5], [40.475, "Tỷ", 6], [40.663, "lệ", 6], [40.875, "điểm", 6], [41.188, "và", 6], [41.35, "cách", 6], [41.55, "cài", 6], [41.737, "đặt", 6], [42.291, "GCC,", 6], [42.846, "VS", 6], [43.4, "Code", 6], [43.587, "có", 6], [43.75, "trong", 6], [43.95, "Tài", 6], [44.163, "liệu", 6], [44.35, "học", 6], [44.5, "phần.", 6]], "cues": [5.225, 10.25, 16.812, 27.75], "lang": 2.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Cách học và cách đánh giá mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 207.57, "audio": "audio/accad9cb67ce4ebd.mp3", "dur": 15.46, "words": [[0.1, "Học", 0], [0.338, "phần", 0], [0.525, "đi", 0], [0.65, "từ", 0], [0.825, "chiếc", 0], [1.05, "máy", 0], [1.175, "tính", 0], [1.475, "đến", 0], [1.65, "một", 0], [1.812, "chương", 0], [2.038, "trình", 0], [2.263, "C", 0], [2.462, "hoàn", 0], [2.675, "chỉnh,", 0], [3.212, "và", 0], [3.4, "mỗi", 0], [3.625, "chương", 0], [3.837, "xây", 0], [4.037, "trên", 0], [4.25, "chương", 0], [4.475, "trước,", 0], [4.975, "vì", 0], [5.188, "vậy", 0], [5.362, "các", 0], [5.537, "bạn", 0], [5.763, "nên", 0], [5.963, "học", 0], [6.15, "theo", 0], [6.312, "thứ", 0], [6.475, "tự.", 0], [7.65, "Phần", 1], [7.9, "đầu", 1], [8.05, "tiên", 1], [8.3, "của", 1], [8.412, "Chương", 1], [8.688, "1", 1], [8.825, "bắt", 1], [8.975, "đầu", 1], [9.188, "từ", 1], [9.363, "câu", 1], [9.537, "hỏi:", 1], [10.113, "những", 1], [10.35, "chiếc", 1], [10.575, "máy", 1], [10.762, "rất", 1], [10.925, "khác", 1], [11.162, "nhau,", 1], [11.65, "từ", 1], [11.812, "điện", 1], [12.012, "thoại", 1], [12.25, "đến", 1], [12.438, "siêu", 1], [12.637, "máy", 1], [12.825, "tính,", 1], [13.363, "có", 1], [13.525, "chung", 1], [13.75, "cách", 1], [13.925, "tổ", 1], [14.1, "chức", 1], [14.287, "nào?", 1]], "cues": [], "lang": 0.6}], "video_sau": "Phần cứng: phân loại máy tính và kiến trúc von Neumann"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

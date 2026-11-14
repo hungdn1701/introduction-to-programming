@@ -1,0 +1,10 @@
+$ gcc -std=c17 -Wall -Wextra date_nobreak.c -o date_nobreak
+date_nobreak.c: In function 'main':
+date_nobreak.c:18:9: warning: this statement may fall through [-Wimplicit-fallthrough=]
+   18 |         printf("nd");
+      |         ^~~~~~~~~~~~
+date_nobreak.c:19:5: note: here
+   19 |     case 3: case 23:
+      |     ^~~~
+$ echo 2/9/2026 | ./date_nobreak
+Dated this 2ndrd day of September, 2026.

@@ -1,0 +1,3 @@
+before swap : a = 1, b = 2
+inside swap : x = 2, y = 1
+after swap  : a = 1, b = 2

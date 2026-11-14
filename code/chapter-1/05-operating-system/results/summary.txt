@@ -1,0 +1,8 @@
+million loops per second       s1       s2       s3       s4
+A alone, core 0               596      601      590      590
+A with B, C on core 0         211      200      198      202
+B with A, C on core 0         204      173      190      210
+C with A, B on core 0         206      193      190      210
+A with B, C, all cores        544      574      565      565
+
+logical processors: 8, running processes: 341

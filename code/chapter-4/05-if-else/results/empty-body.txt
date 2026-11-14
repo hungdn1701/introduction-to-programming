@@ -1,0 +1,13 @@
+$ gcc -std=c17 -Wall -Wextra empty_body.c -o empty_body
+empty_body.c: In function 'main':
+empty_body.c:6:15: warning: suggest braces around empty body in an 'if' statement [-Wempty-body]
+    6 |     if (a > 0);
+      |               ^
+empty_body.c:6:5: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+    6 |     if (a > 0);
+      |     ^~
+empty_body.c:7:9: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+    7 |         printf("positive\n");
+      |         ^~~~~~
+$ ./empty_body
+positive

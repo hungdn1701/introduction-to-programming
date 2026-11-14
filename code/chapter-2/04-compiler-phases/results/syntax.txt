@@ -1,0 +1,9 @@
+$ gcc -std=c17 -Wall -Wextra syntax.c -o syntax
+syntax.c: In function 'main':
+syntax.c:6:5: error: expected ',' or ';' before 'printf'
+    6 |     printf("%d\n", position);
+      |     ^~~~~~
+syntax.c:5:9: warning: unused variable 'position' [-Wunused-variable]
+    5 |     int position = 0
+      |         ^~~~~~~~
+[exit code 1]

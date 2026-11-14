@@ -1,0 +1,4 @@
+triangle_v1.c: test 01: ok; test 02: ok; test 03: ok; test 04: ok; test 05: ok;
+    test 06: ok; test 07: ok; test 08: WA; test 09: WA; test 10: ok; => WA on test 08
+triangle.c: test 01: ok; test 02: ok; test 03: ok; test 04: ok; test 05: ok;
+    test 06: ok; test 07: ok; test 08: ok; test 09: ok; test 10: ok; => AC

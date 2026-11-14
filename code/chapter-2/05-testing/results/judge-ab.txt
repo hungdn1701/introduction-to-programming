@@ -1,0 +1,5 @@
+ab_ok.c: test 1: ok; test 2: ok; test 3: ok; => AC
+ab_extra.c: test 1: WA; test 2: WA; test 3: WA; => WA on test 1
+ab_int.c: test 1: ok; test 2: ok; test 3: WA; => WA on test 3
+ab_loop.c: test 1: TLE; test 2: TLE; test 3: ok; => TLE on test 1
+ab_ce.c: CE

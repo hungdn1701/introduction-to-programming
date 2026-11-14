@@ -1,0 +1,554 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V32 — Mảng một chiều: sắp xếp chèn và sắp xếp chọn · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-6/03-sorting">Mã</a>
+<h1>V32 · Mảng một chiều: sắp xếp chèn và sắp xếp chọn</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 6</div><div class="ten">Mảng một chiều: sắp xếp chèn và sắp xếp chọn</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Bảng điểm, danh bạ, kết quả tìm kiếm: đều cần thứ tự</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Bảng điểm theo điểm, danh bạ theo tên, kết quả tìm kiếm theo mức phù hợp: dữ liệu cần <b>thứ tự</b></li><li data-s="2">Tìm kiếm nhanh ở phần sau đòi mảng <b>đã sắp xếp</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> sắp xếp một mảng gồm những bước nào, và sắp xếp chèn khác sắp xếp chọn ở đâu?</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Sắp xếp chèn và sắp xếp chọn</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Sắp xếp</b>: đổi chỗ các phần tử để a[0] ≤ a[1] ≤ … ≤ a[n − 1]; mỗi <b>lượt</b> đưa thêm một phần tử về đúng chỗ</li><li data-s="2"><b>Sắp xếp chèn</b>: lấy phần tử kế tiếp, <b>chèn</b> vào đúng chỗ trong đoạn đầu đã sắp xếp</li><li data-s="3"><b>Sắp xếp chọn</b>: <b>chọn</b> phần tử nhỏ nhất của đoạn còn lại, đổi lên đầu đoạn</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Một lượt của sắp xếp chèn: dịch rồi chèn key</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Sắp xếp chèn, lượt thứ tư với mảng 2 4 5 6 1 3: đoạn đầu 2 4 5 6 đã sắp xếp; lấy phần tử kế tiếp 1 làm key; dịch 6, 5, 4, 2 lần lượt sang phải một ô vì đều lớn hơn key; chèn key vào ô trống đầu mảng, được 1 2 4 5 6 3.">
+  <defs>
+    <marker id="sc-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="sc-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="sc-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="sc-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="sc-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="sc-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- đoạn đầu đã sắp xếp -->
+  <g data-s="1">
+    <rect x="80" y="140" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="150" y="185.08" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <text x="150" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">0</text>
+    <rect x="220" y="140" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="290" y="185.08" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <text x="290" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="360" y="140" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="430" y="185.08" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <text x="430" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="500" y="140" width="140" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="570" y="185.08" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <text x="570" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <rect x="640" y="140" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="710" y="185.08" text-anchor="middle" font-size="28" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <text x="710" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="780" y="140" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="850" y="185.08" text-anchor="middle" font-size="28" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <text x="850" y="240" text-anchor="middle" font-size="21" fill="#5B6478" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <text x="80" y="110" text-anchor="start" font-size="23" fill="#22603F" font-weight="500">a[0..3] đã sắp xếp</text>
+  </g>
+
+  <!-- key = a[4] -->
+  <g data-s="2">
+    <rect x="640" y="40" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="710" y="85.08" text-anchor="middle" font-size="28" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <text x="800" y="82" text-anchor="start" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">key = a[4] = 1</text>
+    <rect x="640" y="140" width="140" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+  </g>
+
+  <!-- dịch phần tử lớn hơn key -->
+  <g data-s="3">
+    <rect x="80" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <rect x="220" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="290" y="341.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="360" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="430" y="341.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="500" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="570" y="341.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="640" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="710" y="341.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="780" y="300" width="140" height="64" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="850" y="341.36" text-anchor="middle" font-size="26" fill="#6B4E06" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <line x1="150" y1="252" x2="290" y2="296" stroke="#8A6508" stroke-width="3" marker-end="url(#sc-mem)"/>
+    <line x1="290" y1="252" x2="430" y2="296" stroke="#8A6508" stroke-width="3" marker-end="url(#sc-mem)"/>
+    <line x1="430" y1="252" x2="570" y2="296" stroke="#8A6508" stroke-width="3" marker-end="url(#sc-mem)"/>
+    <line x1="570" y1="252" x2="710" y2="296" stroke="#8A6508" stroke-width="3" marker-end="url(#sc-mem)"/>
+    <text x="1000" y="340" text-anchor="start" font-size="23" fill="#6B4E06" font-family="Consolas, monospace" style="white-space:pre">while (j &gt;= 0 &amp;&amp; a[j] &gt; key): a[j + 1] = a[j];</text>
+  </g>
+
+  <!-- chèn key -->
+  <g data-s="4">
+    <rect x="80" y="300" width="140" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="150" y="345.08" text-anchor="middle" font-size="28" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="80" y="420" width="1600" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="880" y="467.5" text-anchor="middle" font-size="23" fill="#373D4E">a[j + 1] = key;   pass 4: 1 2 4 5 6 3 — như xếp một lá bài vào đúng chỗ trên tay (CLRS §2.1)</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Mỗi lượt: đoạn đầu đã sắp xếp <b>dài thêm một</b>; sau n − 1 lượt, cả mảng đã sắp xếp.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Sắp xếp chọn: mỗi lượt chốt một phần tử ở đầu đoạn</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 560" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Sắp xếp chọn với 5 2 4 6 1 3: lượt 1 tìm nhỏ nhất của cả mảng là 1, đổi với 5; lượt 2 nhỏ nhất của đoạn còn lại là 2, đã ở đúng chỗ; lượt 3 tìm 3, đổi với 4; lượt 4 tìm 4, đổi với 6; lượt 5 không đổi; mỗi lượt chốt một phần tử ở đầu đoạn.">
+  <defs>
+    <marker id="sl-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="sl-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="sl-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="sl-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="sl-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="sl-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- ban đầu -->
+  <g data-s="1">
+    <rect x="80" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="140" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="200" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="260" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="320" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="380" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="440" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="500" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="560" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="620" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="680" y="30" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="740" y="74.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <text x="860" y="74" text-anchor="start" font-size="23" fill="#051A53">ban đầu</text>
+  </g>
+
+  <!-- lượt 1: min = 1, đổi a[0] ↔ a[4] -->
+  <g data-s="1">
+    <rect x="80" y="126" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="140" y="170.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="200" y="126" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="260" y="170.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="320" y="126" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="380" y="170.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="440" y="126" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="500" y="170.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="560" y="126" width="120" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="620" y="170.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="680" y="126" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="740" y="170.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <text x="860" y="170" text-anchor="start" font-size="23" fill="#051A53">lượt 1: min = 1, đổi a[0] ↔ a[4]</text>
+  </g>
+
+  <!-- lượt 2: min = 2, đã đúng chỗ -->
+  <g data-s="2">
+    <rect x="80" y="222" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="140" y="266.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="200" y="222" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="260" y="266.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="320" y="222" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="380" y="266.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="440" y="222" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="500" y="266.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="560" y="222" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="620" y="266.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="680" y="222" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="740" y="266.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <text x="860" y="266" text-anchor="start" font-size="23" fill="#051A53">lượt 2: min = 2, đã đúng chỗ</text>
+  </g>
+
+  <!-- lượt 3: min = 3, đổi a[2] ↔ a[5] -->
+  <g data-s="2">
+    <rect x="80" y="318" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="140" y="362.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="200" y="318" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="260" y="362.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="320" y="318" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="380" y="362.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <rect x="440" y="318" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="500" y="362.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <rect x="560" y="318" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="620" y="362.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="680" y="318" width="120" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="740" y="362.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <text x="860" y="362" text-anchor="start" font-size="23" fill="#051A53">lượt 3: min = 3, đổi a[2] ↔ a[5]</text>
+  </g>
+
+  <!-- lượt 4: min = 4, đổi a[3] ↔ a[5] -->
+  <g data-s="3">
+    <rect x="80" y="414" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="140" y="458.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">1</text>
+    <rect x="200" y="414" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="260" y="458.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">2</text>
+    <rect x="320" y="414" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="380" y="458.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">3</text>
+    <rect x="440" y="414" width="120" height="70" fill="#EEF9F0" stroke="#2F855A" stroke-width="2"/>
+    <text x="500" y="458.36" text-anchor="middle" font-size="26" fill="#22603F" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">4</text>
+    <rect x="560" y="414" width="120" height="70" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="620" y="458.36" text-anchor="middle" font-size="26" fill="#373D4E" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">5</text>
+    <rect x="680" y="414" width="120" height="70" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="740" y="458.36" text-anchor="middle" font-size="26" fill="#123A6B" font-weight="500" font-family="Consolas, monospace" style="white-space:pre">6</text>
+    <text x="860" y="458" text-anchor="start" font-size="23" fill="#051A53">lượt 4: min = 4, đổi a[3] ↔ a[5]</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p>Sắp xếp chọn <b>luôn</b> duyệt hết đoạn còn lại để tìm nhỏ nhất, kể cả khi mảng đã có thứ tự.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>sorts.c in mảng sau từng lượt của hai thuật toán</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">1</span>; i &lt; n; i++) {
+    <span class="hl-k">int</span> key = a[i];
+    <span class="hl-k">int</span> j = i - <span class="hl-n">1</span>;
+    <span class="hl-k">while</span> (j &gt;= <span class="hl-n">0</span> &amp;&amp; a[j] &gt; key) {   <span class="hl-c">/* shift larger elements right */</span>
+        a[j + <span class="hl-n">1</span>] = a[j];
+        j--;
+    }
+    a[j + <span class="hl-n">1</span>] = key;                  <span class="hl-c">/* insert key into the gap */</span>
+    <span class="hl-m">print_pass</span>(i, a, n);
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>insertion sort:
+  pass 1: 2 5 4 6 1 3
+  pass 2: 2 4 5 6 1 3
+  pass 3: 2 4 5 6 1 3
+<span class="noi-bat">  pass 4: 1 2 4 5 6 3</span>
+  pass 5: 1 2 3 4 5 6
+selection sort:
+  pass 1: 1 2 4 6 5 3
+  pass 2: 1 2 4 6 5 3
+  pass 3: 1 2 3 6 5 4
+<span class="noi-bat">  pass 4: 1 2 3 4 5 6</span>
+  pass 5: 1 2 3 4 5 6</pre></div><ul class="y-nho"><li data-s="2">Hai thuật toán cùng ra 1 2 3 4 5 6 sau năm lượt, qua những mảng trung gian khác nhau</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Mảng đã sắp xếp: phần tử bằng nhau đứng cạnh nhau, trung vị nằm ở giữa</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-m">insertion_sort</span>(scores, n);
+<span class="hl-k">int</span> distinct = <span class="hl-n">1</span>;
+<span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">1</span>; i &lt; n; i++)
+    <span class="hl-k">if</span> (scores[i] != scores[i - <span class="hl-n">1</span>])   <span class="hl-c">/* equal values are neighbours */</span>
+        distinct++;
+<span class="hl-m">printf</span>(<span class="hl-s">"</span><span class="hl-s">median: %d</span><span class="hl-s">\n</span><span class="hl-s">"</span>, scores[n / <span class="hl-n">2</span>]);  <span class="hl-c">/* n is odd: the middle element */</span>
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>sorted: 4 5 6 7 7 7 9 9 10
+distinct values: 6
+median: 7</pre></div><ul class="y-nho"><li data-s="2">Đếm giá trị khác nhau: <b>một lượt</b> so phần tử với phần tử ngay trước, không phải so <b>mọi cặp</b></li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>Đếm phép so sánh: n tăng 10 lần, số phép so sánh tăng 100 lần</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">C</span><span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; i &lt; n - <span class="hl-n">1</span>; i++) {
+    <span class="hl-k">int</span> min = i;                     <span class="hl-c">/* smallest of a[i..n-1] */</span>
+    <span class="hl-k">for</span> (<span class="hl-k">int</span> j = i + <span class="hl-n">1</span>; j &lt; n; j++)
+        <span class="hl-k">if</span> (a[j] &lt; a[min])
+            min = j;
+    <span class="hl-k">int</span> t = a[i];
+    a[i] = a[min];
+    a[min] = t;
+    <span class="hl-m">print_pass</span>(i + <span class="hl-n">1</span>, a, n);
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>       n      insertion      selection
+    1000         247186         499500
+   10000       24715734       49995000
+<span class="noi-bat">sorted input, n = 1000: insertion 999, selection 499500</span></pre></div><ul class="y-nho"><li data-s="2">Cả hai là <b>O(n²)</b>: n tăng 10 lần, phép so sánh tăng khoảng <b>100 lần</b></li><li data-s="3">Mảng đã sắp xếp: chèn chỉ cần <b>n − 1</b> phép so sánh, chọn vẫn cần n(n − 1)/2</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S08"><header><h1>O(n²) quá chậm cho một triệu phần tử: dùng qsort</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">clock_t</span> start = <span class="hl-m">clock</span>();
+<span class="hl-m">insertion_sort</span>(a, n);
+<span class="hl-m">qsort</span>(a, <span class="hl-t">BIG</span>, <span class="hl-k">sizeof</span>(a[<span class="hl-n">0</span>]), compare_ints);
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>insertion sort, n =   10000:      8 ms
+insertion sort, n =   20000:     35 ms
+insertion sort, n =   40000:    153 ms
+<span class="noi-bat">insertion sort, n =   80000:    597 ms</span>
+<span class="noi-bat">qsort,          n = 1000000:    109 ms</span></pre></div><ul class="y-nho"><li data-s="2">Chương trình thật dùng <b>qsort</b> của thư viện chuẩn (O(n log n))</li><li data-s="3"><b>Sắp xếp nổi bọt</b>: Knuth nhận xét nó không có gì đáng giới thiệu ngoài cái tên dễ nhớ</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Sắp xếp chèn với mảng 5 2 4 6 1 3. Sau lượt thứ hai (đã chèn 2, rồi chèn 4), mảng là gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>2 4 5 6 1 3</div></div><div class=""><span>B</span><div>2 5 4 6 1 3</div></div><div class=""><span>C</span><div>1 2 4 6 5 3</div></div><div class=""><span>D</span><div>2 4 5 1 3 6</div></div></div><div class="giai-thich">Lượt 1 chèn 2 trước 5: 2 5 4 6 1 3; lượt 2 chèn 4 giữa 2 và 5: 2 4 5 6 1 3 (kết quả chạy thật, pass 2). Phương án C là lượt 1 của sắp xếp chọn.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Sắp xếp chèn với mảng 5 2 4 6 1 3. Sau lượt thứ hai (đã chèn 2, rồi chèn 4), mảng là gì?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>2 4 5 6 1 3</div></div><div class=""><span>B</span><div>2 5 4 6 1 3</div></div><div class=""><span>C</span><div>1 2 4 6 5 3</div></div><div class=""><span>D</span><div>2 4 5 1 3 6</div></div></div><div class="giai-thich">Lượt 1 chèn 2 trước 5: 2 5 4 6 1 3; lượt 2 chèn 4 giữa 2 và 5: 2 4 5 6 1 3 (kết quả chạy thật, pass 2). Phương án C là lượt 1 của sắp xếp chọn.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Mảng n phần tử đã sắp xếp sẵn. Sắp xếp chèn cần khoảng bao nhiêu phép so sánh?</div></div><div class="lua-chon"><div class=""><span>A</span><div>n(n − 1)/2</div></div><div class=""><span>B</span><div>n²</div></div><div class="dung"><span>C</span><div>n − 1, vì mỗi lượt vòng while dừng ngay sau một phép so sánh.</div></div><div class=""><span>D</span><div>0</div></div></div><div class="giai-thich">Mỗi key đã lớn hơn hoặc bằng phần tử đứng trước, nên vòng while dừng sau một phép so sánh; n − 1 lượt cho n − 1 phép so sánh (kết quả chạy thật với n = 1000: 999).</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Mảng n phần tử đã sắp xếp sẵn. Sắp xếp chèn cần khoảng bao nhiêu phép so sánh?</div></div><div class="lua-chon"><div class=""><span>A</span><div>n(n − 1)/2</div></div><div class=""><span>B</span><div>n²</div></div><div class="dung"><span>C</span><div>n − 1, vì mỗi lượt vòng while dừng ngay sau một phép so sánh.</div></div><div class=""><span>D</span><div>0</div></div></div><div class="giai-thich">Mỗi key đã lớn hơn hoặc bằng phần tử đứng trước, nên vòng while dừng sau một phép so sánh; n − 1 lượt cho n − 1 phép so sánh (kết quả chạy thật với n = 1000: 999).</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Sắp xếp chèn</b>: chèn phần tử kế tiếp vào đoạn đầu đã sắp xếp; nhanh với mảng gần có thứ tự</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Sắp xếp chọn</b>: chọn nhỏ nhất của đoạn còn lại, đổi lên đầu; <b>sắp xếp nổi bọt</b> đổi các cặp kề nhau</div></div><div class="the" data-s="3"><span class="so">3</span><div>Cả ba là <b>O(n²)</b>; chương trình thật dùng <b>qsort</b></div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>sắp xếp</span><span>sắp xếp chèn</span><span>sắp xếp chọn</span><span>sắp xếp nổi bọt</span><span>O(n²)</span><span>qsort</span></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Sắp xếp trộn và sắp xếp nhanh: O(n log n)</li><li>Sắp xếp ổn định: giữ thứ tự của các phần tử bằng nhau</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Viết sắp xếp nổi bọt có cờ dừng sớm khi một lượt không có hoán đổi; đếm số phép so sánh của ba thuật toán trên mảng đã sắp xếp, sắp xếp ngược và ngẫu nhiên với n = 1 000.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Mảng một chiều: tìm kiếm nhị phân</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Tìm kiếm tuần tự phải duyệt cả mảng, và muốn tìm nhanh hơn thì mảng cần có thứ tự. Sắp xếp một mảng gồm những bước nào, và hai cách sắp xếp đơn giản nhất khác nhau ở đâu?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:13</span>
+      <h3>Slide 1. Bảng điểm, danh bạ, kết quả tìm kiếm: đều cần thứ tự</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Bảng điểm theo điểm, danh bạ theo tên, kết quả tìm kiếm theo mức phù hợp: dữ liệu cần **thứ tự**</li><li>Tìm kiếm nhanh ở phần sau đòi mảng **đã sắp xếp**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** sắp xếp một mảng gồm những bước nào, và sắp xếp chèn khác sắp xếp chọn ở đâu?</div></div>
+    <div class="kb-thoai"><p>Rất nhiều dữ liệu chỉ có ích khi có thứ tự: bảng điểm xếp theo điểm, danh bạ xếp theo tên, kết quả tìm kiếm xếp theo mức phù hợp. Phần sau, tìm kiếm nhị phân, còn đòi mảng phải được sắp xếp trước. Thư viện chuẩn có hàm qsort mà các bạn đã gặp ở Chương 3, nhưng để hiểu sắp xếp là gì, mình tự viết hai thuật toán đơn giản nhất. Từ đó, câu hỏi của phần là: sắp xếp một mảng gồm những bước nào, và sắp xếp chèn khác sắp xếp chọn ở đâu?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Rất nhiều dữ liệu”; bước 2 khi đọc “Phần sau”; bước 3 khi đọc “Từ đó, câu hỏi”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:41</span>
+      <h3>Slide 2. Sắp xếp chèn và sắp xếp chọn</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Sắp xếp**: đổi chỗ các phần tử để a[0] ≤ a[1] ≤ … ≤ a[n − 1]; mỗi **lượt** đưa thêm một phần tử về đúng chỗ</li><li>**Sắp xếp chèn**: lấy phần tử kế tiếp, **chèn** vào đúng chỗ trong đoạn đầu đã sắp xếp</li><li>**Sắp xếp chọn**: **chọn** phần tử nhỏ nhất của đoạn còn lại, đổi lên đầu đoạn</li></ul></div>
+    <div class="kb-thoai"><p>Sắp xếp tăng dần nghĩa là đổi chỗ các phần tử sao cho a không nhỏ hơn hoặc bằng a một, a một nhỏ hơn hoặc bằng a hai, cứ thế đến cuối mảng. Cả hai thuật toán của phần này làm việc theo lượt, mỗi lượt đưa thêm một phần tử về đúng chỗ. Sắp xếp chèn, hay insertion sort, giống cách xếp bài trên tay: lấy lá kế tiếp và chèn vào đúng chỗ trong những lá đã xếp. Sắp xếp chọn, hay selection sort, thì mỗi lượt chọn phần tử nhỏ nhất của đoạn chưa sắp xếp và đổi nó lên đầu đoạn.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: CLRS §2.1; Sedgewick ch. 6.
+Hiện dần: bước 1 khi đọc “Sắp xếp tăng dần”; bước 2 khi đọc “Sắp xếp chèn”; bước 3 khi đọc “Sắp xếp chọn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:11</span>
+      <h3>Slide 3. Một lượt của sắp xếp chèn: dịch rồi chèn key</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Mỗi lượt: đoạn đầu đã sắp xếp **dài thêm một**; sau n − 1 lượt, cả mảng đã sắp xếp.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mình vẽ lượt thứ tư với mảng 5, 2, 4, 6, 1, 3 trong sách của Cormen và các đồng tác giả. Trước lượt thứ tư, đoạn đầu 2, 4, 5, 6 đã được sắp xếp. Phần tử kế tiếp là 1, được lấy ra giữ trong biến key, để lại một ô trống. Các phần tử 6, 5, 4, 2 đều lớn hơn key, nên lần lượt dịch sang phải một ô, đẩy ô trống về đầu mảng. Ô trống cuối cùng là chỗ của key: ghi 1 vào đó, được 1, 2, 4, 5, 6, 3. Lặp lại cho phần tử cuối cùng, mảng được sắp xếp xong.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình sap-xep-chen: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: CLRS §2.1, hình 2.2.
+Hiện dần: bước 1 khi đọc “Trước lượt thứ tư”; bước 2 khi đọc “Phần tử kế tiếp”; bước 3 khi đọc “Các phần tử 6, 5, 4, 2”; bước 4 khi đọc “Ô trống cuối cùng”; bước 5 khi đọc “Lặp lại”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:51</span>
+      <h3>Slide 4. Sắp xếp chọn: mỗi lượt chốt một phần tử ở đầu đoạn</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Sắp xếp chọn **luôn** duyệt hết đoạn còn lại để tìm nhỏ nhất, kể cả khi mảng đã có thứ tự.</li></ul></div></div>
+    <div class="kb-thoai"><p>Cùng mảng đó với sắp xếp chọn. Lượt 1 duyệt cả mảng, tìm được số nhỏ nhất là 1, đổi với 5 ở đầu mảng; ô đầu đã chốt. Lượt 2 tìm nhỏ nhất của đoạn còn lại, là 2, đã ở đúng chỗ; lượt 3 tìm 3, đổi với 4. Lượt 4 tìm 4, đổi với 6, và mảng đã có thứ tự. Khác với sắp xếp chèn, sắp xếp chọn không dừng sớm: mỗi lượt vẫn duyệt hết đoạn còn lại để chắc chắn tìm được phần tử nhỏ nhất.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình sap-xep-chon: bước 1 hai dòng đầu, bước 2 lượt 2 và 3, bước 3 lượt 4; bước 4 ô kết luận. Ghi nguồn: Sedgewick ch. 6.
+Hiện dần: bước 1 khi đọc “Lượt 1”; bước 2 khi đọc “Lượt 2”; bước 3 khi đọc “Lượt 4”; bước 4 khi đọc “Khác với sắp xếp chèn”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:21</span>
+      <h3>Slide 5. sorts.c in mảng sau từng lượt của hai thuật toán</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Hai thuật toán cùng ra 1 2 3 4 5 6 sau năm lượt, qua những mảng trung gian khác nhau</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/sorts.c</span><pre><code>for (int i = 1; i &lt; n; i++) {
+    int key = a[i];
+    int j = i - 1;
+    while (j &gt;= 0 &amp;&amp; a[j] &gt; key) {   /* shift larger elements right */
+        a[j + 1] = a[j];
+        j--;
+    }
+    a[j + 1] = key;                  /* insert key into the gap */
+    print_pass(i, a, n);
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Vòng for ngoài của sắp xếp chèn chạy các lượt; vòng while bên trong dịch phần tử lớn hơn key sang phải, dừng khi gặp phần tử nhỏ hơn hoặc bằng key hoặc khi hết mảng. Kết quả in mảng sau từng lượt: lượt 4 của sắp xếp chèn cho đúng 1, 2, 4, 5, 6, 3 như hình. Các bạn so hai khối kết quả: cùng xuất phát từ một mảng, cùng ra 1 đến 6 sau năm lượt, nhưng mảng trung gian khác nhau, vì mỗi thuật toán giữ một bất biến khác.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô dòng lượt 4 của mỗi thuật toán. Hàm selection_sort nằm trong src/sorts.c. Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Kết quả in”; bước 2 khi đọc “Các bạn so”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:58</span>
+      <h3>Slide 6. Mảng đã sắp xếp: phần tử bằng nhau đứng cạnh nhau, trung vị nằm ở giữa</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Đếm giá trị khác nhau: **một lượt** so phần tử với phần tử ngay trước, không phải so **mọi cặp**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/sorted_uses.c</span><pre><code>insertion_sort(scores, n);
+int distinct = 1;
+for (int i = 1; i &lt; n; i++)
+    if (scores[i] != scores[i - 1])   /* equal values are neighbours */
+        distinct++;
+printf(&quot;median: %d\n&quot;, scores[n / 2]);  /* n is odd: the middle element */</code></pre></div></div>
+    <div class="kb-thoai"><p>Sắp xếp xong thì nhiều việc trở nên đơn giản, và Sedgewick cùng Wayne dành hẳn một mục cho các ứng dụng đó. Việc thứ nhất là đếm số giá trị khác nhau. Trong mảng đã sắp xếp, các phần tử bằng nhau đứng cạnh nhau, nên chỉ cần một lượt duyệt, so mỗi phần tử với phần tử ngay trước nó. Trên mảng chưa sắp xếp thì phải so mọi cặp, như thuật toán đếm cặp trong phần về độ phức tạp. Việc thứ hai là tìm trung vị, giá trị đứng giữa khi xếp theo thứ tự: với số phần tử lẻ, đó chính là phần tử ở chỉ số n chia 2. Kết quả với chín điểm thi: mảng sau khi sắp xếp là 4, 5, 6, 7, 7, 7, 9, 9, 10; có sáu giá trị khác nhau, và trung vị là 7.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên (hàm insertion_sort như slide trước, nằm trong src/sorted_uses.c), kết quả phía dưới. Ghi nguồn: Sedgewick &amp; Wayne, Algorithms (4th ed.), §2.5. Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Sắp xếp xong thì”; bước 2 khi đọc “Kết quả với chín điểm”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:51</span>
+      <h3>Slide 7. Đếm phép so sánh: n tăng 10 lần, số phép so sánh tăng 100 lần</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Cả hai là **O(n²)**: n tăng 10 lần, phép so sánh tăng khoảng **100 lần**</li><li>Mảng đã sắp xếp: chèn chỉ cần **n − 1** phép so sánh, chọn vẫn cần n(n − 1)/2</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/sorts.c</span><pre><code>for (int i = 0; i &lt; n - 1; i++) {
+    int min = i;                     /* smallest of a[i..n-1] */
+    for (int j = i + 1; j &lt; n; j++)
+        if (a[j] &lt; a[min])
+            min = j;
+    int t = a[i];
+    a[i] = a[min];
+    a[min] = t;
+    print_pass(i + 1, a, n);
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Đây là sắp xếp chọn, với hai vòng for lồng nhau. Chương trình count trong thư mục mã đếm số phép so sánh của hai thuật toán trên mảng số ngẫu nhiên. Với n bằng một nghìn, sắp xếp chèn cần khoảng hai trăm bốn mươi bảy nghìn phép so sánh, sắp xếp chọn đúng 499 500; với n bằng mười nghìn, cả hai tăng khoảng một trăm lần. Đó là dấu hiệu của độ phức tạp O của n bình phương ở Chương 2. Hàng cuối cho thấy điểm mạnh của sắp xếp chèn: với mảng đã sắp xếp, vòng while dừng ngay, chỉ cần 999 phép so sánh, còn sắp xếp chọn vẫn cần đủ 499 500.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô hàng mảng đã sắp xếp; hai ý hiện lần lượt. src/count.c là bản có bộ đếm.
+Hiện dần: bước 1 khi đọc “Chương trình count”; bước 2 khi đọc “Với n bằng một nghìn”; bước 3 khi đọc “Hàng cuối”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:37</span>
+      <h3>Slide 8. O(n²) quá chậm cho một triệu phần tử: dùng qsort</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Chương trình thật dùng **qsort** của thư viện chuẩn (O(n log n))</li><li>**Sắp xếp nổi bọt**: Knuth nhận xét nó không có gì đáng giới thiệu ngoài cái tên dễ nhớ</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/sort_time.c</span><pre><code>clock_t start = clock();
+insertion_sort(a, n);
+qsort(a, BIG, sizeof(a[0]), compare_ints);</code></pre></div></div>
+    <div class="kb-thoai"><p>Lưu ý của phần là về tốc độ. Kết quả trên máy biên soạn: sắp xếp chèn mười nghìn số mất 8 mili giây, nhưng mỗi lần n gấp đôi, thời gian gấp khoảng bốn, đến tám mươi nghìn số đã mất 597 mili giây. Trong khi đó, qsort sắp xếp một triệu số chỉ mất 109 mili giây. Vì vậy, chương trình thật dùng qsort; tự viết sắp xếp là để hiểu thuật toán và luyện duyệt mảng. Một thuật toán nữa hay gặp trong giáo trình là sắp xếp nổi bọt, đổi chỗ hai phần tử kề nhau sai thứ tự. Knuth nhận xét rằng nó chẳng có gì đáng giới thiệu ngoài cái tên dễ nhớ; nó là bài tập ở Mở rộng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô hai dòng cuối; hai ý hiện lần lượt. Thời gian phụ thuộc máy (biên dịch -O2). Ghi nguồn: Knuth, TAOCP vol. 3, §5.2.2.
+Hiện dần: bước 1 khi đọc “Kết quả trên máy biên soạn”; bước 2 khi đọc “Vì vậy”; bước 3 khi đọc “Một thuật toán nữa”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:24</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Mình lần theo hai lượt đầu của sắp xếp chèn.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Sắp xếp chèn với mảng 5 2 4 6 1 3. Sau lượt thứ hai (đã chèn 2, rồi chèn 4), mảng là gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> 2 4 5 6 1 3</li>
+      <li><b>B.</b> 2 5 4 6 1 3</li>
+      <li><b>C.</b> 1 2 4 6 5 3</li>
+      <li><b>D.</b> 2 4 5 1 3 6</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: A</b> — <span>Lượt 1 chèn 2 trước 5: 2 5 4 6 1 3; lượt 2 chèn 4 giữa 2 và 5: 2 4 5 6 1 3 (kết quả chạy thật, pass 2). Phương án C là lượt 1 của sắp xếp chọn.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là A. Phương án C là kết quả lượt 1 của sắp xếp chọn, dễ lẫn khi chưa phân biệt chèn với chọn.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:41</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo đưa cho sắp xếp chèn một mảng đã có thứ tự.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Mảng n phần tử đã sắp xếp sẵn. Sắp xếp chèn cần khoảng bao nhiêu phép so sánh?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> n(n − 1)/2</li>
+      <li><b>B.</b> n²</li>
+      <li><b>C.</b> n − 1, vì mỗi lượt vòng while dừng ngay sau một phép so sánh.</li>
+      <li><b>D.</b> 0</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Mỗi key đã lớn hơn hoặc bằng phần tử đứng trước, nên vòng while dừng sau một phép so sánh; n − 1 lượt cho n − 1 phép so sánh (kết quả chạy thật với n = 1000: 999).</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án A là số phép so sánh của sắp xếp chọn, không phụ thuộc thứ tự ban đầu.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:58</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Sắp xếp chèn**: chèn phần tử kế tiếp vào đoạn đầu đã sắp xếp; nhanh với mảng gần có thứ tự</li><li>**Sắp xếp chọn**: chọn nhỏ nhất của đoạn còn lại, đổi lên đầu; **sắp xếp nổi bọt** đổi các cặp kề nhau</li><li>Cả ba là **O(n²)**; chương trình thật dùng **qsort**</li></ul></div>
+    <div class="kb-thoai"><p>Sắp xếp đi theo lượt, mỗi lượt đưa thêm một phần tử về đúng chỗ. Hai thuật toán khác nhau ở cách chọn phần tử. Sắp xếp chèn lấy phần tử kế tiếp và chèn vào đoạn đã sắp xếp, nên rất nhanh với mảng gần có thứ tự; sắp xếp chọn tìm phần tử nhỏ nhất của đoạn còn lại. Cả hai là O của n bình phương, đủ cho vài nghìn phần tử; chương trình thật dùng qsort. Trên slide là những từ khóa của phần: sắp xếp, sắp xếp chèn, sắp xếp chọn, sắp xếp nổi bọt, O của n bình phương và qsort.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Sắp xếp đi theo lượt”; bước 2 khi đọc “Hai thuật toán khác nhau”; bước 3 khi đọc “Cả hai”; bước 4 khi đọc “Trên slide là những từ khóa”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:31</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Hai chủ đề nâng cao: sắp xếp trộn và sắp xếp nhanh, với độ phức tạp O của n log n; và sắp xếp ổn định, giữ thứ tự ban đầu của các phần tử bằng nhau. Bài tập mở rộng là viết sắp xếp nổi bọt có cờ dừng sớm khi một lượt không có hoán đổi. Sau đó đếm số phép so sánh của ba thuật toán trên mảng đã sắp xếp, sắp xếp ngược và ngẫu nhiên, với n bằng một nghìn.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:54</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Mảng đã sắp xếp mở ra cách tìm kiếm nhanh hơn rất nhiều so với tìm kiếm tuần tự: mở đôi danh bạ như ở Chương 2. Phần tiếp theo viết ý đó thành hàm C, và cho thấy vì sao viết đúng lại khó hơn tưởng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V32", "tieu_de": "Mảng một chiều: sắp xếp chèn và sắp xếp chọn", "giong": "vi-VN-NamMinhNeural", "tong": 428.12, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/c9906046b526dbc3.mp3", "dur": 12.58, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Tìm", 1], [2.15, "kiếm", 1], [2.413, "tuần", 1], [2.663, "tự", 1], [2.875, "phải", 1], [3.025, "duyệt", 1], [3.237, "cả", 1], [3.375, "mảng,", 1], [3.962, "và", 1], [4.162, "muốn", 1], [4.4, "tìm", 1], [4.6, "nhanh", 1], [4.812, "hơn", 1], [5.062, "thì", 1], [5.213, "mảng", 1], [5.487, "cần", 1], [5.713, "có", 1], [5.838, "thứ", 1], [5.987, "tự.", 1], [7.15, "Sắp", 2], [7.4, "xếp", 2], [7.662, "một", 2], [7.838, "mảng", 2], [8.1, "gồm", 2], [8.325, "những", 2], [8.537, "bước", 2], [8.713, "nào,", 2], [9.162, "và", 2], [9.387, "hai", 2], [9.613, "cách", 2], [9.762, "sắp", 2], [9.938, "xếp", 2], [10.175, "đơn", 2], [10.412, "giản", 2], [10.637, "nhất", 2], [10.812, "khác", 2], [11.075, "nhau", 2], [11.325, "ở", 2], [11.45, "đâu?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Bảng điểm, danh bạ, kết quả tìm kiếm: đều cần thứ tự", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Rất nhiều dữ liệu”; bước 2 khi đọc “Phần sau”; bước 3 khi đọc “Từ đó, câu hỏi”.", "start": 13.18, "audio": "audio/f1606402197c7304.mp3", "dur": 27.48, "words": [[0.1, "Rất", 0], [0.388, "nhiều", 0], [0.6, "dữ", 0], [0.787, "liệu", 0], [1.025, "chỉ", 0], [1.175, "có", 0], [1.35, "ích", 0], [1.5, "khi", 0], [1.775, "có", 0], [1.9, "thứ", 0], [2.05, "tự:", 0], [2.575, "bảng", 0], [2.837, "điểm", 0], [3.025, "xếp", 0], [3.263, "theo", 0], [3.425, "điểm,", 0], [3.962, "danh", 0], [4.225, "bạ", 0], [4.4, "xếp", 0], [4.638, "theo", 0], [4.787, "tên,", 0], [5.338, "kết", 0], [5.55, "quả", 0], [5.775, "tìm", 0], [6.025, "kiếm", 0], [6.25, "xếp", 0], [6.5, "theo", 0], [6.675, "mức", 0], [6.838, "phù", 0], [7.075, "hợp.", 0], [8.137, "Phần", 1], [8.412, "sau,", 1], [8.975, "tìm", 1], [9.225, "kiếm", 1], [9.488, "nhị", 1], [9.662, "phân,", 1], [10.213, "còn", 1], [10.463, "đòi", 1], [10.613, "mảng", 1], [10.9, "phải", 1], [11.062, "được", 1], [11.213, "sắp", 1], [11.425, "xếp", 1], [11.675, "trước.", 1], [12.787, "Thư", 2], [12.988, "viện", 2], [13.238, "chuẩn", 2], [13.5, "có", 2], [13.625, "hàm", 2], [13.975, "qsort", 2], [14.325, "mà", 2], [14.575, "các", 2], [14.75, "bạn", 2], [14.975, "đã", 2], [15.088, "gặp", 2], [15.338, "ở", 2], [15.438, "Chương", 2], [15.688, "3,", 2], [16.188, "nhưng", 2], [16.488, "để", 2], [16.613, "hiểu", 2], [16.8, "sắp", 2], [16.975, "xếp", 2], [17.212, "là", 2], [17.35, "gì,", 2], [17.863, "mình", 2], [18.1, "tự", 2], [18.3, "viết", 2], [18.462, "hai", 2], [18.65, "thuật", 2], [18.863, "toán", 2], [19.1, "đơn", 2], [19.3, "giản", 2], [19.525, "nhất.", 2], [20.6, "Từ", 3], [20.875, "đó,", 3], [21.375, "câu", 3], [21.562, "hỏi", 3], [21.775, "của", 3], [21.925, "phần", 3], [22.113, "là:", 3], [22.587, "sắp", 3], [22.788, "xếp", 3], [23.038, "một", 3], [23.212, "mảng", 3], [23.475, "gồm", 3], [23.712, "những", 3], [23.925, "bước", 3], [24.1, "nào,", 3], [24.562, "và", 3], [24.788, "sắp", 3], [24.962, "xếp", 3], [25.188, "chèn", 3], [25.413, "khác", 3], [25.6, "sắp", 3], [25.762, "xếp", 3], [26.0, "chọn", 3], [26.288, "ở", 3], [26.375, "đâu?", 3]], "cues": [0.1, 8.137, 20.6], "lang": 0.6}, {"ten": "Slide 2. Sắp xếp chèn và sắp xếp chọn", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt. Ghi nguồn: CLRS §2.1; Sedgewick ch. 6.\nHiện dần: bước 1 khi đọc “Sắp xếp tăng dần”; bước 2 khi đọc “Sắp xếp chèn”; bước 3 khi đọc “Sắp xếp chọn”.", "start": 41.26, "audio": "audio/51874560e3a97a4b.mp3", "dur": 29.18, "words": [[0.1, "Sắp", 0], [0.362, "xếp", 0], [0.6, "tăng", 0], [0.863, "dần", 0], [1.05, "nghĩa", 0], [1.225, "là", 0], [1.363, "đổi", 0], [1.55, "chỗ", 0], [1.788, "các", 0], [1.938, "phần", 0], [2.163, "tử", 0], [2.337, "sao", 0], [2.587, "cho", 0], [2.775, "a", 0], [2.95, "không", 0], [3.15, "nhỏ", 0], [3.375, "hơn", 0], [3.638, "hoặc", 0], [3.825, "bằng", 0], [4.075, "a", 0], [4.175, "một,", 0], [4.688, "a", 0], [4.862, "một", 0], [5.075, "nhỏ", 0], [5.3, "hơn", 0], [5.575, "hoặc", 0], [5.787, "bằng", 0], [6.025, "a", 0], [6.138, "hai,", 0], [6.662, "cứ", 0], [6.862, "thế", 0], [7.075, "đến", 0], [7.287, "cuối", 0], [7.463, "mảng.", 0], [8.713, "Cả", 1], [8.925, "hai", 1], [9.113, "thuật", 1], [9.312, "toán", 1], [9.575, "của", 1], [9.688, "phần", 1], [9.887, "này", 1], [10.088, "làm", 1], [10.3, "việc", 1], [10.488, "theo", 1], [10.65, "lượt,", 1], [11.15, "mỗi", 1], [11.363, "lượt", 1], [11.6, "đưa", 1], [11.762, "thêm", 1], [12.012, "một", 1], [12.162, "phần", 1], [12.387, "tử", 1], [12.637, "về", 1], [12.775, "đúng", 1], [12.975, "chỗ.", 1], [14.25, "Sắp", 2], [14.5, "xếp", 2], [14.75, "chèn,", 2], [15.25, "hay", 2], [15.537, "insertion", 2], [16.05, "sort,", 2], [16.575, "giống", 2], [16.812, "cách", 2], [16.962, "xếp", 2], [17.2, "bài", 2], [17.387, "trên", 2], [17.6, "tay:", 2], [18.113, "lấy", 2], [18.325, "lá", 2], [18.475, "kế", 2], [18.688, "tiếp", 2], [18.975, "và", 2], [19.137, "chèn", 2], [19.438, "vào", 2], [19.55, "đúng", 2], [19.762, "chỗ", 2], [20.025, "trong", 2], [20.212, "những", 2], [20.425, "lá", 2], [20.65, "đã", 2], [20.788, "xếp.", 2], [21.925, "Sắp", 3], [22.188, "xếp", 3], [22.438, "chọn,", 3], [22.95, "hay", 3], [23.163, "selection", 3], [23.825, "sort,", 3], [24.325, "thì", 3], [24.5, "mỗi", 3], [24.7, "lượt", 3], [24.887, "chọn", 3], [25.125, "phần", 3], [25.35, "tử", 3], [25.525, "nhỏ", 3], [25.775, "nhất", 3], [25.988, "của", 3], [26.125, "đoạn", 3], [26.387, "chưa", 3], [26.562, "sắp", 3], [26.738, "xếp", 3], [27.05, "và", 3], [27.238, "đổi", 3], [27.425, "nó", 3], [27.625, "lên", 3], [27.812, "đầu", 3], [27.975, "đoạn.", 3]], "cues": [0.1, 14.25, 21.925], "lang": 0.6}, {"ten": "Slide 3. Một lượt của sắp xếp chèn: dịch rồi chèn key", "loai": "slide", "slide": "S03", "dung": "Hình sap-xep-chen: bốn bước theo bốn câu mốc đầu; bước 5 ô kết luận. Ghi nguồn: CLRS §2.1, hình 2.2.\nHiện dần: bước 1 khi đọc “Trước lượt thứ tư”; bước 2 khi đọc “Phần tử kế tiếp”; bước 3 khi đọc “Các phần tử 6, 5, 4, 2”; bước 4 khi đọc “Ô trống cuối cùng”; bước 5 khi đọc “Lặp lại”.", "start": 71.04, "audio": "audio/b06c45663c910fbf.mp3", "dur": 37.44, "words": [[0.1, "Mình", 0], [0.5, "vẽ", 0], [0.613, "lượt", 0], [0.8, "thứ", 0], [0.963, "tư", 0], [1.2, "với", 0], [1.337, "mảng", 0], [1.6, "5,", 0], [2.087, "2,", 0], [2.688, "4,", 0], [3.3, "6,", 0], [3.975, "1,", 0], [4.513, "3", 0], [4.8, "trong", 0], [5.0, "sách", 0], [5.213, "của", 0], [5.45, "Cormen", 0], [5.963, "và", 0], [6.1, "các", 0], [6.3, "đồng", 0], [6.513, "tác", 0], [6.725, "giả.", 0], [8.025, "Trước", 1], [8.3, "lượt", 1], [8.512, "thứ", 1], [8.688, "tư,", 1], [9.225, "đoạn", 1], [9.537, "đầu", 1], [9.725, "2,", 1], [10.262, "4,", 1], [10.9, "5,", 1], [11.475, "6", 1], [11.812, "đã", 1], [11.925, "được", 1], [12.088, "sắp", 1], [12.3, "xếp.", 1], [13.463, "Phần", 2], [13.775, "tử", 2], [13.975, "kế", 2], [14.175, "tiếp", 2], [14.438, "là", 2], [14.575, "1,", 2], [15.037, "được", 2], [15.25, "lấy", 2], [15.45, "ra", 2], [15.588, "giữ", 2], [15.85, "trong", 2], [16.062, "biến", 2], [16.262, "key,", 2], [16.788, "để", 2], [16.975, "lại", 2], [17.212, "một", 2], [17.5, "ô", 2], [17.637, "trống.", 2], [18.85, "Các", 3], [19.038, "phần", 3], [19.262, "tử", 3], [19.45, "6,", 3], [20.062, "5,", 3], [20.65, "4,", 3], [21.25, "2", 3], [21.475, "đều", 3], [21.625, "lớn", 3], [21.9, "hơn", 3], [22.1, "key,", 3], [22.65, "nên", 3], [22.938, "lần", 3], [23.113, "lượt", 3], [23.288, "dịch", 3], [23.45, "sang", 3], [23.75, "phải", 3], [23.913, "một", 3], [24.2, "ô,", 3], [24.675, "đẩy", 3], [24.95, "ô", 3], [25.137, "trống", 3], [25.438, "về", 3], [25.55, "đầu", 3], [25.75, "mảng.", 3], [27.012, "Ô", 4], [27.225, "trống", 4], [27.475, "cuối", 4], [27.663, "cùng", 4], [27.913, "là", 4], [28.038, "chỗ", 4], [28.312, "của", 4], [28.462, "key:", 4], [29.025, "ghi", 4], [29.238, "1", 4], [29.425, "vào", 4], [29.613, "đó,", 4], [30.125, "được", 4], [30.337, "1,", 4], [30.85, "2,", 4], [31.45, "4,", 4], [32.075, "5,", 4], [32.663, "6,", 4], [33.325, "3.", 4], [33.663, "Lặp", 5], [33.925, "lại", 5], [34.15, "cho", 5], [34.288, "phần", 5], [34.513, "tử", 5], [34.7, "cuối", 5], [34.9, "cùng,", 5], [35.413, "mảng", 5], [35.712, "được", 5], [35.85, "sắp", 5], [36.038, "xếp", 5], [36.25, "xong.", 5]], "cues": [8.025, 13.463, 18.85, 27.012, 33.663], "lang": 2.6}, {"ten": "Slide 4. Sắp xếp chọn: mỗi lượt chốt một phần tử ở đầu đoạn", "loai": "slide", "slide": "S04", "dung": "Hình sap-xep-chon: bước 1 hai dòng đầu, bước 2 lượt 2 và 3, bước 3 lượt 4; bước 4 ô kết luận. Ghi nguồn: Sedgewick ch. 6.\nHiện dần: bước 1 khi đọc “Lượt 1”; bước 2 khi đọc “Lượt 2”; bước 3 khi đọc “Lượt 4”; bước 4 khi đọc “Khác với sắp xếp chèn”.", "start": 111.08, "audio": "audio/91265cdf3b063aa7.mp3", "dur": 28.22, "words": [[0.1, "Cùng", 0], [0.412, "mảng", 0], [0.637, "đó", 0], [0.887, "với", 0], [1.012, "sắp", 0], [1.212, "xếp", 0], [1.488, "chọn.", 0], [2.712, "Lượt", 1], [3.05, "1", 1], [3.237, "duyệt", 1], [3.45, "cả", 1], [3.587, "mảng,", 1], [4.175, "tìm", 1], [4.388, "được", 1], [4.513, "số", 1], [4.737, "nhỏ", 1], [4.975, "nhất", 1], [5.213, "là", 1], [5.35, "1,", 1], [5.85, "đổi", 1], [6.112, "với", 1], [6.237, "5", 1], [6.513, "ở", 1], [6.6, "đầu", 1], [6.787, "mảng;", 1], [7.375, "ô", 1], [7.575, "đầu", 1], [7.825, "đã", 1], [8.012, "chốt.", 1], [9.137, "Lượt", 2], [9.5, "2", 2], [9.675, "tìm", 2], [9.9, "nhỏ", 2], [10.15, "nhất", 2], [10.35, "của", 2], [10.463, "đoạn", 2], [10.713, "còn", 2], [10.925, "lại,", 2], [11.425, "là", 2], [11.65, "2,", 2], [12.213, "đã", 2], [12.412, "ở", 2], [12.537, "đúng", 2], [12.762, "chỗ;", 2], [13.375, "lượt", 2], [13.625, "3", 2], [13.812, "tìm", 2], [14.075, "3,", 2], [14.562, "đổi", 2], [14.838, "với", 2], [14.975, "4.", 2], [16.2, "Lượt", 3], [16.512, "4", 3], [16.775, "tìm", 3], [17.025, "4,", 3], [17.55, "đổi", 3], [17.825, "với", 3], [17.962, "6,", 3], [18.575, "và", 3], [18.812, "mảng", 3], [19.125, "đã", 3], [19.25, "có", 3], [19.375, "thứ", 3], [19.55, "tự.", 3], [20.725, "Khác", 4], [21.038, "với", 4], [21.225, "sắp", 4], [21.4, "xếp", 4], [21.625, "chèn,", 4], [22.125, "sắp", 4], [22.35, "xếp", 4], [22.6, "chọn", 4], [22.837, "không", 4], [23.062, "dừng", 4], [23.225, "sớm:", 4], [23.812, "mỗi", 4], [24.012, "lượt", 4], [24.238, "vẫn", 4], [24.413, "duyệt", 4], [24.587, "hết", 4], [24.775, "đoạn", 4], [25.025, "còn", 4], [25.238, "lại", 4], [25.488, "để", 4], [25.613, "chắc", 4], [25.825, "chắn", 4], [26.075, "tìm", 4], [26.312, "được", 4], [26.462, "phần", 4], [26.7, "tử", 4], [26.887, "nhỏ", 4], [27.15, "nhất.", 4]], "cues": [2.712, 9.137, 16.2, 20.725], "lang": 2.6}, {"ten": "Slide 5. sorts.c in mảng sau từng lượt của hai thuật toán", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả phía dưới; tô dòng lượt 4 của mỗi thuật toán. Hàm selection_sort nằm trong src/sorts.c. Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Kết quả in”; bước 2 khi đọc “Các bạn so”.", "start": 141.9, "audio": "audio/ebbce55eb24237d2.mp3", "dur": 27.02, "words": [[0.1, "Vòng", 0], [0.388, "for", 0], [0.562, "ngoài", 0], [0.863, "của", 0], [1.0, "sắp", 0], [1.15, "xếp", 0], [1.4, "chèn", 0], [1.65, "chạy", 0], [1.85, "các", 0], [2.025, "lượt;", 0], [2.487, "vòng", 0], [2.75, "while", 0], [2.975, "bên", 0], [3.175, "trong", 0], [3.337, "dịch", 0], [3.475, "phần", 0], [3.712, "tử", 0], [3.888, "lớn", 0], [4.138, "hơn", 0], [4.362, "key", 0], [4.525, "sang", 0], [4.763, "phải,", 0], [5.362, "dừng", 0], [5.6, "khi", 0], [5.787, "gặp", 0], [5.95, "phần", 0], [6.175, "tử", 0], [6.35, "nhỏ", 0], [6.588, "hơn", 0], [6.862, "hoặc", 0], [7.075, "bằng", 0], [7.287, "key", 0], [7.537, "hoặc", 0], [7.737, "khi", 0], [7.9, "hết", 0], [8.075, "mảng.", 0], [9.312, "Kết", 1], [9.588, "quả", 1], [9.85, "in", 1], [10.025, "mảng", 1], [10.275, "sau", 1], [10.5, "từng", 1], [10.725, "lượt:", 1], [11.2, "lượt", 1], [11.45, "4", 1], [11.725, "của", 1], [11.887, "sắp", 1], [12.05, "xếp", 1], [12.287, "chèn", 1], [12.562, "cho", 1], [12.7, "đúng", 1], [12.9, "1,", 1], [13.387, "2,", 1], [13.975, "4,", 1], [14.613, "5,", 1], [15.213, "6,", 1], [15.863, "3", 1], [16.125, "như", 1], [16.3, "hình.", 1], [17.387, "Các", 2], [17.587, "bạn", 2], [17.825, "so", 2], [18.0, "hai", 2], [18.163, "khối", 2], [18.375, "kết", 2], [18.587, "quả:", 2], [19.188, "cùng", 2], [19.387, "xuất", 2], [19.55, "phát", 2], [19.788, "từ", 2], [19.938, "một", 2], [20.137, "mảng,", 2], [20.7, "cùng", 2], [20.962, "ra", 2], [21.1, "1", 2], [21.275, "đến", 2], [21.462, "6", 2], [21.75, "sau", 2], [21.975, "năm", 2], [22.163, "lượt,", 2], [22.637, "nhưng", 2], [22.925, "mảng", 2], [23.15, "trung", 2], [23.337, "gian", 2], [23.538, "khác", 2], [23.762, "nhau,", 2], [24.25, "vì", 2], [24.462, "mỗi", 2], [24.65, "thuật", 2], [24.825, "toán", 2], [25.062, "giữ", 2], [25.262, "một", 2], [25.475, "bất", 2], [25.675, "biến", 2], [25.887, "khác.", 2]], "cues": [9.312, 17.387], "lang": 9.6}, {"ten": "Slide 6. Mảng đã sắp xếp: phần tử bằng nhau đứng cạnh nhau, trung vị nằm ở giữa", "loai": "slide", "slide": "S06", "dung": "Mã phía trên (hàm insertion_sort như slide trước, nằm trong src/sorted_uses.c), kết quả phía dưới. Ghi nguồn: Sedgewick & Wayne, Algorithms (4th ed.), §2.5. Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Sắp xếp xong thì”; bước 2 khi đọc “Kết quả với chín điểm”.", "start": 178.52, "audio": "audio/5499bc729afca69a.mp3", "dur": 43.85, "words": [[0.1, "Sắp", 0], [0.338, "xếp", 0], [0.55, "xong", 0], [0.85, "thì", 0], [1.0, "nhiều", 0], [1.212, "việc", 0], [1.425, "trở", 0], [1.575, "nên", 0], [1.788, "đơn", 0], [1.975, "giản,", 0], [2.55, "và", 0], [2.775, "Sedgewick", 0], [3.212, "cùng", 0], [3.413, "Wayne", 0], [3.625, "dành", 0], [3.775, "hẳn", 0], [3.987, "một", 0], [4.162, "mục", 0], [4.375, "cho", 0], [4.525, "các", 0], [4.75, "ứng", 0], [4.912, "dụng", 0], [5.125, "đó.", 0], [6.312, "Việc", 1], [6.638, "thứ", 1], [6.812, "nhất", 1], [7.075, "là", 1], [7.325, "đếm", 1], [7.55, "số", 1], [7.8, "giá", 1], [8.012, "trị", 1], [8.238, "khác", 1], [8.488, "nhau.", 1], [9.625, "Trong", 2], [9.95, "mảng", 2], [10.2, "đã", 2], [10.3, "sắp", 2], [10.475, "xếp,", 2], [10.988, "các", 2], [11.162, "phần", 2], [11.375, "tử", 2], [11.6, "bằng", 2], [11.8, "nhau", 2], [12.025, "đứng", 2], [12.225, "cạnh", 2], [12.4, "nhau,", 2], [12.938, "nên", 2], [13.213, "chỉ", 2], [13.387, "cần", 2], [13.588, "một", 2], [13.725, "lượt", 2], [13.912, "duyệt,", 2], [14.363, "so", 2], [14.613, "mỗi", 2], [14.838, "phần", 2], [15.062, "tử", 2], [15.275, "với", 2], [15.387, "phần", 2], [15.613, "tử", 2], [15.8, "ngay", 2], [16.0, "trước", 2], [16.225, "nó.", 2], [17.413, "Trên", 3], [17.738, "mảng", 3], [18.012, "chưa", 3], [18.2, "sắp", 3], [18.375, "xếp", 3], [18.688, "thì", 3], [18.863, "phải", 3], [19.038, "so", 3], [19.2, "mọi", 3], [19.4, "cặp,", 3], [19.9, "như", 3], [20.175, "thuật", 3], [20.387, "toán", 3], [20.637, "đếm", 3], [20.837, "cặp", 3], [21.1, "trong", 3], [21.262, "phần", 3], [21.512, "về", 3], [21.625, "độ", 3], [21.812, "phức", 3], [22.025, "tạp.", 3], [23.15, "Việc", 4], [23.425, "thứ", 4], [23.6, "hai", 4], [23.85, "là", 4], [23.95, "tìm", 4], [24.2, "trung", 4], [24.4, "vị,", 4], [24.887, "giá", 4], [25.125, "trị", 4], [25.312, "đứng", 4], [25.562, "giữa", 4], [25.788, "khi", 4], [25.95, "xếp", 4], [26.188, "theo", 4], [26.325, "thứ", 4], [26.488, "tự:", 4], [27.025, "với", 4], [27.212, "số", 4], [27.45, "phần", 4], [27.663, "tử", 4], [27.825, "lẻ,", 4], [28.438, "đó", 4], [28.625, "chính", 4], [28.863, "là", 4], [28.975, "phần", 4], [29.2, "tử", 4], [29.425, "ở", 4], [29.538, "chỉ", 4], [29.725, "số", 4], [29.975, "n", 4], [30.438, "chia", 4], [30.688, "2.", 4], [31.837, "Kết", 5], [32.087, "quả", 5], [32.35, "với", 5], [32.475, "chín", 5], [32.712, "điểm", 5], [32.9, "thi:", 5], [33.45, "mảng", 5], [33.725, "sau", 5], [33.913, "khi", 5], [34.087, "sắp", 5], [34.263, "xếp", 5], [34.538, "là", 5], [34.7, "4,", 5], [35.275, "5,", 5], [35.85, "6,", 5], [36.5, "7,", 5], [37.175, "7,", 5], [37.85, "7,", 5], [38.55, "9,", 5], [39.1, "9,", 5], [39.737, "10;", 5], [40.337, "có", 5], [40.45, "sáu", 5], [40.7, "giá", 5], [40.888, "trị", 5], [41.087, "khác", 5], [41.337, "nhau,", 5], [41.812, "và", 5], [42.025, "trung", 5], [42.25, "vị", 5], [42.45, "là", 5], [42.587, "7.", 5]], "cues": [0.1, 31.837], "lang": 9.6}, {"ten": "Slide 7. Đếm phép so sánh: n tăng 10 lần, số phép so sánh tăng 100 lần", "loai": "slide", "slide": "S07", "dung": "Mã phía trên, kết quả phía dưới; tô hàng mảng đã sắp xếp; hai ý hiện lần lượt. src/count.c là bản có bộ đếm.\nHiện dần: bước 1 khi đọc “Chương trình count”; bước 2 khi đọc “Với n bằng một nghìn”; bước 3 khi đọc “Hàng cuối”.", "start": 231.97, "audio": "audio/4767963bd386b287.mp3", "dur": 36.38, "words": [[0.1, "Đây", 0], [0.412, "là", 0], [0.55, "sắp", 0], [0.75, "xếp", 0], [0.975, "chọn,", 0], [1.5, "với", 0], [1.725, "hai", 0], [1.962, "vòng", 0], [2.2, "for", 0], [2.4, "lồng", 0], [2.6, "nhau.", 0], [3.775, "Chương", 1], [4.088, "trình", 1], [4.287, "count", 1], [4.5, "trong", 1], [4.675, "thư", 1], [4.812, "mục", 1], [5.037, "mã", 1], [5.263, "đếm", 1], [5.45, "số", 1], [5.675, "phép", 1], [5.9, "so", 1], [6.15, "sánh", 1], [6.45, "của", 1], [6.65, "hai", 1], [6.838, "thuật", 1], [7.037, "toán", 1], [7.325, "trên", 1], [7.487, "mảng", 1], [7.713, "số", 1], [7.938, "ngẫu", 1], [8.162, "nhiên.", 1], [9.35, "Với", 2], [9.662, "n", 2], [10.113, "bằng", 2], [10.312, "một", 2], [10.475, "nghìn,", 2], [10.925, "sắp", 2], [11.137, "xếp", 2], [11.375, "chèn", 2], [11.625, "cần", 2], [11.812, "khoảng", 2], [12.062, "hai", 2], [12.25, "trăm", 2], [12.512, "bốn", 2], [12.713, "mươi", 2], [12.775, "bảy", 2], [12.95, "nghìn", 2], [13.175, "phép", 2], [13.363, "so", 2], [13.562, "sánh,", 2], [14.113, "sắp", 2], [14.325, "xếp", 2], [14.562, "chọn", 2], [14.812, "đúng", 2], [15.487, "499", 2], [16.162, "500;", 2], [16.837, "với", 2], [17.075, "n", 2], [17.5, "bằng", 2], [17.7, "mười", 2], [17.887, "nghìn,", 2], [18.387, "cả", 2], [18.575, "hai", 2], [18.75, "tăng", 2], [18.962, "khoảng", 2], [19.238, "một", 2], [19.413, "trăm", 2], [19.65, "lần.", 2], [20.75, "Đó", 3], [20.988, "là", 3], [21.113, "dấu", 3], [21.35, "hiệu", 3], [21.538, "của", 3], [21.663, "độ", 3], [21.837, "phức", 3], [22.038, "tạp", 3], [22.35, "O", 3], [22.525, "của", 3], [22.8, "n", 3], [23.3, "bình", 3], [23.562, "phương", 3], [23.913, "ở", 3], [23.988, "Chương", 3], [24.25, "2.", 3], [25.4, "Hàng", 4], [25.688, "cuối", 4], [25.85, "cho", 4], [25.988, "thấy", 4], [26.163, "điểm", 4], [26.363, "mạnh", 4], [26.613, "của", 4], [26.738, "sắp", 4], [26.9, "xếp", 4], [27.113, "chèn:", 4], [27.613, "với", 4], [27.8, "mảng", 4], [28.062, "đã", 4], [28.175, "sắp", 4], [28.337, "xếp,", 4], [28.85, "vòng", 4], [29.113, "while", 4], [29.288, "dừng", 4], [29.475, "ngay,", 4], [29.962, "chỉ", 4], [30.163, "cần", 4], [30.387, "999", 4], [31.35, "phép", 4], [31.538, "so", 4], [31.75, "sánh,", 4], [32.312, "còn", 4], [32.538, "sắp", 4], [32.712, "xếp", 4], [32.938, "chọn", 4], [33.212, "vẫn", 4], [33.4, "cần", 4], [33.612, "đủ", 4], [33.612, "499", 4], [33.612, "500.", 4]], "cues": [3.775, 9.35, 25.4], "lang": 9.6}, {"ten": "Slide 8. O(n²) quá chậm cho một triệu phần tử: dùng qsort", "loai": "slide", "slide": "S08", "dung": "Mã phía trên, kết quả phía dưới; tô hai dòng cuối; hai ý hiện lần lượt. Thời gian phụ thuộc máy (biên dịch -O2). Ghi nguồn: Knuth, TAOCP vol. 3, §5.2.2.\nHiện dần: bước 1 khi đọc “Kết quả trên máy biên soạn”; bước 2 khi đọc “Vì vậy”; bước 3 khi đọc “Một thuật toán nữa”.", "start": 277.95, "audio": "audio/7e97e8bd1803815c.mp3", "dur": 37.42, "words": [[0.1, "Lưu", 0], [0.412, "ý", 0], [0.65, "của", 0], [0.875, "phần", 0], [1.25, "là", 0], [1.462, "về", 0], [1.637, "tốc", 0], [1.863, "độ.", 0], [3.013, "Kết", 1], [3.25, "quả", 1], [3.5, "trên", 1], [3.688, "máy", 1], [3.825, "biên", 1], [4.013, "soạn:", 1], [4.55, "sắp", 1], [4.763, "xếp", 1], [5.0, "chèn", 1], [5.225, "mười", 1], [5.388, "nghìn", 1], [5.612, "số", 1], [5.812, "mất", 1], [6.013, "8", 1], [6.3, "mili", 1], [6.562, "giây,", 1], [7.1, "nhưng", 1], [7.388, "mỗi", 1], [7.537, "lần", 1], [7.775, "n", 1], [8.05, "gấp", 1], [8.238, "đôi,", 1], [8.713, "thời", 1], [8.9, "gian", 1], [9.15, "gấp", 1], [9.287, "khoảng", 1], [9.55, "bốn,", 1], [10.062, "đến", 1], [10.312, "tám", 1], [10.512, "mươi", 1], [10.588, "nghìn", 1], [10.825, "số", 1], [11.1, "đã", 1], [11.213, "mất", 1], [11.438, "597", 1], [12.375, "mili", 1], [12.713, "giây.", 1], [13.838, "Trong", 2], [14.125, "khi", 2], [14.238, "đó,", 2], [14.719, "qsort", 2], [15.2, "sắp", 2], [15.375, "xếp", 2], [15.637, "một", 2], [15.825, "triệu", 2], [16.012, "số", 2], [16.3, "chỉ", 2], [16.462, "mất", 2], [16.675, "109", 2], [17.562, "mili", 2], [17.837, "giây.", 2], [18.975, "Vì", 3], [19.225, "vậy,", 3], [19.625, "chương", 3], [19.875, "trình", 3], [20.087, "thật", 3], [20.262, "dùng", 3], [20.744, "qsort;", 3], [21.225, "tự", 3], [21.4, "viết", 3], [21.575, "sắp", 3], [21.75, "xếp", 3], [22.125, "là", 3], [22.413, "để", 3], [22.538, "hiểu", 3], [22.725, "thuật", 3], [22.938, "toán", 3], [23.25, "và", 3], [23.375, "luyện", 3], [23.625, "duyệt", 3], [23.812, "mảng.", 3], [25.038, "Một", 4], [25.4, "thuật", 4], [25.562, "toán", 4], [25.788, "nữa", 4], [26.012, "hay", 4], [26.163, "gặp", 4], [26.387, "trong", 4], [26.575, "giáo", 4], [26.75, "trình", 4], [27.038, "là", 4], [27.2, "sắp", 4], [27.375, "xếp", 4], [27.6, "nổi", 4], [27.788, "bọt,", 4], [28.288, "đổi", 4], [28.512, "chỗ", 4], [28.762, "hai", 4], [28.925, "phần", 4], [29.163, "tử", 4], [29.35, "kề", 4], [29.6, "nhau", 4], [29.825, "sai", 4], [30.062, "thứ", 4], [30.225, "tự.", 4], [31.387, "Knuth", 5], [31.788, "nhận", 5], [32.013, "xét", 5], [32.237, "rằng", 5], [32.475, "nó", 5], [32.625, "chẳng", 5], [32.862, "có", 5], [32.975, "gì", 5], [33.15, "đáng", 5], [33.362, "giới", 5], [33.538, "thiệu", 5], [33.712, "ngoài", 5], [33.962, "cái", 5], [34.163, "tên", 5], [34.388, "dễ", 5], [34.562, "nhớ;", 5], [35.138, "nó", 5], [35.325, "là", 5], [35.45, "bài", 5], [35.65, "tập", 5], [35.925, "ở", 5], [36.013, "Mở", 5], [36.25, "rộng.", 5]], "cues": [3.013, 18.975, 25.038], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.", "start": 324.97, "audio": "audio/3f85cfa7c2455c21.mp3", "dur": 3.19, "words": [[0.1, "Mình", 0], [0.45, "lần", 0], [0.662, "theo", 0], [0.838, "hai", 0], [1.0, "lượt", 0], [1.188, "đầu", 0], [1.425, "của", 0], [1.575, "sắp", 0], [1.775, "xếp", 0], [2.013, "chèn.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/b1462c7023898edf.mp3", "dur2": 6.79, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.875, "A.", 0], [1.25, "Phương", 1], [1.613, "án", 1], [1.788, "C", 1], [2.05, "là", 1], [2.175, "kết", 1], [2.388, "quả", 1], [2.562, "lượt", 1], [2.775, "1", 1], [2.962, "của", 1], [3.075, "sắp", 1], [3.237, "xếp", 1], [3.462, "chọn,", 1], [3.975, "dễ", 1], [4.175, "lẫn", 1], [4.4, "khi", 1], [4.612, "chưa", 1], [4.838, "phân", 1], [5.037, "biệt", 1], [5.188, "chèn", 1], [5.45, "với", 1], [5.562, "chọn.", 1]], "dap_an": "A", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 341.55, "audio": "audio/d3913e7eda8e8459.mp3", "dur": 3.91, "words": [[0.1, "Câu", 0], [0.312, "tiếp", 0], [0.6, "theo", 0], [0.812, "đưa", 0], [0.988, "cho", 0], [1.15, "sắp", 0], [1.337, "xếp", 0], [1.587, "chèn", 0], [1.837, "một", 0], [2.025, "mảng", 0], [2.312, "đã", 0], [2.438, "có", 0], [2.575, "thứ", 0], [2.725, "tự.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/105d83e7db219fd0.mp3", "dur2": 6.34, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.688, "là", 0], [0.787, "C.", 0], [1.15, "Phương", 1], [1.488, "án", 1], [1.712, "A", 1], [1.95, "là", 1], [2.05, "số", 1], [2.263, "phép", 1], [2.487, "so", 1], [2.7, "sánh", 1], [2.987, "của", 1], [3.138, "sắp", 1], [3.312, "xếp", 1], [3.538, "chọn,", 1], [4.037, "không", 1], [4.287, "phụ", 1], [4.45, "thuộc", 1], [4.65, "thứ", 1], [4.8, "tự", 1], [5.0, "ban", 1], [5.237, "đầu.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Sắp xếp đi theo lượt”; bước 2 khi đọc “Hai thuật toán khác nhau”; bước 3 khi đọc “Cả hai”; bước 4 khi đọc “Trên slide là những từ khóa”.", "start": 358.4, "audio": "audio/cc1d7c4c19458d6e.mp3", "dur": 32.04, "words": [[0.1, "Sắp", 0], [0.35, "xếp", 0], [0.637, "đi", 0], [0.787, "theo", 0], [0.963, "lượt,", 0], [1.425, "mỗi", 0], [1.637, "lượt", 0], [1.875, "đưa", 0], [2.038, "thêm", 0], [2.288, "một", 0], [2.45, "phần", 0], [2.688, "tử", 0], [2.938, "về", 0], [3.087, "đúng", 0], [3.288, "chỗ.", 0], [4.562, "Hai", 1], [4.8, "thuật", 1], [5.025, "toán", 1], [5.263, "khác", 1], [5.5, "nhau", 1], [5.775, "ở", 1], [5.9, "cách", 1], [6.088, "chọn", 1], [6.362, "phần", 1], [6.575, "tử.", 1], [7.812, "Sắp", 2], [8.062, "xếp", 2], [8.338, "chèn", 2], [8.6, "lấy", 2], [8.775, "phần", 2], [8.988, "tử", 2], [9.175, "kế", 2], [9.35, "tiếp", 2], [9.625, "và", 2], [9.775, "chèn", 2], [10.062, "vào", 2], [10.2, "đoạn", 2], [10.475, "đã", 2], [10.562, "sắp", 2], [10.725, "xếp,", 2], [11.25, "nên", 2], [11.537, "rất", 2], [11.725, "nhanh", 2], [11.95, "với", 2], [12.05, "mảng", 2], [12.312, "gần", 2], [12.537, "có", 2], [12.662, "thứ", 2], [12.8, "tự;", 2], [13.325, "sắp", 2], [13.537, "xếp", 2], [13.787, "chọn", 2], [14.062, "tìm", 2], [14.3, "phần", 2], [14.525, "tử", 2], [14.7, "nhỏ", 2], [14.938, "nhất", 2], [15.137, "của", 2], [15.262, "đoạn", 2], [15.525, "còn", 2], [15.75, "lại.", 2], [16.9, "Cả", 3], [17.113, "hai", 3], [17.4, "là", 3], [17.587, "O", 3], [17.8, "của", 3], [18.038, "n", 3], [18.45, "bình", 3], [18.675, "phương,", 3], [19.212, "đủ", 3], [19.45, "cho", 3], [19.587, "vài", 3], [19.725, "nghìn", 3], [19.95, "phần", 3], [20.163, "tử;", 3], [20.762, "chương", 3], [21.025, "trình", 3], [21.225, "thật", 3], [21.4, "dùng", 3], [22.2, "qsort.", 3], [23.0, "Trên", 4], [23.35, "slide", 4], [23.75, "là", 4], [23.887, "những", 4], [24.125, "từ", 4], [24.288, "khóa", 4], [24.562, "của", 4], [24.712, "phần:", 4], [25.188, "sắp", 4], [25.413, "xếp,", 4], [25.938, "sắp", 4], [26.163, "xếp", 4], [26.4, "chèn,", 4], [26.9, "sắp", 4], [27.137, "xếp", 4], [27.387, "chọn,", 4], [27.9, "sắp", 4], [28.137, "xếp", 4], [28.387, "nổi", 4], [28.587, "bọt,", 4], [29.075, "O", 4], [29.288, "của", 4], [29.575, "n", 4], [29.962, "bình", 4], [30.212, "phương", 4], [30.525, "và", 4], [30.525, "qsort.", 4]], "cues": [0.1, 4.562, 16.9, 23.0], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 391.04, "audio": "audio/b15524d7d400f2b1.mp3", "dur": 23.23, "words": [[0.1, "Hai", 0], [0.325, "chủ", 0], [0.55, "đề", 0], [0.7, "nâng", 0], [0.912, "cao:", 0], [1.413, "sắp", 0], [1.613, "xếp", 0], [1.863, "trộn", 0], [2.138, "và", 0], [2.263, "sắp", 0], [2.438, "xếp", 0], [2.663, "nhanh,", 0], [3.112, "với", 0], [3.3, "độ", 0], [3.45, "phức", 0], [3.65, "tạp", 0], [3.962, "O", 0], [4.1, "của", 0], [4.338, "n", 0], [4.725, "log", 0], [5.025, "n;", 0], [5.688, "và", 0], [5.938, "sắp", 0], [6.125, "xếp", 0], [6.412, "ổn", 0], [6.612, "định,", 0], [7.075, "giữ", 0], [7.263, "thứ", 0], [7.438, "tự", 0], [7.612, "ban", 0], [7.85, "đầu", 0], [8.05, "của", 0], [8.175, "các", 0], [8.312, "phần", 0], [8.537, "tử", 0], [8.738, "bằng", 0], [8.925, "nhau.", 0], [10.075, "Bài", 1], [10.325, "tập", 1], [10.55, "mở", 1], [10.738, "rộng", 1], [11.025, "là", 1], [11.175, "viết", 1], [11.35, "sắp", 1], [11.525, "xếp", 1], [11.787, "nổi", 1], [12.025, "bọt", 1], [12.275, "có", 1], [12.438, "cờ", 1], [12.688, "dừng", 1], [12.938, "sớm", 1], [13.275, "khi", 1], [13.438, "một", 1], [13.613, "lượt", 1], [13.825, "không", 1], [14.05, "có", 1], [14.162, "hoán", 1], [14.387, "đổi.", 1], [15.613, "Sau", 2], [15.9, "đó", 2], [16.137, "đếm", 2], [16.325, "số", 2], [16.55, "phép", 2], [16.762, "so", 2], [17.0, "sánh", 2], [17.3, "của", 2], [17.475, "ba", 2], [17.663, "thuật", 2], [17.875, "toán", 2], [18.15, "trên", 2], [18.312, "mảng", 2], [18.575, "đã", 2], [18.688, "sắp", 2], [18.85, "xếp,", 2], [19.375, "sắp", 2], [19.613, "xếp", 2], [19.875, "ngược", 2], [20.087, "và", 2], [20.238, "ngẫu", 2], [20.475, "nhiên,", 2], [20.988, "với", 2], [21.212, "n", 2], [21.688, "bằng", 2], [21.925, "một", 2], [22.1, "nghìn.", 2]], "cues": [0.1, 10.075], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 414.87, "audio": "audio/394c6215c03e7aa7.mp3", "dur": 12.65, "words": [[0.1, "Mảng", 0], [0.562, "đã", 0], [0.662, "sắp", 0], [0.825, "xếp", 0], [1.087, "mở", 0], [1.288, "ra", 0], [1.425, "cách", 0], [1.613, "tìm", 0], [1.887, "kiếm", 0], [2.138, "nhanh", 0], [2.3, "hơn", 0], [2.538, "rất", 0], [2.725, "nhiều", 0], [2.95, "so", 0], [3.125, "với", 0], [3.225, "tìm", 0], [3.487, "kiếm", 0], [3.725, "tuần", 0], [3.925, "tự:", 0], [4.438, "mở", 0], [4.675, "đôi", 0], [4.812, "danh", 0], [5.025, "bạ", 0], [5.25, "như", 0], [5.487, "ở", 0], [5.6, "Chương", 0], [5.862, "2.", 0], [7.013, "Phần", 1], [7.287, "tiếp", 1], [7.537, "theo", 1], [7.7, "viết", 1], [7.912, "ý", 1], [8.088, "đó", 1], [8.275, "thành", 1], [8.488, "hàm", 1], [8.662, "C,", 1], [9.262, "và", 1], [9.488, "cho", 1], [9.65, "thấy", 1], [9.9, "vì", 1], [10.025, "sao", 1], [10.3, "viết", 1], [10.488, "đúng", 1], [10.75, "lại", 1], [10.925, "khó", 1], [11.175, "hơn", 1], [11.4, "tưởng.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Mảng một chiều: tìm kiếm nhị phân"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

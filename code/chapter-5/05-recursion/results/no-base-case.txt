@@ -1,0 +1,10 @@
+$ gcc -std=c17 -Wall -Wextra -O0 no_base_case.c -o no_base_case
+no_base_case.c: In function 'factorial':
+no_base_case.c:3:11: warning: infinite recursion detected [-Winfinite-recursion]
+    3 | long long factorial(int n)
+      |           ^~~~~~~~~
+no_base_case.c:5:16: note: recursive call
+    5 |     return n * factorial(n - 1);       /* no base case */
+      |                ^~~~~~~~~~~~~~~~
+> & .\no_base_case.exe; $LASTEXITCODE        (PowerShell)
+-1073741571 = 0xC00000FD

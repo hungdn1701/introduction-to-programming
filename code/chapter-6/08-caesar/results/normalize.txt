@@ -1,0 +1,4 @@
+$ ./normalize < names.txt
+[  dang   ngoc HUNG ] -> [Dang Ngoc Hung]
+[nguyen van an] -> [Nguyen Van An]
+[LE  THI   b] -> [Le Thi B]

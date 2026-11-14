@@ -1,0 +1,6 @@
+$ gcc -std=c17 -Wall -Wextra gets_demo.c -o gets_demo
+gets_demo.c: In function 'main':
+gets_demo.c:6:5: warning: call to 'gets' declared with attribute warning: Using gets() is
+always unsafe - use fgets() instead [-Wattribute-warning]
+$ echo 'a line much longer than ten characters' | ./gets_demo
+[exit code 139: Segmentation fault]

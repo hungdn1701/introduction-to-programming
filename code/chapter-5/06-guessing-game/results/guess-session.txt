@@ -1,0 +1,19 @@
+Guess the secret number between 1 and 100.
+
+A new number has been chosen.
+Enter guess: 50
+Too low; try again.
+Enter guess: 75
+Too high; try again.
+Enter guess: 62
+Too high; try again.
+Enter guess: 56
+Too high; try again.
+Enter guess: 53
+Too low; try again.
+Enter guess: 54
+Too low; try again.
+Enter guess: 55
+You won in 7 guesses!
+
+Play again? (Y/N) N

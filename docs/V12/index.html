@@ -1,0 +1,458 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V12 — Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-3/01-languages">Mã</a>
+<h1>V12 · Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 3</div><div class="ten">Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="CH"><header><h1>Chương 3: Các ngôn ngữ lập trình</h1></header><main class="bo-cuc-lo-trinh"><div class="lo-trinh" style="--cot: 2"><div class="chang" data-s="1"><div class="ten-chang"><span class="so">1</span>Ngôn ngữ</div><ol><li class="hien-tai"><span>Từ mã máy đến ngôn ngữ bậc cao</span></li><li class=""><span>Lập trình cấu trúc và lập trình hướng đối tượng</span></li></ol></div><div class="chang" data-s="2"><div class="ten-chang"><span class="so">2</span>Thư viện</div><ol><li class=""><span>Thư viện chuẩn và trình quản lý gói</span></li></ol></div></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Hàng trăm ngôn ngữ lập trình, cùng chạy trên một CPU</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">C, Python, Java, JavaScript, Go, Rust… — mỗi ngôn ngữ một cú pháp, một cách chạy</li><li data-s="2">Cuối cùng, CPU vẫn chỉ thực hiện <b>lệnh máy</b> của tập lệnh của nó</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> các ngôn ngữ khác nhau ở đâu, chia thành những nhóm nào, và C đứng ở đâu?</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Bậc thang ngôn ngữ: từ mã máy, hợp ngữ đến ngôn ngữ bậc cao</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 600" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Cùng phép tính 25 cộng 17 ở bốn mức: mã máy Little Man Computer 901 399 901 199 902 000; hợp ngữ x86-64 movl, addl; C với int c = a + b; Python với c = a + b. Càng lên cao càng gần cách người nghĩ, càng xa phần cứng.">
+  <defs>
+    <marker id="bt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="bt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="bt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="bt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="bt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="bt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- Mã máy -->
+  <g data-s="1">
+    <rect x="40" y="470" width="1060" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="70" y="516" text-anchor="start" font-size="27" fill="#051A53" font-weight="500">Mã máy</text>
+    <text x="70" y="558" text-anchor="start" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">901  399  901  199  902  000</text>
+    <text x="1130" y="534" text-anchor="start" font-size="22" fill="#5B6478">dãy số, CPU thực hiện trực tiếp</text>
+  </g>
+
+  <!-- Hợp ngữ -->
+  <g data-s="2">
+    <rect x="160" y="340" width="940" height="110" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="190" y="386" text-anchor="start" font-size="27" fill="#051A53" font-weight="500">Hợp ngữ</text>
+    <text x="190" y="428" text-anchor="start" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">movl $25, -4(%rbp)    addl %edx, %eax</text>
+    <text x="1130" y="404" text-anchor="start" font-size="22" fill="#5B6478">tên gợi nhớ, một dòng một lệnh máy</text>
+  </g>
+
+  <!-- C -->
+  <g data-s="3">
+    <rect x="280" y="210" width="820" height="110" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="310" y="256" text-anchor="start" font-size="27" fill="#22603F" font-weight="500">C</text>
+    <text x="310" y="298" text-anchor="start" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">int c = a + b;</text>
+    <text x="1130" y="274" text-anchor="start" font-size="22" fill="#5B6478">biến, biểu thức; vẫn gần phần cứng</text>
+  </g>
+
+  <!-- Python, Java -->
+  <g data-s="4">
+    <rect x="400" y="80" width="700" height="110" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="430" y="126" text-anchor="start" font-size="27" fill="#22603F" font-weight="500">Python, Java</text>
+    <text x="430" y="168" text-anchor="start" font-size="23" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">c = a + b</text>
+    <text x="1130" y="144" text-anchor="start" font-size="22" fill="#5B6478">thư viện lớn, quản lý bộ nhớ tự động</text>
+  </g>
+
+  <!-- trục -->
+  <g data-s="5">
+    <line x1="20" y1="580" x2="20" y2="70" stroke="#5B6478" stroke-width="3" marker-end="url(#bt-grey)"/>
+    <text x="30" y="40" text-anchor="start" font-size="21" fill="#5B6478">gần cách người nghĩ</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="6"><p><b>Ngôn ngữ bậc thấp</b> (mã máy, hợp ngữ) gắn với một tập lệnh; <b>ngôn ngữ bậc cao</b> viết bằng biến, biểu thức, không phụ thuộc CPU.</p></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Mỗi ngôn ngữ ra đời để giải một loại bài toán</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 420" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Dòng thời gian một số ngôn ngữ lập trình: Fortran 1957, Lisp 1958, COBOL 1959, Pascal 1970, C 1972, C++ 1985, Python 1991, Java 1995, JavaScript 1995, Go 2009, Rust 2015.">
+  <defs>
+    <marker id="tl-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="tl-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="tl-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="tl-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="tl-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="tl-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- trục thời gian -->
+  <g data-s="1">
+    <line x1="40" y1="210" x2="1720" y2="210" stroke="#5B6478" stroke-width="3" marker-end="url(#tl-grey)"/>
+    <line x1="209.03225806451613" y1="200" x2="209.03225806451613" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="209.032" y="250" text-anchor="middle" font-size="20" fill="#5B6478">1960</text>
+    <line x1="467.0967741935484" y1="200" x2="467.0967741935484" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="467.097" y="250" text-anchor="middle" font-size="20" fill="#5B6478">1970</text>
+    <line x1="725.1612903225806" y1="200" x2="725.1612903225806" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="725.161" y="250" text-anchor="middle" font-size="20" fill="#5B6478">1980</text>
+    <line x1="983.2258064516129" y1="200" x2="983.2258064516129" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="983.226" y="250" text-anchor="middle" font-size="20" fill="#5B6478">1990</text>
+    <line x1="1241.2903225806451" y1="200" x2="1241.2903225806451" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="1241.29" y="250" text-anchor="middle" font-size="20" fill="#5B6478">2000</text>
+    <line x1="1499.3548387096773" y1="200" x2="1499.3548387096773" y2="220" stroke="#5B6478" stroke-width="2"/>
+    <text x="1499.35" y="250" text-anchor="middle" font-size="20" fill="#5B6478">2010</text>
+  </g>
+
+  <!-- các ngôn ngữ -->
+  <g data-s="2">
+    <line x1="131.61290322580646" y1="210" x2="131.61290322580646" y2="90" stroke="#051A53" stroke-width="2"/>
+    <rect x="46.61290322580646" y="20" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="131.613" y="50" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Fortran</text>
+    <text x="131.613" y="78" text-anchor="middle" font-size="20" fill="#5B6478">1957</text>
+    <line x1="157.4193548387097" y1="210" x2="157.4193548387097" y2="290" stroke="#051A53" stroke-width="2"/>
+    <rect x="72.4193548387097" y="290" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="157.419" y="320" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Lisp</text>
+    <text x="157.419" y="348" text-anchor="middle" font-size="20" fill="#5B6478">1958</text>
+    <line x1="183.2258064516129" y1="210" x2="183.2258064516129" y2="180" stroke="#051A53" stroke-width="2"/>
+    <rect x="98.2258064516129" y="110" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="183.226" y="140" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">COBOL</text>
+    <text x="183.226" y="168" text-anchor="middle" font-size="20" fill="#5B6478">1959</text>
+    <line x1="467.0967741935484" y1="210" x2="467.0967741935484" y2="290" stroke="#051A53" stroke-width="2"/>
+    <rect x="382.0967741935484" y="290" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="467.097" y="320" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Pascal</text>
+    <text x="467.097" y="348" text-anchor="middle" font-size="20" fill="#5B6478">1970</text>
+    <line x1="518.7096774193549" y1="210" x2="518.7096774193549" y2="180" stroke="#2F855A" stroke-width="2"/>
+    <rect x="433.7096774193549" y="110" width="170" height="70" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="518.71" y="140" text-anchor="middle" font-size="23" fill="#22603F" font-weight="500">C</text>
+    <text x="518.71" y="168" text-anchor="middle" font-size="20" fill="#5B6478">1972</text>
+    <line x1="854.1935483870968" y1="210" x2="854.1935483870968" y2="290" stroke="#051A53" stroke-width="2"/>
+    <rect x="769.1935483870968" y="290" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="854.194" y="320" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">C++</text>
+    <text x="854.194" y="348" text-anchor="middle" font-size="20" fill="#5B6478">1985</text>
+    <line x1="1009.0322580645161" y1="210" x2="1009.0322580645161" y2="180" stroke="#051A53" stroke-width="2"/>
+    <rect x="924.0322580645161" y="110" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1009.03" y="140" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Python</text>
+    <text x="1009.03" y="168" text-anchor="middle" font-size="20" fill="#5B6478">1991</text>
+    <line x1="1112.258064516129" y1="210" x2="1112.258064516129" y2="290" stroke="#051A53" stroke-width="2"/>
+    <rect x="1027.258064516129" y="290" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1112.26" y="320" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Java</text>
+    <text x="1112.26" y="348" text-anchor="middle" font-size="20" fill="#5B6478">1995</text>
+    <line x1="1473.5483870967741" y1="210" x2="1473.5483870967741" y2="180" stroke="#051A53" stroke-width="2"/>
+    <rect x="1388.5483870967741" y="110" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1473.55" y="140" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Go</text>
+    <text x="1473.55" y="168" text-anchor="middle" font-size="20" fill="#5B6478">2009</text>
+    <line x1="1628.3870967741937" y1="210" x2="1628.3870967741937" y2="290" stroke="#051A53" stroke-width="2"/>
+    <rect x="1543.3870967741937" y="290" width="170" height="70" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1628.39" y="320" text-anchor="middle" font-size="23" fill="#051A53" font-weight="500">Rust</text>
+    <text x="1628.39" y="348" text-anchor="middle" font-size="20" fill="#5B6478">2015</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="3"><p>C (Ritchie, 1972) ra đời để viết hệ điều hành UNIX: <b>gần phần cứng nhưng vẫn là ngôn ngữ bậc cao</b>.</p></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Hai cách phân nhóm: theo cách thực hiện và theo mô hình lập trình</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Theo cách thực hiện: <b>biên dịch</b> (C, Go, Rust), <b>thông dịch</b> (Python), biên dịch sang mã của máy ảo (Java)</li><li data-s="2"><b>Mô hình lập trình</b>: <b>mệnh lệnh</b> (C, Pascal) · <b>hướng đối tượng</b> (Java, C++) · <b>hàm</b> (Lisp, Haskell) · <b>logic</b> (Prolog)</li><li data-s="3">Nhiều ngôn ngữ hiện đại kết hợp nhiều mô hình</li></ul></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Cùng phép tính 25 cộng 17 ở năm dạng, cùng kết quả 42</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">Terminal</span>gcc -std=c17 -Wall -Wextra -o out/sum src/sum.c &amp;&amp; ./out/sum
+python src/sum.py
+java src/Sum.java
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ lmc add.lmc   (machine code: 901 399 901 199 902 000)
+OUTPUT 42
+$ gcc sum.c -o sum &amp;&amp; ./sum
+42
+$ python sum.py
+42
+$ java Sum.java
+42</pre></div><ul class="y-nho"><li data-s="2">C: biên dịch rồi chạy tệp thực thi · Python: trình thông dịch đọc mã nguồn · Java: biên dịch sang mã máy ảo rồi chạy</li></ul></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Một dòng C thành bốn lệnh hợp ngữ: nạp, nạp, cộng, ghi</h1></header><main class="bo-cuc-ma"><div class="ma-hang ma-y"><pre class="ma"><span class="nhan">Hợp ngữ x86-64</span>movl	$25, <span class="hl-n">-4</span>(%rbp)
+movl	$17, <span class="hl-n">-8</span>(%rbp)
+movl	<span class="hl-n">-4</span>(%rbp), %edx
+movl	<span class="hl-n">-8</span>(%rbp), %eax
+addl	%edx, %eax
+movl	%eax, <span class="hl-n">-12</span>(%rbp)
+</pre><ul class="y-nho"><li data-s="1">Hai dòng đầu: gán 25 cho <code>a</code>, 17 cho <code>b</code></li><li data-s="2">Dòng <code>int c = a + b;</code> thành <b>bốn lệnh máy</b>: nạp <code>a</code>, nạp <code>b</code>, cộng, ghi vào <code>c</code></li></ul></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>Không có ngôn ngữ tốt nhất cho mọi việc</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">C hợp với hệ điều hành, thiết bị nhúng, và để <b>hiểu máy tính làm gì bên dưới</b></li><li data-s="2">Đổi lại, C <b>không kiểm tra</b> nhiều lỗi mà Python, Java kiểm tra: tràn số, vượt giới hạn mảng</li></ul></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao chương trình hợp ngữ viết cho CPU <span style="white-space:nowrap">x86-64</span> không chạy được trên CPU ARM của điện thoại?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì điện thoại không có trình biên dịch.</div></div><div class="dung"><span>B</span><div>Vì hợp ngữ gắn với tập lệnh của một loại CPU; ARM có tập lệnh khác.</div></div><div class=""><span>C</span><div>Vì hợp ngữ là ngôn ngữ thông dịch.</div></div><div class=""><span>D</span><div>Vì điện thoại không có bộ nhớ chính.</div></div></div><div class="giai-thich">Mỗi dòng hợp ngữ ứng với một lệnh máy của một tập lệnh cụ thể. ARM có tập lệnh khác <span style="white-space:nowrap">x86-64</span>, nên phải viết lại hợp ngữ, hoặc viết bằng ngôn ngữ bậc cao rồi biên dịch cho ARM.</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao chương trình hợp ngữ viết cho CPU <span style="white-space:nowrap">x86-64</span> không chạy được trên CPU ARM của điện thoại?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì điện thoại không có trình biên dịch.</div></div><div class="dung"><span>B</span><div>Vì hợp ngữ gắn với tập lệnh của một loại CPU; ARM có tập lệnh khác.</div></div><div class=""><span>C</span><div>Vì hợp ngữ là ngôn ngữ thông dịch.</div></div><div class=""><span>D</span><div>Vì điện thoại không có bộ nhớ chính.</div></div></div><div class="giai-thich">Mỗi dòng hợp ngữ ứng với một lệnh máy của một tập lệnh cụ thể. ARM có tập lệnh khác <span style="white-space:nowrap">x86-64</span>, nên phải viết lại hợp ngữ, hoặc viết bằng ngôn ngữ bậc cao rồi biên dịch cho ARM.</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chương trình C tính tổng bằng cách lặp, mỗi lần cộng thêm vào biến sum. Chương trình này theo mô hình lập trình nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Lập trình logic.</div></div><div class=""><span>B</span><div>Lập trình hàm.</div></div><div class="dung"><span>C</span><div>Lập trình mệnh lệnh: dãy câu lệnh thay đổi giá trị của biến.</div></div><div class=""><span>D</span><div>Lập trình hướng đối tượng.</div></div></div><div class="giai-thich">Lập trình mệnh lệnh mô tả dãy câu lệnh làm thay đổi trạng thái (giá trị biến), đúng như vòng lặp cộng dồn vào sum. Lập trình hàm hạn chế thay đổi biến; hướng đối tượng tổ chức theo đối tượng.</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Chương trình C tính tổng bằng cách lặp, mỗi lần cộng thêm vào biến sum. Chương trình này theo mô hình lập trình nào?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Lập trình logic.</div></div><div class=""><span>B</span><div>Lập trình hàm.</div></div><div class="dung"><span>C</span><div>Lập trình mệnh lệnh: dãy câu lệnh thay đổi giá trị của biến.</div></div><div class=""><span>D</span><div>Lập trình hướng đối tượng.</div></div></div><div class="giai-thich">Lập trình mệnh lệnh mô tả dãy câu lệnh làm thay đổi trạng thái (giá trị biến), đúng như vòng lặp cộng dồn vào sum. Lập trình hàm hạn chế thay đổi biến; hướng đối tượng tổ chức theo đối tượng.</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Ngôn ngữ bậc thấp</b> (<b>mã máy</b>, hợp ngữ) gắn với tập lệnh; <b>ngôn ngữ bậc cao</b> viết bằng biến, biểu thức</div></div><div class="the" data-s="2"><span class="so">2</span><div>Phân nhóm theo cách thực hiện (biên dịch, thông dịch) và theo <b>mô hình lập trình</b> (<b>mệnh lệnh</b>, hướng đối tượng, <b>hàm</b>, logic)</div></div><div class="the" data-s="3"><span class="so">3</span><div>C (1972): ngôn ngữ bậc cao gần phần cứng, mệnh lệnh, biên dịch</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>mã máy</span><span>ngôn ngữ bậc thấp</span><span>ngôn ngữ bậc cao</span><span>mô hình lập trình</span><span>lập trình mệnh lệnh</span><span>lập trình hàm</span></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Ngôn ngữ biên dịch sang bytecode: Java, C# và máy ảo</li><li>Rosetta Code: cùng một bài toán viết bằng hàng trăm ngôn ngữ</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Chọn ba ngôn ngữ các bạn từng nghe tên; tra năm ra đời, người thiết kế, mô hình lập trình, cách thực hiện (biên dịch hay thông dịch) và một lĩnh vực dùng nhiều; lập thành bảng.</p></div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Ngôn ngữ: lập trình cấu trúc và lập trình hướng đối tượng</div></main><footer><span>Chương 3 · Các ngôn ngữ lập trình</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Mình bắt đầu Chương 3, các ngôn ngữ lập trình. Có hàng trăm ngôn ngữ: chúng khác nhau ở đâu, chia thành những nhóm nào, và vì sao môn học này chọn C?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:12</span>
+      <h3>Giới thiệu chương</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chương 2 đã đưa một chương trình C qua trình biên dịch. Chương này đặt C vào bức tranh chung của các ngôn ngữ lập trình, qua ba phần chia làm hai nhóm. Nhóm ngôn ngữ có hai phần: từ mã máy đến ngôn ngữ bậc cao, rồi lập trình cấu trúc và lập trình hướng đối tượng. Nhóm thư viện có một phần, về thư viện chuẩn và trình quản lý gói.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide lộ trình sinh từ kế hoạch; hai nhóm hiện lần lượt, phần hiện tại được tô nổi.
+Hiện dần: bước 1 khi đọc “Nhóm ngôn ngữ”; bước 2 khi đọc “Nhóm thư viện”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:33</span>
+      <h3>Slide 1. Hàng trăm ngôn ngữ lập trình, cùng chạy trên một CPU</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>C, Python, Java, JavaScript, Go, Rust… — mỗi ngôn ngữ một cú pháp, một cách chạy</li><li>Cuối cùng, CPU vẫn chỉ thực hiện **lệnh máy** của tập lệnh của nó</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** các ngôn ngữ khác nhau ở đâu, chia thành những nhóm nào, và C đứng ở đâu?</div></div>
+    <div class="kb-thoai"><p>Các bạn hẳn đã nghe tên nhiều ngôn ngữ lập trình: C, Python, Java, JavaScript, Go, Rust. Mỗi ngôn ngữ có cú pháp riêng và cách chạy riêng. Dù viết bằng ngôn ngữ nào, cuối cùng CPU vẫn chỉ thực hiện lệnh máy, như các bạn đã thấy ở Chương 1. Vậy câu hỏi của phần này là: các ngôn ngữ khác nhau ở đâu, chia thành những nhóm nào, và C đứng ở đâu trong bức tranh đó?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối.
+Hiện dần: bước 1 khi đọc “Các bạn hẳn đã nghe”; bước 2 khi đọc “Dù viết bằng ngôn ngữ nào”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:59</span>
+      <h3>Slide 2. Bậc thang ngôn ngữ: từ mã máy, hợp ngữ đến ngôn ngữ bậc cao</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Ngôn ngữ bậc thấp** (mã máy, hợp ngữ) gắn với một tập lệnh; **ngôn ngữ bậc cao** viết bằng biến, biểu thức, không phụ thuộc CPU.</li></ul></div></div>
+    <div class="kb-thoai"><p>Cách chia thứ nhất là theo mức gần phần cứng, như một bậc thang. Bậc thấp nhất là mã máy, hay machine code: dãy số CPU thực hiện trực tiếp, như sáu lệnh 901, 399 của Little Man Computer. Ngay trên là hợp ngữ, mỗi dòng là một lệnh máy viết bằng tên gợi nhớ, như movl hay addl của CPU x86-64. Bậc tiếp theo là C: các bạn viết c bằng a cộng b với biến và biểu thức, nhưng vẫn điều khiển được bộ nhớ khá trực tiếp. Trên cùng là các ngôn ngữ như Python hay Java, có thư viện lớn và tự quản lý bộ nhớ. Càng lên cao, mã càng gần cách người nghĩ và càng xa phần cứng. Hai bậc dưới gọi là ngôn ngữ bậc thấp, gắn với một tập lệnh; các bậc trên gọi là ngôn ngữ bậc cao.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình bac-thang: bốn bậc hiện lần lượt theo bốn câu mốc đầu, bước 5 trục mũi tên; bước 6 ô kết luận.
+Hiện dần: bước 1 khi đọc “Bậc thấp nhất là mã máy”; bước 2 khi đọc “Ngay trên là hợp ngữ”; bước 3 khi đọc “Bậc tiếp theo là C”; bước 4 khi đọc “Trên cùng là các ngôn ngữ như Python”; bước 5 khi đọc “Càng lên cao”; bước 6 khi đọc “Hai bậc dưới”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:48</span>
+      <h3>Slide 3. Mỗi ngôn ngữ ra đời để giải một loại bài toán</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>C (Ritchie, 1972) ra đời để viết hệ điều hành UNIX: **gần phần cứng nhưng vẫn là ngôn ngữ bậc cao**.</li></ul></div></div>
+    <div class="kb-thoai"><p>Ngôn ngữ bậc cao đầu tiên được dùng rộng rãi là Fortran, năm 1957, cho tính toán khoa học. Sau đó lần lượt có Lisp cho trí tuệ nhân tạo, COBOL cho nghiệp vụ ngân hàng, Pascal để dạy lập trình, rồi C++, Python, Java, và gần đây là Go, Rust. Mỗi ngôn ngữ ra đời để giải một loại bài toán. Ngôn ngữ của môn học, C, do Dennis Ritchie phát triển ở Bell Labs khoảng năm 1972, để viết hệ điều hành UNIX. Vì mục đích đó, C gần phần cứng hơn mọi ngôn ngữ bậc cao khác, nhưng vẫn mang được từ máy này sang máy khác.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình dong-thoi-gian: bước 1 trục thời gian, bước 2 các ngôn ngữ; bước 3 ô kết luận. Ghi nguồn: Sebesta, ch. 2; Ritchie (HOPL-II, 1993).
+Hiện dần: bước 1 khi đọc “Ngôn ngữ bậc cao đầu tiên”; bước 2 khi đọc “Sau đó”; bước 3 khi đọc “Ngôn ngữ của môn học”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:28</span>
+      <h3>Slide 4. Hai cách phân nhóm: theo cách thực hiện và theo mô hình lập trình</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Theo cách thực hiện: **biên dịch** (C, Go, Rust), **thông dịch** (Python), biên dịch sang mã của máy ảo (Java)</li><li>**Mô hình lập trình**: **mệnh lệnh** (C, Pascal) · **hướng đối tượng** (Java, C++) · **hàm** (Lisp, Haskell) · **logic** (Prolog)</li><li>Nhiều ngôn ngữ hiện đại kết hợp nhiều mô hình</li></ul></div>
+    <div class="kb-thoai"><p>Cách chia thứ hai là theo cách thực hiện, nối với phần trước về trình biên dịch: C, Go, Rust được biên dịch thành tệp thực thi, Python thường được thông dịch, còn Java biên dịch sang mã của một máy ảo. Cách chia thứ ba là theo mô hình lập trình, hay programming paradigm, tức cách tổ chức chương trình. Lập trình mệnh lệnh, như C, mô tả dãy câu lệnh thay đổi giá trị của biến. Lập trình hướng đối tượng, như Java, tổ chức chương trình thành các đối tượng. Lập trình hàm, như Lisp, tính toán bằng cách kết hợp các hàm, và lập trình logic, như Prolog, mô tả các quan hệ rồi để máy suy luận. Ranh giới không cứng: nhiều ngôn ngữ hiện đại kết hợp vài mô hình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt; ý thứ hai là một infographic bốn ô mô hình lập trình. Ghi nguồn: Sebesta, ch. 1.
+Hiện dần: bước 1 khi đọc “Cách chia thứ hai”; bước 2 khi đọc “Cách chia thứ ba”; bước 3 khi đọc “Ranh giới không cứng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:10</span>
+      <h3>Slide 5. Cùng phép tính 25 cộng 17 ở năm dạng, cùng kết quả 42</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>C: biên dịch rồi chạy tệp thực thi · Python: trình thông dịch đọc mã nguồn · Java: biên dịch sang mã máy ảo rồi chạy</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">run.sh</span><pre><code>gcc -std=c17 -Wall -Wextra -o out/sum src/sum.c &amp;&amp; ./out/sum
+python src/sum.py
+java src/Sum.java</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình chạy cùng một phép tính, 25 cộng 17, ở các dạng vừa nói. Trước hết là chương trình Little Man Computer ở Chương 1, mã máy thuần. Rồi cùng phép tính viết bằng C, bằng Python và bằng Java, ba ngôn ngữ bậc cao. Kết quả giống nhau, đều là 42, nhưng cách chạy khác nhau. Với C, GCC biên dịch ra tệp thực thi rồi mới chạy. Với Python, trình thông dịch đọc thẳng mã nguồn. Với Java, JDK 21 biên dịch tệp nguồn sang mã của máy ảo Java rồi chạy ngay trong một lệnh.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Lệnh phía trên, kết quả phía dưới. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0, Python 3.12, OpenJDK 21). Ba tệp mã nguồn ngắn (src/sum.c, src/sum.py, src/Sum.java) có thể hiện nhỏ cạnh nhau ở góc slide.
+Hiện dần: bước 1 khi đọc “Mình chạy cùng một phép tính”; bước 2 khi đọc “Kết quả giống nhau”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:55</span>
+      <h3>Slide 6. Một dòng C thành bốn lệnh hợp ngữ: nạp, nạp, cộng, ghi</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Hai dòng đầu: gán 25 cho `a`, 17 cho `b`</li><li>Dòng `int c = a + b;` thành **bốn lệnh máy**: nạp `a`, nạp `b`, cộng, ghi vào `c`</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">results/sum-s.txt</span><pre><code>movl	$25, -4(%rbp)
+movl	$17, -8(%rbp)
+movl	-4(%rbp), %edx
+movl	-8(%rbp), %eax
+addl	%edx, %eax
+movl	%eax, -12(%rbp)</code></pre></div></div>
+    <div class="kb-thoai"><p>Mở tệp hợp ngữ GCC sinh ra cho sum.c, mình thấy đúng điều đã nói ở phần về chu trình lệnh. Hai dòng đầu gán 25 cho a và 17 cho b. Dòng c bằng a cộng b trở thành bốn lệnh máy: nạp a vào một thanh ghi, nạp b vào thanh ghi khác, cộng hai thanh ghi, rồi ghi kết quả vào c. Ngôn ngữ bậc cao cho phép viết một dòng, còn trình biên dịch lo phần dịch thành lệnh máy.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hợp ngữ bên trái, hai ý bên phải; highlight hai dòng đầu khi đọc ý thứ nhất, bốn dòng sau khi đọc ý thứ hai.
+Hiện dần: bước 1 khi đọc “Mở tệp hợp ngữ”; bước 2 khi đọc “Dòng c bằng a cộng b”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:22</span>
+      <h3>Slide 7. Không có ngôn ngữ tốt nhất cho mọi việc</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>C hợp với hệ điều hành, thiết bị nhúng, và để **hiểu máy tính làm gì bên dưới**</li><li>Đổi lại, C **không kiểm tra** nhiều lỗi mà Python, Java kiểm tra: tràn số, vượt giới hạn mảng</li></ul></div>
+    <div class="kb-thoai"><p>Từ bức tranh này, câu trả lời cho vế cuối của câu hỏi đầu phần là: không có ngôn ngữ tốt nhất cho mọi việc. C được chọn cho môn nhập môn vì C gần phần cứng, dùng nhiều trong hệ điều hành và thiết bị nhúng, và giúp các bạn hiểu máy tính làm gì bên dưới mỗi dòng mã. Đổi lại, C không kiểm tra nhiều lỗi mà Python hay Java tự kiểm tra, như tràn số hay truy cập ra ngoài mảng. Người lập trình C phải tự cẩn thận, và các chương sau sẽ chỉ ra từng chỗ cần cẩn thận đó.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Từ bức tranh này”; bước 2 khi đọc “Đổi lại”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:51</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Một chương trình hợp ngữ được mang sang điện thoại.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Vì sao chương trình hợp ngữ viết cho CPU x86-64 không chạy được trên CPU ARM của điện thoại?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Vì điện thoại không có trình biên dịch.</li>
+      <li><b>B.</b> Vì hợp ngữ gắn với tập lệnh của một loại CPU; ARM có tập lệnh khác.</li>
+      <li><b>C.</b> Vì hợp ngữ là ngôn ngữ thông dịch.</li>
+      <li><b>D.</b> Vì điện thoại không có bộ nhớ chính.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Mỗi dòng hợp ngữ ứng với một lệnh máy của một tập lệnh cụ thể. ARM có tập lệnh khác x86-64, nên phải viết lại hợp ngữ, hoặc viết bằng ngôn ngữ bậc cao rồi biên dịch cho ARM.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án A dễ được chọn, nhưng có trình biên dịch cũng không giúp được: hợp ngữ đã là lệnh máy của x86-64. Muốn chạy trên ARM thì phải viết bằng ngôn ngữ bậc cao rồi biên dịch lại cho ARM.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:14</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, các bạn xếp một chương trình C quen thuộc vào đúng mô hình lập trình.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Chương trình C tính tổng bằng cách lặp, mỗi lần cộng thêm vào biến sum. Chương trình này theo mô hình lập trình nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Lập trình logic.</li>
+      <li><b>B.</b> Lập trình hàm.</li>
+      <li><b>C.</b> Lập trình mệnh lệnh: dãy câu lệnh thay đổi giá trị của biến.</li>
+      <li><b>D.</b> Lập trình hướng đối tượng.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Lập trình mệnh lệnh mô tả dãy câu lệnh làm thay đổi trạng thái (giá trị biến), đúng như vòng lặp cộng dồn vào sum. Lập trình hàm hạn chế thay đổi biến; hướng đối tượng tổ chức theo đối tượng.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án B dễ được chọn vì chương trình C có hàm main, nhưng lập trình hàm là cách tính bằng kết hợp các hàm và hạn chế thay đổi biến; vòng lặp cộng dồn là đặc trưng của lập trình mệnh lệnh.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:37</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Ngôn ngữ bậc thấp** (**mã máy**, hợp ngữ) gắn với tập lệnh; **ngôn ngữ bậc cao** viết bằng biến, biểu thức</li><li>Phân nhóm theo cách thực hiện (biên dịch, thông dịch) và theo **mô hình lập trình** (**mệnh lệnh**, hướng đối tượng, **hàm**, logic)</li><li>C (1972): ngôn ngữ bậc cao gần phần cứng, mệnh lệnh, biên dịch</li></ul></div>
+    <div class="kb-thoai"><p>Ngôn ngữ khác nhau trước hết ở mức gần phần cứng: mã máy và hợp ngữ là ngôn ngữ bậc thấp, C, Python, Java là ngôn ngữ bậc cao. Ngôn ngữ còn được chia theo cách thực hiện, biên dịch hay thông dịch, và theo mô hình lập trình: mệnh lệnh, hướng đối tượng, hàm, logic. C đứng ở đâu: một ngôn ngữ bậc cao gần phần cứng, theo mô hình mệnh lệnh, được biên dịch. Trên slide là những từ khóa của phần: mã máy, ngôn ngữ bậc thấp, ngôn ngữ bậc cao, mô hình lập trình, lập trình mệnh lệnh và lập trình hàm.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Ngôn ngữ khác nhau trước hết”; bước 2 khi đọc “Ngôn ngữ còn được chia”; bước 3 khi đọc “C đứng ở đâu”; bước 4 khi đọc “Trên slide là những từ khóa”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:10</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Hai chủ đề nâng cao là các ngôn ngữ biên dịch sang mã của máy ảo, như Java, C sharp, và trang Rosetta Code, nơi cùng một bài toán được viết bằng hàng trăm ngôn ngữ. Bài tập mở rộng là chọn ba ngôn ngữ các bạn từng nghe tên, tra năm ra đời, người thiết kế, mô hình lập trình, cách thực hiện và một lĩnh vực dùng nhiều, rồi lập thành bảng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:31</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Trong bốn mô hình, hai mô hình ảnh hưởng nhiều nhất tới cách tổ chức chương trình lớn là lập trình cấu trúc và lập trình hướng đối tượng. Phần tiếp theo so sánh hai cách đó trên cùng một bài toán tài khoản ngân hàng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V12", "tieu_de": "Ngôn ngữ: từ mã máy đến ngôn ngữ bậc cao", "giong": "vi-VN-NamMinhNeural", "tong": 404.43, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/f0e1246b78515b0a.mp3", "dur": 11.9, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Mình", 1], [2.263, "bắt", 1], [2.425, "đầu", 1], [2.638, "Chương", 1], [2.913, "3,", 1], [3.413, "các", 1], [3.6, "ngôn", 1], [3.837, "ngữ", 1], [4.075, "lập", 1], [4.287, "trình.", 1], [5.425, "Có", 2], [5.6, "hàng", 2], [5.825, "trăm", 2], [6.013, "ngôn", 2], [6.175, "ngữ:", 2], [6.737, "chúng", 2], [6.938, "khác", 2], [7.162, "nhau", 2], [7.412, "ở", 2], [7.562, "đâu,", 2], [8.025, "chia", 2], [8.262, "thành", 2], [8.475, "những", 2], [8.675, "nhóm", 2], [8.925, "nào,", 2], [9.375, "và", 2], [9.613, "vì", 2], [9.775, "sao", 2], [9.988, "môn", 2], [10.162, "học", 2], [10.325, "này", 2], [10.512, "chọn", 2], [10.75, "C?", 2]], "cues": [], "lang": 0.6}, {"ten": "Giới thiệu chương", "loai": "mo-chuong", "slide": "CH", "dung": "Slide lộ trình sinh từ kế hoạch; hai nhóm hiện lần lượt, phần hiện tại được tô nổi.\nHiện dần: bước 1 khi đọc “Nhóm ngôn ngữ”; bước 2 khi đọc “Nhóm thư viện”.", "start": 12.5, "audio": "audio/9e7d118a35579d2e.mp3", "dur": 20.66, "words": [[0.1, "Chương", 0], [0.45, "2", 0], [0.688, "đã", 0], [0.8, "đưa", 0], [0.963, "một", 0], [1.163, "chương", 0], [1.4, "trình", 0], [1.637, "C", 0], [1.863, "qua", 0], [2.062, "trình", 0], [2.312, "biên", 0], [2.525, "dịch.", 0], [3.575, "Chương", 1], [3.888, "này", 1], [4.1, "đặt", 1], [4.263, "C", 1], [4.525, "vào", 1], [4.638, "bức", 1], [4.838, "tranh", 1], [5.075, "chung", 1], [5.312, "của", 1], [5.438, "các", 1], [5.6, "ngôn", 1], [5.787, "ngữ", 1], [6.0, "lập", 1], [6.2, "trình,", 1], [6.713, "qua", 1], [6.963, "ba", 1], [7.175, "phần", 1], [7.438, "chia", 1], [7.688, "làm", 1], [7.925, "hai", 1], [8.125, "nhóm.", 1], [9.325, "Nhóm", 2], [9.662, "ngôn", 2], [9.863, "ngữ", 2], [10.1, "có", 2], [10.225, "hai", 2], [10.4, "phần:", 2], [10.925, "từ", 2], [11.088, "mã", 2], [11.275, "máy", 2], [11.512, "đến", 2], [11.713, "ngôn", 2], [11.912, "ngữ", 2], [12.125, "bậc", 2], [12.312, "cao,", 2], [12.85, "rồi", 2], [13.075, "lập", 2], [13.287, "trình", 2], [13.488, "cấu", 2], [13.7, "trúc", 2], [13.925, "và", 2], [14.075, "lập", 2], [14.287, "trình", 2], [14.5, "hướng", 2], [14.738, "đối", 2], [14.887, "tượng.", 2], [16.113, "Nhóm", 3], [16.45, "thư", 3], [16.637, "viện", 3], [16.887, "có", 3], [16.988, "một", 3], [17.163, "phần,", 3], [17.637, "về", 3], [17.875, "thư", 3], [18.075, "viện", 3], [18.288, "chuẩn", 3], [18.613, "và", 3], [18.775, "trình", 3], [19.038, "quản", 3], [19.275, "lý", 3], [19.438, "gói.", 3]], "cues": [9.325, 16.113], "lang": 0.6}, {"ten": "Slide 1. Hàng trăm ngôn ngữ lập trình, cùng chạy trên một CPU", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối.\nHiện dần: bước 1 khi đọc “Các bạn hẳn đã nghe”; bước 2 khi đọc “Dù viết bằng ngôn ngữ nào”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 33.76, "audio": "audio/94c294775d2a37d4.mp3", "dur": 25.01, "words": [[0.1, "Các", 0], [0.312, "bạn", 0], [0.5, "hẳn", 0], [0.738, "đã", 0], [0.863, "nghe", 0], [1.038, "tên", 0], [1.262, "nhiều", 0], [1.462, "ngôn", 0], [1.675, "ngữ", 0], [1.875, "lập", 0], [2.075, "trình:", 0], [2.562, "C,", 0], [3.212, "Python,", 0], [3.938, "Java,", 0], [4.725, "JavaScript,", 0], [5.737, "Go,", 0], [6.35, "Rust.", 0], [7.65, "Mỗi", 1], [8.0, "ngôn", 1], [8.225, "ngữ", 1], [8.488, "có", 1], [8.6, "cú", 1], [8.762, "pháp", 1], [9.0, "riêng", 1], [9.3, "và", 1], [9.45, "cách", 1], [9.662, "chạy", 1], [9.875, "riêng.", 1], [11.05, "Dù", 2], [11.338, "viết", 2], [11.525, "bằng", 2], [11.713, "ngôn", 2], [11.912, "ngữ", 2], [12.1, "nào,", 2], [12.613, "cuối", 2], [12.775, "cùng", 2], [13.225, "CPU", 2], [13.675, "vẫn", 2], [13.863, "chỉ", 2], [14.025, "thực", 2], [14.2, "hiện", 2], [14.425, "lệnh", 2], [14.625, "máy,", 2], [15.162, "như", 2], [15.425, "các", 2], [15.613, "bạn", 2], [15.838, "đã", 2], [15.938, "thấy", 2], [16.188, "ở", 2], [16.312, "Chương", 2], [16.55, "1.", 2], [17.613, "Vậy", 3], [17.887, "câu", 3], [18.05, "hỏi", 3], [18.262, "của", 3], [18.4, "phần", 3], [18.587, "này", 3], [18.738, "là:", 3], [19.212, "các", 3], [19.387, "ngôn", 3], [19.562, "ngữ", 3], [19.775, "khác", 3], [20.025, "nhau", 3], [20.262, "ở", 3], [20.413, "đâu,", 3], [20.9, "chia", 3], [21.137, "thành", 3], [21.35, "những", 3], [21.55, "nhóm", 3], [21.8, "nào,", 3], [22.25, "và", 3], [22.475, "C", 3], [22.7, "đứng", 3], [22.925, "ở", 3], [23.025, "đâu", 3], [23.225, "trong", 3], [23.438, "bức", 3], [23.587, "tranh", 3], [23.825, "đó?", 3]], "cues": [0.1, 11.05, 17.887], "lang": 0.6}, {"ten": "Slide 2. Bậc thang ngôn ngữ: từ mã máy, hợp ngữ đến ngôn ngữ bậc cao", "loai": "slide", "slide": "S02", "dung": "Hình bac-thang: bốn bậc hiện lần lượt theo bốn câu mốc đầu, bước 5 trục mũi tên; bước 6 ô kết luận.\nHiện dần: bước 1 khi đọc “Bậc thấp nhất là mã máy”; bước 2 khi đọc “Ngay trên là hợp ngữ”; bước 3 khi đọc “Bậc tiếp theo là C”; bước 4 khi đọc “Trên cùng là các ngôn ngữ như Python”; bước 5 khi đọc “Càng lên cao”; bước 6 khi đọc “Hai bậc dưới”.", "start": 59.37, "audio": "audio/e858f7fc036d8409.mp3", "dur": 46.25, "words": [[0.1, "Cách", 0], [0.325, "chia", 0], [0.537, "thứ", 0], [0.75, "nhất", 0], [1.025, "là", 0], [1.3, "theo", 0], [1.488, "mức", 0], [1.688, "gần", 0], [1.962, "phần", 0], [2.188, "cứng,", 0], [2.688, "như", 0], [2.9, "một", 0], [3.087, "bậc", 0], [3.288, "thang.", 0], [4.463, "Bậc", 1], [4.713, "thấp", 1], [4.912, "nhất", 1], [5.15, "là", 1], [5.338, "mã", 1], [5.525, "máy,", 1], [6.075, "hay", 1], [6.275, "machine", 1], [6.65, "code:", 1], [7.162, "dãy", 1], [7.388, "số", 1], [7.856, "CPU", 1], [8.325, "thực", 1], [8.5, "hiện", 1], [8.738, "trực", 1], [8.925, "tiếp,", 1], [9.425, "như", 1], [9.675, "sáu", 1], [9.925, "lệnh", 1], [10.162, "901,", 1], [11.162, "399", 1], [12.2, "của", 1], [12.375, "Little", 1], [12.75, "Man", 1], [13.0, "Computer.", 1], [14.45, "Ngay", 2], [14.85, "trên", 2], [15.088, "là", 2], [15.188, "hợp", 2], [15.375, "ngữ,", 2], [15.925, "mỗi", 2], [16.125, "dòng", 2], [16.4, "là", 2], [16.488, "một", 2], [16.663, "lệnh", 2], [16.863, "máy", 2], [17.062, "viết", 2], [17.25, "bằng", 2], [17.45, "tên", 2], [17.675, "gợi", 2], [17.863, "nhớ,", 2], [18.438, "như", 2], [18.675, "movl", 2], [18.913, "hay", 2], [19.087, "addl", 2], [19.6, "của", 2], [19.6, "CPU", 2], [19.6, "x86-64.", 2], [19.6, "Bậc", 3], [19.6, "tiếp", 3], [19.6, "theo", 3], [19.6, "là", 3], [19.6, "C:", 3], [19.6, "các", 3], [19.6, "bạn", 3], [19.6, "viết", 3], [19.6, "c", 3], [19.6, "bằng", 3], [19.6, "a", 3], [19.6, "cộng", 3], [19.6, "b", 3], [19.6, "với", 3], [19.6, "biến", 3], [19.6, "và", 3], [19.6, "biểu", 3], [19.6, "thức,", 3], [19.6, "nhưng", 3], [19.6, "vẫn", 3], [19.6, "điều", 3], [19.6, "khiển", 3], [19.6, "được", 3], [19.6, "bộ", 3], [19.6, "nhớ", 3], [19.6, "khá", 3], [19.6, "trực", 3], [19.6, "tiếp.", 3], [19.6, "Trên", 4], [19.6, "cùng", 4], [19.6, "là", 4], [19.6, "các", 4], [19.6, "ngôn", 4], [19.6, "ngữ", 4], [19.6, "như", 4], [19.6, "Python", 4], [19.6, "hay", 4], [19.6, "Java,", 4], [19.6, "có", 4], [19.6, "thư", 4], [19.6, "viện", 4], [19.6, "lớn", 4], [19.6, "và", 4], [19.6, "tự", 4], [19.6, "quản", 4], [19.6, "lý", 4], [19.6, "bộ", 4], [19.6, "nhớ.", 4], [19.6, "Càng", 5], [19.6, "lên", 5], [19.6, "cao,", 5], [19.6, "mã", 5], [19.6, "càng", 5], [19.6, "gần", 5], [19.6, "cách", 5], [19.6, "người", 5], [19.6, "nghĩ", 5], [19.6, "và", 5], [19.6, "càng", 5], [19.6, "xa", 5], [19.6, "phần", 5], [19.6, "cứng.", 5], [19.6, "Hai", 6], [19.6, "bậc", 6], [19.6, "dưới", 6], [19.6, "gọi", 6], [19.6, "là", 6], [19.6, "ngôn", 6], [19.6, "ngữ", 6], [19.6, "bậc", 6], [19.6, "thấp,", 6], [19.6, "gắn", 6], [19.6, "với", 6], [19.6, "một", 6], [19.6, "tập", 6], [19.6, "lệnh;", 6], [19.6, "các", 6], [19.6, "bậc", 6], [19.6, "trên", 6], [19.6, "gọi", 6], [19.6, "là", 6], [19.6, "ngôn", 6], [19.6, "ngữ", 6], [19.6, "bậc", 6], [19.6, "cao.", 6]], "cues": [4.463, 14.45, 19.6, 19.6, 19.6, 19.6], "lang": 2.6}, {"ten": "Slide 3. Mỗi ngôn ngữ ra đời để giải một loại bài toán", "loai": "slide", "slide": "S03", "dung": "Hình dong-thoi-gian: bước 1 trục thời gian, bước 2 các ngôn ngữ; bước 3 ô kết luận. Ghi nguồn: Sebesta, ch. 2; Ritchie (HOPL-II, 1993).\nHiện dần: bước 1 khi đọc “Ngôn ngữ bậc cao đầu tiên”; bước 2 khi đọc “Sau đó”; bước 3 khi đọc “Ngôn ngữ của môn học”.", "start": 108.22, "audio": "audio/127df7feeb46a1a7.mp3", "dur": 37.3, "words": [[0.1, "Ngôn", 0], [0.375, "ngữ", 0], [0.613, "bậc", 0], [0.8, "cao", 0], [0.95, "đầu", 0], [1.1, "tiên", 0], [1.375, "được", 0], [1.5, "dùng", 0], [1.725, "rộng", 0], [1.962, "rãi", 0], [2.188, "là", 0], [2.325, "Fortran,", 0], [3.225, "năm", 0], [4.125, "1957,", 0], [5.025, "cho", 0], [5.225, "tính", 0], [5.45, "toán", 0], [5.713, "khoa", 0], [5.938, "học.", 0], [7.0, "Sau", 1], [7.3, "đó", 1], [7.463, "lần", 1], [7.612, "lượt", 1], [7.812, "có", 1], [7.938, "Lisp", 1], [8.15, "cho", 1], [8.287, "trí", 1], [8.488, "tuệ", 1], [8.688, "nhân", 1], [8.925, "tạo,", 1], [9.725, "COBOL", 1], [10.525, "cho", 1], [10.637, "nghiệp", 1], [10.812, "vụ", 1], [11.012, "ngân", 1], [11.225, "hàng,", 1], [11.725, "Pascal", 1], [12.262, "để", 1], [12.4, "dạy", 1], [12.588, "lập", 1], [12.787, "trình,", 1], [13.262, "rồi", 1], [13.875, "C++,", 1], [14.488, "Python,", 1], [15.188, "Java,", 1], [15.925, "và", 1], [16.125, "gần", 1], [16.35, "đây", 1], [16.562, "là", 1], [16.7, "Go,", 1], [17.225, "Rust.", 1], [18.488, "Mỗi", 2], [18.837, "ngôn", 2], [19.087, "ngữ", 2], [19.325, "ra", 2], [19.462, "đời", 2], [19.712, "để", 2], [19.85, "giải", 2], [20.075, "một", 2], [20.3, "loại", 2], [20.525, "bài", 2], [20.725, "toán.", 2], [21.962, "Ngôn", 3], [22.238, "ngữ", 3], [22.475, "của", 3], [22.6, "môn", 3], [22.812, "học,", 3], [23.225, "C,", 3], [23.875, "do", 3], [24.125, "Dennis", 3], [24.525, "Ritchie", 3], [24.887, "phát", 3], [25.087, "triển", 3], [25.438, "ở", 3], [25.538, "Bell", 3], [25.75, "Labs", 3], [25.938, "khoảng", 3], [26.646, "năm", 3], [27.354, "1972,", 3], [28.062, "để", 3], [28.225, "viết", 3], [28.413, "hệ", 3], [28.6, "điều", 3], [28.775, "hành", 3], [29.725, "UNIX.", 3], [30.675, "Vì", 4], [30.913, "mục", 4], [31.087, "đích", 4], [31.25, "đó,", 4], [31.75, "C", 4], [32.0, "gần", 4], [32.212, "phần", 4], [32.438, "cứng", 4], [32.675, "hơn", 4], [32.875, "mọi", 4], [33.038, "ngôn", 4], [33.25, "ngữ", 4], [33.5, "bậc", 4], [33.7, "cao", 4], [33.875, "khác,", 4], [34.375, "nhưng", 4], [34.688, "vẫn", 4], [34.875, "mang", 4], [35.075, "được", 4], [35.237, "từ", 4], [35.375, "máy", 4], [35.587, "này", 4], [35.763, "sang", 4], [36.0, "máy", 4], [36.138, "khác.", 4]], "cues": [0.1, 7.0, 21.962], "lang": 2.6}, {"ten": "Slide 4. Hai cách phân nhóm: theo cách thực hiện và theo mô hình lập trình", "loai": "slide", "slide": "S04", "dung": "Ba ý hiện lần lượt; ý thứ hai là một infographic bốn ô mô hình lập trình. Ghi nguồn: Sebesta, ch. 1.\nHiện dần: bước 1 khi đọc “Cách chia thứ hai”; bước 2 khi đọc “Cách chia thứ ba”; bước 3 khi đọc “Ranh giới không cứng”.", "start": 148.12, "audio": "audio/7d4e86197209a845.mp3", "dur": 41.62, "words": [[0.1, "Cách", 0], [0.3, "chia", 0], [0.512, "thứ", 0], [0.738, "hai", 0], [1.025, "là", 0], [1.125, "theo", 0], [1.3, "cách", 0], [1.475, "thực", 0], [1.625, "hiện,", 0], [2.1, "nối", 0], [2.35, "với", 0], [2.462, "phần", 0], [2.712, "trước", 0], [2.925, "về", 0], [3.062, "trình", 0], [3.275, "biên", 0], [3.487, "dịch:", 0], [3.938, "C,", 0], [4.588, "Go,", 0], [5.2, "Rust", 0], [5.525, "được", 0], [5.737, "biên", 0], [5.938, "dịch", 0], [6.125, "thành", 0], [6.325, "tệp", 0], [6.562, "thực", 0], [6.737, "thi,", 0], [7.287, "Python", 0], [7.725, "thường", 0], [7.938, "được", 0], [8.062, "thông", 0], [8.25, "dịch,", 0], [8.7, "còn", 0], [8.963, "Java", 0], [9.287, "biên", 0], [9.5, "dịch", 0], [9.662, "sang", 0], [9.95, "mã", 0], [10.188, "của", 0], [10.3, "một", 0], [10.488, "máy", 0], [10.662, "ảo.", 0], [11.875, "Cách", 1], [12.075, "chia", 1], [12.275, "thứ", 1], [12.488, "ba", 1], [12.787, "là", 1], [12.938, "theo", 1], [13.1, "mô", 1], [13.275, "hình", 1], [13.438, "lập", 1], [13.625, "trình,", 1], [14.137, "hay", 1], [14.35, "programming", 1], [14.863, "paradigm,", 1], [15.625, "tức", 1], [15.85, "cách", 1], [16.025, "tổ", 1], [16.225, "chức", 1], [16.413, "chương", 1], [16.65, "trình.", 1], [17.75, "Lập", 2], [18.113, "trình", 2], [18.288, "mệnh", 2], [18.525, "lệnh,", 2], [19.0, "như", 2], [19.225, "C,", 2], [19.812, "mô", 2], [20.038, "tả", 2], [20.262, "dãy", 2], [20.462, "câu", 2], [20.637, "lệnh", 2], [20.913, "thay", 2], [21.062, "đổi", 2], [21.262, "giá", 2], [21.462, "trị", 2], [21.712, "của", 2], [21.863, "biến.", 2], [23.05, "Lập", 3], [23.425, "trình", 3], [23.613, "hướng", 3], [23.863, "đối", 3], [24.025, "tượng,", 3], [24.587, "như", 3], [24.887, "Java,", 3], [25.663, "tổ", 3], [25.837, "chức", 3], [26.038, "chương", 3], [26.275, "trình", 3], [26.512, "thành", 3], [26.725, "các", 3], [26.913, "đối", 3], [27.087, "tượng.", 3], [28.312, "Lập", 4], [28.675, "trình", 4], [28.863, "hàm,", 4], [29.337, "như", 4], [29.6, "Lisp,", 4], [30.113, "tính", 4], [30.3, "toán", 4], [30.6, "bằng", 4], [30.788, "cách", 4], [30.962, "kết", 4], [31.137, "hợp", 4], [31.35, "các", 4], [31.5, "hàm,", 4], [32.013, "và", 4], [32.2, "lập", 4], [32.4, "trình", 4], [32.6, "logic,", 4], [33.312, "như", 4], [33.587, "Prolog,", 4], [34.35, "mô", 4], [34.575, "tả", 4], [34.8, "các", 4], [34.95, "quan", 4], [35.163, "hệ", 4], [35.375, "rồi", 4], [35.612, "để", 4], [35.725, "máy", 4], [35.938, "suy", 4], [36.112, "luận.", 4], [37.288, "Ranh", 5], [37.6, "giới", 5], [37.812, "không", 5], [38.038, "cứng:", 5], [38.562, "nhiều", 5], [38.8, "ngôn", 5], [39.013, "ngữ", 5], [39.225, "hiện", 5], [39.462, "đại", 5], [39.65, "kết", 5], [39.85, "hợp", 5], [40.087, "vài", 5], [40.275, "mô", 5], [40.513, "hình.", 5]], "cues": [0.1, 11.875, 37.288], "lang": 0.6}, {"ten": "Slide 5. Cùng phép tính 25 cộng 17 ở năm dạng, cùng kết quả 42", "loai": "slide", "slide": "S05", "dung": "Lệnh phía trên, kết quả phía dưới. Kết quả chạy ngày 13/11/2026 (GCC 13.2.0, Python 3.12, OpenJDK 21). Ba tệp mã nguồn ngắn (src/sum.c, src/sum.py, src/Sum.java) có thể hiện nhỏ cạnh nhau ở góc slide.\nHiện dần: bước 1 khi đọc “Mình chạy cùng một phép tính”; bước 2 khi đọc “Kết quả giống nhau”.", "start": 190.34, "audio": "audio/722462dc33f2796c.mp3", "dur": 35.14, "words": [[0.1, "Mình", 0], [0.512, "chạy", 0], [0.713, "cùng", 0], [0.912, "một", 0], [1.075, "phép", 0], [1.275, "tính,", 0], [1.775, "25", 0], [2.325, "cộng", 0], [2.55, "17,", 0], [3.288, "ở", 0], [3.45, "các", 0], [3.638, "dạng", 0], [3.913, "vừa", 0], [4.075, "nói.", 0], [5.287, "Trước", 1], [5.588, "hết", 1], [5.825, "là", 1], [5.987, "chương", 1], [6.225, "trình", 1], [6.425, "Little", 1], [6.787, "Man", 1], [7.025, "Computer", 1], [7.75, "ở", 1], [7.9, "Chương", 1], [8.188, "1,", 1], [8.625, "mã", 1], [8.85, "máy", 1], [9.037, "thuần.", 1], [10.188, "Rồi", 2], [10.5, "cùng", 2], [10.713, "phép", 2], [10.925, "tính", 2], [11.137, "viết", 2], [11.312, "bằng", 2], [11.512, "C,", 2], [12.113, "bằng", 2], [12.363, "Python", 2], [12.838, "và", 2], [12.95, "bằng", 2], [13.175, "Java,", 2], [13.887, "ba", 2], [14.125, "ngôn", 2], [14.35, "ngữ", 2], [14.562, "bậc", 2], [14.762, "cao.", 2], [15.95, "Kết", 3], [16.2, "quả", 3], [16.425, "giống", 3], [16.637, "nhau,", 3], [17.125, "đều", 3], [17.413, "là", 3], [17.55, "42,", 3], [18.475, "nhưng", 3], [18.788, "cách", 3], [19.0, "chạy", 3], [19.2, "khác", 3], [19.438, "nhau.", 3], [20.575, "Với", 4], [20.837, "C,", 4], [21.45, "GCC", 4], [22.062, "biên", 4], [22.288, "dịch", 4], [22.475, "ra", 4], [22.637, "tệp", 4], [22.9, "thực", 4], [23.075, "thi", 4], [23.312, "rồi", 4], [23.512, "mới", 4], [23.725, "chạy.", 4], [24.938, "Với", 5], [25.275, "Python,", 5], [26.012, "trình", 5], [26.288, "thông", 5], [26.512, "dịch", 5], [26.675, "đọc", 5], [26.875, "thẳng", 5], [27.15, "mã", 5], [27.3, "nguồn.", 5], [28.512, "Với", 6], [28.825, "Java,", 6], [29.462, "JDK", 6], [30.1, "21", 6], [30.6, "biên", 6], [30.837, "dịch", 6], [31.012, "tệp", 6], [31.238, "nguồn", 6], [31.462, "sang", 6], [31.725, "mã", 6], [31.962, "của", 6], [32.087, "máy", 6], [32.3, "ảo", 6], [32.487, "Java", 6], [32.987, "rồi", 6], [33.2, "chạy", 6], [33.438, "ngay", 6], [33.65, "trong", 6], [33.825, "một", 6], [33.975, "lệnh.", 6]], "cues": [0.1, 15.95], "lang": 9.6}, {"ten": "Slide 6. Một dòng C thành bốn lệnh hợp ngữ: nạp, nạp, cộng, ghi", "loai": "slide", "slide": "S06", "dung": "Hợp ngữ bên trái, hai ý bên phải; highlight hai dòng đầu khi đọc ý thứ nhất, bốn dòng sau khi đọc ý thứ hai.\nHiện dần: bước 1 khi đọc “Mở tệp hợp ngữ”; bước 2 khi đọc “Dòng c bằng a cộng b”.", "start": 235.08, "audio": "audio/fb83e1217364939d.mp3", "dur": 22.13, "words": [[0.1, "Mở", 0], [0.475, "tệp", 0], [0.7, "hợp", 0], [0.912, "ngữ", 0], [1.319, "GCC", 0], [1.725, "sinh", 0], [1.988, "ra", 0], [2.188, "cho", 0], [2.35, "sum.c,", 0], [3.25, "mình", 0], [3.462, "thấy", 0], [3.663, "đúng", 0], [3.875, "điều", 0], [4.05, "đã", 0], [4.175, "nói", 0], [4.412, "ở", 0], [4.537, "phần", 0], [4.825, "về", 0], [4.987, "chu", 0], [5.213, "trình", 0], [5.425, "lệnh.", 0], [6.562, "Hai", 1], [6.787, "dòng", 1], [7.0, "đầu", 1], [7.175, "gán", 1], [7.425, "25", 1], [7.925, "cho", 1], [8.137, "a", 1], [8.35, "và", 1], [8.463, "17", 1], [8.875, "cho", 1], [9.0, "b.", 1], [9.225, "Dòng", 2], [9.475, "c", 2], [9.688, "bằng", 2], [9.938, "a", 2], [10.037, "cộng", 2], [10.287, "b", 2], [10.438, "trở", 2], [10.613, "thành", 2], [10.812, "bốn", 2], [11.037, "lệnh", 2], [11.2, "máy:", 2], [11.738, "nạp", 2], [12.1, "a", 2], [12.262, "vào", 2], [12.363, "một", 2], [12.537, "thanh", 2], [12.738, "ghi,", 2], [13.225, "nạp", 2], [13.488, "b", 2], [13.688, "vào", 2], [13.838, "thanh", 2], [14.062, "ghi", 2], [14.213, "khác,", 2], [14.75, "cộng", 2], [14.988, "hai", 2], [15.15, "thanh", 2], [15.35, "ghi,", 2], [15.838, "rồi", 2], [16.087, "ghi", 2], [16.25, "kết", 2], [16.45, "quả", 2], [16.663, "vào", 2], [16.8, "c.", 2], [17.188, "Ngôn", 3], [17.425, "ngữ", 3], [17.637, "bậc", 3], [17.825, "cao", 3], [18.038, "cho", 3], [18.175, "phép", 3], [18.4, "viết", 3], [18.6, "một", 3], [18.762, "dòng,", 3], [19.238, "còn", 3], [19.475, "trình", 3], [19.65, "biên", 3], [19.837, "dịch", 3], [20.012, "lo", 3], [20.188, "phần", 3], [20.4, "dịch", 3], [20.575, "thành", 3], [20.762, "lệnh", 3], [20.938, "máy.", 3]], "cues": [0.1, 9.225], "lang": 5.6}, {"ten": "Slide 7. Không có ngôn ngữ tốt nhất cho mọi việc", "loai": "slide", "slide": "S07", "dung": "Hai ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Từ bức tranh này”; bước 2 khi đọc “Đổi lại”.", "start": 262.81, "audio": "audio/98599c705031225e.mp3", "dur": 27.82, "words": [[0.1, "Từ", 0], [0.375, "bức", 0], [0.575, "tranh", 0], [0.775, "này,", 0], [1.212, "câu", 0], [1.375, "trả", 0], [1.562, "lời", 0], [1.8, "cho", 0], [1.95, "vế", 0], [2.062, "cuối", 0], [2.312, "của", 0], [2.462, "câu", 0], [2.638, "hỏi", 0], [2.837, "đầu", 0], [3.0, "phần", 0], [3.225, "là:", 0], [3.737, "không", 0], [4.0, "có", 0], [4.1, "ngôn", 0], [4.325, "ngữ", 0], [4.537, "tốt", 0], [4.8, "nhất", 0], [5.0, "cho", 0], [5.15, "mọi", 0], [5.362, "việc.", 0], [6.438, "C", 1], [6.725, "được", 1], [6.875, "chọn", 1], [7.138, "cho", 1], [7.237, "môn", 1], [7.425, "nhập", 1], [7.625, "môn", 1], [7.9, "vì", 1], [8.025, "C", 1], [8.262, "gần", 1], [8.475, "phần", 1], [8.7, "cứng,", 1], [9.2, "dùng", 1], [9.412, "nhiều", 1], [9.637, "trong", 1], [9.812, "hệ", 1], [9.963, "điều", 1], [10.125, "hành", 1], [10.35, "và", 1], [10.463, "thiết", 1], [10.65, "bị", 1], [10.8, "nhúng,", 1], [11.338, "và", 1], [11.537, "giúp", 1], [11.75, "các", 1], [11.925, "bạn", 1], [12.125, "hiểu", 1], [12.275, "máy", 1], [12.463, "tính", 1], [12.7, "làm", 1], [12.875, "gì", 1], [13.088, "bên", 1], [13.3, "dưới", 1], [13.475, "mỗi", 1], [13.688, "dòng", 1], [13.912, "mã.", 1], [15.137, "Đổi", 2], [15.4, "lại,", 2], [15.85, "C", 2], [16.075, "không", 2], [16.3, "kiểm", 2], [16.512, "tra", 2], [16.663, "nhiều", 2], [16.875, "lỗi", 2], [17.113, "mà", 2], [17.288, "Python", 2], [17.775, "hay", 2], [17.938, "Java", 2], [18.3, "tự", 2], [18.5, "kiểm", 2], [18.738, "tra,", 2], [19.275, "như", 2], [19.55, "tràn", 2], [19.775, "số", 2], [20.025, "hay", 2], [20.163, "truy", 2], [20.325, "cập", 2], [20.55, "ra", 2], [20.7, "ngoài", 2], [20.925, "mảng.", 2], [22.163, "Người", 3], [22.425, "lập", 3], [22.65, "trình", 3], [22.825, "C", 3], [23.062, "phải", 3], [23.225, "tự", 3], [23.413, "cẩn", 3], [23.65, "thận,", 3], [24.137, "và", 3], [24.375, "các", 3], [24.55, "chương", 3], [24.738, "sau", 3], [24.988, "sẽ", 3], [25.137, "chỉ", 3], [25.325, "ra", 3], [25.488, "từng", 3], [25.75, "chỗ", 3], [25.962, "cần", 3], [26.2, "cẩn", 3], [26.425, "thận", 3], [26.625, "đó.", 3]], "cues": [0.1, 15.137], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án B, các đáp án còn lại mờ đi.", "start": 291.23, "audio": "audio/59104be2c0e878b6.mp3", "dur": 3.43, "words": [[0.1, "Một", 0], [0.475, "chương", 0], [0.675, "trình", 0], [0.863, "hợp", 0], [1.075, "ngữ", 0], [1.325, "được", 0], [1.538, "mang", 0], [1.738, "sang", 0], [2.025, "điện", 0], [2.212, "thoại.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/1260c8ad25071cb9.mp3", "dur2": 13.15, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.137, "Phương", 1], [1.5, "án", 1], [1.738, "A", 1], [1.887, "dễ", 1], [2.087, "được", 1], [2.25, "chọn,", 1], [2.775, "nhưng", 1], [3.062, "có", 1], [3.163, "trình", 1], [3.375, "biên", 1], [3.587, "dịch", 1], [3.75, "cũng", 1], [3.913, "không", 1], [4.125, "giúp", 1], [4.287, "được:", 1], [4.75, "hợp", 1], [4.975, "ngữ", 1], [5.225, "đã", 1], [5.338, "là", 1], [5.45, "lệnh", 1], [5.688, "máy", 1], [5.9, "của", 1], [7.062, "x86-64.", 1], [8.225, "Muốn", 2], [8.613, "chạy", 2], [8.812, "trên", 2], [9.088, "ARM", 2], [9.312, "thì", 2], [9.463, "phải", 2], [9.6, "viết", 2], [9.8, "bằng", 2], [10.0, "ngôn", 2], [10.238, "ngữ", 2], [10.463, "bậc", 2], [10.662, "cao", 2], [10.963, "rồi", 2], [11.175, "biên", 2], [11.425, "dịch", 2], [11.613, "lại", 2], [11.838, "cho", 2], [12.025, "ARM.", 2]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án C.", "start": 314.41, "audio": "audio/2da4195fe9ae9cdb.mp3", "dur": 4.94, "words": [[0.1, "Tiếp", 0], [0.4, "theo,", 0], [0.912, "các", 0], [1.075, "bạn", 0], [1.262, "xếp", 0], [1.5, "một", 0], [1.688, "chương", 0], [1.925, "trình", 0], [2.163, "C", 0], [2.362, "quen", 0], [2.6, "thuộc", 0], [2.8, "vào", 0], [3.0, "đúng", 0], [3.225, "mô", 0], [3.388, "hình", 0], [3.6, "lập", 0], [3.8, "trình.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/2cad3286ab605d67.mp3", "dur2": 11.23, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.675, "là", 0], [0.787, "C.", 0], [1.163, "Phương", 1], [1.462, "án", 1], [1.637, "B", 1], [1.788, "dễ", 1], [1.988, "được", 1], [2.15, "chọn", 1], [2.45, "vì", 1], [2.587, "chương", 1], [2.825, "trình", 1], [3.025, "C", 1], [3.25, "có", 1], [3.375, "hàm", 1], [3.55, "main,", 1], [4.037, "nhưng", 1], [4.325, "lập", 1], [4.5, "trình", 1], [4.675, "hàm", 1], [4.95, "là", 1], [5.075, "cách", 1], [5.263, "tính", 1], [5.513, "bằng", 1], [5.713, "kết", 1], [5.9, "hợp", 1], [6.112, "các", 1], [6.25, "hàm", 1], [6.513, "và", 1], [6.625, "hạn", 1], [6.85, "chế", 1], [7.075, "thay", 1], [7.213, "đổi", 1], [7.375, "biến;", 1], [7.925, "vòng", 1], [8.188, "lặp", 1], [8.375, "cộng", 1], [8.575, "dồn", 1], [8.875, "là", 1], [8.988, "đặc", 1], [9.175, "trưng", 1], [9.4, "của", 1], [9.5, "lập", 1], [9.688, "trình", 1], [9.9, "mệnh", 1], [10.088, "lệnh.", 1]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Ngôn ngữ khác nhau trước hết”; bước 2 khi đọc “Ngôn ngữ còn được chia”; bước 3 khi đọc “C đứng ở đâu”; bước 4 khi đọc “Trên slide là những từ khóa”.", "start": 337.18, "audio": "audio/0fbb739ace3c5401.mp3", "dur": 32.74, "words": [[0.1, "Ngôn", 0], [0.438, "ngữ", 0], [0.65, "khác", 0], [0.875, "nhau", 0], [1.087, "trước", 0], [1.288, "hết", 0], [1.55, "ở", 0], [1.65, "mức", 0], [1.85, "gần", 0], [2.125, "phần", 0], [2.35, "cứng:", 0], [2.9, "mã", 0], [3.1, "máy", 0], [3.375, "và", 0], [3.487, "hợp", 0], [3.663, "ngữ", 0], [3.888, "là", 0], [4.062, "ngôn", 0], [4.3, "ngữ", 0], [4.513, "bậc", 0], [4.713, "thấp,", 0], [5.162, "C,", 0], [5.825, "Python,", 0], [6.513, "Java", 0], [7.013, "là", 0], [7.15, "ngôn", 0], [7.388, "ngữ", 0], [7.6, "bậc", 0], [7.8, "cao.", 0], [8.975, "Ngôn", 1], [9.275, "ngữ", 1], [9.55, "còn", 1], [9.762, "được", 1], [9.9, "chia", 1], [10.113, "theo", 1], [10.25, "cách", 1], [10.463, "thực", 1], [10.613, "hiện,", 1], [11.113, "biên", 1], [11.375, "dịch", 1], [11.562, "hay", 1], [11.738, "thông", 1], [11.938, "dịch,", 1], [12.375, "và", 1], [12.575, "theo", 1], [12.762, "mô", 1], [12.938, "hình", 1], [13.125, "lập", 1], [13.325, "trình:", 1], [13.838, "mệnh", 1], [14.15, "lệnh,", 1], [14.662, "hướng", 1], [14.912, "đối", 1], [15.088, "tượng,", 1], [15.662, "hàm,", 1], [16.2, "logic.", 1], [17.55, "C", 2], [17.887, "đứng", 2], [18.15, "ở", 2], [18.275, "đâu:", 2], [18.762, "một", 2], [19.0, "ngôn", 2], [19.2, "ngữ", 2], [19.438, "bậc", 2], [19.637, "cao", 2], [19.863, "gần", 2], [20.1, "phần", 2], [20.325, "cứng,", 2], [20.875, "theo", 2], [21.075, "mô", 2], [21.262, "hình", 2], [21.45, "mệnh", 2], [21.688, "lệnh,", 2], [22.163, "được", 2], [22.4, "biên", 2], [22.637, "dịch.", 2], [23.688, "Trên", 3], [24.025, "slide", 3], [24.462, "là", 3], [24.625, "những", 3], [24.863, "từ", 3], [25.025, "khóa", 3], [25.3, "của", 3], [25.45, "phần:", 3], [25.962, "mã", 3], [26.175, "máy,", 3], [26.738, "ngôn", 3], [27.0, "ngữ", 3], [27.225, "bậc", 3], [27.413, "thấp,", 3], [27.863, "ngôn", 3], [28.113, "ngữ", 3], [28.337, "bậc", 3], [28.55, "cao,", 3], [29.075, "mô", 3], [29.312, "hình", 3], [29.5, "lập", 3], [29.7, "trình,", 3], [30.188, "lập", 3], [30.45, "trình", 3], [30.613, "mệnh", 3], [30.837, "lệnh", 3], [31.113, "và", 3], [31.225, "lập", 3], [31.438, "trình", 3], [31.625, "hàm.", 3]], "cues": [0.1, 8.975, 17.55, 23.688], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Hai chủ đề nâng cao”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 370.52, "audio": "audio/40ad6134e254e493.mp3", "dur": 20.83, "words": [[0.1, "Hai", 0], [0.325, "chủ", 0], [0.525, "đề", 0], [0.688, "nâng", 0], [0.9, "cao", 0], [1.188, "là", 0], [1.288, "các", 0], [1.475, "ngôn", 0], [1.637, "ngữ", 0], [1.837, "biên", 0], [2.062, "dịch", 0], [2.2, "sang", 0], [2.462, "mã", 0], [2.675, "của", 0], [2.8, "máy", 0], [3.013, "ảo,", 0], [3.562, "như", 0], [3.837, "Java,", 0], [4.55, "C", 0], [4.8, "sharp,", 0], [5.35, "và", 0], [5.588, "trang", 0], [5.875, "Rosetta", 0], [6.438, "Code,", 0], [6.987, "nơi", 0], [7.287, "cùng", 0], [7.5, "một", 0], [7.625, "bài", 0], [7.763, "toán", 0], [8.05, "được", 0], [8.162, "viết", 0], [8.363, "bằng", 0], [8.588, "hàng", 0], [8.812, "trăm", 0], [9.0, "ngôn", 0], [9.188, "ngữ.", 0], [10.4, "Bài", 1], [10.65, "tập", 1], [10.863, "mở", 1], [11.05, "rộng", 1], [11.338, "là", 1], [11.5, "chọn", 1], [11.8, "ba", 1], [11.95, "ngôn", 1], [12.175, "ngữ", 1], [12.4, "các", 1], [12.575, "bạn", 1], [12.787, "từng", 1], [13.012, "nghe", 1], [13.213, "tên,", 1], [13.775, "tra", 1], [14.075, "năm", 1], [14.287, "ra", 1], [14.412, "đời,", 1], [14.875, "người", 1], [15.1, "thiết", 1], [15.287, "kế,", 1], [15.825, "mô", 1], [16.05, "hình", 1], [16.262, "lập", 1], [16.462, "trình,", 1], [16.95, "cách", 1], [17.113, "thực", 1], [17.275, "hiện", 1], [17.55, "và", 1], [17.65, "một", 1], [17.825, "lĩnh", 1], [18.05, "vực", 1], [18.225, "dùng", 1], [18.438, "nhiều,", 1], [18.938, "rồi", 1], [19.188, "lập", 1], [19.387, "thành", 1], [19.587, "bảng.", 1]], "cues": [0.1, 10.4], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 391.95, "audio": "audio/6708f52287bcc0dd.mp3", "dur": 11.88, "words": [[0.1, "Trong", 0], [0.438, "bốn", 0], [0.662, "mô", 0], [0.825, "hình,", 0], [1.288, "hai", 0], [1.488, "mô", 0], [1.675, "hình", 0], [1.85, "ảnh", 0], [2.038, "hưởng", 0], [2.263, "nhiều", 0], [2.462, "nhất", 0], [2.688, "tới", 0], [2.888, "cách", 0], [3.087, "tổ", 0], [3.263, "chức", 0], [3.45, "chương", 0], [3.712, "trình", 0], [3.925, "lớn", 0], [4.225, "là", 0], [4.338, "lập", 0], [4.537, "trình", 0], [4.75, "cấu", 0], [4.963, "trúc", 0], [5.188, "và", 0], [5.338, "lập", 0], [5.55, "trình", 0], [5.75, "hướng", 0], [5.975, "đối", 0], [6.125, "tượng.", 0], [7.35, "Phần", 1], [7.662, "tiếp", 1], [7.875, "theo", 1], [8.088, "so", 1], [8.275, "sánh", 1], [8.525, "hai", 1], [8.688, "cách", 1], [8.887, "đó", 1], [9.125, "trên", 1], [9.338, "cùng", 1], [9.512, "một", 1], [9.675, "bài", 1], [9.838, "toán", 1], [10.125, "tài", 1], [10.275, "khoản", 1], [10.55, "ngân", 1], [10.738, "hàng.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Ngôn ngữ: lập trình cấu trúc và lập trình hướng đối tượng"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

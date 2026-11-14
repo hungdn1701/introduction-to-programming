@@ -1,0 +1,8 @@
+$ gcc -std=c17 -Wall -Wextra overflow.c -o overflow
+overflow.c: In function 'main':
+overflow.c:13:5: warning: '__builtin_memcpy' writing 15 bytes into a region of size 10
+overflows the destination [-Wstringop-overflow=]
+overflow.c:10:10: note: destination object 'name' of size 10
+$ ./overflow
+&name = 00000089EE1FFBD2, &balance = 00000089EE1FFBDC
+name = Nguyen Van Anh, balance = 1752056096

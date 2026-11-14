@@ -1,0 +1,604 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V35 — Bài toán ứng dụng: Game of Life trên ma trận · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-6/06-game-of-life">Mã</a>
+<h1>V35 · Bài toán ứng dụng: Game of Life trên ma trận</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 6</div><div class="ten">Bài toán ứng dụng: Game of Life trên ma trận</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Game of Life: bốn quy tắc, những mẫu tự di chuyển</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Lưới ô, mỗi ô <b>sống</b> hoặc <b>chết</b>; mỗi <b>thế hệ</b> tính lại cả lưới theo <b>bốn quy tắc</b></li><li data-s="2">Mẫu <b>glider</b> năm ô tự trượt chéo trên lưới sau mỗi bốn thế hệ</li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> đếm láng giềng, xử lý ô ở biên và cập nhật cả lưới cùng lúc bằng mảng hai chiều thế nào?</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Ô láng giềng, thế hệ và kiểm tra biên</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Lưới là mảng hai chiều <code>int grid[ROWS][COLS]</code>: 1 là sống, 0 là chết</li><li data-s="2"><b>Ô láng giềng</b> của (i, j): tám ô xung quanh; ô ngoài lưới coi là chết — cần <b>kiểm tra biên</b></li><li data-s="3">Thế hệ sau tính từ <b>toàn bộ</b> thế hệ hiện tại</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Bốn quy tắc cho mỗi ô</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Bốn quy tắc của Game of Life cho mỗi ô, dựa trên số láng giềng sống trong tám ô xung quanh: ô sống có ít hơn 2 láng giềng thì chết; có 2 hoặc 3 thì sống tiếp; có hơn 3 thì chết; ô chết có đúng 3 láng giềng sống thì sống lại.">
+  <defs>
+    <marker id="qt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="qt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="qt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="qt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="qt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="qt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- ô sống, < 2 láng giềng -->
+  <g data-s="1">
+    <rect x="150" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="220" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="290" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="150" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="220" y="110" width="66" height="66" fill="#373D4E" stroke="#BC2626" stroke-width="5"/>
+    <rect x="290" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="150" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="220" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="290" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="60" y="270" width="390" height="80" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="255" y="316.5" text-anchor="middle" font-size="21" fill="#373D4E">ô sống, &lt; 2 láng giềng</text>
+    <rect x="60" y="370" width="390" height="80" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="255" y="417.5" text-anchor="middle" font-size="23" fill="#373D4E">→ chết (cô đơn)</text>
+  </g>
+
+  <!-- ô sống, 2 hoặc 3 láng giềng -->
+  <g data-s="2">
+    <rect x="570" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="640" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="710" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="570" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="640" y="110" width="66" height="66" fill="#373D4E" stroke="#2F855A" stroke-width="5"/>
+    <rect x="710" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="570" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="640" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="710" y="180" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="480" y="270" width="390" height="80" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="675" y="316.5" text-anchor="middle" font-size="21" fill="#373D4E">ô sống, 2 hoặc 3 láng giềng</text>
+    <rect x="480" y="370" width="390" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="675" y="417.5" text-anchor="middle" font-size="23" fill="#373D4E">→ sống tiếp</text>
+  </g>
+
+  <!-- ô sống, > 3 láng giềng -->
+  <g data-s="3">
+    <rect x="990" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1060" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1130" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="990" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1060" y="110" width="66" height="66" fill="#373D4E" stroke="#BC2626" stroke-width="5"/>
+    <rect x="1130" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="990" y="180" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1060" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1130" y="180" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="900" y="270" width="390" height="80" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1095" y="316.5" text-anchor="middle" font-size="21" fill="#373D4E">ô sống, &gt; 3 láng giềng</text>
+    <rect x="900" y="370" width="390" height="80" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1095" y="417.5" text-anchor="middle" font-size="23" fill="#373D4E">→ chết (chật chội)</text>
+  </g>
+
+  <!-- ô chết, đúng 3 láng giềng -->
+  <g data-s="4">
+    <rect x="1410" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1480" y="40" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1550" y="40" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1410" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1480" y="110" width="66" height="66" fill="#FFFFFF" stroke="#2F855A" stroke-width="5"/>
+    <rect x="1550" y="110" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1410" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1480" y="180" width="66" height="66" fill="#373D4E" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1550" y="180" width="66" height="66" fill="#FFFFFF" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1320" y="270" width="390" height="80" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1515" y="316.5" text-anchor="middle" font-size="21" fill="#373D4E">ô chết, đúng 3 láng giềng</text>
+    <rect x="1320" y="370" width="390" height="80" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1515" y="417.5" text-anchor="middle" font-size="23" fill="#373D4E">→ sống lại</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p>Gộp lại: ô sống tiếp nếu <b>2 hoặc 3</b> láng giềng; ô sinh ra nếu <b>đúng 3</b>; còn lại là ô chết.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Tám hướng di, dj và ô ở góc lưới</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 520" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Đếm láng giềng của ô (i, j): tám ô có di và dj từ âm 1 đến 1, bỏ ô (0, 0) là chính nó; với ô ở góc trên trái (0, 0), năm ô láng giềng nằm ngoài lưới, phải kiểm tra biên trước khi đọc grid[r][c].">
+  <defs>
+    <marker id="lg-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="lg-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="lg-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="lg-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="lg-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="lg-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- tám hướng di, dj -->
+  <g data-s="1">
+    <rect x="80" y="60" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="155" y="117.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(-1, -1)</text>
+    <rect x="230" y="60" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="305" y="117.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(-1, +0)</text>
+    <rect x="380" y="60" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="455" y="117.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(-1, +1)</text>
+    <rect x="80" y="170" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="155" y="227.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(+0, -1)</text>
+    <rect x="230" y="170" width="150" height="100" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="305" y="227.92" text-anchor="middle" font-size="22" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">(i, j)</text>
+    <rect x="380" y="170" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="455" y="227.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(+0, +1)</text>
+    <rect x="80" y="280" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="155" y="337.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(+1, -1)</text>
+    <rect x="230" y="280" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="305" y="337.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(+1, +0)</text>
+    <rect x="380" y="280" width="150" height="100" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2"/>
+    <text x="455" y="337.92" text-anchor="middle" font-size="22" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">(+1, +1)</text>
+    <text x="305" y="420" text-anchor="middle" font-size="24" fill="#123A6B" font-family="Consolas, monospace" style="white-space:pre">r = i + di,  c = j + dj</text>
+  </g>
+
+  <!-- ô ở góc: kiểm tra biên -->
+  <g data-s="2">
+    <rect x="900" y="60" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1010" y="60" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1120" y="60" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1230" y="60" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="900" y="150" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1010" y="150" width="106" height="86" fill="#EEF2FB" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1120" y="150" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1230" y="150" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="900" y="240" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1010" y="240" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1120" y="240" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1230" y="240" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="900" y="330" width="106" height="86" fill="#FBEAEA" stroke="#BC2626" stroke-width="2" stroke-dasharray="8 6"/>
+    <rect x="1010" y="330" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1120" y="330" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="1230" y="330" width="106" height="86" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="1063" y="202" text-anchor="middle" font-size="21" fill="#051A53" font-family="Consolas, monospace" style="white-space:pre">(0,0)</text>
+    <text x="1350" y="120" text-anchor="start" font-size="22" fill="#9B1C1C">ngoài lưới:</text>
+    <text x="1350" y="152" text-anchor="start" font-size="22" fill="#9B1C1C" font-family="Consolas, monospace" style="white-space:pre">r &lt; 0 hoặc c &lt; 0</text>
+    <text x="1350" y="184" text-anchor="start" font-size="22" fill="#9B1C1C">→ bỏ qua</text>
+    <rect x="900" y="440" width="800" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="1300" y="477" text-anchor="middle" font-size="22" fill="#373D4E">kiểm tra biên trước, rồi mới đọc grid[r][c]</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="3"><p>Hai vòng <b>di, dj</b> từ −1 đến 1, bỏ (0, 0); kiểm tra <b>r, c trong lưới</b> trước khi đọc grid[r][c].</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Hai mảng luân phiên giữa hai thế hệ</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 460" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Hai mảng luân phiên: next_generation đọc thế hệ hiện tại từ grid, ghi thế hệ sau vào mảng next, chỉ khi xong mọi ô mới chép next sang grid; cập nhật tại chỗ trên một mảng làm ô đếm sau thấy ô đã đổi của thế hệ mới.">
+  <defs>
+    <marker id="hm-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="hm-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="hm-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="hm-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="hm-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="hm-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- đọc từ grid -->
+  <g data-s="1">
+    <rect x="80" y="60" width="520" height="220" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="340" y="143" text-anchor="middle" font-size="28" fill="#6B4E06" font-weight="500">grid</text>
+    <text x="340" y="195" text-anchor="middle" font-size="22" fill="#373D4E">thế hệ hiện tại</text>
+    <text x="340" y="233" text-anchor="middle" font-size="22" fill="#373D4E">chỉ đọc khi đếm láng giềng</text>
+  </g>
+
+  <!-- ghi vào next -->
+  <g data-s="2">
+    <line x1="604" y1="170" x2="896" y2="170" stroke="#1F5FA8" stroke-width="3" marker-end="url(#hm-data)"/>
+    <text x="750" y="154" text-anchor="middle" font-size="22" fill="#1F5FA8">count_neighbors + quy tắc</text>
+    <rect x="900" y="60" width="520" height="220" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="1160" y="143" text-anchor="middle" font-size="28" fill="#22603F" font-weight="500">next</text>
+    <text x="1160" y="195" text-anchor="middle" font-size="22" fill="#373D4E">thế hệ sau</text>
+    <text x="1160" y="233" text-anchor="middle" font-size="22" fill="#373D4E">ghi từng ô</text>
+  </g>
+
+  <!-- chép next sang grid -->
+  <g data-s="3">
+    <path d="M1160,282 L1160,330 L340,330 L340,284" fill="none" stroke="#2F855A" stroke-width="3" marker-end="url(#hm-ok)"/>
+    <text x="750" y="360" text-anchor="middle" font-size="23" fill="#22603F">xong mọi ô mới chép: grid[i][j] = next[i][j]</text>
+    <rect x="80" y="390" width="1340" height="60" rx="4" fill="#FBEAEA" stroke="#BC2626" stroke-width="2.5"/>
+    <text x="750" y="427" text-anchor="middle" font-size="22" fill="#373D4E">một mảng, cập nhật tại chỗ: ô sau đếm theo ô trước đã đổi — glider vỡ hình</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p>Đọc thế hệ hiện tại, <b>ghi sang mảng thứ hai</b>, xong cả lưới mới chép lại.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>count_neighbors và glider qua bốn thế hệ</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> count = <span class="hl-n">0</span>;
+<span class="hl-k">for</span> (<span class="hl-k">int</span> di = <span class="hl-n">-1</span>; di &lt;= <span class="hl-n">1</span>; di++)
+    <span class="hl-k">for</span> (<span class="hl-k">int</span> dj = <span class="hl-n">-1</span>; dj &lt;= <span class="hl-n">1</span>; dj++) {
+        <span class="hl-k">int</span> r = i + di, c = j + dj;
+        <span class="hl-k">if</span> (di == <span class="hl-n">0</span> &amp;&amp; dj == <span class="hl-n">0</span>)
+            <span class="hl-k">continue</span>;                          <span class="hl-c">/* the cell itself */</span>
+        <span class="hl-k">if</span> (r &lt; <span class="hl-n">0</span> || r &gt;= <span class="hl-t">ROWS</span> || c &lt; <span class="hl-n">0</span> || c &gt;= <span class="hl-t">COLS</span>)
+            <span class="hl-k">continue</span>;                          <span class="hl-c">/* outside the grid */</span>
+        count += grid[r][c];
+    }
+<span class="hl-k">return</span> count;
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./life glider
+gen 0     gen 1     gen 2     gen 3     gen 4     
+.#......  ........  ........  ........  ........
+..#.....  #.#.....  ..#.....  .#......  ..#.....
+###.....  .##.....  #.#.....  ..##....  ...#....
+........  .#......  .##.....  .##.....  .###....
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........</pre></div><ul class="y-nho"><li data-s="2">Thế hệ 4 giống thế hệ 0, <b>dịch xuống một hàng, sang phải một cột</b></li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S07"><header><h1>next_generation và blinker đổi ngang, dọc</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">int</span> next[<span class="hl-t">ROWS</span>][<span class="hl-t">COLS</span>];
+<span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; i &lt; <span class="hl-t">ROWS</span>; i++)
+    <span class="hl-k">for</span> (<span class="hl-k">int</span> j = <span class="hl-n">0</span>; j &lt; <span class="hl-t">COLS</span>; j++) {
+        <span class="hl-k">int</span> n = <span class="hl-m">count_neighbors</span>(grid, i, j);
+        <span class="hl-k">if</span> (grid[i][j])
+            next[i][j] = (n == <span class="hl-n">2</span> || n == <span class="hl-n">3</span>);   <span class="hl-c">/* survives */</span>
+        <span class="hl-k">else</span>
+            next[i][j] = (n == <span class="hl-n">3</span>);             <span class="hl-c">/* is born */</span>
+    }
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./life blinker
+gen 0     gen 1     gen 2     gen 3     gen 4     
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ....#...  ........  ....#...  ........
+...###..  ....#...  ...###..  ....#...  ...###..
+........  ....#...  ........  ....#...  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........</pre></div><ul class="y-nho"><li data-s="2">Thiết kế từ trên xuống: main → next_generation → count_neighbors</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S08"><header><h1>Glider chạm góc lưới: từ thế hệ 23 thành khối vuông không đổi</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">if</span> (r &lt; <span class="hl-n">0</span> || r &gt;= <span class="hl-t">ROWS</span> || c &lt; <span class="hl-n">0</span> || c &gt;= <span class="hl-t">COLS</span>)
+    <span class="hl-k">continue</span>;                          <span class="hl-c">/* outside the grid */</span>
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./life glider 20
+gen 20    gen 21    gen 22    gen 23    gen 24    
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+......#.  ........  ........  ........  ........
+.......#  .....#.#  .......#  ......##  ......##
+.....###  ......##  ......##  ......##  ......##</pre></div><ul class="y-nho"><li data-s="2">Ô ngoài lưới <b>luôn chết</b>: gần biên, lưới hữu hạn cho kết quả <b>khác</b> lưới vô hạn của Conway</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S09"><header><h1>Cập nhật tại chỗ trên một mảng: glider thành khối vuông</h1></header><main class="bo-cuc-ma"><div class="ma-hang"><pre class="ma"><span class="nhan">C</span><span class="hl-k">void</span> <span class="hl-m">next_generation_in_place</span>(<span class="hl-k">int</span> grid[<span class="hl-t">ROWS</span>][<span class="hl-t">COLS</span>])
+{
+    <span class="hl-k">for</span> (<span class="hl-k">int</span> i = <span class="hl-n">0</span>; i &lt; <span class="hl-t">ROWS</span>; i++)
+        <span class="hl-k">for</span> (<span class="hl-k">int</span> j = <span class="hl-n">0</span>; j &lt; <span class="hl-t">COLS</span>; j++) {
+            <span class="hl-k">int</span> n = <span class="hl-m">count_neighbors</span>(grid, i, j);
+            <span class="hl-k">if</span> (grid[i][j])
+                grid[i][j] = (n == <span class="hl-n">2</span> || n == <span class="hl-n">3</span>);
+            <span class="hl-k">else</span>
+                grid[i][j] = (n == <span class="hl-n">3</span>);
+        }
+}
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>$ ./life inplace
+gen 0     gen 1     gen 2     gen 3     gen 4     
+<span class="noi-bat">.#......  ........  ........  ........  ........</span>
+<span class="noi-bat">..#.....  ..#.....  .##.....  .##.....  .##.....</span>
+###.....  .##.....  .##.....  .##.....  .##.....
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........
+........  ........  ........  ........  ........</pre></div><ul class="y-nho"><li data-s="2">Ô đếm sau thấy ô <b>đã đổi</b> của thế hệ mới: kết quả sai ngay từ thế hệ 1</li><li data-s="3">Luôn đọc thế hệ hiện tại, <b>ghi sang mảng thứ hai</b>; kiểm tra biên trước khi đọc</li></ul></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Một ô đang chết có đúng 3 láng giềng sống. Ở thế hệ sau, ô đó thế nào?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Sống lại, theo quy tắc thứ tư.</div></div><div class=""><span>B</span><div>Vẫn chết, vì ô chết không bao giờ sống lại.</div></div><div class=""><span>C</span><div>Chết, vì chật chội.</div></div><div class=""><span>D</span><div>Tùy vào ô đó ở biên hay không.</div></div></div><div class="giai-thich">Quy tắc thứ tư: ô chết có đúng 3 láng giềng sống thì sống lại; trong next_generation là next[i][j] = (n == 3).</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Một ô đang chết có đúng 3 láng giềng sống. Ở thế hệ sau, ô đó thế nào?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Sống lại, theo quy tắc thứ tư.</div></div><div class=""><span>B</span><div>Vẫn chết, vì ô chết không bao giờ sống lại.</div></div><div class=""><span>C</span><div>Chết, vì chật chội.</div></div><div class=""><span>D</span><div>Tùy vào ô đó ở biên hay không.</div></div></div><div class="giai-thich">Quy tắc thứ tư: ô chết có đúng 3 láng giềng sống thì sống lại; trong next_generation là next[i][j] = (n == 3).</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao cập nhật lưới tại chỗ trên một mảng cho kết quả sai?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì mảng hai chiều không ghi được.</div></div><div class="dung"><span>B</span><div>Vì các ô tính sau đếm láng giềng theo những ô đã đổi sang thế hệ mới, không còn theo thế hệ hiện tại.</div></div><div class=""><span>C</span><div>Vì count_neighbors đọc ngoài lưới.</div></div><div class=""><span>D</span><div>Vì vòng lặp bỏ sót hàng cuối.</div></div></div><div class="giai-thich">Thế hệ sau phải tính từ toàn bộ thế hệ hiện tại; ghi tại chỗ làm ô sau thấy ô trước đã đổi. Kết quả chạy thật: glider thành khối vuông 2 × 2 từ thế hệ 2.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Vì sao cập nhật lưới tại chỗ trên một mảng cho kết quả sai?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Vì mảng hai chiều không ghi được.</div></div><div class="dung"><span>B</span><div>Vì các ô tính sau đếm láng giềng theo những ô đã đổi sang thế hệ mới, không còn theo thế hệ hiện tại.</div></div><div class=""><span>C</span><div>Vì count_neighbors đọc ngoài lưới.</div></div><div class=""><span>D</span><div>Vì vòng lặp bỏ sót hàng cuối.</div></div></div><div class="giai-thich">Thế hệ sau phải tính từ toàn bộ thế hệ hiện tại; ghi tại chỗ làm ô sau thấy ô trước đã đổi. Kết quả chạy thật: glider thành khối vuông 2 × 2 từ thế hệ 2.</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div><b>Game of Life</b> trên <b>ma trận</b>: bốn quy tắc theo số <b>ô láng giềng</b> sống</div></div><div class="the" data-s="2"><span class="so">2</span><div>Hai vòng di, dj đếm tám láng giềng; <b>kiểm tra biên</b> trước khi đọc</div></div><div class="the" data-s="3"><span class="so">3</span><div>Đọc thế hệ hiện tại, ghi sang mảng thứ hai; cập nhật tại chỗ cho kết quả sai</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>ma trận</span><span>ô láng giềng</span><span>kiểm tra biên</span><span>Game of Life</span></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Lưới hình xuyến: ô biên lấy láng giềng ở biên đối diện bằng phép chia lấy dư</li><li>Game of Life là máy tính vạn năng: các mẫu cổng logic</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Thêm vào life.c chế độ đọc trạng thái ban đầu từ đầu vào chuẩn (các dòng gồm . và #) và chế độ lưới hình xuyến; thử với mẫu Gosper glider gun trên lưới 40 × 40.</p></div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi</div></main><footer><span>Chương 6 · Các cấu trúc dữ liệu cơ bản với C</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Một lưới ô vuông là một mảng hai chiều, và Game of Life của Conway chạy trên chính một lưới như vậy. Viết trò chơi đó bằng C, dùng mảng hai chiều thế nào cho đúng?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:13</span>
+      <h3>Slide 1. Game of Life: bốn quy tắc, những mẫu tự di chuyển</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Lưới ô, mỗi ô **sống** hoặc **chết**; mỗi **thế hệ** tính lại cả lưới theo **bốn quy tắc**</li><li>Mẫu **glider** năm ô tự trượt chéo trên lưới sau mỗi bốn thế hệ</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** đếm láng giềng, xử lý ô ở biên và cập nhật cả lưới cùng lúc bằng mảng hai chiều thế nào?</div></div>
+    <div class="kb-thoai"><p>Game of Life do nhà toán học John Conway nghĩ ra, được Martin Gardner giới thiệu trên tạp chí Scientific American năm 1970. Trò chơi diễn ra trên một lưới ô vuông, mỗi ô sống hoặc chết; mỗi thế hệ, cả lưới được tính lại theo bốn quy tắc đơn giản. Mẫu nổi tiếng nhất là glider, năm ô sống tự trượt chéo trên lưới. Viết chương trình cho nó cần đếm láng giềng của mọi ô, xử lý những ô nằm ở biên lưới, và cập nhật cả lưới cùng lúc. Câu hỏi đặt ra là: làm những việc đó bằng mảng hai chiều thế nào cho đúng?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Gardner (1970).
+Hiện dần: bước 1 khi đọc “Game of Life”; bước 2 khi đọc “Mẫu nổi tiếng nhất”; bước 3 khi đọc “Câu hỏi đặt ra”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:47</span>
+      <h3>Slide 2. Ô láng giềng, thế hệ và kiểm tra biên</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Lưới là mảng hai chiều `int grid[ROWS][COLS]`: 1 là sống, 0 là chết</li><li>**Ô láng giềng** của (i, j): tám ô xung quanh; ô ngoài lưới coi là chết — cần **kiểm tra biên**</li><li>Thế hệ sau tính từ **toàn bộ** thế hệ hiện tại</li></ul></div>
+    <div class="kb-thoai"><p>Lưới được lưu bằng một mảng hai chiều số nguyên, 1 là ô sống, 0 là ô chết. Ô láng giềng của ô ở hàng i, cột j là tám ô xung quanh nó: trên, dưới, trái, phải và bốn góc chéo. Với ô nằm ở biên, một số láng giềng ở ngoài lưới; chương trình coi chúng là ô chết và phải kiểm tra biên trước khi đọc mảng. Điểm tinh tế cuối cùng là mọi ô của thế hệ sau đều tính từ thế hệ hiện tại, cùng một lúc.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt.
+Hiện dần: bước 1 khi đọc “Lưới được lưu”; bước 2 khi đọc “Ô láng giềng”; bước 3 khi đọc “Điểm tinh tế”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:14</span>
+      <h3>Slide 3. Bốn quy tắc cho mỗi ô</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Gộp lại: ô sống tiếp nếu **2 hoặc 3** láng giềng; ô sinh ra nếu **đúng 3**; còn lại là ô chết.</li></ul></div></div>
+    <div class="kb-thoai"><p>Mỗi quy tắc nhìn vào số láng giềng đang sống. Quy tắc thứ nhất: ô sống có ít hơn hai láng giềng thì chết, vì cô đơn. Quy tắc thứ hai: ô sống có hai hoặc ba láng giềng thì sống tiếp. Quy tắc thứ ba: ô sống có hơn ba láng giềng thì chết, vì chật chội. Quy tắc thứ tư: ô chết có đúng ba láng giềng sống thì sống lại. Bốn quy tắc gộp lại thành hai điều kiện, và đó chính là hai dòng gán trong chương trình.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình quy-tac-life: bốn bước theo bốn quy tắc; bước 5 ô kết luận. Ghi nguồn: Gardner (1970).
+Hiện dần: bước 1 khi đọc “Quy tắc thứ nhất”; bước 2 khi đọc “Quy tắc thứ hai”; bước 3 khi đọc “Quy tắc thứ ba”; bước 4 khi đọc “Quy tắc thứ tư”; bước 5 khi đọc “Bốn quy tắc gộp lại”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:44</span>
+      <h3>Slide 4. Tám hướng di, dj và ô ở góc lưới</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Hai vòng **di, dj** từ −1 đến 1, bỏ (0, 0); kiểm tra **r, c trong lưới** trước khi đọc grid[r][c].</li></ul></div></div>
+    <div class="kb-thoai"><p>Để đếm láng giềng mà không viết tám câu lệnh if, mình dùng hai vòng lặp lồng nhau. Tám láng giềng có độ lệch hàng di và độ lệch cột dj chạy từ âm 1 đến 1, bỏ cặp không, không là chính ô đó; hàng của láng giềng là i cộng di, cột là j cộng dj. Với ô ở góc trên trái, năm trong tám láng giềng có hàng hoặc cột âm, nằm ngoài lưới; đọc grid tại đó là vượt giới hạn mảng như ở phần đầu chương. Vì vậy phải kiểm tra hàng và cột nằm trong lưới trước, rồi mới đọc phần tử.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình lang-gieng: bước 1 tám hướng, bước 2 ô ở góc; bước 3 ô kết luận.
+Hiện dần: bước 1 khi đọc “Tám láng giềng”; bước 2 khi đọc “Với ô ở góc”; bước 3 khi đọc “Vì vậy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:16</span>
+      <h3>Slide 5. Hai mảng luân phiên giữa hai thế hệ</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Đọc thế hệ hiện tại, **ghi sang mảng thứ hai**, xong cả lưới mới chép lại.</li></ul></div></div>
+    <div class="kb-thoai"><p>Còn lại là cập nhật cả lưới cùng lúc. Hàm next_generation đọc thế hệ hiện tại từ mảng grid, chỉ đọc, không sửa. Kết quả của từng ô được ghi vào một mảng thứ hai tên là next. Chỉ khi đã tính xong mọi ô, next mới được chép sang grid, trở thành thế hệ hiện tại mới. Cách làm này bảo đảm ô nào cũng đếm láng giềng theo cùng một thế hệ; phần lưu ý sẽ cho thấy điều gì xảy ra nếu bỏ mảng thứ hai.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình hai-mang: ba bước theo ba câu mốc đầu; bước 4 ô kết luận.
+Hiện dần: bước 1 khi đọc “Hàm next_generation”; bước 2 khi đọc “Kết quả của từng ô”; bước 3 khi đọc “Chỉ khi”; bước 4 khi đọc “Cách làm này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:44</span>
+      <h3>Slide 6. count_neighbors và glider qua bốn thế hệ</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Thế hệ 4 giống thế hệ 0, **dịch xuống một hàng, sang phải một cột**</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/life.c</span><pre><code>int count = 0;
+for (int di = -1; di &lt;= 1; di++)
+    for (int dj = -1; dj &lt;= 1; dj++) {
+        int r = i + di, c = j + dj;
+        if (di == 0 &amp;&amp; dj == 0)
+            continue;                          /* the cell itself */
+        if (r &lt; 0 || r &gt;= ROWS || c &lt; 0 || c &gt;= COLS)
+            continue;                          /* outside the grid */
+        count += grid[r][c];
+    }
+return count;</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm count_neighbors viết đúng hình vừa rồi: hai vòng di, dj, bỏ chính ô đó, bỏ ô ngoài lưới, cộng các ô còn lại. Chương trình life in năm thế hệ cạnh nhau trên lưới tám nhân tám. Kết quả với glider: hình dạng thay đổi qua các thế hệ 1, 2, 3. Các bạn so thế hệ 4 với thế hệ 0: cùng hình dạng, nhưng dịch xuống một hàng và sang phải một cột. Glider cứ thế trượt chéo cho đến khi chạm biên lưới.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới. Khai báo hàm và phần in lưới nằm trong src/life.c. Kết quả chạy ngày 13/11/2026.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Các bạn so”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:20</span>
+      <h3>Slide 7. next_generation và blinker đổi ngang, dọc</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Thiết kế từ trên xuống: main → next_generation → count_neighbors</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/life.c</span><pre><code>int next[ROWS][COLS];
+for (int i = 0; i &lt; ROWS; i++)
+    for (int j = 0; j &lt; COLS; j++) {
+        int n = count_neighbors(grid, i, j);
+        if (grid[i][j])
+            next[i][j] = (n == 2 || n == 3);   /* survives */
+        else
+            next[i][j] = (n == 3);             /* is born */
+    }</code></pre></div></div>
+    <div class="kb-thoai"><p>Hàm next_generation có hai dòng gán ứng với bốn quy tắc: ô sống thì sống tiếp khi n bằng 2 hoặc 3, ô chết thì sinh ra khi n bằng 3. Biểu thức so sánh cho 1 hoặc 0, đúng giá trị cần ghi vào ô. Kết quả với blinker, ba ô thẳng hàng: thế hệ 1 xoay thành hàng dọc, thế hệ 2 trở lại hàng ngang, cứ thế đổi qua lại. Chương trình được chia theo thiết kế từ trên xuống của Chương 5: main gọi next_generation, next_generation gọi count_neighbors, mỗi hàm một việc.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới.
+Hiện dần: bước 1 khi đọc “Kết quả với blinker”; bước 2 khi đọc “Chương trình được chia”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:59</span>
+      <h3>Slide 8. Glider chạm góc lưới: từ thế hệ 23 thành khối vuông không đổi</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Ô ngoài lưới **luôn chết**: gần biên, lưới hữu hạn cho kết quả **khác** lưới vô hạn của Conway</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/life.c</span><pre><code>if (r &lt; 0 || r &gt;= ROWS || c &lt; 0 || c &gt;= COLS)
+    continue;                          /* outside the grid */</code></pre></div></div>
+    <div class="kb-thoai"><p>Trên lưới tám nhân tám, glider không trượt mãi được. Mình cho chương trình chạy trước hai mươi thế hệ rồi mới vẽ, bằng đối số thứ hai trên dòng lệnh. Ở thế hệ 20, glider đã chạm góc dưới bên phải. Các bạn đoán xem tiếp theo nó sẽ biến mất, đi xuyên qua biên, hay dừng lại. Kết quả: từ thế hệ 23, bốn ô sống tạo thành một khối vuông hai nhân hai, không đổi qua mọi thế hệ sau. Mỗi ô của khối có đúng ba láng giềng nên sống tiếp, còn không ô chết nào xung quanh có đủ ba láng giềng để sinh ra. Nguyên nhân nằm ở dòng kiểm tra biên trên slide: ô ngoài lưới luôn bị coi là chết, nên glider mất phần láng giềng mà lưới vô hạn của Conway vẫn có. Lưới hình xuyến ở phần Mở rộng là một cách khác để xử lý biên.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dòng kiểm tra biên của count_neighbors phía trên, kết quả phía dưới; sau câu &quot;hay dừng lại&quot;, dừng khoảng 2 giây. Đối số thứ hai của life là số thế hệ chạy trước khi vẽ (./life glider 20). Kết quả chạy ngày 14/11/2026.
+Hiện dần: bước 1 khi đọc “Trên lưới tám nhân tám”; bước 2 khi đọc “Kết quả: từ thế hệ 23”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:54</span>
+      <h3>Slide 9. Cập nhật tại chỗ trên một mảng: glider thành khối vuông</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Ô đếm sau thấy ô **đã đổi** của thế hệ mới: kết quả sai ngay từ thế hệ 1</li><li>Luôn đọc thế hệ hiện tại, **ghi sang mảng thứ hai**; kiểm tra biên trước khi đọc</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">src/life.c</span><pre><code>void next_generation_in_place(int grid[ROWS][COLS])
+{
+    for (int i = 0; i &lt; ROWS; i++)
+        for (int j = 0; j &lt; COLS; j++) {
+            int n = count_neighbors(grid, i, j);
+            if (grid[i][j])
+                grid[i][j] = (n == 2 || n == 3);
+            else
+                grid[i][j] = (n == 3);
+        }
+}</code></pre></div></div>
+    <div class="kb-thoai"><p>Bản này bỏ mảng next và ghi thẳng vào grid, trông đơn giản hơn và tiết kiệm bộ nhớ. Kết quả: glider sai ngay từ thế hệ 1, và từ thế hệ 2 thành một khối vuông hai nhân hai, không đổi qua các thế hệ sau. Khác với lúc chạm góc lưới, khối vuông này nằm ngay chỗ glider xuất phát: nguyên nhân là cách cập nhật, không phải biên. Lý do là khi đếm láng giềng cho một ô, các ô đứng trước nó đã mang giá trị của thế hệ mới, nên mỗi ô đếm theo một hỗn hợp hai thế hệ. Lời khuyên của phần là luôn đọc từ thế hệ hiện tại, ghi sang mảng thứ hai, và kiểm tra biên trước khi đọc ô láng giềng.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả phía dưới; tô hai hàng có khối vuông; hai ý hiện lần lượt. Chạy bằng ./life inplace.
+Hiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Lý do là”; bước 3 khi đọc “Lời khuyên”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:39</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Áp quy tắc thứ tư cho một ô đang chết.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Một ô đang chết có đúng 3 láng giềng sống. Ở thế hệ sau, ô đó thế nào?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Sống lại, theo quy tắc thứ tư.</li>
+      <li><b>B.</b> Vẫn chết, vì ô chết không bao giờ sống lại.</li>
+      <li><b>C.</b> Chết, vì chật chội.</li>
+      <li><b>D.</b> Tùy vào ô đó ở biên hay không.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: A</b> — <span>Quy tắc thứ tư: ô chết có đúng 3 láng giềng sống thì sống lại; trong next_generation là next[i][j] = (n == 3).</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là A. Phương án C nhầm với quy tắc thứ ba, vốn chỉ áp dụng cho ô đang sống có hơn ba láng giềng.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:56</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Câu tiếp theo hỏi lại lý do của mảng thứ hai.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Vì sao cập nhật lưới tại chỗ trên một mảng cho kết quả sai?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Vì mảng hai chiều không ghi được.</li>
+      <li><b>B.</b> Vì các ô tính sau đếm láng giềng theo những ô đã đổi sang thế hệ mới, không còn theo thế hệ hiện tại.</li>
+      <li><b>C.</b> Vì count_neighbors đọc ngoài lưới.</li>
+      <li><b>D.</b> Vì vòng lặp bỏ sót hàng cuối.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: B</b> — <span>Thế hệ sau phải tính từ toàn bộ thế hệ hiện tại; ghi tại chỗ làm ô sau thấy ô trước đã đổi. Kết quả chạy thật: glider thành khối vuông 2 × 2 từ thế hệ 2.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là B. Phương án C là một lỗi khác, đã được chặn bằng kiểm tra biên; bản tại chỗ sai ngay cả khi không ô nào ở biên.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:14</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Game of Life** trên **ma trận**: bốn quy tắc theo số **ô láng giềng** sống</li><li>Hai vòng di, dj đếm tám láng giềng; **kiểm tra biên** trước khi đọc</li><li>Đọc thế hệ hiện tại, ghi sang mảng thứ hai; cập nhật tại chỗ cho kết quả sai</li></ul></div>
+    <div class="kb-thoai"><p>Lưới là một ma trận, mỗi ô tính theo số ô láng giềng đang sống. Đếm láng giềng bằng hai vòng di, dj, có kiểm tra biên trước khi đọc. Và cập nhật cả lưới cùng lúc bằng hai mảng: đọc thế hệ hiện tại, ghi thế hệ sau sang mảng thứ hai. Các từ khóa của phần là ma trận, ô láng giềng, kiểm tra biên và Game of Life.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Lưới là một ma trận”; bước 2 khi đọc “Đếm láng giềng”; bước 3 khi đọc “Và cập nhật”; bước 4 khi đọc “Các từ khóa của phần”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-13" data-index="13">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:36</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(13)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(13, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Phần này mở ra hai chủ đề nâng cao: lưới hình xuyến, nơi ô ở biên lấy láng giềng ở biên đối diện bằng phép chia lấy dư; và Game of Life là một máy tính vạn năng, với các mẫu đóng vai cổng logic. Bài tập mở rộng là cho life.c đọc trạng thái ban đầu từ đầu vào chuẩn, gồm các dòng dấu chấm và dấu thăng, thêm chế độ lưới hình xuyến, rồi thử với mẫu Gosper glider gun trên lưới bốn mươi nhân bốn mươi.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “Phần này mở ra”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-14" data-index="14">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:59</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(14)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(14, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Mảng của các phần vừa qua chứa số. Văn bản như họ tên, địa chỉ cũng là mảng, mảng ký tự, nhưng có một quy ước riêng để biết nó kết thúc ở đâu. Phần tiếp theo mở nhóm chuỗi ký tự.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V35", "tieu_de": "Bài toán ứng dụng: Game of Life trên ma trận", "giong": "vi-VN-NamMinhNeural", "tong": 433.66, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/56ecf4823d6febf0.mp3", "dur": 12.46, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Một", 1], [2.237, "lưới", 1], [2.462, "ô", 1], [2.65, "vuông", 1], [2.987, "là", 1], [3.112, "một", 1], [3.3, "mảng", 1], [3.538, "hai", 1], [3.712, "chiều,", 1], [4.25, "và", 1], [4.475, "Game", 1], [4.812, "of", 1], [4.963, "Life", 1], [5.188, "của", 1], [5.35, "Conway", 1], [5.775, "chạy", 1], [6.013, "trên", 1], [6.225, "chính", 1], [6.438, "một", 1], [6.575, "lưới", 1], [6.787, "như", 1], [6.963, "vậy.", 1], [8.113, "Viết", 2], [8.412, "trò", 2], [8.625, "chơi", 2], [8.85, "đó", 2], [9.062, "bằng", 2], [9.262, "C,", 2], [9.875, "dùng", 2], [10.15, "mảng", 2], [10.375, "hai", 2], [10.562, "chiều", 2], [10.8, "thế", 2], [10.938, "nào", 2], [11.15, "cho", 2], [11.287, "đúng?", 2]], "cues": [], "lang": 0.6}, {"ten": "Slide 1. Game of Life: bốn quy tắc, những mẫu tự di chuyển", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối. Ghi nguồn: Gardner (1970).\nHiện dần: bước 1 khi đọc “Game of Life”; bước 2 khi đọc “Mẫu nổi tiếng nhất”; bước 3 khi đọc “Câu hỏi đặt ra”.", "start": 13.06, "audio": "audio/683a99d5f5cd80c1.mp3", "dur": 33.46, "words": [[0.1, "Game", 0], [0.525, "of", 0], [0.713, "Life", 0], [0.963, "do", 0], [1.113, "nhà", 0], [1.288, "toán", 0], [1.525, "học", 0], [1.7, "John", 0], [1.975, "Conway", 0], [2.35, "nghĩ", 0], [2.575, "ra,", 0], [3.075, "được", 0], [3.312, "Martin", 0], [3.725, "Gardner", 0], [4.125, "giới", 0], [4.312, "thiệu", 0], [4.537, "trên", 0], [4.725, "tạp", 0], [4.95, "chí", 0], [5.175, "Scientific", 0], [5.963, "American", 0], [6.938, "năm", 0], [7.912, "1970.", 0], [8.887, "Trò", 1], [9.188, "chơi", 1], [9.4, "diễn", 1], [9.625, "ra", 1], [9.812, "trên", 1], [9.988, "một", 1], [10.162, "lưới", 1], [10.412, "ô", 1], [10.588, "vuông,", 1], [11.125, "mỗi", 1], [11.425, "ô", 1], [11.588, "sống", 1], [11.875, "hoặc", 1], [12.075, "chết;", 1], [12.613, "mỗi", 1], [12.85, "thế", 1], [13.025, "hệ,", 1], [13.537, "cả", 1], [13.675, "lưới", 1], [13.912, "được", 1], [14.1, "tính", 1], [14.338, "lại", 1], [14.525, "theo", 1], [14.688, "bốn", 1], [14.963, "quy", 1], [15.125, "tắc", 1], [15.325, "đơn", 1], [15.525, "giản.", 1], [16.775, "Mẫu", 2], [17.175, "nổi", 2], [17.375, "tiếng", 2], [17.613, "nhất", 2], [17.812, "là", 2], [18.038, "glider,", 2], [18.8, "năm", 2], [19.15, "ô", 2], [19.288, "sống", 2], [19.562, "tự", 2], [19.775, "trượt", 2], [20.012, "chéo", 2], [20.262, "trên", 2], [20.488, "lưới.", 2], [21.663, "Viết", 3], [21.938, "chương", 3], [22.175, "trình", 3], [22.413, "cho", 3], [22.538, "nó", 3], [22.75, "cần", 3], [22.975, "đếm", 3], [23.2, "láng", 3], [23.413, "giềng", 3], [23.625, "của", 3], [23.738, "mọi", 3], [23.975, "ô,", 3], [24.438, "xử", 3], [24.65, "lý", 3], [24.875, "những", 3], [25.15, "ô", 3], [25.3, "nằm", 3], [25.562, "ở", 3], [25.637, "biên", 3], [25.863, "lưới,", 3], [26.413, "và", 3], [26.6, "cập", 3], [26.812, "nhật", 3], [27.012, "cả", 3], [27.163, "lưới", 3], [27.363, "cùng", 3], [27.6, "lúc.", 3], [28.65, "Câu", 4], [28.85, "hỏi", 4], [29.087, "đặt", 4], [29.275, "ra", 4], [29.462, "là:", 4], [29.95, "làm", 4], [30.238, "những", 4], [30.45, "việc", 4], [30.613, "đó", 4], [30.85, "bằng", 4], [31.075, "mảng", 4], [31.3, "hai", 4], [31.5, "chiều", 4], [31.762, "thế", 4], [31.9, "nào", 4], [32.125, "cho", 4], [32.288, "đúng?", 4]], "cues": [0.1, 16.775, 28.65], "lang": 0.6}, {"ten": "Slide 2. Ô láng giềng, thế hệ và kiểm tra biên", "loai": "slide", "slide": "S02", "dung": "Ba ý hiện lần lượt.\nHiện dần: bước 1 khi đọc “Lưới được lưu”; bước 2 khi đọc “Ô láng giềng”; bước 3 khi đọc “Điểm tinh tế”.", "start": 47.12, "audio": "audio/758ed28694612a2b.mp3", "dur": 26.57, "words": [[0.1, "Lưới", 0], [0.425, "được", 0], [0.6, "lưu", 0], [0.838, "bằng", 0], [1.05, "một", 0], [1.212, "mảng", 0], [1.462, "hai", 0], [1.663, "chiều", 0], [1.925, "số", 0], [2.138, "nguyên,", 0], [2.763, "1", 0], [3.038, "là", 0], [3.275, "ô", 0], [3.438, "sống,", 0], [4.0, "0", 0], [4.287, "là", 0], [4.475, "ô", 0], [4.638, "chết.", 0], [5.775, "Ô", 1], [5.987, "láng", 1], [6.225, "giềng", 1], [6.438, "của", 1], [6.65, "ô", 1], [6.875, "ở", 1], [7.013, "hàng", 1], [7.3, "i,", 1], [7.75, "cột", 1], [7.963, "j", 1], [8.175, "là", 1], [8.3, "tám", 1], [8.65, "ô", 1], [8.738, "xung", 1], [8.963, "quanh", 1], [9.15, "nó:", 1], [9.713, "trên,", 1], [10.287, "dưới,", 1], [10.95, "trái,", 1], [11.6, "phải", 1], [11.938, "và", 1], [12.088, "bốn", 1], [12.35, "góc", 1], [12.525, "chéo.", 1], [13.738, "Với", 2], [14.062, "ô", 2], [14.262, "nằm", 2], [14.537, "ở", 2], [14.625, "biên,", 2], [15.137, "một", 2], [15.338, "số", 2], [15.537, "láng", 2], [15.762, "giềng", 2], [16.0, "ở", 2], [16.075, "ngoài", 2], [16.325, "lưới;", 2], [16.863, "chương", 2], [17.137, "trình", 2], [17.35, "coi", 2], [17.538, "chúng", 2], [17.775, "là", 2], [17.913, "ô", 2], [18.075, "chết", 2], [18.363, "và", 2], [18.525, "phải", 2], [18.688, "kiểm", 2], [18.95, "tra", 2], [19.1, "biên", 2], [19.337, "trước", 2], [19.512, "khi", 2], [19.65, "đọc", 2], [19.825, "mảng.", 2], [21.05, "Điểm", 3], [21.337, "tinh", 3], [21.525, "tế", 3], [21.738, "cuối", 3], [21.95, "cùng", 3], [22.25, "là", 3], [22.375, "mọi", 3], [22.6, "ô", 3], [22.775, "của", 3], [22.913, "thế", 3], [23.062, "hệ", 3], [23.275, "sau", 3], [23.5, "đều", 3], [23.625, "tính", 3], [23.875, "từ", 3], [24.012, "thế", 3], [24.163, "hệ", 3], [24.337, "hiện", 3], [24.55, "tại,", 3], [25.075, "cùng", 3], [25.312, "một", 3], [25.5, "lúc.", 3]], "cues": [0.1, 5.775, 21.05], "lang": 0.6}, {"ten": "Slide 3. Bốn quy tắc cho mỗi ô", "loai": "slide", "slide": "S03", "dung": "Hình quy-tac-life: bốn bước theo bốn quy tắc; bước 5 ô kết luận. Ghi nguồn: Gardner (1970).\nHiện dần: bước 1 khi đọc “Quy tắc thứ nhất”; bước 2 khi đọc “Quy tắc thứ hai”; bước 3 khi đọc “Quy tắc thứ ba”; bước 4 khi đọc “Quy tắc thứ tư”; bước 5 khi đọc “Bốn quy tắc gộp lại”.", "start": 74.29, "audio": "audio/91cceb2808ecb5e6.mp3", "dur": 27.31, "words": [[0.1, "Mỗi", 0], [0.5, "quy", 0], [0.7, "tắc", 0], [0.912, "nhìn", 0], [1.188, "vào", 0], [1.363, "số", 0], [1.562, "láng", 0], [1.812, "giềng", 0], [2.05, "đang", 0], [2.237, "sống.", 0], [3.462, "Quy", 1], [3.65, "tắc", 1], [3.85, "thứ", 1], [4.037, "nhất:", 1], [4.487, "ô", 1], [4.65, "sống", 1], [4.938, "có", 1], [5.075, "ít", 1], [5.25, "hơn", 1], [5.575, "hai", 1], [5.763, "láng", 1], [6.0, "giềng", 1], [6.225, "thì", 1], [6.388, "chết,", 1], [6.875, "vì", 1], [7.138, "cô", 1], [7.362, "đơn.", 1], [8.512, "Quy", 2], [8.7, "tắc", 2], [8.887, "thứ", 2], [9.075, "hai:", 2], [9.6, "ô", 2], [9.762, "sống", 2], [10.062, "có", 2], [10.188, "hai", 2], [10.438, "hoặc", 2], [10.637, "ba", 2], [10.825, "láng", 2], [11.062, "giềng", 2], [11.3, "thì", 2], [11.463, "sống", 2], [11.688, "tiếp.", 2], [12.762, "Quy", 3], [12.95, "tắc", 3], [13.15, "thứ", 3], [13.338, "ba:", 3], [13.863, "ô", 3], [14.025, "sống", 3], [14.325, "có", 3], [14.45, "hơn", 3], [14.713, "ba", 3], [14.912, "láng", 3], [15.15, "giềng", 3], [15.363, "thì", 3], [15.525, "chết,", 3], [16.025, "vì", 3], [16.275, "chật", 3], [16.5, "chội.", 3], [17.7, "Quy", 4], [17.887, "tắc", 4], [18.075, "thứ", 4], [18.25, "tư:", 4], [18.788, "ô", 4], [18.975, "chết", 4], [19.25, "có", 4], [19.375, "đúng", 4], [19.6, "ba", 4], [19.812, "láng", 4], [20.062, "giềng", 4], [20.25, "sống", 4], [20.55, "thì", 4], [20.7, "sống", 4], [20.925, "lại.", 4], [22.087, "Bốn", 5], [22.4, "quy", 5], [22.562, "tắc", 5], [22.762, "gộp", 5], [22.975, "lại", 5], [23.15, "thành", 5], [23.375, "hai", 5], [23.538, "điều", 5], [23.675, "kiện,", 5], [24.225, "và", 5], [24.45, "đó", 5], [24.613, "chính", 5], [24.9, "là", 5], [25.05, "hai", 5], [25.262, "dòng", 5], [25.5, "gán", 5], [25.788, "trong", 5], [25.962, "chương", 5], [26.2, "trình.", 5]], "cues": [3.462, 8.512, 12.762, 17.7, 22.087], "lang": 2.6}, {"ten": "Slide 4. Tám hướng di, dj và ô ở góc lưới", "loai": "slide", "slide": "S04", "dung": "Hình lang-gieng: bước 1 tám hướng, bước 2 ô ở góc; bước 3 ô kết luận.\nHiện dần: bước 1 khi đọc “Tám láng giềng”; bước 2 khi đọc “Với ô ở góc”; bước 3 khi đọc “Vì vậy”.", "start": 104.2, "audio": "audio/9c94ac38e6ab4438.mp3", "dur": 29.64, "words": [[0.1, "Để", 0], [0.338, "đếm", 0], [0.588, "láng", 0], [0.812, "giềng", 0], [1.075, "mà", 0], [1.2, "không", 0], [1.438, "viết", 0], [1.625, "tám", 0], [1.913, "câu", 0], [2.1, "lệnh", 0], [2.362, "if,", 0], [2.788, "mình", 0], [3.025, "dùng", 0], [3.237, "hai", 0], [3.425, "vòng", 0], [3.638, "lặp", 0], [3.837, "lồng", 0], [4.025, "nhau.", 0], [5.175, "Tám", 1], [5.463, "láng", 1], [5.662, "giềng", 1], [5.875, "có", 1], [5.987, "độ", 1], [6.138, "lệch", 1], [6.325, "hàng", 1], [6.55, "di", 1], [6.775, "và", 1], [6.888, "độ", 1], [7.05, "lệch", 1], [7.25, "cột", 1], [7.463, "dj", 1], [7.838, "chạy", 1], [8.1, "từ", 1], [8.312, "âm", 1], [8.512, "1", 1], [8.662, "đến", 1], [8.875, "1,", 1], [9.35, "bỏ", 1], [9.6, "cặp", 1], [9.812, "không,", 1], [10.275, "không", 1], [10.537, "là", 1], [10.65, "chính", 1], [10.912, "ô", 1], [11.037, "đó;", 1], [11.6, "hàng", 1], [11.85, "của", 1], [11.95, "láng", 1], [12.15, "giềng", 1], [12.387, "là", 1], [12.6, "i", 1], [12.738, "cộng", 1], [12.975, "di,", 1], [13.475, "cột", 1], [13.7, "là", 1], [13.863, "j", 1], [14.05, "cộng", 1], [14.3, "dj.", 1], [15.575, "Với", 2], [15.887, "ô", 2], [16.137, "ở", 2], [16.262, "góc", 2], [16.475, "trên", 2], [16.738, "trái,", 2], [17.288, "năm", 2], [17.587, "trong", 2], [17.8, "tám", 2], [18.038, "láng", 2], [18.25, "giềng", 2], [18.462, "có", 2], [18.6, "hàng", 2], [18.837, "hoặc", 2], [19.038, "cột", 2], [19.275, "âm,", 2], [19.75, "nằm", 2], [19.988, "ngoài", 2], [20.225, "lưới;", 2], [20.8, "đọc", 2], [21.038, "grid", 2], [21.438, "tại", 2], [21.613, "đó", 2], [21.812, "là", 2], [21.925, "vượt", 2], [22.113, "giới", 2], [22.3, "hạn", 2], [22.525, "mảng", 2], [22.788, "như", 2], [23.0, "ở", 2], [23.113, "phần", 2], [23.325, "đầu", 2], [23.488, "chương.", 2], [24.7, "Vì", 3], [24.95, "vậy", 3], [25.163, "phải", 3], [25.325, "kiểm", 3], [25.575, "tra", 3], [25.762, "hàng", 3], [26.038, "và", 3], [26.15, "cột", 3], [26.413, "nằm", 3], [26.65, "trong", 3], [26.85, "lưới", 3], [27.025, "trước,", 3], [27.512, "rồi", 3], [27.8, "mới", 3], [28.012, "đọc", 3], [28.175, "phần", 3], [28.4, "tử.", 3]], "cues": [5.175, 15.575, 24.7], "lang": 2.6}, {"ten": "Slide 5. Hai mảng luân phiên giữa hai thế hệ", "loai": "slide", "slide": "S05", "dung": "Hình hai-mang: ba bước theo ba câu mốc đầu; bước 4 ô kết luận.\nHiện dần: bước 1 khi đọc “Hàm next_generation”; bước 2 khi đọc “Kết quả của từng ô”; bước 3 khi đọc “Chỉ khi”; bước 4 khi đọc “Cách làm này”.", "start": 136.44, "audio": "audio/c0bb4093042a015c.mp3", "dur": 25.78, "words": [[0.1, "Còn", 0], [0.412, "lại", 0], [0.662, "là", 0], [0.775, "cập", 0], [1.0, "nhật", 0], [1.212, "cả", 0], [1.387, "lưới", 0], [1.613, "cùng", 0], [1.85, "lúc.", 0], [2.9, "Hàm", 1], [3.175, "next_generation", 1], [4.312, "đọc", 1], [4.537, "thế", 1], [4.675, "hệ", 1], [4.862, "hiện", 1], [5.112, "tại", 1], [5.287, "từ", 1], [5.475, "mảng", 1], [5.763, "grid,", 1], [6.375, "chỉ", 1], [6.625, "đọc,", 1], [7.075, "không", 1], [7.312, "sửa.", 1], [8.6, "Kết", 2], [8.838, "quả", 2], [9.1, "của", 2], [9.25, "từng", 2], [9.512, "ô", 2], [9.725, "được", 2], [9.912, "ghi", 2], [10.1, "vào", 2], [10.213, "một", 2], [10.412, "mảng", 2], [10.662, "thứ", 2], [10.887, "hai", 2], [11.1, "tên", 2], [11.375, "là", 2], [11.537, "next.", 2], [12.625, "Chỉ", 3], [12.85, "khi", 3], [13.05, "đã", 3], [13.175, "tính", 3], [13.412, "xong", 3], [13.625, "mọi", 3], [13.838, "ô,", 3], [14.325, "next", 3], [14.575, "mới", 3], [14.825, "được", 3], [14.975, "chép", 3], [15.175, "sang", 3], [15.475, "grid,", 3], [16.075, "trở", 3], [16.238, "thành", 3], [16.45, "thế", 3], [16.625, "hệ", 3], [16.825, "hiện", 3], [17.062, "tại", 3], [17.262, "mới.", 3], [18.462, "Cách", 4], [18.663, "làm", 4], [18.863, "này", 4], [19.05, "bảo", 4], [19.262, "đảm", 4], [19.488, "ô", 4], [19.625, "nào", 4], [19.887, "cũng", 4], [20.075, "đếm", 4], [20.262, "láng", 4], [20.488, "giềng", 4], [20.712, "theo", 4], [20.863, "cùng", 4], [21.062, "một", 4], [21.212, "thế", 4], [21.35, "hệ;", 4], [21.887, "phần", 4], [22.113, "lưu", 4], [22.312, "ý", 4], [22.55, "sẽ", 4], [22.7, "cho", 4], [22.825, "thấy", 4], [23.025, "điều", 4], [23.188, "gì", 4], [23.4, "xảy", 4], [23.625, "ra", 4], [23.825, "nếu", 4], [24.0, "bỏ", 4], [24.188, "mảng", 4], [24.45, "thứ", 4], [24.6, "hai.", 4]], "cues": [2.9, 8.6, 12.625, 18.462], "lang": 2.6}, {"ten": "Slide 6. count_neighbors và glider qua bốn thế hệ", "loai": "slide", "slide": "S06", "dung": "Mã phía trên, kết quả phía dưới. Khai báo hàm và phần in lưới nằm trong src/life.c. Kết quả chạy ngày 13/11/2026.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Các bạn so”.", "start": 164.82, "audio": "audio/730ff753fd57c8d1.mp3", "dur": 26.33, "words": [[0.1, "Hàm", 0], [0.412, "count_neighbors", 0], [1.025, "viết", 0], [1.225, "đúng", 0], [1.425, "hình", 0], [1.6, "vừa", 0], [1.775, "rồi:", 0], [2.263, "hai", 0], [2.462, "vòng", 0], [2.688, "di,", 0], [3.237, "dj,", 0], [3.987, "bỏ", 0], [4.237, "chính", 0], [4.513, "ô", 0], [4.662, "đó,", 0], [5.188, "bỏ", 0], [5.463, "ô", 0], [5.638, "ngoài", 0], [5.938, "lưới,", 0], [6.475, "cộng", 0], [6.737, "các", 0], [6.95, "ô", 0], [7.075, "còn", 0], [7.325, "lại.", 0], [8.488, "Chương", 1], [8.812, "trình", 1], [9.025, "life", 1], [9.262, "in", 1], [9.412, "năm", 1], [9.625, "thế", 1], [9.8, "hệ", 1], [9.963, "cạnh", 1], [10.2, "nhau", 1], [10.45, "trên", 1], [10.675, "lưới", 1], [10.85, "tám", 1], [11.125, "nhân", 1], [11.312, "tám.", 1], [12.512, "Kết", 2], [12.725, "quả", 2], [12.963, "với", 2], [13.1, "glider:", 2], [13.812, "hình", 2], [14.012, "dạng", 2], [14.25, "thay", 2], [14.387, "đổi", 2], [14.575, "qua", 2], [14.812, "các", 2], [15.0, "thế", 2], [15.137, "hệ", 2], [15.3, "1,", 2], [15.787, "2,", 2], [16.375, "3.", 2], [16.675, "Các", 3], [16.887, "bạn", 3], [17.1, "so", 3], [17.275, "thế", 3], [17.425, "hệ", 3], [17.587, "4", 3], [17.875, "với", 3], [18.0, "thế", 3], [18.163, "hệ", 3], [18.325, "0:", 3], [18.85, "cùng", 3], [19.05, "hình", 3], [19.225, "dạng,", 3], [19.762, "nhưng", 3], [20.05, "dịch", 3], [20.212, "xuống", 3], [20.425, "một", 3], [20.575, "hàng", 3], [20.825, "và", 3], [20.962, "sang", 3], [21.262, "phải", 3], [21.4, "một", 3], [21.6, "cột.", 3], [22.688, "Glider", 4], [23.175, "cứ", 4], [23.387, "thế", 4], [23.6, "trượt", 4], [23.837, "chéo", 4], [24.125, "cho", 4], [24.275, "đến", 4], [24.475, "khi", 4], [24.65, "chạm", 4], [24.962, "biên", 4], [25.15, "lưới.", 4]], "cues": [12.512, 16.675], "lang": 9.6}, {"ten": "Slide 7. next_generation và blinker đổi ngang, dọc", "loai": "slide", "slide": "S07", "dung": "Mã phía trên, kết quả phía dưới.\nHiện dần: bước 1 khi đọc “Kết quả với blinker”; bước 2 khi đọc “Chương trình được chia”.", "start": 200.75, "audio": "audio/94fbaed7094404d7.mp3", "dur": 28.73, "words": [[0.1, "Hàm", 0], [0.375, "next_generation", 0], [1.25, "có", 0], [1.387, "hai", 0], [1.587, "dòng", 0], [1.812, "gán", 0], [2.087, "ứng", 0], [2.275, "với", 0], [2.375, "bốn", 0], [2.638, "quy", 0], [2.812, "tắc:", 0], [3.275, "ô", 0], [3.438, "sống", 0], [3.75, "thì", 0], [3.9, "sống", 0], [4.125, "tiếp", 0], [4.3, "khi", 0], [4.537, "n", 0], [4.975, "bằng", 0], [5.213, "2", 0], [5.412, "hoặc", 0], [5.588, "3,", 0], [6.062, "ô", 0], [6.237, "chết", 0], [6.5, "thì", 0], [6.65, "sinh", 0], [6.9, "ra", 0], [7.037, "khi", 0], [7.263, "n", 0], [7.662, "bằng", 0], [7.888, "3.", 0], [9.012, "Biểu", 1], [9.287, "thức", 1], [9.488, "so", 1], [9.7, "sánh", 1], [9.988, "cho", 1], [10.088, "1", 1], [10.275, "hoặc", 1], [10.463, "0,", 1], [10.975, "đúng", 1], [11.238, "giá", 1], [11.4, "trị", 1], [11.613, "cần", 1], [11.85, "ghi", 1], [12.037, "vào", 1], [12.238, "ô.", 1], [12.412, "Kết", 2], [12.85, "quả", 2], [13.1, "với", 2], [13.238, "blinker,", 2], [14.075, "ba", 2], [14.35, "ô", 2], [14.537, "thẳng", 2], [14.775, "hàng:", 2], [15.262, "thế", 2], [15.438, "hệ", 2], [15.613, "1", 2], [15.8, "xoay", 2], [15.988, "thành", 2], [16.163, "hàng", 2], [16.337, "dọc,", 2], [16.775, "thế", 2], [16.95, "hệ", 2], [17.137, "2", 2], [17.337, "trở", 2], [17.525, "lại", 2], [17.7, "hàng", 2], [17.9, "ngang,", 2], [18.375, "cứ", 2], [18.587, "thế", 2], [18.762, "đổi", 2], [18.962, "qua", 2], [19.188, "lại.", 2], [20.363, "Chương", 3], [20.688, "trình", 3], [20.863, "được", 3], [21.0, "chia", 3], [21.2, "theo", 3], [21.35, "thiết", 3], [21.538, "kế", 3], [21.762, "từ", 3], [21.962, "trên", 3], [22.163, "xuống", 3], [22.425, "của", 3], [22.562, "Chương", 3], [22.812, "5:", 3], [23.275, "main", 3], [23.55, "gọi", 3], [23.8, "next_generation,", 3], [24.85, "next_generation", 3], [25.925, "gọi", 3], [26.163, "count_neighbors,", 3], [27.012, "mỗi", 3], [27.275, "hàm", 3], [27.5, "một", 3], [27.663, "việc.", 3]], "cues": [12.412, 20.363], "lang": 9.6}, {"ten": "Slide 8. Glider chạm góc lưới: từ thế hệ 23 thành khối vuông không đổi", "loai": "slide", "slide": "S08", "dung": "Dòng kiểm tra biên của count_neighbors phía trên, kết quả phía dưới; sau câu \"hay dừng lại\", dừng khoảng 2 giây. Đối số thứ hai của life là số thế hệ chạy trước khi vẽ (./life glider 20). Kết quả chạy ngày 14/11/2026.\nHiện dần: bước 1 khi đọc “Trên lưới tám nhân tám”; bước 2 khi đọc “Kết quả: từ thế hệ 23”.", "start": 239.08, "audio": "audio/dd4e2c33d17ff4bf.mp3", "dur": 45.77, "words": [[0.1, "Trên", 0], [0.487, "lưới", 0], [0.688, "tám", 0], [0.975, "nhân", 0], [1.175, "tám,", 0], [1.738, "glider", 0], [2.237, "không", 0], [2.487, "trượt", 0], [2.688, "mãi", 0], [2.913, "được.", 0], [4.0, "Mình", 1], [4.4, "cho", 1], [4.525, "chương", 1], [4.737, "trình", 1], [4.938, "chạy", 1], [5.15, "trước", 1], [5.35, "hai", 1], [5.513, "mươi", 1], [5.638, "thế", 1], [5.8, "hệ", 1], [6.025, "rồi", 1], [6.225, "mới", 1], [6.45, "vẽ,", 1], [7.062, "bằng", 1], [7.312, "đối", 1], [7.475, "số", 1], [7.7, "thứ", 1], [7.875, "hai", 1], [8.1, "trên", 1], [8.325, "dòng", 1], [8.525, "lệnh.", 1], [9.662, "Ở", 2], [9.85, "thế", 2], [10.012, "hệ", 2], [10.213, "20,", 2], [10.912, "glider", 2], [11.425, "đã", 2], [11.562, "chạm", 2], [11.875, "góc", 2], [12.088, "dưới", 2], [12.3, "bên", 2], [12.512, "phải.", 2], [13.775, "Các", 3], [13.975, "bạn", 3], [14.175, "đoán", 3], [14.387, "xem", 3], [14.65, "tiếp", 3], [14.9, "theo", 3], [15.075, "nó", 3], [15.3, "sẽ", 3], [15.463, "biến", 3], [15.688, "mất,", 3], [16.175, "đi", 3], [16.425, "xuyên", 3], [16.7, "qua", 3], [16.875, "biên,", 3], [17.363, "hay", 3], [17.538, "dừng", 3], [17.762, "lại.", 3], [18.962, "Kết", 4], [19.175, "quả:", 4], [19.762, "từ", 4], [19.925, "thế", 4], [20.1, "hệ", 4], [20.312, "23,", 4], [21.113, "bốn", 4], [21.45, "ô", 4], [21.587, "sống", 4], [21.837, "tạo", 4], [22.062, "thành", 4], [22.275, "một", 4], [22.45, "khối", 4], [22.688, "vuông", 4], [22.887, "hai", 4], [23.062, "nhân", 4], [23.25, "hai,", 4], [23.788, "không", 4], [24.025, "đổi", 4], [24.212, "qua", 4], [24.425, "mọi", 4], [24.65, "thế", 4], [24.825, "hệ", 4], [25.0, "sau.", 4], [26.175, "Mỗi", 5], [26.613, "ô", 5], [26.812, "của", 5], [26.962, "khối", 5], [27.225, "có", 5], [27.363, "đúng", 5], [27.575, "ba", 5], [27.775, "láng", 5], [28.012, "giềng", 5], [28.225, "nên", 5], [28.4, "sống", 5], [28.637, "tiếp,", 5], [29.113, "còn", 5], [29.325, "không", 5], [29.55, "ô", 5], [29.663, "chết", 5], [29.887, "nào", 5], [30.075, "xung", 5], [30.288, "quanh", 5], [30.525, "có", 5], [30.637, "đủ", 5], [30.825, "ba", 5], [31.025, "láng", 5], [31.262, "giềng", 5], [31.512, "để", 5], [31.625, "sinh", 5], [31.85, "ra.", 5], [32.962, "Nguyên", 6], [33.212, "nhân", 6], [33.5, "nằm", 6], [33.725, "ở", 6], [33.8, "dòng", 6], [34.038, "kiểm", 6], [34.275, "tra", 6], [34.425, "biên", 6], [34.663, "trên", 6], [34.85, "slide:", 6], [35.513, "ô", 6], [35.725, "ngoài", 6], [35.987, "lưới", 6], [36.163, "luôn", 6], [36.3, "bị", 6], [36.425, "coi", 6], [36.65, "là", 6], [36.763, "chết,", 6], [37.312, "nên", 6], [37.612, "glider", 6], [37.95, "mất", 6], [38.125, "phần", 6], [38.35, "láng", 6], [38.575, "giềng", 6], [38.85, "mà", 6], [39.013, "lưới", 6], [39.2, "vô", 6], [39.375, "hạn", 6], [39.625, "của", 6], [39.763, "Conway", 6], [40.188, "vẫn", 6], [40.388, "có.", 6], [41.587, "Lưới", 7], [41.888, "hình", 7], [42.062, "xuyến", 7], [42.4, "ở", 7], [42.487, "phần", 7], [42.725, "Mở", 7], [42.925, "rộng", 7], [43.225, "là", 7], [43.388, "một", 7], [43.6, "cách", 7], [43.737, "khác", 7], [44.013, "để", 7], [44.175, "xử", 7], [44.388, "lý", 7], [44.587, "biên.", 7]], "cues": [0.1, 18.962], "lang": 9.6}, {"ten": "Slide 9. Cập nhật tại chỗ trên một mảng: glider thành khối vuông", "loai": "slide", "slide": "S09", "dung": "Mã phía trên, kết quả phía dưới; tô hai hàng có khối vuông; hai ý hiện lần lượt. Chạy bằng ./life inplace.\nHiện dần: bước 1 khi đọc “Kết quả”; bước 2 khi đọc “Lý do là”; bước 3 khi đọc “Lời khuyên”.", "start": 294.45, "audio": "audio/a246e83eca4423d7.mp3", "dur": 35.57, "words": [[0.1, "Bản", 0], [0.4, "này", 0], [0.588, "bỏ", 0], [0.8, "mảng", 0], [1.05, "next", 0], [1.275, "và", 0], [1.438, "ghi", 0], [1.613, "thẳng", 0], [1.887, "vào", 0], [2.025, "grid,", 0], [2.638, "trông", 0], [2.913, "đơn", 0], [3.112, "giản", 0], [3.362, "hơn", 0], [3.638, "và", 0], [3.775, "tiết", 0], [4.0, "kiệm", 0], [4.237, "bộ", 0], [4.425, "nhớ.", 0], [5.65, "Kết", 1], [5.862, "quả:", 1], [6.475, "glider", 1], [6.95, "sai", 1], [7.188, "ngay", 1], [7.362, "từ", 1], [7.55, "thế", 1], [7.713, "hệ", 1], [7.888, "1,", 1], [8.338, "và", 1], [8.537, "từ", 1], [8.7, "thế", 1], [8.863, "hệ", 1], [9.075, "2", 1], [9.25, "thành", 1], [9.45, "một", 1], [9.625, "khối", 1], [9.85, "vuông", 1], [10.037, "hai", 1], [10.213, "nhân", 1], [10.4, "hai,", 1], [10.938, "không", 1], [11.175, "đổi", 1], [11.375, "qua", 1], [11.6, "các", 1], [11.787, "thế", 1], [11.925, "hệ", 1], [12.1, "sau.", 1], [13.275, "Khác", 2], [13.575, "với", 2], [13.725, "lúc", 2], [13.9, "chạm", 2], [14.175, "góc", 2], [14.338, "lưới,", 2], [14.863, "khối", 2], [15.088, "vuông", 2], [15.275, "này", 2], [15.488, "nằm", 2], [15.7, "ngay", 2], [15.912, "chỗ", 2], [16.125, "glider", 2], [16.512, "xuất", 2], [16.688, "phát:", 2], [17.25, "nguyên", 2], [17.462, "nhân", 2], [17.712, "là", 2], [17.825, "cách", 2], [18.025, "cập", 2], [18.212, "nhật,", 2], [18.6, "không", 2], [18.837, "phải", 2], [19.025, "biên.", 2], [20.2, "Lý", 3], [20.538, "do", 3], [20.75, "là", 3], [20.863, "khi", 3], [21.062, "đếm", 3], [21.275, "láng", 3], [21.488, "giềng", 3], [21.712, "cho", 3], [21.825, "một", 3], [22.1, "ô,", 3], [22.538, "các", 3], [22.788, "ô", 3], [22.925, "đứng", 3], [23.137, "trước", 3], [23.337, "nó", 3], [23.538, "đã", 3], [23.65, "mang", 3], [23.887, "giá", 3], [24.062, "trị", 3], [24.3, "của", 3], [24.425, "thế", 3], [24.587, "hệ", 3], [24.75, "mới,", 3], [25.35, "nên", 3], [25.613, "mỗi", 3], [25.837, "ô", 3], [26.025, "đếm", 3], [26.238, "theo", 3], [26.387, "một", 3], [26.55, "hỗn", 3], [26.75, "hợp", 3], [26.962, "hai", 3], [27.163, "thế", 3], [27.325, "hệ.", 3], [28.475, "Lời", 4], [28.788, "khuyên", 4], [29.038, "của", 4], [29.163, "phần", 4], [29.488, "là", 4], [29.663, "luôn", 4], [29.863, "đọc", 4], [30.05, "từ", 4], [30.225, "thế", 4], [30.387, "hệ", 4], [30.562, "hiện", 4], [30.775, "tại,", 4], [31.325, "ghi", 4], [31.562, "sang", 4], [31.825, "mảng", 4], [32.038, "thứ", 4], [32.188, "hai,", 4], [32.7, "và", 4], [32.913, "kiểm", 4], [33.163, "tra", 4], [33.288, "biên", 4], [33.538, "trước", 4], [33.7, "khi", 4], [33.85, "đọc", 4], [34.075, "ô", 4], [34.188, "láng", 4], [34.438, "giềng.", 4]], "cues": [5.65, 20.2, 28.475], "lang": 9.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: tô xanh đáp án A, các đáp án còn lại mờ đi.", "start": 339.62, "audio": "audio/bebb46faca86fd5a.mp3", "dur": 2.98, "words": [[0.1, "Áp", 0], [0.312, "quy", 0], [0.487, "tắc", 0], [0.7, "thứ", 0], [0.875, "tư", 0], [1.113, "cho", 0], [1.262, "một", 0], [1.55, "ô", 0], [1.675, "đang", 0], [1.875, "chết.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/6a04fe667cd951b7.mp3", "dur2": 7.1, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.662, "là", 0], [0.85, "A.", 0], [1.212, "Phương", 1], [1.587, "án", 1], [1.762, "C", 1], [1.975, "nhầm", 1], [2.275, "với", 1], [2.4, "quy", 1], [2.575, "tắc", 1], [2.763, "thứ", 1], [2.925, "ba,", 1], [3.413, "vốn", 1], [3.688, "chỉ", 1], [3.888, "áp", 1], [4.062, "dụng", 1], [4.338, "cho", 1], [4.513, "ô", 1], [4.713, "đang", 1], [4.888, "sống", 1], [5.162, "có", 1], [5.287, "hơn", 1], [5.562, "ba", 1], [5.763, "láng", 1], [5.987, "giềng.", 1]], "dap_an": "A", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án B.", "start": 356.3, "audio": "audio/8bb5b789fff85633.mp3", "dur": 3.34, "words": [[0.1, "Câu", 0], [0.362, "tiếp", 0], [0.613, "theo", 0], [0.775, "hỏi", 0], [1.0, "lại", 0], [1.188, "lý", 0], [1.387, "do", 0], [1.625, "của", 0], [1.775, "mảng", 0], [2.013, "thứ", 0], [2.163, "hai.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/cbf22c0c0c7ff5d6.mp3", "dur2": 8.02, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.675, "là", 0], [0.787, "B.", 0], [1.137, "Phương", 1], [1.475, "án", 1], [1.65, "C", 1], [1.913, "là", 1], [2.013, "một", 1], [2.2, "lỗi", 1], [2.4, "khác,", 1], [2.888, "đã", 1], [3.05, "được", 1], [3.25, "chặn", 1], [3.513, "bằng", 1], [3.712, "kiểm", 1], [3.938, "tra", 1], [4.088, "biên;", 1], [4.6, "bản", 1], [4.862, "tại", 1], [5.013, "chỗ", 1], [5.225, "sai", 1], [5.487, "ngay", 1], [5.662, "cả", 1], [5.85, "khi", 1], [6.05, "không", 1], [6.287, "ô", 1], [6.438, "nào", 1], [6.7, "ở", 1], [6.825, "biên.", 1]], "dap_an": "B", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Lưới là một ma trận”; bước 2 khi đọc “Đếm láng giềng”; bước 3 khi đọc “Và cập nhật”; bước 4 khi đọc “Các từ khóa của phần”.", "start": 374.26, "audio": "audio/4601c6ae58769d74.mp3", "dur": 21.19, "words": [[0.1, "Lưới", 0], [0.412, "là", 0], [0.512, "một", 0], [0.713, "ma", 0], [0.875, "trận,", 0], [1.413, "mỗi", 0], [1.675, "ô", 0], [1.837, "tính", 0], [2.087, "theo", 0], [2.237, "số", 0], [2.525, "ô", 0], [2.725, "láng", 0], [2.975, "giềng", 0], [3.212, "đang", 0], [3.4, "sống.", 0], [4.625, "Đếm", 1], [4.95, "láng", 1], [5.175, "giềng", 1], [5.412, "bằng", 1], [5.638, "hai", 1], [5.825, "vòng", 1], [6.025, "di,", 1], [6.6, "dj,", 1], [7.338, "có", 1], [7.475, "kiểm", 1], [7.725, "tra", 1], [7.888, "biên", 1], [8.125, "trước", 1], [8.312, "khi", 1], [8.463, "đọc.", 1], [9.525, "Và", 2], [9.787, "cập", 2], [10.0, "nhật", 2], [10.225, "cả", 2], [10.363, "lưới", 2], [10.588, "cùng", 2], [10.838, "lúc", 2], [11.012, "bằng", 2], [11.238, "hai", 2], [11.412, "mảng:", 2], [12.012, "đọc", 2], [12.238, "thế", 2], [12.4, "hệ", 2], [12.575, "hiện", 2], [12.787, "tại,", 2], [13.338, "ghi", 2], [13.562, "thế", 2], [13.713, "hệ", 2], [13.9, "sau", 2], [14.1, "sang", 2], [14.338, "mảng", 2], [14.55, "thứ", 2], [14.713, "hai.", 2], [15.863, "Các", 3], [16.062, "từ", 3], [16.2, "khóa", 3], [16.462, "của", 3], [16.6, "phần", 3], [16.875, "là", 3], [17.038, "ma", 3], [17.25, "trận,", 3], [17.812, "ô", 3], [17.988, "láng", 3], [18.238, "giềng,", 3], [18.725, "kiểm", 3], [18.962, "tra", 3], [19.125, "biên", 3], [19.4, "và", 3], [19.562, "Game", 3], [19.875, "of", 3], [20.05, "Life.", 3]], "cues": [0.1, 4.625, 9.525, 15.863], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “Phần này mở ra”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 396.05, "audio": "audio/19a0a210e28b1df7.mp3", "dur": 23.21, "words": [[0.1, "Phần", 0], [0.338, "này", 0], [0.525, "mở", 0], [0.738, "ra", 0], [0.875, "hai", 0], [1.05, "chủ", 0], [1.275, "đề", 0], [1.425, "nâng", 0], [1.637, "cao:", 0], [2.163, "lưới", 0], [2.413, "hình", 0], [2.587, "xuyến,", 0], [3.138, "nơi", 0], [3.438, "ô", 0], [3.737, "ở", 0], [3.875, "biên", 0], [4.125, "lấy", 0], [4.3, "láng", 0], [4.513, "giềng", 0], [4.787, "ở", 0], [4.862, "biên", 0], [5.088, "đối", 0], [5.25, "diện", 0], [5.513, "bằng", 0], [5.7, "phép", 0], [5.938, "chia", 0], [6.138, "lấy", 0], [6.325, "dư;", 0], [6.875, "và", 0], [7.112, "Game", 0], [7.463, "of", 0], [7.625, "Life", 0], [7.888, "là", 0], [7.975, "một", 0], [8.162, "máy", 0], [8.3, "tính", 0], [8.525, "vạn", 0], [8.713, "năng,", 0], [9.15, "với", 0], [9.35, "các", 0], [9.537, "mẫu", 0], [9.738, "đóng", 0], [9.963, "vai", 0], [10.125, "cổng", 0], [10.387, "logic.", 0], [11.65, "Bài", 1], [11.887, "tập", 1], [12.088, "mở", 1], [12.275, "rộng", 1], [12.55, "là", 1], [12.7, "cho", 1], [12.875, "life.c", 1], [13.363, "đọc", 1], [13.537, "trạng", 1], [13.762, "thái", 1], [13.938, "ban", 1], [14.162, "đầu", 1], [14.35, "từ", 1], [14.525, "đầu", 1], [14.7, "vào", 1], [14.838, "chuẩn,", 1], [15.4, "gồm", 1], [15.675, "các", 1], [15.838, "dòng", 1], [16.075, "dấu", 1], [16.275, "chấm", 1], [16.587, "và", 1], [16.712, "dấu", 1], [16.925, "thăng,", 1], [17.45, "thêm", 1], [17.675, "chế", 1], [17.887, "độ", 1], [18.075, "lưới", 1], [18.262, "hình", 1], [18.438, "xuyến,", 1], [18.975, "rồi", 1], [19.188, "thử", 1], [19.425, "với", 1], [19.538, "mẫu", 1], [19.762, "Gosper", 1], [20.15, "glider", 1], [20.575, "gun", 1], [20.875, "trên", 1], [21.05, "lưới", 1], [21.262, "bốn", 1], [21.512, "mươi", 1], [21.587, "nhân", 1], [21.863, "bốn", 1], [22.075, "mươi.", 1]], "cues": [0.1, 11.65], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 419.86, "audio": "audio/f89dea9d13f7323f.mp3", "dur": 13.2, "words": [[0.1, "Mảng", 0], [0.588, "của", 0], [0.775, "các", 0], [0.912, "phần", 0], [1.2, "vừa", 0], [1.387, "qua", 0], [1.637, "chứa", 0], [1.863, "số.", 0], [3.125, "Văn", 1], [3.425, "bản", 1], [3.675, "như", 1], [3.837, "họ", 1], [4.0, "tên,", 1], [4.537, "địa", 1], [4.775, "chỉ", 1], [4.987, "cũng", 1], [5.175, "là", 1], [5.287, "mảng,", 1], [5.85, "mảng", 1], [6.125, "ký", 1], [6.325, "tự,", 1], [6.888, "nhưng", 1], [7.175, "có", 1], [7.275, "một", 1], [7.475, "quy", 1], [7.662, "ước", 1], [7.85, "riêng", 1], [8.137, "để", 1], [8.25, "biết", 1], [8.475, "nó", 1], [8.637, "kết", 1], [8.838, "thúc", 1], [9.05, "ở", 1], [9.175, "đâu.", 1], [10.3, "Phần", 2], [10.6, "tiếp", 2], [10.85, "theo", 2], [11.05, "mở", 2], [11.25, "nhóm", 2], [11.588, "chuỗi", 2], [11.787, "ký", 2], [12.012, "tự.", 2]], "cues": [], "lang": 0.6}], "video_sau": "Chuỗi ký tự: mảng char và ký tự kết thúc chuỗi"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

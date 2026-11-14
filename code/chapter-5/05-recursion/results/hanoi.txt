@@ -1,0 +1,13 @@
+$ ./hanoi 3
+move disk 1 from A to C
+move disk 2 from A to B
+move disk 1 from C to B
+move disk 3 from A to C
+move disk 1 from B to A
+move disk 2 from B to C
+move disk 1 from A to C
+n = 3: 7 moves
+$ ./hanoi 10
+n = 10: 1023 moves
+$ ./hanoi 20
+n = 20: 1048575 moves

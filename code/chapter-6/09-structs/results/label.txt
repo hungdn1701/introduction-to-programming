@@ -1,0 +1,6 @@
+$ ./label
+a: "Start" at (10, 20)
+b: "Stop" at (300, 20)
+$ gcc -std=c17 -Wall -Wextra array_assign.c -o array_assign
+array_assign.c: In function 'main':
+array_assign.c:8:7: error: assignment to expression with array type

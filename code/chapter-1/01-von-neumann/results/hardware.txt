@@ -1,0 +1,5 @@
+CPU     : Intel(R) Core(TM) i5-8400H CPU @ 2.50GHz, 4 cores, 8 logical processors
+RAM     : 15.5 GB
+Storage : INTEL SSDPEKKF256G8L (238 GB); PVC10 SK hynix 1024GB (954 GB)
+Input   : Standard PS/2 Keyboard
+Output  : Intel(R) UHD Graphics 630, 1920 x 1080

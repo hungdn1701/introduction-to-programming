@@ -1,0 +1,440 @@
+<!doctype html><html lang="vi"><head><meta name="robots" content="noindex, nofollow"><style>.ban-nhap{position:sticky;top:0;z-index:99;background:#BC2626;color:#fff;font:500 14px/1.4 Roboto,Arial,sans-serif;padding:6px 16px;text-align:center}.ban-nhap .ngan{display:none}@media (max-width:640px){.ban-nhap{position:static;font-size:12px;padding:4px 12px}.ban-nhap .dai{display:none}.ban-nhap .ngan{display:inline}}</style><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V02 — Phần cứng: phân loại máy tính và kiến trúc von Neumann · xem trước</title>
+<link rel="stylesheet" href="../assets/slide.css"><link rel="stylesheet" href="../assets/player.css"></head>
+<body class="trinh-chieu"><div class="ban-nhap"><b>BẢN NHÁP</b><span class="dai"> — đang biên soạn, chưa nghiệm thu. Giọng đọc là giọng máy (TTS) để xem thử, không phải giọng sản phẩm.</span><span class="ngan"> · chưa nghiệm thu · giọng máy (TTS)</span></div>
+<header class="dau"><a href="../index.html">← Tổng quan INT11117</a> · <a href="slides.pdf">Slide PDF</a> · <a href="https://github.com/hungdn1701/introduction-to-programming/tree/main/code/chapter-1/01-von-neumann">Mã</a>
+<h1>V02 · Phần cứng: phân loại máy tính và kiến trúc von Neumann</h1>
+<span class="nhan-noi-bo">Bản xem trước nội bộ · giọng TTS vi-VN-NamMinhNeural (không phải giọng sản phẩm)</span></header>
+<div class="bo-cuc">
+  <div class="cot-chinh">
+    <div class="khung-169"><div id="stage"><section class="slide tieu-de" id="S00"><main class=""><div class="chuong">Nhập môn Tin học và Lập trình · Chương 1</div><div class="ten">Phần cứng: phân loại máy tính và kiến trúc von Neumann</div><div class="gv">TS. Đặng Ngọc Hùng</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="CH"><header><h1>Chương 1: Cơ bản về máy tính</h1></header><main class="bo-cuc-lo-trinh"><div class="lo-trinh" style="--cot: 3"><div class="chang" data-s="1"><div class="ten-chang"><span class="so">1</span>Phần cứng</div><ol><li class="hien-tai"><span>Phân loại máy tính và kiến trúc von Neumann</span></li><li class=""><span>CPU, lệnh máy và chu trình lệnh</span></li><li class=""><span>Phân cấp bộ nhớ và thiết bị vào ra</span></li></ol></div><div class="chang" data-s="2"><div class="ten-chang"><span class="so">2</span>Dữ liệu</div><ol><li class=""><span>Hệ đếm và biểu diễn dữ liệu trong máy tính</span></li></ol></div><div class="chang" data-s="3"><div class="ten-chang"><span class="so">3</span>Hệ điều hành</div><ol><li class=""><span>Tiến trình, bộ nhớ và hệ thống tệp</span></li></ol></div></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S01"><header><h1>Máy tính có nhiều hình dạng, và một máy chạy được nhiều chương trình</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Điện thoại, máy tính xách tay, máy chủ của một trang web, siêu máy tính: <b>khác nhau về hình dạng, giá, công suất</b></li><li data-s="2">Cùng một chiếc máy: soạn văn bản, phát nhạc, chạy chương trình C — <b>không phải đổi phần cứng</b></li></ul><div class="khung" data-s="3"><b>Câu hỏi của phần:</b> các máy tính có chung cách tổ chức nào, và vì sao một máy chạy được nhiều chương trình khác nhau?</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S02"><header><h1>Từ vi điều khiển đến siêu máy tính: một "vườn thú" máy tính</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 460" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Vườn thú máy tính theo Tanenbaum: vi điều khiển, điện thoại, máy tính cá nhân, máy chủ, mainframe, siêu máy tính; từ trái sang phải quy mô, giá và mức tiêu thụ điện tăng dần; mọi loại có chung cách tổ chức CPU, bộ nhớ, vào ra.">
+  <defs>
+    <marker id="vt-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="vt-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="vt-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="vt-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="vt-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="vt-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- sáu loại máy tính -->
+  <g data-s="1">
+    <rect x="20" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="155" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Vi điều khiển</text>
+    <text x="155" y="159" text-anchor="middle" font-size="22" fill="#373D4E">máy giặt, xe máy,</text>
+    <text x="155" y="197" text-anchor="middle" font-size="22" fill="#373D4E">cảm biến</text>
+    <rect x="310" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="445" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Điện thoại</text>
+    <text x="445" y="159" text-anchor="middle" font-size="22" fill="#373D4E">di động, máy tính</text>
+    <text x="445" y="197" text-anchor="middle" font-size="22" fill="#373D4E">bảng</text>
+    <rect x="600" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="735" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Máy tính cá nhân</text>
+    <text x="735" y="159" text-anchor="middle" font-size="22" fill="#373D4E">để bàn,</text>
+    <text x="735" y="197" text-anchor="middle" font-size="22" fill="#373D4E">xách tay</text>
+    <rect x="890" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1025" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Máy chủ</text>
+    <text x="1025" y="159" text-anchor="middle" font-size="22" fill="#373D4E">phục vụ trang web,</text>
+    <text x="1025" y="197" text-anchor="middle" font-size="22" fill="#373D4E">ứng dụng</text>
+    <rect x="1180" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1315" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Mainframe</text>
+    <text x="1315" y="159" text-anchor="middle" font-size="22" fill="#373D4E">ngân hàng,</text>
+    <text x="1315" y="197" text-anchor="middle" font-size="22" fill="#373D4E">hàng không</text>
+    <rect x="1470" y="40" width="270" height="190" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="1605" y="107" text-anchor="middle" font-size="26" fill="#051A53" font-weight="500">Siêu máy tính</text>
+    <text x="1605" y="159" text-anchor="middle" font-size="22" fill="#373D4E">mô phỏng thời tiết,</text>
+    <text x="1605" y="197" text-anchor="middle" font-size="22" fill="#373D4E">huấn luyện AI</text>
+  </g>
+
+  <!-- trục quy mô -->
+  <g data-s="2">
+    <line x1="40" y1="290" x2="1720" y2="290" stroke="#5B6478" stroke-width="3" marker-end="url(#vt-grey)"/>
+    <text x="40" y="335" text-anchor="start" font-size="23" fill="#5B6478">nhỏ, rẻ, ít điện</text>
+    <text x="1720" y="335" text-anchor="end" font-size="23" fill="#5B6478">lớn, đắt, nhiều điện</text>
+  </g>
+
+  <!-- chung một cách tổ chức -->
+  <g data-s="3">
+    <rect x="330" y="365" width="1100" height="76" rx="4" fill="#EEF9F0" stroke="#2F855A" stroke-width="2.5"/>
+    <text x="880" y="411.5" text-anchor="middle" font-size="25" fill="#373D4E">Chung một cách tổ chức: CPU + bộ nhớ chứa chương trình + thiết bị vào ra</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="4"><p>Phân loại theo <b>quy mô và mục đích dùng</b>; mọi loại đều có CPU, bộ nhớ, thiết bị vào ra.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S03"><header><h1>Phần mềm là chương trình nạp vào bộ nhớ, không phải dây nối trong máy</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1"><b>Phần cứng</b> (hardware): các bộ phận vật lý — CPU, bộ nhớ, ổ lưu trữ, bàn phím, màn hình</li><li data-s="2"><b>Phần mềm</b> (software): chương trình và dữ liệu đi kèm, chỉ dẫn phần cứng làm việc</li><li data-s="3"><b>Máy tính lưu trữ chương trình</b> (von Neumann, 1945): chương trình nằm trong bộ nhớ như dữ liệu — đổi chương trình là nạp chương trình khác</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S04"><header><h1>Kiến trúc von Neumann: CPU, bộ nhớ, vào ra nối với nhau qua bus</h1></header><main class="bo-cuc-hinh"><figure><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1760 600" role="img" font-family="Roboto, 'Segoe UI', sans-serif" aria-label="Kiến trúc von Neumann: CPU gồm khối điều khiển, ALU, thanh ghi; bộ nhớ chính chứa cả lệnh lẫn dữ liệu; thiết bị vào ra; bus nối ba khối. Lệnh đi từ bộ nhớ vào CPU, dữ liệu đi hai chiều.">
+  <defs>
+    <marker id="vn-navy" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#051A53"/></marker>
+    <marker id="vn-mem" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#8A6508"/></marker>
+    <marker id="vn-data" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#1F5FA8"/></marker>
+    <marker id="vn-ok" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#2F855A"/></marker>
+    <marker id="vn-err" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#BC2626"/></marker>
+    <marker id="vn-grey" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="18" markerHeight="18" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" fill="#5B6478"/></marker>
+  </defs>
+
+  <!-- CPU -->
+  <g data-s="1">
+    <rect x="40" y="40" width="560" height="330" rx="4" fill="#EEF2FB" stroke="#051A53" stroke-width="2.5"/>
+    <text x="320" y="88" text-anchor="middle" font-size="30" fill="#051A53" font-weight="500">CPU</text>
+    <rect x="80" y="120" width="230" height="100" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="195" y="178" text-anchor="middle" font-size="24" fill="#373D4E" font-weight="500">Khối điều khiển</text>
+    <rect x="330" y="120" width="230" height="100" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="445" y="160.5" text-anchor="middle" font-size="24" fill="#373D4E" font-weight="500">ALU</text>
+    <text x="445" y="211.5" text-anchor="middle" font-size="21" fill="#373D4E">cộng, so sánh</text>
+    <rect x="80" y="245" width="480" height="95" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="320" y="283" text-anchor="middle" font-size="24" fill="#373D4E" font-weight="500">Thanh ghi</text>
+    <text x="320" y="334" text-anchor="middle" font-size="21" fill="#373D4E">PC, IR, thanh ghi tích lũy</text>
+  </g>
+
+  <!-- bộ nhớ chính: lệnh và dữ liệu -->
+  <g data-s="2">
+    <rect x="700" y="40" width="520" height="330" rx="4" fill="#FFF6DD" stroke="#8A6508" stroke-width="2.5"/>
+    <text x="960" y="88" text-anchor="middle" font-size="30" fill="#6B4E06" font-weight="500">Bộ nhớ chính</text>
+    <rect x="740" y="115" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="142.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">00</text>
+    <rect x="830" y="115" width="350" height="40" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="1005" y="142.56" text-anchor="middle" font-size="21" fill="#051A53">lệnh</text>
+    <rect x="740" y="155" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="182.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">01</text>
+    <rect x="830" y="155" width="350" height="40" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="1005" y="182.56" text-anchor="middle" font-size="21" fill="#051A53">lệnh</text>
+    <rect x="740" y="195" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="222.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">02</text>
+    <rect x="830" y="195" width="350" height="40" fill="#EEF2FB" stroke="#051A53" stroke-width="2"/>
+    <text x="1005" y="222.56" text-anchor="middle" font-size="21" fill="#051A53">lệnh</text>
+    <rect x="740" y="235" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="262.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">…</text>
+    <rect x="830" y="235" width="350" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <rect x="740" y="275" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="302.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">98</text>
+    <rect x="830" y="275" width="350" height="40" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1005" y="302.56" text-anchor="middle" font-size="21" fill="#6B4E06">dữ liệu</text>
+    <rect x="740" y="315" width="90" height="40" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2"/>
+    <text x="785" y="342.56" text-anchor="middle" font-size="21" fill="#373D4E" font-family="Consolas, monospace" style="white-space:pre">99</text>
+    <rect x="830" y="315" width="350" height="40" fill="#FFF6DD" stroke="#8A6508" stroke-width="2"/>
+    <text x="1005" y="342.56" text-anchor="middle" font-size="21" fill="#6B4E06">dữ liệu</text>
+  </g>
+
+  <!-- thiết bị vào ra -->
+  <g data-s="3">
+    <rect x="1320" y="40" width="400" height="330" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="1520" y="88" text-anchor="middle" font-size="30" fill="#123A6B" font-weight="500">Thiết bị vào ra</text>
+    <rect x="1360" y="120" width="320" height="62" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1520" y="158" text-anchor="middle" font-size="22" fill="#373D4E">bàn phím, chuột</text>
+    <rect x="1360" y="198" width="320" height="62" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1520" y="236" text-anchor="middle" font-size="22" fill="#373D4E">màn hình, loa</text>
+    <rect x="1360" y="276" width="320" height="62" rx="4" fill="#F4F5F8" stroke="#9AA3B8" stroke-width="2.5"/>
+    <text x="1520" y="314" text-anchor="middle" font-size="22" fill="#373D4E">ổ SSD, card mạng</text>
+  </g>
+
+  <!-- bus -->
+  <g data-s="4">
+    <rect x="40" y="470" width="1680" height="60" rx="4" fill="#EAF2FC" stroke="#1F5FA8" stroke-width="2.5"/>
+    <text x="880" y="510" text-anchor="middle" font-size="25" fill="#123A6B" font-weight="500">Bus: địa chỉ, dữ liệu, tín hiệu điều khiển</text>
+    <line x1="320" y1="372" x2="320" y2="466" stroke="#1F5FA8" stroke-width="3" marker-start="url(#vn-data)" marker-end="url(#vn-data)"/>
+    <line x1="960" y1="372" x2="960" y2="466" stroke="#1F5FA8" stroke-width="3" marker-start="url(#vn-data)" marker-end="url(#vn-data)"/>
+    <line x1="1520" y1="372" x2="1520" y2="466" stroke="#1F5FA8" stroke-width="3" marker-start="url(#vn-data)" marker-end="url(#vn-data)"/>
+    <line x1="700" y1="140" x2="604" y2="140" stroke="#051A53" stroke-width="3" marker-end="url(#vn-navy)"/>
+    <text x="652" y="126" text-anchor="middle" font-size="22" fill="#051A53">lệnh</text>
+    <line x1="604" y1="300" x2="700" y2="300" stroke="#8A6508" stroke-width="3" marker-start="url(#vn-mem)" marker-end="url(#vn-mem)"/>
+    <text x="652" y="286" text-anchor="middle" font-size="22" fill="#6B4E06">dữ liệu</text>
+  </g>
+</svg></figure><div class="ket-luan" data-s="5"><p><b>Bộ nhớ chính chứa cả lệnh lẫn dữ liệu</b>; CPU lấy lệnh từ bộ nhớ qua bus rồi thực hiện.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S05"><header><h1>Trên máy biên soạn, mỗi khối của hình đều có thật</h1></header><main class="bo-cuc-ma"><div class="ma-hang doc"><pre class="ma"><span class="nhan">PowerShell</span>$cpu  = <span class="hl-t">Get-CimInstance</span> <span class="hl-t">Win32_Processor</span>
+$ram  = <span class="hl-t">Get-CimInstance</span> <span class="hl-t">Win32_ComputerSystem</span>
+$disk = <span class="hl-t">Get-CimInstance</span> <span class="hl-t">Win32_DiskDrive</span>
+$kbd  = <span class="hl-t">Get-CimInstance</span> <span class="hl-t">Win32_Keyboard</span> | <span class="hl-t">Select-Object</span> -First 1
+$gpu  = <span class="hl-t">Get-CimInstance</span> <span class="hl-t">Win32_VideoController</span> | <span class="hl-t">Where-Object</span> <span class="hl-t">CurrentHorizontalResolution</span> | <span class="hl-t">Select-Object</span> -First 1
+</pre><pre class="kq" data-s="1"><span class="nhan">Kết quả chạy</span>CPU     : Intel(R) Core(TM) i5-8400H CPU @ 2.50GHz, 4 cores, 8 logical processors
+RAM     : 15.5 GB
+Storage : INTEL SSDPEKKF256G8L (238 GB); PVC10 SK hynix 1024GB (954 GB)
+Input   : Standard PS/2 Keyboard
+Output  : Intel(R) UHD Graphics 630, 1920 x 1080</pre></div><ul class="y-nho"><li data-s="2">CPU 4 nhân, 8 bộ xử lý logic; RAM 15,5 GB; hai ổ lưu trữ; bàn phím và màn hình là thiết bị vào ra</li></ul></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="S06"><header><h1>Lệnh và dữ liệu chung một đường đi: CPU phải chờ bộ nhớ</h1></header><main class="bo-cuc-y"><ul class="y"><li data-s="1">Mỗi lệnh, mỗi dữ liệu CPU cần đều phải <b>đi qua bus từ bộ nhớ</b></li><li data-s="2">CPU tính nhanh hơn bộ nhớ trả dữ liệu nhiều lần: <b>nút cổ chai von Neumann</b></li></ul><div class="khung" data-s="3">Máy tính giảm thời gian chờ bằng <b>phân cấp bộ nhớ</b> — nội dung của phần về phân cấp bộ nhớ và thiết bị vào ra.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q1"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Muốn chiếc máy tính đang soạn văn bản chuyển sang phát nhạc, cần thay đổi gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Thay CPU bằng loại chuyên xử lý âm thanh.</div></div><div class=""><span>B</span><div>Nối lại dây giữa các bộ phận bên trong máy.</div></div><div class="dung"><span>C</span><div>Nạp một chương trình khác vào bộ nhớ chính; phần cứng giữ nguyên.</div></div><div class=""><span>D</span><div>Tăng dung lượng RAM để chứa thêm bài nhạc.</div></div></div><div class="giai-thich">Máy tính lưu trữ chương trình giữ chương trình trong bộ nhớ như dữ liệu, nên đổi việc chỉ là nạp chương trình khác. Nối lại dây là cách của máy tính trước năm 1945. Phần cứng không cần đổi.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q1-dap-an"><header><h1>Câu hỏi 1</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Muốn chiếc máy tính đang soạn văn bản chuyển sang phát nhạc, cần thay đổi gì?</div></div><div class="lua-chon"><div class=""><span>A</span><div>Thay CPU bằng loại chuyên xử lý âm thanh.</div></div><div class=""><span>B</span><div>Nối lại dây giữa các bộ phận bên trong máy.</div></div><div class="dung"><span>C</span><div>Nạp một chương trình khác vào bộ nhớ chính; phần cứng giữ nguyên.</div></div><div class=""><span>D</span><div>Tăng dung lượng RAM để chứa thêm bài nhạc.</div></div></div><div class="giai-thich">Máy tính lưu trữ chương trình giữ chương trình trong bộ nhớ như dữ liệu, nên đổi việc chỉ là nạp chương trình khác. Nối lại dây là cách của máy tính trước năm 1945. Phần cứng không cần đổi.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide" id="Q2"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong kiến trúc von Neumann, các lệnh của chương trình đang chạy nằm ở đâu?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Trong bộ nhớ chính, cùng chỗ với dữ liệu.</div></div><div class=""><span>B</span><div>Trong ALU của CPU.</div></div><div class=""><span>C</span><div>Trong bus nối các khối.</div></div><div class=""><span>D</span><div>Trong thiết bị vào ra, như bàn phím.</div></div></div><div class="giai-thich">Kiến trúc von Neumann đặt cả lệnh lẫn dữ liệu trong bộ nhớ chính. CPU lấy từng lệnh qua bus để thực hiện; ALU chỉ tính toán, bus chỉ truyền.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide cau-hoi-slide show-answer" id="Q2-dap-an"><header><h1>Câu hỏi 2</h1></header><main class="bo-cuc-cau-hoi"><div class="cau-hoi"><div class="de">Trong kiến trúc von Neumann, các lệnh của chương trình đang chạy nằm ở đâu?</div></div><div class="lua-chon"><div class="dung"><span>A</span><div>Trong bộ nhớ chính, cùng chỗ với dữ liệu.</div></div><div class=""><span>B</span><div>Trong ALU của CPU.</div></div><div class=""><span>C</span><div>Trong bus nối các khối.</div></div><div class=""><span>D</span><div>Trong thiết bị vào ra, như bàn phím.</div></div></div><div class="giai-thich">Kiến trúc von Neumann đặt cả lệnh lẫn dữ liệu trong bộ nhớ chính. CPU lấy từng lệnh qua bus để thực hiện; ALU chỉ tính toán, bus chỉ truyền.</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="TK"><header><h1>Tổng kết</h1></header><main class="bo-cuc-tong-ket"><div class="luoi-the"><div class="the" data-s="1"><span class="so">1</span><div>Máy tính được phân loại theo <b>quy mô, mục đích</b>: từ vi điều khiển đến siêu máy tính</div></div><div class="the" data-s="2"><span class="so">2</span><div><b>Kiến trúc von Neumann</b>: CPU, bộ nhớ chính, thiết bị vào ra, nối qua bus</div></div><div class="the" data-s="3"><span class="so">3</span><div><b>Máy tính lưu trữ chương trình</b>: lệnh nằm trong bộ nhớ như dữ liệu, đổi việc là đổi chương trình</div></div></div><div class="tu-khoa" data-s="4"><span class="nhan">Từ khóa cần nhớ</span><span>phần cứng</span><span>phần mềm</span><span>kiến trúc von Neumann</span><span>máy tính lưu trữ chương trình</span><span>CPU</span><span>bộ nhớ chính</span><span>bus</span><span>thiết bị vào ra</span></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide noi-dung" id="MR"><header><h1>Mở rộng</h1></header><main class="bo-cuc-mo-rong"><div class="cot-mr" data-s="1"><div class="nhan-mr">Chủ đề nâng cao</div><ul><li>Kiến trúc Harvard: tách bộ nhớ lệnh và bộ nhớ dữ liệu, dùng trong nhiều vi điều khiển</li><li>Định luật Moore và giới hạn tăng xung nhịp: vì sao CPU ngày nay có nhiều nhân</li></ul></div><div class="cot-mr" data-s="2"><div class="nhan-mr">Bài tập mở rộng</div><p>Lập bảng cấu hình máy tính các bạn đang dùng (CPU, số nhân, RAM, bộ nhớ thứ cấp) bằng công cụ của hệ điều hành; ghi mỗi thành phần thuộc khối nào của kiến trúc von Neumann.</p></div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section>
+<section class="slide tiep-theo" id="KET"><main class=""><div class="nhan-tt">Tiếp theo</div><div class="ten-tt">Phần cứng: CPU, lệnh máy và chu trình lệnh</div></main><footer><span>Chương 1 · Cơ bản về máy tính</span><span>Học viện Công nghệ Bưu chính Viễn thông</span></footer></section></div>
+      <div id="the-gv" hidden>Giảng viên xuất hiện · quay thật, ≤ 20 giây</div>
+      <div id="h5p" hidden><span>Câu hỏi tương tác (H5P): chọn một đáp án trên slide</span><button id="bo-qua">Bỏ qua →</button></div>
+      <button id="bat-dau">▶ Bắt đầu xem</button>
+      <button id="thoat-tm" title="Thoát toàn màn hình (F)">✕</button>
+    </div>
+    <div id="phu-de"></div>
+    <div class="dieu-khien">
+      <button id="lui" title="Phân cảnh trước (←)">⏮</button><button id="chay" title="Chạy/dừng (Space)">▶</button><button id="toi" title="Phân cảnh sau (→)">⏭</button>
+      <div id="thanh"><div id="da-chay"></div></div>
+      <span id="gio">0:00 / 0:00</span>
+      <select id="toc"><option value="0.9">0.9×</option><option value="1" selected>1×</option><option value="1.15">1.15×</option><option value="1.3">1.3×</option></select>
+      <button id="toan-man" title="Toàn màn hình (F)">⛶</button>
+    </div>
+    <details id="dung" open><summary>Lưu ý dựng của phân cảnh</summary><div></div></details>
+  </div>
+  <aside><h2>Phân cảnh</h2><ol id="ds-canh"></ol></aside>
+  <section id="toan-van-kb" class="toan-van-kb">
+  <div class="kb-thanh-cong-cu">
+    <div>
+      <h2>Toàn văn kịch bản &amp; Lời thoại (Transcript)</h2>
+      <p class="kb-huong-dan">Đọc liền mạch toàn bộ nội dung. Bấm <b>▶ Nghe</b> để nhảy tới phân cảnh, hoặc <b>📋 Sao chép</b> để lấy nội dung gửi góp ý.</p>
+    </div>
+    <button type="button" id="btn-copy-toan-bo" class="btn-kb-chinh">📋 Sao chép toàn bộ kịch bản</button>
+  </div>
+  <div class="kb-danh-sach">
+    <article class="canh-kb" id="kb-canh-0" data-index="0">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:00</span>
+      <h3>Lời mở đầu</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(0)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(0, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Chào các bạn. Mình bắt đầu Chương 1, cơ bản về máy tính. Câu hỏi đầu tiên của chương là: những chiếc máy rất khác nhau, từ điện thoại đến siêu máy tính, có chung cách tổ chức nào?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-1" data-index="1">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:13</span>
+      <h3>Giới thiệu chương</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(1)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(1, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Trước khi viết chương trình, các bạn cần biết chương trình chạy trên cái gì. Chương này trả lời câu hỏi đó qua năm phần, chia làm ba nhóm. Nhóm phần cứng có ba phần: phân loại máy tính và kiến trúc von Neumann, rồi CPU, lệnh máy và chu trình lệnh, rồi phân cấp bộ nhớ và thiết bị vào ra. Nhóm dữ liệu có một phần, về hệ đếm và biểu diễn dữ liệu trong máy tính. Nhóm hệ điều hành có một phần, về tiến trình, bộ nhớ và hệ thống tệp.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide lộ trình sinh từ kế hoạch; ba nhóm hiện lần lượt, phần hiện tại được tô nổi.
+Hiện dần: bước 1 khi đọc “Nhóm phần cứng”; bước 2 khi đọc “Nhóm dữ liệu”; bước 3 khi đọc “Nhóm hệ điều hành”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-2" data-index="2">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">0:42</span>
+      <h3>Slide 1. Máy tính có nhiều hình dạng, và một máy chạy được nhiều chương trình</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(2)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(2, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Điện thoại, máy tính xách tay, máy chủ của một trang web, siêu máy tính: **khác nhau về hình dạng, giá, công suất**</li><li>Cùng một chiếc máy: soạn văn bản, phát nhạc, chạy chương trình C — **không phải đổi phần cứng**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> **Câu hỏi của phần:** các máy tính có chung cách tổ chức nào, và vì sao một máy chạy được nhiều chương trình khác nhau?</div></div>
+    <div class="kb-thoai"><p>Quanh các bạn có rất nhiều máy tính: chiếc điện thoại trong túi, máy tính xách tay trên bàn, máy chủ phục vụ trang web của Học viện, và những siêu máy tính dự báo thời tiết. Chúng khác nhau về hình dạng, về giá, về công suất. Điều đáng chú ý hơn là trên cùng một chiếc máy, các bạn soạn văn bản, rồi phát nhạc, rồi chạy chương trình C mình sẽ viết ở các chương sau, mà không phải thay một linh kiện nào. Vì thế, câu hỏi của phần này là: các máy tính có chung cách tổ chức nào, và vì sao một máy chạy được nhiều chương trình khác nhau?</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung câu hỏi hiện cuối và giữ đến hết slide.
+Hiện dần: bước 1 khi đọc “Quanh các bạn có rất nhiều”; bước 2 khi đọc “Điều đáng chú ý hơn”; bước 3 khi đọc “Câu hỏi của phần này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-3" data-index="3">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">1:13</span>
+      <h3>Slide 2. Từ vi điều khiển đến siêu máy tính: một &quot;vườn thú&quot; máy tính</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(3)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(3, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>Phân loại theo **quy mô và mục đích dùng**; mọi loại đều có CPU, bộ nhớ, thiết bị vào ra.</li></ul></div></div>
+    <div class="kb-thoai"><p>Để tìm điểm chung, trước hết mình xem các máy khác nhau đến đâu, theo cách của Tanenbaum trong cuốn sách về tổ chức máy tính: ông xếp các loại máy thành một dãy, gọi là vườn thú máy tính. Ở đầu dãy là vi điều khiển, máy tính nhỏ gắn trong máy giặt, xe máy hay cảm biến. Tiếp theo là điện thoại, máy tính cá nhân, rồi máy chủ phục vụ trang web và ứng dụng. Cuối dãy là máy tính lớn, hay mainframe, của ngân hàng, hãng hàng không, và siêu máy tính dùng để mô phỏng thời tiết hay huấn luyện mô hình AI. Từ trái sang phải, máy càng lớn, càng đắt và càng tốn điện. Khác nhau như vậy, nhưng loại nào cũng có cùng ba khối: CPU, bộ nhớ chứa chương trình, và thiết bị vào ra. Nói cách khác, các loại máy khác nhau về quy mô, còn bên trong thì mọi loại máy cùng một cách tổ chức.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình vuon-thu: bước 1 là sáu loại máy, bước 2 là trục quy mô, bước 3 là ô &quot;chung một cách tổ chức&quot;; bước 4 là ô kết luận. Ghi nguồn trên slide: Tanenbaum &amp; Austin, Structured Computer Organization, §1.3.
+Hiện dần: bước 1 khi đọc “gọi là vườn thú máy tính”; bước 2 khi đọc “Từ trái sang phải”; bước 3 khi đọc “Khác nhau như vậy”; bước 4 khi đọc “Nói cách khác”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-4" data-index="4">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:05</span>
+      <h3>Slide 3. Phần mềm là chương trình nạp vào bộ nhớ, không phải dây nối trong máy</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(4)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(4, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>**Phần cứng** (hardware): các bộ phận vật lý — CPU, bộ nhớ, ổ lưu trữ, bàn phím, màn hình</li><li>**Phần mềm** (software): chương trình và dữ liệu đi kèm, chỉ dẫn phần cứng làm việc</li><li>**Máy tính lưu trữ chương trình** (von Neumann, 1945): chương trình nằm trong bộ nhớ như dữ liệu — đổi chương trình là nạp chương trình khác</li></ul></div>
+    <div class="kb-thoai"><p>Ba khối đó là phần cứng, hay hardware: những bộ phận vật lý của máy, như CPU, bộ nhớ chính, và các thiết bị vào ra gồm ổ lưu trữ, bàn phím, màn hình. Phần mềm thì khác: nó là chương trình và dữ liệu đi kèm, chỉ dẫn phần cứng làm việc gì; tên tiếng Anh là software. Ý tưởng làm nên điều này có từ năm 1945, trong bản báo cáo của von Neumann về máy EDVAC: chương trình được lưu trong bộ nhớ, giống hệt dữ liệu. Máy như vậy gọi là máy tính lưu trữ chương trình, hay stored-program computer. Trước đó, muốn máy làm việc khác, người vận hành phải nối lại dây. Còn với máy tính lưu trữ chương trình, đổi việc chỉ là nạp một chương trình khác vào bộ nhớ. Đây chính là lý do một máy chạy được nhiều chương trình khác nhau.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba ý hiện lần lượt. Ghi nguồn: von Neumann, First Draft of a Report on the EDVAC (1945).
+Hiện dần: bước 1 khi đọc “Ba khối đó là phần cứng”; bước 2 khi đọc “Phần mềm thì khác”; bước 3 khi đọc “Ý tưởng làm nên điều này”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-5" data-index="5">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">2:52</span>
+      <h3>Slide 4. Kiến trúc von Neumann: CPU, bộ nhớ, vào ra nối với nhau qua bus</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(5)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(5, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><div class="kb-slide-kl"><b>Kết luận:</b><ul><li>**Bộ nhớ chính chứa cả lệnh lẫn dữ liệu**; CPU lấy lệnh từ bộ nhớ qua bus rồi thực hiện.</li></ul></div></div>
+    <div class="kb-thoai"><p>Bây giờ mình đi vào bên trong, theo cách tổ chức mà ngày nay gọi là kiến trúc von Neumann. Khối thứ nhất là CPU, bộ xử lý trung tâm. Nó gồm khối điều khiển, khối số học và logic, hay ALU, để tính toán như cộng hay so sánh, và các thanh ghi, những ô nhớ rất nhanh nằm ngay trong CPU. Khối thứ hai là bộ nhớ chính, gồm các ô được đánh số. Các bạn để ý: có ô chứa lệnh của chương trình, có ô chứa dữ liệu, và cả hai nằm trong cùng một bộ nhớ. Khối thứ ba là các thiết bị vào ra, như bàn phím, màn hình, ổ SSD hay card mạng. Ba khối nối với nhau qua bus, một tập đường truyền mang địa chỉ, dữ liệu và tín hiệu điều khiển. Lệnh đi từ bộ nhớ vào CPU, còn dữ liệu đi theo cả hai chiều. Như vậy, chạy một chương trình nghĩa là CPU lần lượt lấy lệnh từ bộ nhớ chính rồi thực hiện.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hình von-neumann: bốn bước của hình theo bốn câu mốc đầu; bước 5 là ô kết luận. Dừng lâu ở các ô &quot;lệnh&quot; và &quot;dữ liệu&quot; cùng nằm trong bộ nhớ chính.
+Hiện dần: bước 1 khi đọc “Khối thứ nhất là CPU”; bước 2 khi đọc “Khối thứ hai là bộ nhớ chính”; bước 3 khi đọc “Khối thứ ba là các thiết bị vào ra”; bước 4 khi đọc “Ba khối nối với nhau qua bus”; bước 5 khi đọc “Như vậy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-6" data-index="6">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">3:48</span>
+      <h3>Slide 5. Trên máy biên soạn, mỗi khối của hình đều có thật</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(6)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(6, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>CPU 4 nhân, 8 bộ xử lý logic; RAM 15,5 GB; hai ổ lưu trữ; bàn phím và màn hình là thiết bị vào ra</li></ul><div class="kb-slide-ma"><span class="kb-ma-tep">run.ps1</span><pre><code>$cpu  = Get-CimInstance Win32_Processor
+$ram  = Get-CimInstance Win32_ComputerSystem
+$disk = Get-CimInstance Win32_DiskDrive
+$kbd  = Get-CimInstance Win32_Keyboard | Select-Object -First 1
+$gpu  = Get-CimInstance Win32_VideoController | Where-Object CurrentHorizontalResolution | Select-Object -First 1</code></pre></div></div>
+    <div class="kb-thoai"><p>Mình kiểm tra ba khối đó trên chính máy biên soạn bài giảng, chạy Windows 11. Hệ điều hành ghi lại thông tin phần cứng, và lệnh Get-CimInstance của PowerShell đọc được thông tin đó: mỗi khối một lớp, như lớp Win32 Processor cho CPU, lớp Win32 VideoController cho card màn hình. Các bạn chưa cần nhớ các lệnh này, chỉ cần đối chiếu kết quả với hình vừa xem. Kết quả cho thấy máy dùng CPU Intel Core i5 thế hệ thứ tám, bốn nhân, tám bộ xử lý logic, và 15,5 GB RAM làm bộ nhớ chính. Thuộc khối vào ra có hai ổ lưu trữ, 238 GB và 954 GB, bàn phím, và card màn hình đang xuất ảnh 1920 nhân 1080. Mỗi khối của kiến trúc von Neumann đều có mặt trên một chiếc máy thật.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Mã phía trên, kết quả chạy phía dưới. Highlight lần lượt bốn dòng Get-CimInstance theo lời đọc. Kết quả chạy ngày 13/11/2026 trên máy biên soạn; máy khác cho kết quả khác. Có thể thay khung kết quả bằng clip replay terminal.
+Hiện dần: bước 1 khi đọc “Mình kiểm tra ba khối đó”; bước 2 khi đọc “Kết quả cho thấy”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-7" data-index="7">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">4:47</span>
+      <h3>Slide 6. Lệnh và dữ liệu chung một đường đi: CPU phải chờ bộ nhớ</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(7)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(7, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Mỗi lệnh, mỗi dữ liệu CPU cần đều phải **đi qua bus từ bộ nhớ**</li><li>CPU tính nhanh hơn bộ nhớ trả dữ liệu nhiều lần: **nút cổ chai von Neumann**</li></ul><div class="kb-slide-khung"><b>Trọng tâm:</b> Máy tính giảm thời gian chờ bằng **phân cấp bộ nhớ** — nội dung của phần về phân cấp bộ nhớ và thiết bị vào ra.</div></div>
+    <div class="kb-thoai"><p>Cách tổ chức này có một giá phải trả. Vì lệnh và dữ liệu nằm chung bộ nhớ, mỗi lệnh và mỗi dữ liệu CPU cần đều phải đi qua bus từ bộ nhớ. Vấn đề là CPU tính nhanh hơn rất nhiều lần so với tốc độ bộ nhớ trả dữ liệu, nên CPU nhanh đến đâu cũng phải chờ. Hiện tượng này được gọi là nút cổ chai von Neumann. Máy tính ngày nay giảm thời gian chờ bằng cách xếp nhiều loại bộ nhớ nhanh chậm khác nhau thành tầng, gọi là phân cấp bộ nhớ. Đó là nội dung của phần về phân cấp bộ nhớ và thiết bị vào ra.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Hai ý hiện lần lượt; khung hiện cuối.
+Hiện dần: bước 1 khi đọc “Cách tổ chức này có một giá phải trả”; bước 2 khi đọc “Vấn đề là CPU”; bước 3 khi đọc “Máy tính ngày nay”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-8" data-index="8">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:19</span>
+      <h3>Câu hỏi tương tác 1</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(8)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(8, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Mình dừng lại với hai câu hỏi, bắt đầu từ một chiếc máy đang soạn văn bản.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Muốn chiếc máy tính đang soạn văn bản chuyển sang phát nhạc, cần thay đổi gì?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Thay CPU bằng loại chuyên xử lý âm thanh.</li>
+      <li><b>B.</b> Nối lại dây giữa các bộ phận bên trong máy.</li>
+      <li><b>C.</b> Nạp một chương trình khác vào bộ nhớ chính; phần cứng giữ nguyên.</li>
+      <li><b>D.</b> Tăng dung lượng RAM để chứa thêm bài nhạc.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: C</b> — <span>Máy tính lưu trữ chương trình giữ chương trình trong bộ nhớ như dữ liệu, nên đổi việc chỉ là nạp chương trình khác. Nối lại dây là cách của máy tính trước năm 1945. Phần cứng không cần đổi.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là C. Phương án B mô tả đúng máy tính trước ý tưởng của von Neumann, nên dễ được chọn khi chưa phân biệt hai thời kỳ. Với máy tính lưu trữ chương trình, đổi việc chỉ là nạp chương trình khác vào bộ nhớ.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: slide câu hỏi với đáp án C tô xanh, các đáp án còn lại mờ đi.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-9" data-index="9">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">5:44</span>
+      <h3>Câu hỏi tương tác 2</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(9)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(9, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai">
+  <p class="kb-thoai-truoc"><em>Tiếp theo, các bạn tìm chỗ của chương trình trong hình kiến trúc.</em></p>
+  <div class="kb-cau-hoi-box">
+    <div class="kb-ch-cau"><b>Câu hỏi:</b> Trong kiến trúc von Neumann, các lệnh của chương trình đang chạy nằm ở đâu?</div>
+    <ul class="kb-ch-lua-chon">
+      <li><b>A.</b> Trong bộ nhớ chính, cùng chỗ với dữ liệu.</li>
+      <li><b>B.</b> Trong ALU của CPU.</li>
+      <li><b>C.</b> Trong bus nối các khối.</li>
+      <li><b>D.</b> Trong thiết bị vào ra, như bàn phím.</li>
+    </ul>
+    <div class="kb-ch-dap-an"><b>Đáp án đúng: A</b> — <span>Kiến trúc von Neumann đặt cả lệnh lẫn dữ liệu trong bộ nhớ chính. CPU lấy từng lệnh qua bus để thực hiện; ALU chỉ tính toán, bus chỉ truyền.</span></div>
+  </div>
+  <p class="kb-thoai-sau">Đáp án là A. Phương án C dễ được chọn vì lệnh có đi qua bus, nhưng bus chỉ là đường truyền. Lệnh nằm trong bộ nhớ chính, cùng chỗ với dữ liệu.</p>
+</div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án A.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-10" data-index="10">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:05</span>
+      <h3>Tổng kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(10)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(10, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    <div class="kb-slide-box"><ul class="kb-slide-y"><li>Máy tính được phân loại theo **quy mô, mục đích**: từ vi điều khiển đến siêu máy tính</li><li>**Kiến trúc von Neumann**: CPU, bộ nhớ chính, thiết bị vào ra, nối qua bus</li><li>**Máy tính lưu trữ chương trình**: lệnh nằm trong bộ nhớ như dữ liệu, đổi việc là đổi chương trình</li></ul></div>
+    <div class="kb-thoai"><p>Trở lại câu hỏi đầu phần, câu trả lời có hai ý. Các máy tính khác nhau về quy mô và mục đích dùng, từ vi điều khiển đến siêu máy tính. Chung một cách tổ chức của chúng là kiến trúc von Neumann: CPU, bộ nhớ chính và thiết bị vào ra, nối với nhau qua bus. Còn một máy chạy được nhiều chương trình là nhờ chương trình nằm trong bộ nhớ như dữ liệu, nên đổi việc chỉ là đổi chương trình. Trên slide là các từ khóa cần nhớ: phần cứng, phần mềm, kiến trúc von Neumann, máy tính lưu trữ chương trình, CPU, bộ nhớ chính, bus và thiết bị vào ra.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.
+Hiện dần: bước 1 khi đọc “Trở lại câu hỏi đầu phần”; bước 2 khi đọc “Chung một cách tổ chức”; bước 3 khi đọc “Còn một máy chạy được”; bước 4 khi đọc “các từ khóa cần nhớ”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-11" data-index="11">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">6:39</span>
+      <h3>Mở rộng</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(11)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(11, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Có hai chủ đề để đọc thêm. Chủ đề thứ nhất là kiến trúc Harvard, tách bộ nhớ lệnh khỏi bộ nhớ dữ liệu, dùng trong nhiều vi điều khiển. Chủ đề thứ hai là định luật Moore và lý do CPU ngày nay tăng số nhân thay vì tăng xung nhịp. Bài tập mở rộng là lập bảng cấu hình chiếc máy các bạn đang dùng, rồi ghi mỗi thành phần thuộc khối nào của kiến trúc von Neumann.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.
+Hiện dần: bước 1 khi đọc “hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.</div>
+  </div>
+</article><article class="canh-kb" id="kb-canh-12" data-index="12">
+  <header class="canh-kb-head">
+    <div class="canh-kb-tieu-de">
+      <span class="canh-tg">7:01</span>
+      <h3>Lời kết</h3>
+    </div>
+    <div class="canh-kb-nut">
+      <button type="button" class="btn-kb-phat" onclick="window.playerNap(12)" title="Chuyển video đến phân cảnh này">▶ Nghe</button>
+      <button type="button" class="btn-kb-copy" onclick="window.copyCanh(12, this)" title="Sao chép lời thoại phân cảnh này">📋 Sao chép</button>
+    </div>
+  </header>
+  <div class="canh-kb-noi-dung">
+    
+    <div class="kb-thoai"><p>Đến đây các bạn đã biết chương trình nằm trong bộ nhớ chính, nhưng chưa biết CPU làm gì với nó. Phần tiếp theo, về CPU, lệnh máy và chu trình lệnh, lần theo từng bước CPU thực hiện một chương trình nhỏ.</p></div>
+    <div class="kb-dung"><b>Lưu ý dựng:</b> Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide &quot;Tiếp theo&quot; (sinh từ kế hoạch).</div>
+  </div>
+</article>
+  </div>
+</section>
+</div>
+<script>const DATA = {"ma": "INT11117_V02", "tieu_de": "Phần cứng: phân loại máy tính và kiến trúc von Neumann", "giong": "vi-VN-NamMinhNeural", "tong": 436.03, "scenes": [{"ten": "Lời mở đầu", "loai": "mo-dau", "slide": "S00", "dung": "Hình giảng viên, tối đa 20 giây, trên nền slide tiêu đề.", "start": 0.0, "audio": "audio/f26b536e58938a8e.mp3", "dur": 12.46, "words": [[0.1, "Chào", 0], [0.4, "các", 0], [0.613, "bạn.", 0], [1.85, "Mình", 1], [2.25, "bắt", 1], [2.413, "đầu", 1], [2.625, "Chương", 1], [2.888, "1,", 1], [3.35, "cơ", 1], [3.538, "bản", 1], [3.837, "về", 1], [4.0, "máy", 1], [4.2, "tính.", 1], [5.4, "Câu", 2], [5.575, "hỏi", 2], [5.763, "đầu", 2], [5.938, "tiên", 2], [6.213, "của", 2], [6.325, "chương", 2], [6.575, "là:", 2], [7.075, "những", 2], [7.312, "chiếc", 2], [7.537, "máy", 2], [7.725, "rất", 2], [7.888, "khác", 2], [8.125, "nhau,", 2], [8.625, "từ", 2], [8.8, "điện", 2], [9.0, "thoại", 2], [9.25, "đến", 2], [9.438, "siêu", 2], [9.637, "máy", 2], [9.825, "tính,", 2], [10.363, "có", 2], [10.525, "chung", 2], [10.75, "cách", 2], [10.925, "tổ", 2], [11.1, "chức", 2], [11.287, "nào?", 2]], "cues": [], "lang": 0.6}, {"ten": "Giới thiệu chương", "loai": "mo-chuong", "slide": "CH", "dung": "Slide lộ trình sinh từ kế hoạch; ba nhóm hiện lần lượt, phần hiện tại được tô nổi.\nHiện dần: bước 1 khi đọc “Nhóm phần cứng”; bước 2 khi đọc “Nhóm dữ liệu”; bước 3 khi đọc “Nhóm hệ điều hành”.", "start": 13.06, "audio": "audio/035895d2f5fdd3ca.mp3", "dur": 28.44, "words": [[0.1, "Trước", 0], [0.362, "khi", 0], [0.512, "viết", 0], [0.713, "chương", 0], [0.938, "trình,", 0], [1.4, "các", 0], [1.587, "bạn", 0], [1.825, "cần", 0], [2.05, "biết", 0], [2.275, "chương", 0], [2.513, "trình", 0], [2.737, "chạy", 0], [2.975, "trên", 0], [3.175, "cái", 0], [3.337, "gì.", 0], [4.475, "Chương", 1], [4.775, "này", 1], [4.963, "trả", 1], [5.125, "lời", 1], [5.312, "câu", 1], [5.5, "hỏi", 1], [5.688, "đó", 1], [5.888, "qua", 1], [6.15, "năm", 1], [6.35, "phần,", 1], [6.838, "chia", 1], [7.162, "làm", 1], [7.412, "ba", 1], [7.638, "nhóm.", 1], [8.85, "Nhóm", 2], [9.2, "phần", 2], [9.425, "cứng", 2], [9.675, "có", 2], [9.775, "ba", 2], [9.95, "phần:", 2], [10.463, "phân", 2], [10.7, "loại", 2], [10.875, "máy", 2], [11.037, "tính", 2], [11.35, "và", 2], [11.45, "kiến", 2], [11.7, "trúc", 2], [11.875, "von", 2], [12.088, "Neumann,", 2], [12.75, "rồi", 2], [13.381, "CPU,", 2], [14.012, "lệnh", 2], [14.25, "máy", 2], [14.5, "và", 2], [14.65, "chu", 2], [14.863, "trình", 2], [15.062, "lệnh,", 2], [15.55, "rồi", 2], [15.825, "phân", 2], [16.038, "cấp", 2], [16.188, "bộ", 2], [16.363, "nhớ", 2], [16.688, "và", 2], [16.837, "thiết", 2], [17.025, "bị", 2], [17.2, "vào", 2], [17.375, "ra.", 2], [18.488, "Nhóm", 3], [18.887, "dữ", 3], [19.062, "liệu", 3], [19.312, "có", 3], [19.425, "một", 3], [19.6, "phần,", 3], [20.075, "về", 3], [20.325, "hệ", 3], [20.525, "đếm", 3], [20.825, "và", 3], [20.962, "biểu", 3], [21.163, "diễn", 3], [21.438, "dữ", 3], [21.625, "liệu", 3], [21.875, "trong", 3], [22.087, "máy", 3], [22.225, "tính.", 3], [23.425, "Nhóm", 4], [23.8, "hệ", 4], [23.988, "điều", 4], [24.163, "hành", 4], [24.4, "có", 4], [24.5, "một", 4], [24.675, "phần,", 4], [25.175, "về", 4], [25.413, "tiến", 4], [25.688, "trình,", 4], [26.175, "bộ", 4], [26.438, "nhớ", 4], [26.788, "và", 4], [26.938, "hệ", 4], [27.1, "thống", 4], [27.325, "tệp.", 4]], "cues": [8.85, 18.488, 23.425], "lang": 0.6}, {"ten": "Slide 1. Máy tính có nhiều hình dạng, và một máy chạy được nhiều chương trình", "loai": "slide", "slide": "S01", "dung": "Hai ý hiện lần lượt; khung câu hỏi hiện cuối và giữ đến hết slide.\nHiện dần: bước 1 khi đọc “Quanh các bạn có rất nhiều”; bước 2 khi đọc “Điều đáng chú ý hơn”; bước 3 khi đọc “Câu hỏi của phần này”.", "start": 42.1, "audio": "audio/cf778c02d799d482.mp3", "dur": 30.96, "words": [[0.1, "Quanh", 0], [0.375, "các", 0], [0.55, "bạn", 0], [0.775, "có", 0], [0.887, "rất", 0], [1.075, "nhiều", 0], [1.275, "máy", 0], [1.462, "tính:", 0], [1.988, "chiếc", 0], [2.212, "điện", 0], [2.413, "thoại", 0], [2.625, "trong", 0], [2.812, "túi,", 0], [3.375, "máy", 0], [3.575, "tính", 0], [3.788, "xách", 0], [3.987, "tay", 0], [4.175, "trên", 0], [4.375, "bàn,", 0], [4.862, "máy", 0], [5.088, "chủ", 0], [5.275, "phục", 0], [5.45, "vụ", 0], [5.65, "trang", 0], [5.875, "web", 0], [6.062, "của", 0], [6.175, "Học", 0], [6.325, "viện,", 0], [6.812, "và", 0], [7.025, "những", 0], [7.237, "siêu", 0], [7.425, "máy", 0], [7.6, "tính", 0], [7.875, "dự", 0], [8.025, "báo", 0], [8.262, "thời", 0], [8.438, "tiết.", 0], [9.562, "Chúng", 1], [9.812, "khác", 1], [10.05, "nhau", 1], [10.3, "về", 1], [10.425, "hình", 1], [10.65, "dạng,", 1], [11.2, "về", 1], [11.45, "giá,", 1], [12.05, "về", 1], [12.35, "công", 1], [12.562, "suất.", 1], [13.662, "Điều", 2], [13.9, "đáng", 2], [14.113, "chú", 2], [14.3, "ý", 2], [14.5, "hơn", 2], [14.8, "là", 2], [15.025, "trên", 2], [15.225, "cùng", 2], [15.4, "một", 2], [15.562, "chiếc", 2], [15.738, "máy,", 2], [16.275, "các", 2], [16.438, "bạn", 2], [16.625, "soạn", 2], [16.887, "văn", 2], [17.05, "bản,", 2], [17.562, "rồi", 2], [17.8, "phát", 2], [18.025, "nhạc,", 2], [18.5, "rồi", 2], [18.738, "chạy", 2], [18.925, "chương", 2], [19.125, "trình", 2], [19.325, "C", 2], [19.512, "mình", 2], [19.75, "sẽ", 2], [19.9, "viết", 2], [20.15, "ở", 2], [20.238, "các", 2], [20.413, "chương", 2], [20.613, "sau,", 2], [21.163, "mà", 2], [21.425, "không", 2], [21.65, "phải", 2], [21.8, "thay", 2], [21.938, "một", 2], [22.113, "linh", 2], [22.312, "kiện", 2], [22.538, "nào.", 2], [23.65, "Vì", 3], [23.913, "thế,", 3], [24.438, "câu", 3], [24.613, "hỏi", 3], [24.825, "của", 3], [24.962, "phần", 3], [25.15, "này", 3], [25.3, "là:", 3], [25.775, "các", 3], [25.95, "máy", 3], [26.075, "tính", 3], [26.325, "có", 3], [26.438, "chung", 3], [26.637, "cách", 3], [26.812, "tổ", 3], [26.988, "chức", 3], [27.175, "nào,", 3], [27.65, "và", 3], [27.837, "vì", 3], [28.0, "sao", 3], [28.188, "một", 3], [28.363, "máy", 3], [28.538, "chạy", 3], [28.725, "được", 3], [28.913, "nhiều", 3], [29.15, "chương", 3], [29.4, "trình", 3], [29.587, "khác", 3], [29.8, "nhau?", 3]], "cues": [0.1, 13.662, 24.438], "lang": 0.6}, {"ten": "Slide 2. Từ vi điều khiển đến siêu máy tính: một \"vườn thú\" máy tính", "loai": "slide", "slide": "S02", "dung": "Hình vuon-thu: bước 1 là sáu loại máy, bước 2 là trục quy mô, bước 3 là ô \"chung một cách tổ chức\"; bước 4 là ô kết luận. Ghi nguồn trên slide: Tanenbaum & Austin, Structured Computer Organization, §1.3.\nHiện dần: bước 1 khi đọc “gọi là vườn thú máy tính”; bước 2 khi đọc “Từ trái sang phải”; bước 3 khi đọc “Khác nhau như vậy”; bước 4 khi đọc “Nói cách khác”.", "start": 73.66, "audio": "audio/791eadc8f800262f.mp3", "dur": 48.84, "words": [[0.1, "Để", 0], [0.312, "tìm", 0], [0.562, "điểm", 0], [0.775, "chung,", 0], [1.238, "trước", 0], [1.45, "hết", 0], [1.65, "mình", 0], [1.837, "xem", 0], [2.138, "các", 0], [2.325, "máy", 0], [2.45, "khác", 0], [2.688, "nhau", 0], [2.9, "đến", 0], [3.087, "đâu,", 0], [3.55, "theo", 0], [3.763, "cách", 0], [3.962, "của", 0], [4.213, "Tanenbaum", 0], [4.875, "trong", 0], [5.075, "cuốn", 0], [5.263, "sách", 0], [5.487, "về", 0], [5.688, "tổ", 0], [5.875, "chức", 0], [6.075, "máy", 0], [6.213, "tính:", 0], [6.763, "ông", 0], [6.975, "xếp", 0], [7.2, "các", 0], [7.35, "loại", 0], [7.513, "máy", 0], [7.713, "thành", 0], [7.9, "một", 0], [8.062, "dãy,", 0], [8.625, "gọi", 0], [8.887, "là", 0], [9.012, "vườn", 0], [9.25, "thú", 0], [9.425, "máy", 0], [9.613, "tính.", 0], [10.812, "Ở", 1], [10.988, "đầu", 1], [11.188, "dãy", 1], [11.425, "là", 1], [11.588, "vi", 1], [11.762, "điều", 1], [11.925, "khiển,", 1], [12.537, "máy", 1], [12.75, "tính", 1], [13.0, "nhỏ", 1], [13.225, "gắn", 1], [13.488, "trong", 1], [13.662, "máy", 1], [13.825, "giặt,", 1], [14.287, "xe", 1], [14.55, "máy", 1], [14.812, "hay", 1], [14.975, "cảm", 1], [15.225, "biến.", 1], [16.387, "Tiếp", 2], [16.725, "theo", 2], [16.95, "là", 2], [17.05, "điện", 2], [17.25, "thoại,", 2], [17.788, "máy", 2], [18.0, "tính", 2], [18.225, "cá", 2], [18.4, "nhân,", 2], [18.95, "rồi", 2], [19.188, "máy", 2], [19.425, "chủ", 2], [19.637, "phục", 2], [19.812, "vụ", 2], [20.038, "trang", 2], [20.288, "web", 2], [20.525, "và", 2], [20.775, "ứng", 2], [20.938, "dụng.", 2], [22.1, "Cuối", 3], [22.337, "dãy", 3], [22.575, "là", 3], [22.7, "máy", 3], [22.887, "tính", 3], [23.113, "lớn,", 3], [23.613, "hay", 3], [23.825, "mainframe,", 3], [24.688, "của", 3], [24.85, "ngân", 3], [25.1, "hàng,", 3], [25.575, "hãng", 3], [25.8, "hàng", 3], [25.975, "không,", 3], [26.475, "và", 3], [26.7, "siêu", 3], [26.887, "máy", 3], [27.05, "tính", 3], [27.275, "dùng", 3], [27.512, "để", 3], [27.625, "mô", 3], [27.8, "phỏng", 3], [28.062, "thời", 3], [28.225, "tiết", 3], [28.5, "hay", 3], [28.675, "huấn", 3], [28.863, "luyện", 3], [29.038, "mô", 3], [29.238, "hình", 3], [29.637, "AI.", 3], [30.712, "Từ", 4], [30.962, "trái", 4], [31.188, "sang", 4], [31.438, "phải,", 4], [32.025, "máy", 4], [32.25, "càng", 4], [32.5, "lớn,", 4], [33.025, "càng", 4], [33.325, "đắt", 4], [33.513, "và", 4], [33.675, "càng", 4], [33.938, "tốn", 4], [34.2, "điện.", 4], [35.375, "Khác", 5], [35.65, "nhau", 5], [35.85, "như", 5], [36.0, "vậy,", 5], [36.487, "nhưng", 5], [36.763, "loại", 5], [36.962, "nào", 5], [37.188, "cũng", 5], [37.362, "có", 5], [37.462, "cùng", 5], [37.675, "ba", 5], [37.825, "khối:", 5], [38.656, "CPU,", 5], [39.487, "bộ", 5], [39.712, "nhớ", 5], [39.962, "chứa", 5], [40.2, "chương", 5], [40.45, "trình,", 5], [40.913, "và", 5], [41.125, "thiết", 5], [41.337, "bị", 5], [41.513, "vào", 5], [41.7, "ra.", 5], [42.825, "Nói", 6], [43.15, "cách", 6], [43.325, "khác,", 6], [43.775, "các", 6], [43.975, "loại", 6], [44.15, "máy", 6], [44.325, "khác", 6], [44.55, "nhau", 6], [44.775, "về", 6], [44.913, "quy", 6], [45.112, "mô,", 6], [45.638, "còn", 6], [45.875, "bên", 6], [46.075, "trong", 6], [46.288, "thì", 6], [46.4, "mọi", 6], [46.587, "loại", 6], [46.775, "máy", 6], [47.025, "cùng", 6], [47.25, "một", 6], [47.4, "cách", 6], [47.575, "tổ", 6], [47.763, "chức.", 6]], "cues": [8.625, 30.712, 35.375, 42.825], "lang": 2.6}, {"ten": "Slide 3. Phần mềm là chương trình nạp vào bộ nhớ, không phải dây nối trong máy", "loai": "slide", "slide": "S03", "dung": "Ba ý hiện lần lượt. Ghi nguồn: von Neumann, First Draft of a Report on the EDVAC (1945).\nHiện dần: bước 1 khi đọc “Ba khối đó là phần cứng”; bước 2 khi đọc “Phần mềm thì khác”; bước 3 khi đọc “Ý tưởng làm nên điều này”.", "start": 125.1, "audio": "audio/2bfe9b1b8d165b10.mp3", "dur": 46.49, "words": [[0.1, "Ba", 0], [0.4, "khối", 0], [0.65, "đó", 0], [0.812, "là", 0], [0.925, "phần", 0], [1.175, "cứng,", 0], [1.7, "hay", 0], [1.9, "hardware:", 0], [2.625, "những", 0], [2.85, "bộ", 0], [2.987, "phận", 0], [3.237, "vật", 0], [3.413, "lý", 0], [3.625, "của", 0], [3.763, "máy,", 0], [4.35, "như", 0], [4.975, "CPU,", 0], [5.6, "bộ", 0], [5.862, "nhớ", 0], [6.075, "chính,", 0], [6.625, "và", 0], [6.862, "các", 0], [7.037, "thiết", 0], [7.2, "bị", 0], [7.362, "vào", 0], [7.55, "ra", 0], [7.725, "gồm", 0], [8.025, "ổ", 0], [8.15, "lưu", 0], [8.35, "trữ,", 0], [8.975, "bàn", 0], [9.225, "phím,", 0], [9.75, "màn", 0], [9.988, "hình.", 0], [11.088, "Phần", 1], [11.35, "mềm", 1], [11.6, "thì", 1], [11.75, "khác:", 1], [12.262, "nó", 1], [12.438, "là", 1], [12.562, "chương", 1], [12.812, "trình", 1], [13.05, "và", 1], [13.15, "dữ", 1], [13.312, "liệu", 1], [13.537, "đi", 1], [13.688, "kèm,", 1], [14.213, "chỉ", 1], [14.438, "dẫn", 1], [14.675, "phần", 1], [14.9, "cứng", 1], [15.137, "làm", 1], [15.287, "việc", 1], [15.45, "gì;", 1], [15.975, "tên", 1], [16.212, "tiếng", 1], [16.462, "Anh", 1], [16.688, "là", 1], [16.863, "software.", 1], [18.275, "Ý", 2], [18.475, "tưởng", 2], [18.725, "làm", 2], [18.913, "nên", 2], [19.1, "điều", 2], [19.25, "này", 2], [19.462, "có", 2], [19.6, "từ", 2], [20.262, "năm", 2], [20.925, "1945,", 2], [21.587, "trong", 2], [21.837, "bản", 2], [22.025, "báo", 2], [22.2, "cáo", 2], [22.475, "của", 2], [22.65, "von", 2], [22.863, "Neumann", 2], [23.325, "về", 2], [23.45, "máy", 2], [23.887, "EDVAC:", 2], [24.325, "chương", 2], [24.587, "trình", 2], [24.775, "được", 2], [24.925, "lưu", 2], [25.125, "trong", 2], [25.288, "bộ", 2], [25.462, "nhớ,", 2], [26.0, "giống", 2], [26.262, "hệt", 2], [26.438, "dữ", 2], [26.625, "liệu.", 2], [27.788, "Máy", 3], [28.113, "như", 3], [28.262, "vậy", 3], [28.488, "gọi", 3], [28.7, "là", 3], [28.825, "máy", 3], [29.012, "tính", 3], [29.238, "lưu", 3], [29.387, "trữ", 3], [29.613, "chương", 3], [29.85, "trình,", 3], [30.337, "hay", 3], [30.562, "stored-program", 3], [31.275, "computer.", 3], [32.75, "Trước", 4], [33.05, "đó,", 4], [33.575, "muốn", 4], [33.825, "máy", 4], [34.0, "làm", 4], [34.163, "việc", 4], [34.325, "khác,", 4], [34.825, "người", 4], [35.087, "vận", 4], [35.325, "hành", 4], [35.538, "phải", 4], [35.7, "nối", 4], [35.913, "lại", 4], [36.1, "dây.", 4], [37.237, "Còn", 5], [37.55, "với", 5], [37.663, "máy", 5], [37.825, "tính", 5], [38.062, "lưu", 5], [38.212, "trữ", 5], [38.438, "chương", 5], [38.675, "trình,", 5], [39.15, "đổi", 5], [39.375, "việc", 5], [39.612, "chỉ", 5], [39.75, "là", 5], [39.875, "nạp", 5], [40.1, "một", 5], [40.288, "chương", 5], [40.525, "trình", 5], [40.712, "khác", 5], [40.962, "vào", 5], [41.125, "bộ", 5], [41.325, "nhớ.", 5], [42.55, "Đây", 6], [42.8, "chính", 6], [43.062, "là", 6], [43.2, "lý", 6], [43.462, "do", 6], [43.612, "một", 6], [43.812, "máy", 6], [44.038, "chạy", 6], [44.237, "được", 6], [44.438, "nhiều", 6], [44.675, "chương", 6], [44.938, "trình", 6], [45.125, "khác", 6], [45.35, "nhau.", 6]], "cues": [0.1, 11.088, 18.275], "lang": 0.6}, {"ten": "Slide 4. Kiến trúc von Neumann: CPU, bộ nhớ, vào ra nối với nhau qua bus", "loai": "slide", "slide": "S04", "dung": "Hình von-neumann: bốn bước của hình theo bốn câu mốc đầu; bước 5 là ô kết luận. Dừng lâu ở các ô \"lệnh\" và \"dữ liệu\" cùng nằm trong bộ nhớ chính.\nHiện dần: bước 1 khi đọc “Khối thứ nhất là CPU”; bước 2 khi đọc “Khối thứ hai là bộ nhớ chính”; bước 3 khi đọc “Khối thứ ba là các thiết bị vào ra”; bước 4 khi đọc “Ba khối nối với nhau qua bus”; bước 5 khi đọc “Như vậy”.", "start": 172.19, "audio": "audio/eec1b9d40deca9a3.mp3", "dur": 53.9, "words": [[0.1, "Bây", 0], [0.35, "giờ", 0], [0.562, "mình", 0], [0.75, "đi", 0], [0.875, "vào", 0], [1.025, "bên", 0], [1.225, "trong,", 0], [1.738, "theo", 0], [1.975, "cách", 0], [2.163, "tổ", 0], [2.325, "chức", 0], [2.562, "mà", 0], [2.812, "ngày", 0], [3.013, "nay", 0], [3.2, "gọi", 0], [3.4, "là", 0], [3.513, "kiến", 0], [3.775, "trúc", 0], [3.95, "von", 0], [4.188, "Neumann.", 0], [5.513, "Khối", 1], [5.812, "thứ", 1], [6.0, "nhất", 1], [6.263, "là", 1], [6.857, "CPU,", 1], [7.45, "bộ", 1], [7.713, "xử", 1], [7.938, "lý", 1], [8.162, "trung", 1], [8.375, "tâm.", 1], [9.512, "Nó", 2], [9.887, "gồm", 2], [10.125, "khối", 2], [10.35, "điều", 2], [10.5, "khiển,", 2], [11.062, "khối", 2], [11.287, "số", 2], [11.488, "học", 2], [11.7, "và", 2], [11.887, "logic,", 2], [12.625, "hay", 2], [13.262, "ALU,", 2], [13.9, "để", 2], [14.062, "tính", 2], [14.275, "toán", 2], [14.562, "như", 2], [14.713, "cộng", 2], [15.012, "hay", 2], [15.137, "so", 2], [15.3, "sánh,", 2], [15.85, "và", 2], [16.087, "các", 2], [16.275, "thanh", 2], [16.45, "ghi,", 2], [16.962, "những", 2], [17.2, "ô", 2], [17.35, "nhớ", 2], [17.6, "rất", 2], [17.788, "nhanh", 2], [18.038, "nằm", 2], [18.25, "ngay", 2], [18.488, "trong", 2], [19.331, "CPU.", 2], [20.175, "Khối", 3], [20.45, "thứ", 3], [20.688, "hai", 3], [20.962, "là", 3], [21.062, "bộ", 3], [21.312, "nhớ", 3], [21.525, "chính,", 3], [22.025, "gồm", 3], [22.325, "các", 3], [22.55, "ô", 3], [22.712, "được", 3], [22.875, "đánh", 3], [23.087, "số.", 3], [24.337, "Các", 4], [24.538, "bạn", 4], [24.75, "để", 4], [24.875, "ý:", 4], [25.375, "có", 4], [25.55, "ô", 4], [25.725, "chứa", 4], [25.975, "lệnh", 4], [26.225, "của", 4], [26.35, "chương", 4], [26.575, "trình,", 4], [27.038, "có", 4], [27.2, "ô", 4], [27.363, "chứa", 4], [27.637, "dữ", 4], [27.85, "liệu,", 4], [28.363, "và", 4], [28.562, "cả", 4], [28.75, "hai", 4], [28.988, "nằm", 4], [29.188, "trong", 4], [29.363, "cùng", 4], [29.55, "một", 4], [29.688, "bộ", 4], [29.9, "nhớ.", 4], [31.113, "Khối", 5], [31.387, "thứ", 5], [31.562, "ba", 5], [31.863, "là", 5], [31.962, "các", 5], [32.138, "thiết", 5], [32.288, "bị", 5], [32.462, "vào", 5], [32.65, "ra,", 5], [33.15, "như", 5], [33.4, "bàn", 5], [33.638, "phím,", 5], [34.188, "màn", 5], [34.438, "hình,", 5], [34.9, "ổ", 5], [35.287, "SSD", 5], [35.675, "hay", 5], [35.8, "card", 5], [36.038, "mạng.", 5], [37.225, "Ba", 6], [37.525, "khối", 6], [37.75, "nối", 6], [38.0, "với", 6], [38.125, "nhau", 6], [38.337, "qua", 6], [38.55, "bus,", 6], [39.075, "một", 6], [39.3, "tập", 6], [39.462, "đường", 6], [39.688, "truyền", 6], [39.9, "mang", 6], [40.1, "địa", 6], [40.25, "chỉ,", 6], [40.875, "dữ", 6], [41.1, "liệu", 6], [41.388, "và", 6], [41.525, "tín", 6], [41.75, "hiệu", 6], [41.938, "điều", 6], [42.087, "khiển.", 6], [43.337, "Lệnh", 7], [43.712, "đi", 7], [43.837, "từ", 7], [44.025, "bộ", 7], [44.225, "nhớ", 7], [44.513, "vào", 7], [45.081, "CPU,", 7], [45.65, "còn", 7], [45.9, "dữ", 7], [46.062, "liệu", 7], [46.312, "đi", 7], [46.462, "theo", 7], [46.625, "cả", 7], [46.825, "hai", 7], [47.013, "chiều.", 7], [48.175, "Như", 8], [48.413, "vậy,", 8], [48.862, "chạy", 8], [49.038, "một", 8], [49.225, "chương", 8], [49.425, "trình", 8], [49.6, "nghĩa", 8], [49.825, "là", 8], [50.244, "CPU", 8], [50.663, "lần", 8], [50.862, "lượt", 8], [51.075, "lấy", 8], [51.237, "lệnh", 8], [51.5, "từ", 8], [51.675, "bộ", 8], [51.888, "nhớ", 8], [52.112, "chính", 8], [52.4, "rồi", 8], [52.538, "thực", 8], [52.712, "hiện.", 8]], "cues": [5.513, 20.175, 31.113, 37.225, 48.175], "lang": 2.6}, {"ten": "Slide 5. Trên máy biên soạn, mỗi khối của hình đều có thật", "loai": "slide", "slide": "S05", "dung": "Mã phía trên, kết quả chạy phía dưới. Highlight lần lượt bốn dòng Get-CimInstance theo lời đọc. Kết quả chạy ngày 13/11/2026 trên máy biên soạn; máy khác cho kết quả khác. Có thể thay khung kết quả bằng clip replay terminal.\nHiện dần: bước 1 khi đọc “Mình kiểm tra ba khối đó”; bước 2 khi đọc “Kết quả cho thấy”.", "start": 228.69, "audio": "audio/97d25ba269539a21.mp3", "dur": 48.72, "words": [[0.1, "Mình", 0], [0.5, "kiểm", 0], [0.75, "tra", 0], [0.95, "ba", 0], [1.125, "khối", 0], [1.363, "đó", 0], [1.587, "trên", 0], [1.812, "chính", 0], [2.013, "máy", 0], [2.163, "biên", 0], [2.362, "soạn", 0], [2.65, "bài", 0], [2.788, "giảng,", 0], [3.4, "chạy", 0], [3.663, "Windows", 0], [4.162, "11.", 0], [5.487, "Hệ", 1], [5.713, "điều", 1], [5.862, "hành", 1], [6.062, "ghi", 1], [6.225, "lại", 1], [6.4, "thông", 1], [6.612, "tin", 1], [6.812, "phần", 1], [7.013, "cứng,", 1], [7.513, "và", 1], [7.688, "lệnh", 1], [7.925, "Get-CimInstance", 1], [8.863, "của", 1], [9.075, "PowerShell", 1], [9.675, "đọc", 1], [9.825, "được", 1], [10.0, "thông", 1], [10.2, "tin", 1], [10.387, "đó:", 1], [10.912, "mỗi", 1], [11.125, "khối", 1], [11.325, "một", 1], [11.5, "lớp,", 1], [12.0, "như", 1], [12.262, "lớp", 1], [12.463, "Win32", 1], [13.213, "Processor", 1], [13.85, "cho", 1], [14.381, "CPU,", 1], [14.912, "lớp", 1], [15.175, "Win32", 1], [15.988, "VideoController", 1], [16.975, "cho", 1], [17.137, "card", 1], [17.375, "màn", 1], [17.575, "hình.", 1], [18.65, "Các", 2], [18.85, "bạn", 2], [19.087, "chưa", 2], [19.262, "cần", 2], [19.462, "nhớ", 2], [19.7, "các", 2], [19.875, "lệnh", 2], [20.075, "này,", 2], [20.5, "chỉ", 2], [20.7, "cần", 2], [20.925, "đối", 2], [21.075, "chiếu", 2], [21.337, "kết", 2], [21.55, "quả", 2], [21.812, "với", 2], [21.95, "hình", 2], [22.175, "vừa", 2], [22.337, "xem.", 2], [23.562, "Kết", 3], [23.788, "quả", 3], [24.012, "cho", 3], [24.15, "thấy", 3], [24.325, "máy", 3], [24.55, "dùng", 3], [25.031, "CPU", 3], [25.512, "Intel", 3], [25.962, "Core", 3], [26.188, "i5", 3], [26.55, "thế", 3], [26.725, "hệ", 3], [26.9, "thứ", 3], [27.075, "tám,", 3], [27.637, "bốn", 3], [27.9, "nhân,", 3], [28.4, "tám", 3], [28.637, "bộ", 3], [28.788, "xử", 3], [28.95, "lý", 3], [29.163, "logic,", 3], [29.812, "và", 3], [30.0, "15,5", 3], [30.562, "GB", 3], [31.125, "RAM", 3], [31.413, "làm", 3], [31.625, "bộ", 3], [31.812, "nhớ", 3], [32.013, "chính.", 3], [33.212, "Thuộc", 4], [33.413, "khối", 4], [33.638, "vào", 4], [33.825, "ra", 4], [34.025, "có", 4], [34.163, "hai", 4], [34.388, "ổ", 4], [34.562, "lưu", 4], [34.75, "trữ,", 4], [35.375, "238", 4], [36.062, "GB", 4], [36.75, "và", 4], [36.888, "954", 4], [37.669, "GB,", 4], [38.45, "bàn", 4], [38.688, "phím,", 4], [39.212, "và", 4], [39.388, "card", 4], [39.587, "màn", 4], [39.763, "hình", 4], [39.975, "đang", 4], [40.15, "xuất", 4], [40.4, "ảnh", 4], [40.612, "1920", 4], [41.788, "nhân", 4], [42.038, "1080.", 4], [44.175, "Mỗi", 5], [44.575, "khối", 5], [44.837, "của", 5], [45.0, "kiến", 5], [45.25, "trúc", 5], [45.438, "von", 5], [45.688, "Neumann", 5], [46.3, "đều", 5], [46.538, "có", 5], [46.65, "mặt", 5], [46.862, "trên", 5], [47.05, "một", 5], [47.225, "chiếc", 5], [47.45, "máy", 5], [47.625, "thật.", 5]], "cues": [0.1, 23.562], "lang": 9.6}, {"ten": "Slide 6. Lệnh và dữ liệu chung một đường đi: CPU phải chờ bộ nhớ", "loai": "slide", "slide": "S06", "dung": "Hai ý hiện lần lượt; khung hiện cuối.\nHiện dần: bước 1 khi đọc “Cách tổ chức này có một giá phải trả”; bước 2 khi đọc “Vấn đề là CPU”; bước 3 khi đọc “Máy tính ngày nay”.", "start": 287.01, "audio": "audio/5eb6d54d6d979c18.mp3", "dur": 32.3, "words": [[0.1, "Cách", 0], [0.312, "tổ", 0], [0.5, "chức", 0], [0.725, "này", 0], [0.95, "có", 0], [1.062, "một", 0], [1.25, "giá", 0], [1.512, "phải", 0], [1.725, "trả.", 0], [3.0, "Vì", 1], [3.25, "lệnh", 1], [3.538, "và", 1], [3.65, "dữ", 1], [3.812, "liệu", 1], [4.05, "nằm", 1], [4.263, "chung", 1], [4.463, "bộ", 1], [4.638, "nhớ,", 1], [5.188, "mỗi", 1], [5.375, "lệnh", 1], [5.638, "và", 1], [5.737, "mỗi", 1], [5.963, "dữ", 1], [6.15, "liệu", 1], [6.613, "CPU", 1], [7.075, "cần", 1], [7.35, "đều", 1], [7.513, "phải", 1], [7.688, "đi", 1], [7.825, "qua", 1], [8.012, "bus", 1], [8.3, "từ", 1], [8.575, "bộ", 1], [8.787, "nhớ.", 1], [10.0, "Vấn", 2], [10.287, "đề", 2], [10.463, "là", 2], [10.851, "CPU", 2], [11.238, "tính", 2], [11.463, "nhanh", 2], [11.613, "hơn", 2], [11.85, "rất", 2], [12.037, "nhiều", 2], [12.238, "lần", 2], [12.463, "so", 2], [12.625, "với", 2], [12.738, "tốc", 2], [12.912, "độ", 2], [13.075, "bộ", 2], [13.287, "nhớ", 2], [13.525, "trả", 2], [13.738, "dữ", 2], [13.912, "liệu,", 2], [14.45, "nên", 2], [14.887, "CPU", 2], [15.325, "nhanh", 2], [15.6, "đến", 2], [15.787, "đâu", 2], [15.963, "cũng", 2], [16.163, "phải", 2], [16.35, "chờ.", 2], [17.512, "Hiện", 3], [17.775, "tượng", 3], [18.0, "này", 3], [18.225, "được", 3], [18.375, "gọi", 3], [18.637, "là", 3], [18.788, "nút", 3], [19.025, "cổ", 3], [19.238, "chai", 3], [19.5, "von", 3], [19.712, "Neumann.", 3], [21.05, "Máy", 4], [21.425, "tính", 4], [21.7, "ngày", 4], [21.913, "nay", 4], [22.1, "giảm", 4], [22.337, "thời", 4], [22.462, "gian", 4], [22.688, "chờ", 4], [22.95, "bằng", 4], [23.137, "cách", 4], [23.288, "xếp", 4], [23.538, "nhiều", 4], [23.762, "loại", 4], [23.938, "bộ", 4], [24.15, "nhớ", 4], [24.375, "nhanh", 4], [24.613, "chậm", 4], [24.85, "khác", 4], [25.087, "nhau", 4], [25.275, "thành", 4], [25.488, "tầng,", 4], [25.975, "gọi", 4], [26.275, "là", 4], [26.4, "phân", 4], [26.6, "cấp", 4], [26.762, "bộ", 4], [26.962, "nhớ.", 4], [28.175, "Đó", 5], [28.4, "là", 5], [28.512, "nội", 5], [28.712, "dung", 5], [28.938, "của", 5], [29.075, "phần", 5], [29.35, "về", 5], [29.488, "phân", 5], [29.688, "cấp", 5], [29.863, "bộ", 5], [30.062, "nhớ", 5], [30.4, "và", 5], [30.562, "thiết", 5], [30.775, "bị", 5], [30.962, "vào", 5], [31.163, "ra.", 5]], "cues": [0.1, 10.0, 21.05], "lang": 0.6}, {"ten": "Câu hỏi tương tác 1", "loai": "cau-hoi", "slide": "Q1", "dung": "Dừng video, hiện câu hỏi H5P. Sau khi người học trả lời: slide câu hỏi với đáp án C tô xanh, các đáp án còn lại mờ đi.", "start": 319.91, "audio": "audio/c783e8224fb67278.mp3", "dur": 5.02, "words": [[0.1, "Mình", 0], [0.463, "dừng", 0], [0.662, "lại", 0], [0.887, "với", 0], [1.0, "hai", 0], [1.15, "câu", 0], [1.337, "hỏi,", 0], [1.913, "bắt", 0], [2.125, "đầu", 0], [2.375, "từ", 0], [2.538, "một", 0], [2.725, "chiếc", 0], [2.913, "máy", 0], [3.112, "đang", 0], [3.312, "soạn", 0], [3.6, "văn", 0], [3.775, "bản.", 0]], "slide2": "Q1-dap-an", "audio2": "audio/22be54d3f5602a75.mp3", "dur2": 12.77, "words2": [[0.1, "Đáp", 0], [0.45, "án", 0], [0.662, "là", 0], [0.762, "C.", 0], [1.15, "Phương", 1], [1.45, "án", 1], [1.637, "B", 1], [1.8, "mô", 1], [1.975, "tả", 1], [2.212, "đúng", 1], [2.388, "máy", 1], [2.525, "tính", 1], [2.788, "trước", 1], [3.062, "ý", 1], [3.212, "tưởng", 1], [3.5, "của", 1], [3.65, "von", 1], [3.85, "Neumann,", 1], [4.525, "nên", 1], [4.812, "dễ", 1], [5.025, "được", 1], [5.188, "chọn", 1], [5.45, "khi", 1], [5.638, "chưa", 1], [5.838, "phân", 1], [6.025, "biệt", 1], [6.188, "hai", 1], [6.375, "thời", 1], [6.55, "kỳ.", 1], [7.7, "Với", 2], [7.963, "máy", 2], [8.137, "tính", 2], [8.387, "lưu", 2], [8.537, "trữ", 2], [8.775, "chương", 2], [9.025, "trình,", 2], [9.5, "đổi", 2], [9.738, "việc", 2], [9.975, "chỉ", 2], [10.113, "là", 2], [10.225, "nạp", 2], [10.463, "chương", 2], [10.713, "trình", 2], [10.912, "khác", 2], [11.162, "vào", 2], [11.325, "bộ", 2], [11.537, "nhớ.", 2]], "dap_an": "C", "cues": [], "lang": 6.6}, {"ten": "Câu hỏi tương tác 2", "loai": "cau-hoi", "slide": "Q2", "dung": "Như câu hỏi 1: dừng video, hiện H5P, sau đó tô xanh đáp án A.", "start": 344.3, "audio": "audio/13aba48bfeb2925d.mp3", "dur": 4.18, "words": [[0.1, "Tiếp", 0], [0.4, "theo,", 0], [0.925, "các", 0], [1.087, "bạn", 0], [1.312, "tìm", 0], [1.562, "chỗ", 0], [1.825, "của", 0], [1.975, "chương", 0], [2.237, "trình", 0], [2.475, "trong", 0], [2.663, "hình", 0], [2.875, "kiến", 0], [3.1, "trúc.", 0]], "slide2": "Q2-dap-an", "audio2": "audio/0d22fdb899686abd.mp3", "dur2": 10.06, "words2": [[0.1, "Đáp", 0], [0.463, "án", 0], [0.662, "là", 0], [0.863, "A.", 0], [1.225, "Phương", 1], [1.587, "án", 1], [1.762, "C", 1], [1.975, "dễ", 1], [2.175, "được", 1], [2.337, "chọn", 1], [2.638, "vì", 1], [2.75, "lệnh", 1], [3.0, "có", 1], [3.125, "đi", 1], [3.263, "qua", 1], [3.45, "bus,", 1], [3.987, "nhưng", 1], [4.275, "bus", 1], [4.537, "chỉ", 1], [4.725, "là", 1], [4.862, "đường", 1], [5.088, "truyền.", 1], [6.237, "Lệnh", 2], [6.725, "nằm", 2], [6.912, "trong", 2], [7.112, "bộ", 2], [7.287, "nhớ", 2], [7.487, "chính,", 2], [8.0, "cùng", 2], [8.275, "chỗ", 2], [8.525, "với", 2], [8.65, "dữ", 2], [8.85, "liệu.", 2]], "dap_an": "A", "cues": [], "lang": 6.6}, {"ten": "Tổng kết", "loai": "tong-ket", "slide": "TK", "dung": "Ba thẻ hiện lần lượt; hàng từ khóa hiện cuối.\nHiện dần: bước 1 khi đọc “Trở lại câu hỏi đầu phần”; bước 2 khi đọc “Chung một cách tổ chức”; bước 3 khi đọc “Còn một máy chạy được”; bước 4 khi đọc “các từ khóa cần nhớ”.", "start": 365.14, "audio": "audio/c950d025b1dce3e6.mp3", "dur": 33.38, "words": [[0.1, "Trở", 0], [0.362, "lại", 0], [0.588, "câu", 0], [0.762, "hỏi", 0], [0.95, "đầu", 0], [1.1, "phần,", 0], [1.575, "câu", 0], [1.75, "trả", 0], [1.925, "lời", 0], [2.15, "có", 0], [2.288, "hai", 0], [2.5, "ý.", 0], [2.825, "Các", 1], [3.075, "máy", 1], [3.212, "tính", 1], [3.45, "khác", 1], [3.688, "nhau", 1], [3.925, "về", 1], [4.088, "quy", 1], [4.287, "mô", 1], [4.537, "và", 1], [4.65, "mục", 1], [4.838, "đích", 1], [5.013, "dùng,", 1], [5.525, "từ", 1], [5.737, "vi", 1], [5.9, "điều", 1], [6.05, "khiển", 1], [6.362, "đến", 1], [6.562, "siêu", 1], [6.8, "máy", 1], [6.987, "tính.", 1], [8.188, "Chung", 2], [8.463, "một", 2], [8.6, "cách", 2], [8.738, "tổ", 2], [8.912, "chức", 2], [9.113, "của", 2], [9.238, "chúng", 2], [9.525, "là", 2], [9.637, "kiến", 2], [9.875, "trúc", 2], [10.05, "von", 2], [10.25, "Neumann:", 2], [11.113, "CPU,", 2], [11.975, "bộ", 2], [12.2, "nhớ", 2], [12.4, "chính", 2], [12.7, "và", 2], [12.825, "thiết", 2], [13.0, "bị", 2], [13.162, "vào", 2], [13.338, "ra,", 2], [13.8, "nối", 2], [14.088, "với", 2], [14.225, "nhau", 2], [14.45, "qua", 2], [14.65, "bus.", 2], [15.863, "Còn", 3], [16.087, "một", 3], [16.225, "máy", 3], [16.4, "chạy", 3], [16.575, "được", 3], [16.738, "nhiều", 3], [16.95, "chương", 3], [17.2, "trình", 3], [17.512, "là", 3], [17.688, "nhờ", 3], [17.925, "chương", 3], [18.163, "trình", 3], [18.425, "nằm", 3], [18.625, "trong", 3], [18.788, "bộ", 3], [18.95, "nhớ", 3], [19.188, "như", 3], [19.35, "dữ", 3], [19.538, "liệu,", 3], [20.087, "nên", 3], [20.375, "đổi", 3], [20.55, "việc", 3], [20.762, "chỉ", 3], [20.938, "là", 3], [21.075, "đổi", 3], [21.288, "chương", 3], [21.525, "trình.", 3], [22.625, "Trên", 4], [22.962, "slide", 4], [23.375, "là", 4], [23.488, "các", 4], [23.688, "từ", 4], [23.8, "khóa", 4], [24.025, "cần", 4], [24.225, "nhớ:", 4], [24.775, "phần", 4], [25.038, "cứng,", 4], [25.55, "phần", 4], [25.788, "mềm,", 4], [26.288, "kiến", 4], [26.5, "trúc", 4], [26.663, "von", 4], [26.875, "Neumann,", 4], [27.562, "máy", 4], [27.762, "tính", 4], [28.0, "lưu", 4], [28.163, "trữ", 4], [28.387, "chương", 4], [28.637, "trình,", 4], [29.369, "CPU,", 4], [30.1, "bộ", 4], [30.363, "nhớ", 4], [30.575, "chính,", 4], [31.125, "bus", 4], [31.512, "và", 4], [31.725, "thiết", 4], [31.913, "bị", 4], [32.087, "vào", 4], [32.263, "ra.", 4]], "cues": [0.1, 8.188, 15.863, 23.488], "lang": 0.6}, {"ten": "Mở rộng", "loai": "mo-rong", "slide": "MR", "dung": "Slide Mở rộng sinh từ kế hoạch: cột chủ đề nâng cao, rồi cột bài tập.\nHiện dần: bước 1 khi đọc “hai chủ đề để đọc thêm”; bước 2 khi đọc “Bài tập mở rộng”.", "start": 399.12, "audio": "audio/8f2869675d5747dc.mp3", "dur": 22.01, "words": [[0.1, "Có", 0], [0.275, "hai", 0], [0.487, "chủ", 0], [0.75, "đề", 0], [0.988, "để", 0], [1.137, "đọc", 0], [1.337, "thêm.", 0], [2.513, "Chủ", 1], [2.763, "đề", 1], [2.95, "thứ", 1], [3.125, "nhất", 1], [3.413, "là", 1], [3.612, "kiến", 1], [3.875, "trúc", 1], [4.05, "Harvard,", 1], [4.688, "tách", 1], [4.875, "bộ", 1], [5.075, "nhớ", 1], [5.312, "lệnh", 1], [5.525, "khỏi", 1], [5.7, "bộ", 1], [5.888, "nhớ", 1], [6.15, "dữ", 1], [6.338, "liệu,", 1], [6.85, "dùng", 1], [7.15, "trong", 1], [7.35, "nhiều", 1], [7.575, "vi", 1], [7.75, "điều", 1], [7.9, "khiển.", 1], [9.15, "Chủ", 2], [9.375, "đề", 2], [9.537, "thứ", 2], [9.738, "hai", 2], [9.988, "là", 2], [10.075, "định", 2], [10.275, "luật", 2], [10.475, "Moore", 2], [10.713, "và", 2], [10.85, "lý", 2], [11.1, "do", 2], [11.506, "CPU", 2], [11.912, "ngày", 2], [12.188, "nay", 2], [12.363, "tăng", 2], [12.562, "số", 2], [12.762, "nhân", 2], [13.012, "thay", 2], [13.2, "vì", 2], [13.4, "tăng", 2], [13.625, "xung", 2], [13.812, "nhịp.", 2], [14.887, "Bài", 3], [15.137, "tập", 3], [15.35, "mở", 3], [15.537, "rộng", 3], [15.825, "là", 3], [15.988, "lập", 3], [16.163, "bảng", 3], [16.4, "cấu", 3], [16.6, "hình", 3], [16.788, "chiếc", 3], [17.0, "máy", 3], [17.188, "các", 3], [17.35, "bạn", 3], [17.562, "đang", 3], [17.75, "dùng,", 3], [18.225, "rồi", 3], [18.488, "ghi", 3], [18.663, "mỗi", 3], [18.863, "thành", 3], [19.062, "phần", 3], [19.288, "thuộc", 3], [19.45, "khối", 3], [19.637, "nào", 3], [19.875, "của", 3], [20.0, "kiến", 3], [20.238, "trúc", 3], [20.425, "von", 3], [20.65, "Neumann.", 3]], "cues": [0.275, 14.887], "lang": 0.6}, {"ten": "Lời kết", "loai": "loi-ket", "slide": "KET", "dung": "Không có hình giảng viên. Slide Mở rộng mờ dần, hiện slide \"Tiếp theo\" (sinh từ kế hoạch).", "start": 421.73, "audio": "audio/7e63b8aba02db3a2.mp3", "dur": 13.7, "words": [[0.1, "Đến", 0], [0.388, "đây", 0], [0.55, "các", 0], [0.725, "bạn", 0], [0.975, "đã", 0], [1.062, "biết", 0], [1.275, "chương", 0], [1.512, "trình", 0], [1.788, "nằm", 0], [1.988, "trong", 0], [2.163, "bộ", 0], [2.337, "nhớ", 0], [2.525, "chính,", 0], [3.062, "nhưng", 0], [3.337, "chưa", 0], [3.55, "biết", 0], [3.969, "CPU", 0], [4.388, "làm", 0], [4.625, "gì", 0], [4.85, "với", 0], [4.975, "nó.", 0], [6.162, "Phần", 1], [6.438, "tiếp", 1], [6.638, "theo,", 1], [7.125, "về", 1], [7.737, "CPU,", 1], [8.35, "lệnh", 1], [8.588, "máy", 1], [8.85, "và", 1], [8.988, "chu", 1], [9.188, "trình", 1], [9.375, "lệnh,", 1], [9.875, "lần", 1], [10.125, "theo", 1], [10.325, "từng", 1], [10.537, "bước", 1], [10.969, "CPU", 1], [11.4, "thực", 1], [11.562, "hiện", 1], [11.787, "một", 1], [12.0, "chương", 1], [12.225, "trình", 1], [12.425, "nhỏ.", 1]], "cues": [], "lang": 0.6}], "video_sau": "Phần cứng: CPU, lệnh máy và chu trình lệnh"};</script>
+<script src="../assets/player.js"></script>
+</body></html>

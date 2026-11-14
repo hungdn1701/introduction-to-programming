@@ -1,0 +1,4 @@
+$ echo 97 | ./prime
+97 is prime (95 tries)
+$ echo 91 | ./prime
+91 is divisible by 7 (6 tries)

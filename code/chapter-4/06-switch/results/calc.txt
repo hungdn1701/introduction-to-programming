@@ -1,0 +1,8 @@
+$ echo 7 + 2 | ./calc
+9
+$ echo 7 / 2 | ./calc
+3
+$ echo 7 / 0 | ./calc
+division by zero
+$ echo 7 % 2 | ./calc
+unknown operator %
