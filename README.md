@@ -5,6 +5,7 @@
 TS. Đặng Ngọc Hùng · 3 tín chỉ · Tiếng Việt · C17 · GCC
 
 - Trang học phần: <https://hungdn1701.github.io/introduction-to-programming/> — khung nội dung, bản xem trước từng phần, slide
+- Phòng mô phỏng tương tác 2.5D: <https://hungdn1701.github.io/introduction-to-programming/workbench/> — trực quan hóa cơ chế từng chương
 - Mã chạy được: thư mục [`code/`](code/), mỗi phần một thư mục `chapter-<chương>/<thứ tự>-<tên>`
 
 ## Mở đầu học phần
@@ -89,4 +90,4 @@ TS. Đặng Ngọc Hùng · 3 tín chỉ · Tiếng Việt · C17 · GCC
 
 ---
 
-Repo này được sinh tự động từ nguồn biên soạn; không sửa trực tiếp. Cập nhật 2026-11-18.
+Repo này được sinh tự động từ nguồn biên soạn; không sửa trực tiếp. Cập nhật 2026-11-20.
